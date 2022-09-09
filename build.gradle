@@ -1,0 +1,50 @@
+buildscript {
+    ext {
+        springBootVersion = '2.5.7'
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+    }
+}
+
+allprojects {
+    group = 'com.gofield'
+}
+
+subprojects {
+    apply {
+        plugin('java-library')
+        plugin('eclipse')
+        plugin('org.springframework.boot')
+        plugin('io.spring.dependency-management')
+    }
+
+    sourceCompatibility = '11'
+
+    repositories {
+        mavenCentral()
+    }
+
+    dependencies {
+        implementation 'org.springframework.boot:spring-boot-starter-validation'
+
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+
+        // Lombok
+        compileOnly 'org.projectlombok:lombok'
+        annotationProcessor 'org.projectlombok:lombok'
+    }
+
+    configurations {
+        compileOnly {
+            extendsFrom annotationProcessor
+        }
+    }
+
+    test {
+        useJUnitPlatform()
+    }
+}

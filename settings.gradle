@@ -1,0 +1,20 @@
+rootProject.name = 'gofield'
+
+include 'gofield-common'
+
+include 'gofield-api-admin-service'
+include 'gofield-api-user-service'
+include 'gofield-api-partner-service'
+
+include 'gofield-infrastructure:gofield-aws'
+include 'gofield-infrastructure:gofield-firebase'
+include 'gofield-infrastructure:gofield-external'
+
+include 'gofield-sns'
+include 'gofield-batch'
+
+include 'gofield-domain:gofield-domain-rds'
+include 'gofield-domain:gofield-domain-elasticsearch'
+
+
+
