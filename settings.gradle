@@ -8,9 +8,9 @@ include 'gofield-api-partner-service'
 
 include 'gofield-api-core:gofield-api-core-common'
 
-include 'gofield-infrastructure:gofield-aws'
-include 'gofield-infrastructure:gofield-firebase'
-include 'gofield-infrastructure:gofield-external'
+include 'gofield-infrastructure:gofield-infrastructure-aws'
+include 'gofield-infrastructure:gofield-infrastructure-firebase'
+include 'gofield-infrastructure:gofield-infrastructure-external'
 
 include 'gofield-domain:gofield-domain-rds'
 
