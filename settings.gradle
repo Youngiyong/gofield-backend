@@ -10,11 +10,8 @@ include 'gofield-infrastructure:gofield-aws'
 include 'gofield-infrastructure:gofield-firebase'
 include 'gofield-infrastructure:gofield-external'
 
-include 'gofield-sns'
-include 'gofield-batch'
-
 include 'gofield-domain:gofield-domain-rds'
-include 'gofield-domain:gofield-domain-elasticsearch'
 
-
+include 'gofield-push'
+include 'gofield-batch'
 
