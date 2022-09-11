@@ -10,7 +10,7 @@ public class InvalidException extends GofieldCustomException {
     }
 
     public InvalidException(String message) {
-        super(ErrorCode.VALIDATION_EXCEPTION, ErrorAction.NONE, message);
+        super(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, message);
     }
 
 }

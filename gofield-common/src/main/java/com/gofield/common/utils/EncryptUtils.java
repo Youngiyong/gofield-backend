@@ -32,7 +32,7 @@ public class EncryptUtils {
 
             return sha256BytesToHex(md.digest());
         } catch (Exception e) {
-            throw new InternalServerException(ErrorCode.INTERNAL_SERVER_ENCRYPT_EXCEPTION, ErrorAction.NONE, "암호화 오류");
+            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, "암호화 오류");
         }
     }
 
@@ -53,7 +53,7 @@ public class EncryptUtils {
             return Base64.getUrlEncoder().encodeToString(encrypted1);
 
         } catch (Exception e) {
-            throw new InternalServerException(ErrorCode.INTERNAL_SERVER_ENCRYPT_EXCEPTION, ErrorAction.NONE, "암호화 오류" );
+            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, "암호화 오류" );
         }
     }
 
@@ -72,7 +72,7 @@ public class EncryptUtils {
 
             return new String(decrypted, "UTF-8");
         } catch (Exception e) {
-            throw new InternalServerException(ErrorCode.INTERNAL_SERVER_ENCRYPT_EXCEPTION, ErrorAction.NONE, "복호화 오류");
+            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, "복호화 오류");
         }
     }
 

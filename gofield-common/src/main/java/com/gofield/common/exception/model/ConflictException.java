@@ -11,7 +11,7 @@ public class ConflictException extends GofieldCustomException {
     }
 
     public ConflictException(String message) {
-        super( ErrorCode.CONFLICT_EXCEPTION, ErrorAction.NONE, message);
+        super( ErrorCode.E409_CONFLICT_EXCEPTION, ErrorAction.NONE, message);
     }
 
 }

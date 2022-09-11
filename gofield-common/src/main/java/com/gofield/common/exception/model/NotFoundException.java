@@ -10,7 +10,7 @@ public class NotFoundException extends GofieldCustomException {
     }
 
     public NotFoundException(String message) {
-        super(ErrorCode.NOT_FOUND_EXCEPTION, ErrorAction.NONE, message);
+        super(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.NONE, message);
     }
 
 }

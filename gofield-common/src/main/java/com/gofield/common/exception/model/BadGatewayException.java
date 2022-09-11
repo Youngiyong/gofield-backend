@@ -6,7 +6,7 @@ import com.gofield.common.exception.type.ErrorAction;
 public class BadGatewayException extends GofieldCustomException {
 
     public BadGatewayException(String message) {
-        super(ErrorCode.BAD_GATEWAY_EXCEPTION, ErrorAction.NONE, message);
+        super(ErrorCode.E502_BAD_GATEWAY, ErrorAction.NONE, message);
     }
 
     public BadGatewayException(ErrorCode errorCode, ErrorAction action, String message){

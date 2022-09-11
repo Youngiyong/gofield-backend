@@ -10,7 +10,7 @@ public class ForbiddenException extends GofieldCustomException {
     }
 
     public ForbiddenException(String message) {
-        super(ErrorCode.FORBIDDEN_EXCEPTION, ErrorAction.NONE, message);
+        super(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.NONE, message);
     }
 
 }

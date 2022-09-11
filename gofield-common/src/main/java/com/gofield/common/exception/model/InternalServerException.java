@@ -9,6 +9,6 @@ public class InternalServerException extends GofieldCustomException {
     }
 
     public InternalServerException(String message) {
-        super(ErrorCode.INTERNAL_SERVER_EXCEPTION, ErrorAction.NONE, message);
+        super(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, message);
     }
 }

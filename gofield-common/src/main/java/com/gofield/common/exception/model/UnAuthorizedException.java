@@ -9,8 +9,8 @@ public class UnAuthorizedException extends GofieldCustomException {
         super(errorCode, action, message);
     }
 
-    public UnAuthorizedException(ErrorAction action, String message) {
-        super(ErrorCode.UNAUTHORIZED_EXCEPTION, action, message);
+    public UnAuthorizedException(String message) {
+        super(ErrorCode.E401_UNAUTHORIZED, ErrorAction.NONE, message);
     }
 
 }

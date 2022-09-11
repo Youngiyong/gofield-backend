@@ -12,13 +12,9 @@ public enum ImageType {
     PARTNER_PROFILE("partner"),
     STORE_IMAGE("store");
     private final String directory;
-    public String getFileNameWithDirectory(String fileName, Long id) {
+    public String getFileNameWithDirectory(String fileName) {
+        return this.directory.concat("/").concat(fileName);
 
-        if(id == null){
-            return this.directory.concat("/").concat(fileName);
-        }
-
-        return this.directory.concat("/").concat(id + "/").concat(fileName);
     }
 
 }

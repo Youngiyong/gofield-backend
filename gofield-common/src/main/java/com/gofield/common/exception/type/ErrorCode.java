@@ -10,11 +10,11 @@ public enum ErrorCode {
     /**
      * 400 Bad Request (잘못된 요청)
      */
-    E400_VALIDATION_EXCEPTION("I4000", 400, "파라미터 오류"),
-    E400_VALIDATION_FILE_FORMAT_EXCEPTION("I4002", 400, "허용되지 않은 파일입니다"),
-    E400_VALIDATION_GOOGLE_CODE_EXCEPTION("I4003", 400, "잘못된 구글 코드 입니다"),
-    E400_VALIDATION_CLASS_NUMBER_EXCEPTION("I4001", 400, "잘못된 아이디입니다."),
-    E400_VALIDATION_APPLE_TOKEN_EXCEPTION("I4004", 400, "잘못된 애플 토큰입니다."),
+    E400_INVALID_EXCEPTION("I4000", 400, "파라미터 오류"),
+    E400_INVALID_FILE_FORMAT_EXCEPTION("I4002", 400, "허용되지 않은 파일입니다"),
+    E400_INVALID_GOOGLE_CODE_EXCEPTION("I4003", 400, "잘못된 구글 코드 입니다"),
+    E400_INVALID_CLASS_NUMBER_EXCEPTION("I4001", 400, "잘못된 아이디입니다."),
+    E400_INVALIDs_APPLE_TOKEN_EXCEPTION("I4004", 400, "잘못된 애플 토큰입니다."),
 
 
     /**
@@ -51,6 +51,8 @@ public enum ErrorCode {
      * 500 Internal Server Exception (서버 내부 에러)
      */
     E500_INTERNAL_SERVER("Z5000",  500, "예상치 못한 에러가 발생하였습니다. 잠시 후 다시 시도해주세요!"),
+    E500_INTERNAL_SERVER_ENCRYPT("Z5001",  500, "암호화 오류"),
+    E500_INTERNAL_SERVER_DECRYPT("Z5002",  500, "복호화 오류"),
 
 
     /**
