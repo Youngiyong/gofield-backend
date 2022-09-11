@@ -39,6 +39,4 @@ out/
 generated/
 
 application.yml
-application-dev.yml
-application-prod.yml
 logs/
