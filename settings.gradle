@@ -1,10 +1,11 @@
 rootProject.name = 'gofield'
 
-include 'gofield-common'
 
 include 'gofield-api-admin-service'
 include 'gofield-api-user-service'
 include 'gofield-api-partner-service'
+
+include 'gofield-api-core:gofield-api-core-common'
 
 include 'gofield-infrastructure:gofield-aws'
 include 'gofield-infrastructure:gofield-firebase'

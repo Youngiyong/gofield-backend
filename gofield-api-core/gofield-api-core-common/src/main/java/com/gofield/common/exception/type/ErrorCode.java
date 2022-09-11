@@ -14,7 +14,7 @@ public enum ErrorCode {
     E400_INVALID_FILE_FORMAT_EXCEPTION("I4002", 400, "허용되지 않은 파일입니다"),
     E400_INVALID_GOOGLE_CODE_EXCEPTION("I4003", 400, "잘못된 구글 코드 입니다"),
     E400_INVALID_CLASS_NUMBER_EXCEPTION("I4001", 400, "잘못된 아이디입니다."),
-    E400_INVALIDs_APPLE_TOKEN_EXCEPTION("I4004", 400, "잘못된 애플 토큰입니다."),
+    E400_INVALID_APPLE_TOKEN_EXCEPTION("I4004", 400, "잘못된 애플 토큰입니다."),
 
 
     /**
