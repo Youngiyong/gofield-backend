@@ -1,4 +1,4 @@
-# Gofield Backend (스포츠 커머스)
+# Gofield Backend (스포츠 이커머스)
 
 ---
 
