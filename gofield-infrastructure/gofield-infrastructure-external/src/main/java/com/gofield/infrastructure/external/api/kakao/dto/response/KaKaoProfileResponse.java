@@ -1,4 +1,4 @@
-package com.gofield.external.api.kakao.dto.response;
+package com.gofield.infrastructure.external.api.kakao.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

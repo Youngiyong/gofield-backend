@@ -1,9 +1,9 @@
-package com.gofield.external.api.apple;
+package com.gofield.infrastructure.external.api.apple;
 
 import com.gofield.common.exception.model.InvalidException;
 import com.gofield.common.exception.type.ErrorAction;
 import com.gofield.common.exception.type.ErrorCode;
-import com.gofield.external.api.apple.dto.response.IdTokenPayload;
+import com.gofield.infrastructure.external.api.apple.dto.response.IdTokenPayload;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

@@ -1,4 +1,4 @@
-package com.gofield.external.api.apple.dto.response;
+package com.gofield.infrastructure.external.api.apple.dto.response;
 
 import lombok.*;
 

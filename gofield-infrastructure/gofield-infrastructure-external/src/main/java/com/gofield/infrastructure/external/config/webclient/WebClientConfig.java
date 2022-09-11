@@ -1,4 +1,4 @@
-package com.gofield.external.config.webclient;
+package com.gofield.infrastructure.external.config.webclient;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;

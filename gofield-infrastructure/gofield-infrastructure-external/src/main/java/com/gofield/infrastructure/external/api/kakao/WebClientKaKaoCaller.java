@@ -1,9 +1,9 @@
-package com.gofield.external.api.kakao;
+package com.gofield.infrastructure.external.api.kakao;
 
 import com.gofield.common.exception.model.BadGatewayException;
 import com.gofield.common.exception.model.InvalidException;
-import com.gofield.external.api.kakao.dto.response.KaKaoProfileResponse;
-import com.gofield.external.api.kakao.dto.response.KaKaoTokenResponse;
+import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoProfileResponse;
+import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
