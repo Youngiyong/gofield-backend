@@ -1,4 +1,4 @@
-package com.gofield.common.type;
+package com.gofield.common.utils.type;
 
 import lombok.AccessLevel;
 import lombok.Getter;

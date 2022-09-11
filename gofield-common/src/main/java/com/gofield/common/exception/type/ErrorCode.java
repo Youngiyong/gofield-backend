@@ -1,4 +1,4 @@
-package com.gofield.common.type;
+package com.gofield.common.exception.type;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

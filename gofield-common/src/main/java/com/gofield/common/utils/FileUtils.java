@@ -1,8 +1,8 @@
 package com.gofield.common.utils;
 
 import com.gofield.common.exception.model.InvalidException;
-import com.gofield.common.type.ErrorAction;
-import com.gofield.common.type.ImageType;
+import com.gofield.common.exception.type.ErrorAction;
+import com.gofield.common.utils.type.ImageType;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import static com.gofield.common.type.ErrorCode.VALIDATION_FILE_FORMAT_EXCEPTION;
+import static com.gofield.common.exception.type.ErrorCode.VALIDATION_FILE_FORMAT_EXCEPTION;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileUtils {

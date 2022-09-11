@@ -1,8 +1,8 @@
 package com.gofield.common.utils;
 
-import com.gofield.common.type.ErrorCode;
+import com.gofield.common.exception.type.ErrorCode;
 import com.gofield.common.exception.model.InternalServerException;
-import com.gofield.common.type.ErrorAction;
+import com.gofield.common.exception.type.ErrorAction;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
