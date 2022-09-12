@@ -6,4 +6,5 @@ jar {
 }
 
 dependencies {
+    api project(':gofield-common')
 }

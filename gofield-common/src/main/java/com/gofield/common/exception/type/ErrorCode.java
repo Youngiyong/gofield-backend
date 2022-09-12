@@ -15,7 +15,7 @@ public enum ErrorCode {
     E400_INVALID_GOOGLE_CODE_EXCEPTION("I4003", 400, "잘못된 구글 코드 입니다"),
     E400_INVALID_CLASS_NUMBER_EXCEPTION("I4001", 400, "잘못된 아이디입니다."),
     E400_INVALID_APPLE_TOKEN_EXCEPTION("I4004", 400, "잘못된 애플 토큰입니다."),
-
+    E400_INVALID_AUTH_TOKEN("I4005", 400, "유효하지 않는 토큰입니다."),
 
     /**
      * 401 UnAuthorized (토큰 만료)
@@ -48,9 +48,20 @@ public enum ErrorCode {
 
 
     /**
+     * 415 Unsupported media type (지원하지 않는 미디어 타입)
+     */
+    E415_UNSUPPORTED_MEDIA_TYPE("U4500", 415, "지원하지 않는 미디어 타입입니다."),
+
+
+    /**
      * 470 Convert (데이터 변환 오류)
      */
     E470_CONVERT_EXCEPTION("X4700", 470, "컨버트 오류"),
+
+    /**
+     * 499 Internal Rule (내부 예외 규칙)
+     */
+    E499_INTERNAL_RULE("R4990", 499, "내부 예외"),
 
     /**
      * 500 Internal Server Exception (서버 내부 에러)
