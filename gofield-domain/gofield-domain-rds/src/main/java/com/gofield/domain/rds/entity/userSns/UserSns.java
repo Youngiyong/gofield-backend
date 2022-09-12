@@ -21,7 +21,6 @@ public class UserSns extends BaseTimeEntity {
     @Column(length = 128)
     private String uniqueId;
 
-    @Convert(converter = SocialFlagConverter.class)
     @Column(name = "social_flag", nullable = false)
     private ESocialFlag social;
 

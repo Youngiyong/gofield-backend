@@ -19,7 +19,6 @@ public class UserPush extends BaseTimeEntity {
     @Column(length = 256, nullable = false)
     private String pushKey;
 
-    @Convert(converter = PlatformFlagConverter.class)
     @Column(name = "platform_flag", nullable = false, length = 10)
     private EPlatformFlag platform;
 }

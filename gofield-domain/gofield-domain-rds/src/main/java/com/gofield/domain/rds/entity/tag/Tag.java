@@ -11,7 +11,6 @@ import javax.persistence.*;
 @Entity
 @Table(	name = "tag")
 public class Tag extends BaseTimeEntity {
-
     @Column
     private String name;
 }

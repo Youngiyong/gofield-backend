@@ -17,10 +17,8 @@ public class DeviceModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Convert(converter = PlatformFlagConverter.class)
     @Column(name = "platform_flag", nullable = false, length = 10)
     private EPlatformFlag platform;
-
     @Column
     private String brand;
 

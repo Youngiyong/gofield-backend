@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 @Table(	name = "term")
 public class Term extends BaseTimeEntity {
 
-    @Convert(converter = TermFlagConverter.class)
     @Column(nullable = false, name = "type_flag")
     private ETermFlag type;
 

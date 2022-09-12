@@ -1,24 +1,14 @@
 package com.gofield.domain.rds.converter;
 
-
-
 import com.gofield.domain.rds.enums.ETermFlag;
-
-import javax.persistence.AttributeConverter;
 import javax.persistence.Converter;
 
+@Converter(autoApply = true)
+public class TermFlagConverter extends AbstractEnumAttributeConverter<ETermFlag>{
+    public static final String ENUM_NAME = "약관 타입";
 
-@Converter
-public class TermFlagConverter implements AttributeConverter<ETermFlag, String> {
-
-    @Override
-    public String convertToDatabaseColumn(ETermFlag attribute) {
-        return attribute.getCode();
+    public TermFlagConverter(){
+        super(ETermFlag.class,false, ENUM_NAME);
     }
-
-    @Override
-    public ETermFlag convertToEntityAttribute(String dbData) {
-        return ETermFlag.ofCode(dbData);
-    }
-
 }
+
