@@ -197,7 +197,7 @@ public class AuthService {
         if(account!=null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 가입되어 있는 사용자입니다.");
         } else {
-            account = UserAccount.newInstance(user, request.getEmail(), request.getWeight(), request.getHeight());
+            account = UserAccount.newInstance(user);
             userAccountRepository.save(account);
         }
         if(request.getCategoryList()!=null){
@@ -211,11 +211,7 @@ public class AuthService {
         }
         if(request.getAgreeList()!=null){
             if(!request.getAgreeList().isEmpty()){
-                List<Term> resultTermList = termRepository.findAllByInId(request.getAgreeList());
-                for(Term term: resultTermList){
-                    UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-                    userHasTermRepository.save(userHasTerm);
-                }
+                userService.insertUserHasTerm(request.getAgreeList(), user);
             }
         }
         if(request.getDisAgreeList()!=null){
@@ -224,11 +220,15 @@ public class AuthService {
                 for(Term term: resultTermList){
                     if(term.getIsEssential()){
                         throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "선택 약관 리스트에 필수항목이 있습니다.");
+                    } else {
+                        UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
+                        userHasTermRepository.save(userHasTerm);
                     }
                 }
             }
         }
-        user.updateSign();
+
+        user.updateSign(request.getEmail(), request.getWeight(), request.getHeight());
     }
 
     @Transactional

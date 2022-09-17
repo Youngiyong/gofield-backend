@@ -83,13 +83,7 @@ public class TokenUtil {
 
         String refreshToken = UUID.randomUUID().toString();
 
-        return TokenResponse.builder()
-                .grantType(AUTH_PREFIX)
-                .accessToken(accessToken)
-                .accessTokenExpiresIn(accessTokenExpiresIn.getTime())
-                .refreshToken(refreshToken)
-                .refreshTokenExpiresIn(refreshTokenExpireIn.getTime())
-                .build();
+        return TokenResponse.of(AUTH_PREFIX, accessToken, refreshToken, accessTokenExpiresIn.getTime(), refreshValidity);
     }
 
 

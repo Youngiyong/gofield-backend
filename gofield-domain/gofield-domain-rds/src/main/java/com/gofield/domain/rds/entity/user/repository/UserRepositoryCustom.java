@@ -8,4 +8,6 @@ public interface UserRepositoryCustom {
     User findByUuidAndStatus(String uuid, EStatusFlag status);
 
     User findByUuid(String uuid);
+    User findByUuidAndStatusActive(String uuid);
+    Long findIdByUuidAndStatusActive(String uuid);
 }

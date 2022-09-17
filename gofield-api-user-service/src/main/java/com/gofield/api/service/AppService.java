@@ -31,7 +31,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AppService {
-
     private final TermRepository termRepository;
     private final VersionRepository versionRepository;
     private final ServerStatusRepository serverStatusRepository;
@@ -40,27 +39,18 @@ public class AppService {
     @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoryList(){
         List<Category> resultList = categoryRepository.findAllIsActiveTrueOrderBySort();
-
-        return resultList
-                .stream()
-                .map(p -> new CategoryResponse(p.getId(), p.getName()))
-                .collect(Collectors.toList());
+        return CategoryResponse.of(resultList);
     }
 
     @Transactional(readOnly = true)
     public List<TermResponse> getTermList(){
         List<Term> resultList = termRepository.findByGroupId(2L);
-
-        return resultList
-                .stream()
-                .map(p -> new TermResponse(p.getId(), p.getUrl(), p.getIsEssential(), p.getType(), p.getTermDate()))
-                .collect(Collectors.toList());
+        return TermResponse.of(resultList);
     }
 
     @Transactional(readOnly = true)
     public void healthCheck(){
         ServerStatus serverStatus = serverStatusRepository.findByServerType(EServerType.U);
-
         if(!serverStatus.getIsActive()){
             throw new InternalRuleException(ErrorCode.E502_BAD_GATEWAY, ErrorAction.TOAST, serverStatus.getMessage());
         }
@@ -97,10 +87,6 @@ public class AppService {
             message = "지금 업데이트를 설치하시겠습니까?";
         }
 
-        return VersionResponse.builder()
-                .type(type)
-                .message(message)
-                .marketUrl(result.getMarketUrl())
-                .build();
+        return VersionResponse.of(type, message, result.getMarketUrl());
     }
 }

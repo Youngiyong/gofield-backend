@@ -17,7 +17,7 @@ public class UserSnsRepositoryCustomImpl implements UserSnsRepositoryCustom {
         return jpaQueryFactory
                 .selectFrom(userSns)
                 .where(userSns.uniqueId.eq(uniqueId)
-                        .and(userSns.route.eq(route)))
+                        .and(userSns.social.eq(route)))
                 .fetchOne();
     }
 }

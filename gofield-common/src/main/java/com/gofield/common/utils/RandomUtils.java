@@ -35,6 +35,19 @@ public class RandomUtils {
         return buff.toString();
     }
 
+    public static String makeRandomNumberCode(int size){
+        Random random = new Random();
+        StringBuffer buff = new StringBuffer();
+        for(int i=0 ; i<size ; i++){
+            if(random.nextBoolean()){
+                buff.append((char)((int)(random.nextInt(10)) + 48));
+            } else {
+                buff.append(random.nextInt(9));
+            }
+        }
+        return buff.toString();
+    }
+
     public static String makeRandomCode(int size){
         Random random = new Random();
         StringBuffer buff = new StringBuffer();

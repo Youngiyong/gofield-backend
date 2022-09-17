@@ -129,8 +129,13 @@ CREATE TABLE `term_group` (
 CREATE TABLE `user` (
                         `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                         `uuid` varchar(36) NOT NULL COMMENT 'UUID',
+                        `tel` varchar(20) DEFAULT NULL,
+                        `name` varchar(36) DEFAULT NULL,
+                        `email` varchar(50) DEFAULT NULL,
                         `nick_name` varchar(50) NOT NULL COMMENT '이름',
                         `thumbnail_path` varchar(128) DEFAULT NULL COMMENT 'host 제외한 썸네일 URL',
+                        `weight` smallint(255) DEFAULT NULL,
+                        `height` smallint(255) DEFAULT NULL,
                         `status_flag` char(1) NOT NULL DEFAULT 'A' COMMENT '가입상태 (A:활성, D:탈퇴, P:중지)',
                         `is_alert_push` tinyint(1) DEFAULT '1' COMMENT '푸시 알림 여부',
                         `is_alert_promotion` tinyint(1) DEFAULT '1' COMMENT '프로모션/이벤트 알림 여부',
@@ -143,9 +148,6 @@ CREATE TABLE `user` (
                         PRIMARY KEY (`id`),
                         UNIQUE KEY `uuid` (`uuid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COMMENT='사용자 테이블';
-
-
-
 
 CREATE TABLE `user_access_log` (
                                    `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
@@ -160,18 +162,13 @@ CREATE TABLE `user_access_log` (
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8 COMMENT='로그인 로그';
 
 
-
 CREATE TABLE `user_account` (
                                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                                 `user_id` int(10) unsigned NOT NULL,
                                 `bank_name` varchar(32) DEFAULT NULL COMMENT '은행명',
                                 `bank_holder_name` varchar(30) DEFAULT NULL COMMENT '예금주명',
                                 `bank_account_number` varchar(64) DEFAULT NULL COMMENT 'sns unique id',
-                                `tel` varchar(20) DEFAULT NULL,
-                                `name` varchar(36) DEFAULT NULL COMMENT '이름',
-                                `email` varchar(50) DEFAULT NULL,
-                                `weight` tinyint(255) DEFAULT NULL,
-                                `height` tinyint(255) DEFAULT NULL,
+                                `is_cert` tinyint(1) DEFAULT '0' COMMENT '휴대폰 인증 여부',
                                 `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성 일자',
                                 `update_date` timestamp NULL DEFAULT NULL COMMENT '업데이트 일자',
                                 PRIMARY KEY (`id`),
@@ -179,20 +176,19 @@ CREATE TABLE `user_account` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='사용자 계정 정보';
 
 
-
-
 CREATE TABLE `user_address` (
                                 `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
                                 `user_id` int(10) unsigned NOT NULL COMMENT '유저 아이디',
-                                `type_flag` char(1) DEFAULT NULL COMMENT '구분: HOME, OFFICE, FREQUENT',
-                                `zip_code` varchar(10) DEFAULT NULL COMMENT '우편 번호',
-                                `road_address` varchar(256) DEFAULT NULL COMMENT '도로명 주소',
-                                `jibun_address` varchar(256) DEFAULT NULL COMMENT '지번 주소',
-                                `address_extra` varchar(128) DEFAULT NULL COMMENT '상세. 주소',
-                                `lat` varchar(20) DEFAULT NULL COMMENT '위도',
-                                `lng` varchar(20) DEFAULT NULL COMMENT '경도',
+                                `name` varchar(32) NOT NULL COMMENT '이름',
+                                `tel` varchar(32) NOT NULL COMMENT '전화번호',
+                                `zip_code` varchar(10) NOT NULL COMMENT '우편 번호',
+                                `address` varchar(128) NOT NULL COMMENT '도로명 주소',
+                                `address_extra` varchar(128) DEFAULT NULL COMMENT '도로명',
+                                `is_main` TINYINT(1) DEFAULT '0' COMMENT '메인 주소 여부',
+                                `create_id` int(10) unsigned DEFAULT NULL COMMENT '생성자 id',
                                 `create_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP COMMENT '생성일',
-                                `update_date` timestamp NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '수정일',
+                                `update_id` int(10) unsigned DEFAULT NULL COMMENT '수정자 id',
+                                `update_date` timestamp NULL DEFAULT NULL COMMENT '수정일',
                                 PRIMARY KEY (`id`),
                                 KEY `idx_user_address_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='사용자 주소 정보';

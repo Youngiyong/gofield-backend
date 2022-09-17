@@ -36,4 +36,21 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .where(user.uuid.eq(uuid))
                 .fetchOne();
     }
+
+    @Override
+    public User findByUuidAndStatusActive(String uuid) {
+        return jpaQueryFactory
+                .selectFrom(user)
+                .where(user.uuid.eq(uuid))
+                .fetchOne();
+    }
+
+    @Override
+    public Long findIdByUuidAndStatusActive(String uuid) {
+        return jpaQueryFactory
+                .select(user.id)
+                .from(user)
+                .where(user.uuid.eq(uuid))
+                .fetchOne();
+    }
 }

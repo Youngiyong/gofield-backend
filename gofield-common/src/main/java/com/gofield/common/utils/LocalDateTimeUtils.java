@@ -1,6 +1,7 @@
 package com.gofield.common.utils;
 
 import java.time.Instant;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 
@@ -18,4 +19,6 @@ public class LocalDateTimeUtils {
     public static LocalDateTime now() {
         return LocalDateTime.now(ZONE_ID);
     }
+
+    public static LocalDateTime tomorrowMinTime() { return LocalDate.MIN.atTime(0, 0);}
 }
