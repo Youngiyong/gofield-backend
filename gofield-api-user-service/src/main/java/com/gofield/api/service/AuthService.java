@@ -45,7 +45,11 @@ import com.gofield.domain.rds.entity.userToken.UserToken;
 import com.gofield.domain.rds.entity.userToken.UserTokenRepository;
 import com.gofield.domain.rds.enums.ESocialFlag;
 import com.gofield.domain.rds.enums.EStatusFlag;
+import com.gofield.infrastructure.external.api.apple.AppleTokenDecoderImpl;
+import com.gofield.infrastructure.external.api.kakao.KaKaoAuthApiClient;
 import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoProfileResponse;
+import com.gofield.infrastructure.external.api.naver.NaverAuthApiClient;
+import com.gofield.infrastructure.external.api.naver.dto.response.NaverProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -66,7 +70,7 @@ import java.util.stream.Collectors;
 public class AuthService {
     private final TokenUtil tokenUtil;
     private final UserService userService;
-    private final KaKaoApiCaller kaKaoApiCaller;
+
     private final TermRepository termRepository;
     private final UserRepository userRepository;
     private final DeviceRepository deviceRepository;
@@ -80,6 +84,11 @@ public class AuthService {
     private final UserHasDeviceRepository userHasDeviceRepository;
     private final UserHasCategoryRepository userHasCategoryRepository;
     private final UserClientDetailRepository userClientDetailRepository;
+
+
+    private final NaverAuthApiClient naverAuthApiClient;
+    private final KaKaoAuthApiClient kaKaoAuthApiClient;
+    private final AppleTokenDecoderImpl appleTokenDecoder;
 
 
     @Transactional
@@ -118,23 +127,22 @@ public class AuthService {
         }
 
         if(request.getSocial().equals(ESocialFlag.KAKAO.KAKAO)){
-            KaKaoProfileResponse profile = kaKaoApiCaller.getProfileInfo(request.getToken());
+            KaKaoProfileResponse profile = kaKaoAuthApiClient.getProfileInfo(request.getToken());
             uniqueId = profile.getId();
             email = profile.getEmail();
             nickName = profile.getNickName();
         } else if(request.getSocial().equals(ESocialFlag.APPLE)){
-            AppleTokenPayload payload = tokenUtil.getAppleUserInfo(request.getToken());
-            uniqueId = payload.getSub();
-            email = payload.getEmail();
+            uniqueId = appleTokenDecoder.getSocialIdFromAppleIdToken(request.getToken());
         } else if(request.getSocial().equals(ESocialFlag.NAVER)){
-
+            NaverProfileResponse profile = naverAuthApiClient.getProfileInfo(request.getToken());
+            uniqueId = profile.getResponse().getId();
         } else {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 로그인타입니다.");
         }
 
         UserSns userSns = userSnsRepository.findByUniQueIdAndRoute(uniqueId, request.getSocial());
         if(userSns==null){
-            User saveUser = User.newInstance(RandomUtils.makeRandomUuid(), nickName);
+            User saveUser = User.newInstance(RandomUtils.makeRandomUuid(), nickName==null ? "신규고객" : nickName);
             userRepository.save(saveUser);
             UserSns saveSns = UserSns.newInstance(saveUser, uniqueId, ESocialFlag.KAKAO);
             userSnsRepository.save(saveSns);
@@ -169,15 +177,7 @@ public class AuthService {
         UserAccessLog saveLog = UserAccessLog.newInstance(userSns.getUser().getId(), resultDevice.getId(), userAgent, ipAddress);
         userAccessLogRepository.save(saveLog);
 
-        return LoginResponse
-                .builder()
-                .isFirst(isFirst)
-                .grantType(token.getGrantType())
-                .accessToken(token.getAccessToken())
-                .accessTokenExpiresIn(token.getRefreshTokenExpiresIn())
-                .refreshToken(token.getRefreshToken())
-                .refreshTokenExpiresIn(token.getRefreshTokenExpiresIn())
-                .build();
+        return LoginResponse.of(isFirst, token.getGrantType(), token.getAccessToken(), token.getRefreshToken(), token.getAccessTokenExpiresIn(), token.getRefreshTokenExpiresIn());
     }
 
     @Transactional
@@ -200,25 +200,31 @@ public class AuthService {
             account = UserAccount.newInstance(user, request.getEmail(), request.getWeight(), request.getHeight());
             userAccountRepository.save(account);
         }
-        if(request.getCategoryList()!=null && !request.getCategoryList().isEmpty()){
-            List<Category> resultCategoryList = categoryRepository.findAllByInId(request.getCategoryList());
-            for(Category category: resultCategoryList){
-                UserHasCategory userHasCategory = UserHasCategory.newInstance(user, category);
-                userHasCategoryRepository.save(userHasCategory);
+        if(request.getCategoryList()!=null){
+            if(!request.getCategoryList().isEmpty()){
+                List<Category> resultCategoryList = categoryRepository.findAllByInId(request.getCategoryList());
+                for(Category category: resultCategoryList){
+                    UserHasCategory userHasCategory = UserHasCategory.newInstance(user, category);
+                    userHasCategoryRepository.save(userHasCategory);
+                }
             }
         }
-        if(request.getAgreeList()!=null && !request.getAgreeList().isEmpty()){
-            List<Term> resultTermList = termRepository.findAllByInId(request.getAgreeList());
-            for(Term term: resultTermList){
-                UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-                userHasTermRepository.save(userHasTerm);
+        if(request.getAgreeList()!=null){
+            if(!request.getAgreeList().isEmpty()){
+                List<Term> resultTermList = termRepository.findAllByInId(request.getAgreeList());
+                for(Term term: resultTermList){
+                    UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
+                    userHasTermRepository.save(userHasTerm);
+                }
             }
         }
-        if(request.getDisAgreeList()!=null && !request.getDisAgreeList().isEmpty()){
-            List<Term> resultTermList = termRepository.findAllByInId(request.getDisAgreeList());
-            for(Term term: resultTermList){
-                if(term.getIsEssential()){
-                    throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "선택 약관 리스트에 필수항목이 있습니다.");
+        if(request.getDisAgreeList()!=null){
+            if(!request.getDisAgreeList().isEmpty()){
+                List<Term> resultTermList = termRepository.findAllByInId(request.getDisAgreeList());
+                for(Term term: resultTermList){
+                    if(term.getIsEssential()){
+                        throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "선택 약관 리스트에 필수항목이 있습니다.");
+                    }
                 }
             }
         }
@@ -252,7 +258,6 @@ public class AuthService {
         if(userToken==null || userToken.getExpireDate().isBefore(LocalDateTime.now())){
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "유효하지 않는 리프레쉬 토큰입니다.");
         }
-
         User resultUser = userRepository.findByIdAndStatusActive(userToken.getUserId());
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
         Authentication authentication = new Authentication(resultUser.getUuid(), resultUser.getId() ,"www.gofield.co.kr");

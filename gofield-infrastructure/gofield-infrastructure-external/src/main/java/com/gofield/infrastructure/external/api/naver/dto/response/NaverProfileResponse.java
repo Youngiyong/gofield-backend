@@ -13,7 +13,7 @@ public class NaverProfileResponse {
     @ToString
     @Getter
     @AllArgsConstructor
-    private static class NaverProfileInfo {
+    public static class NaverProfileInfo {
         private String id;
     }
 

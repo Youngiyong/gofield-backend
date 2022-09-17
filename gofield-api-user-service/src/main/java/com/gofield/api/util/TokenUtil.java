@@ -65,18 +65,6 @@ public class TokenUtil {
         return JWT.decode(accessToken);
     }
 
-    public AppleTokenPayload getAppleUserInfo(String accessToken){
-        try {
-            ObjectMapper objectMapper = null;
-            String payload = accessToken.split("\\.")[1];
-            String decodedPayload = new String(Base64.getDecoder().decode(payload));
-            return objectMapper.readValue(decodedPayload, AppleTokenPayload.class);
-        } catch (IOException | IllegalArgumentException e) {
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "잘못된 토큰입니다.");
-        }
-    }
-
-
     public TokenResponse generateToken(com.gofield.api.model.Authentication authentication,
                                                   Long accessValidity,
                                                   Long refreshValidity) {
