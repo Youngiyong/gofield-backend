@@ -1,6 +1,6 @@
 package com.gofield.domain.rds.converter;
 
-import com.gofield.common.exception.model.ConvertException;
+import com.gofield.common.exception.ConvertException;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

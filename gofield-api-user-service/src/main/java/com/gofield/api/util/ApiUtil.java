@@ -1,13 +1,12 @@
 package com.gofield.api.util;
 
 import com.gofield.api.model.response.ClientResponse;
-import com.gofield.common.exception.model.InternalServerException;
-import com.gofield.common.exception.type.ErrorAction;
-import com.gofield.common.exception.type.ErrorCode;
+import com.gofield.common.exception.InternalServerException;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import com.google.gson.Gson;
 
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.Base64;

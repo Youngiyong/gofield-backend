@@ -1,12 +1,9 @@
 package com.gofield.domain.rds.enums;
 
-import com.gofield.common.exception.model.ConvertException;
 import com.gofield.domain.rds.converter.CodeEnum;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import java.util.Arrays;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter

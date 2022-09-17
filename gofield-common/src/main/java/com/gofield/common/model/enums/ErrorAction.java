@@ -1,4 +1,4 @@
-package com.gofield.common.exception.type;
+package com.gofield.common.model.enums;
 
 
 public enum ErrorAction {

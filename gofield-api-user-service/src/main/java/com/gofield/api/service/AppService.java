@@ -4,9 +4,9 @@ import com.gofield.api.model.response.CategoryResponse;
 import com.gofield.api.model.response.TermResponse;
 import com.gofield.api.model.response.VersionResponse;
 import com.gofield.api.util.ApiUtil;
-import com.gofield.common.exception.model.InternalRuleException;
-import com.gofield.common.exception.type.ErrorAction;
-import com.gofield.common.exception.type.ErrorCode;
+import com.gofield.common.exception.InternalRuleException;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.serverStatus.ServerStatus;
@@ -23,7 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -42,10 +41,6 @@ public class AppService {
     public List<CategoryResponse> getCategoryList(){
         List<Category> resultList = categoryRepository.findAllIsActiveTrueOrderBySort();
 
-        if(resultList.isEmpty()){
-            return new ArrayList<>();
-        }
-
         return resultList
                 .stream()
                 .map(p -> new CategoryResponse(p.getId(), p.getName()))
@@ -55,10 +50,6 @@ public class AppService {
     @Transactional(readOnly = true)
     public List<TermResponse> getTermList(){
         List<Term> resultList = termRepository.findByGroupId(2L);
-
-        if(resultList.isEmpty()){
-            return new ArrayList<>();
-        }
 
         return resultList
                 .stream()
@@ -71,7 +62,7 @@ public class AppService {
         ServerStatus serverStatus = serverStatusRepository.findByServerType(EServerType.U);
 
         if(!serverStatus.getIsActive()){
-            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, serverStatus.getMessage());
+            throw new InternalRuleException(ErrorCode.E502_BAD_GATEWAY, ErrorAction.TOAST, serverStatus.getMessage());
         }
     }
 

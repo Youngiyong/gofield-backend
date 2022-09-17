@@ -1,8 +1,8 @@
-package com.gofield.common.exception.model;
+package com.gofield.common.exception;
 
 
-import com.gofield.common.exception.type.ErrorCode;
-import com.gofield.common.exception.type.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.enums.ErrorAction;
 
 public class ConflictException extends GofieldCustomException {
 

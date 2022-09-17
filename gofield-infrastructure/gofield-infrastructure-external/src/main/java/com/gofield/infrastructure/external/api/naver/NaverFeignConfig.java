@@ -1,7 +1,7 @@
 package com.gofield.infrastructure.external.api.naver;
 
-import com.gofield.common.exception.model.BadGatewayException;
-import com.gofield.common.exception.model.InvalidException;
+import com.gofield.common.exception.BadGatewayException;
+import com.gofield.common.exception.InvalidException;
 import feign.FeignException;
 import feign.Response;
 import feign.codec.ErrorDecoder;

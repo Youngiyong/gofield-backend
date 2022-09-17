@@ -1,4 +1,4 @@
-package com.gofield.common.exception.type;
+package com.gofield.common.model.enums;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +16,7 @@ public enum ErrorCode {
     E400_INVALID_CLASS_NUMBER_EXCEPTION("I4001", 400, "잘못된 아이디입니다."),
     E400_INVALID_APPLE_TOKEN_EXCEPTION("I4004", 400, "잘못된 애플 토큰입니다."),
     E400_INVALID_AUTH_TOKEN("I4005", 400, "유효하지 않는 토큰입니다."),
-
+    E400_INVALID_MISSING_AUTH_TOKEN_PARAMETER("I4006", 400, "필수 파라미터가 요청되지 않았습니다."),
     /**
      * 401 UnAuthorized (토큰 만료)
      */

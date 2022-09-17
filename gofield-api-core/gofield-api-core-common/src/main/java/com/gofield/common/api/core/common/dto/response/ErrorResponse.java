@@ -1,6 +1,6 @@
 package com.gofield.common.api.core.common.dto.response;
 
-import com.gofield.common.exception.type.ErrorAction;
+import com.gofield.common.model.enums.ErrorAction;
 import lombok.*;
 
 @ToString

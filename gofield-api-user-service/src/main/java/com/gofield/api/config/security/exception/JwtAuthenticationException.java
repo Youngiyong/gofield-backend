@@ -2,8 +2,8 @@ package com.gofield.api.config.security.exception;
 
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.common.api.core.common.dto.response.ErrorResponse;
-import com.gofield.common.exception.type.ErrorAction;
-import com.gofield.common.exception.type.ErrorCode;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import com.google.gson.Gson;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;

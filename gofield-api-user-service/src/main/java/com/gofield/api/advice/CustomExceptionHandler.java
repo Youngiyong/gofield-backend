@@ -2,7 +2,7 @@ package com.gofield.api.advice;
 
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.common.api.core.common.dto.response.ErrorResponse;
-import com.gofield.common.exception.model.InternalRuleException;
+import com.gofield.common.exception.InternalRuleException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;

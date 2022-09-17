@@ -1,8 +1,8 @@
 package com.gofield.api.config.resolver;
 
-import com.gofield.common.exception.model.InvalidException;
-import com.gofield.common.exception.type.ErrorAction;
-import com.gofield.common.exception.type.ErrorCode;
+import com.gofield.common.exception.InvalidException;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
