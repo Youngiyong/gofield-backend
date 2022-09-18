@@ -3,6 +3,7 @@ package com.gofield.api.service;
 import com.gofield.api.config.resolver.UserUuidResolver;
 import com.gofield.api.model.request.UserRequest;
 import com.gofield.api.model.response.UserAccountResponse;
+import com.gofield.api.model.response.UserAddressResponse;
 import com.gofield.api.model.response.UserProfileResponse;
 import com.gofield.common.exception.InternalRuleException;
 import com.gofield.common.exception.InvalidException;
@@ -17,6 +18,7 @@ import com.gofield.domain.rds.entity.user.UserRepository;
 import com.gofield.domain.rds.entity.userAccount.UserAccount;
 import com.gofield.domain.rds.entity.userAccount.UserAccountRepository;
 import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistoryRepository;
+import com.gofield.domain.rds.entity.userAddress.UserAddress;
 import com.gofield.domain.rds.entity.userAddress.UserAddressRepository;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTermRepository;
@@ -123,13 +125,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserProfileResponse getUserProfile(){
+    public UserProfileResponse findUserProfile(){
         User user = getUser();
         return UserProfileResponse.of(user, CDN_URL);
     }
 
     @Transactional(readOnly = true)
-    public UserAccountResponse getUserAccount(){
+    public UserAccountResponse findUserAccount(){
         User user = getUser();
         UserAccount userAccount = userAccountRepository.findByUserId(user.getId());
         return UserAccountResponse.of(userAccount);
@@ -154,7 +156,61 @@ public class UserService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<UserAddressResponse> findUserAddressList(){
+        User user = getUser();
+        List<UserAddress> userAddressList = user.getAddress();
+        return UserAddressResponse.of(userAddressList);
+    }
 
+    @Transactional
+    public void updateUserAddress(Long id, UserRequest.UserUpdateAddress request){
+        User user = getUser();
+        List<UserAddress> userAddressList = user.getAddress();
+        Boolean isUpdate = false;
+
+        for(UserAddress userAddress: userAddressList){
+            if(userAddress.getId().equals(id)){
+                isUpdate = true;
+                userAddress.update(request.getTel(), request.getName(), request.getZipCode(), request.getAddress(), request.getAddressExtra(), request.getIsMain());
+            } else {
+                if(request.getIsMain()){
+                    userAddress.updateMain(false);
+                }
+            }
+        }
+
+        if(!isUpdate){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("이미 삭제 처리 되었거나 존재하지 않는 사용자 배송 주소 아이디<%s>입니다.", id));
+        }
+
+    }
+
+    @Transactional
+    public void insertUserAddress(UserRequest.UserAddress request){
+        User user = getUser();
+        UserAddress userAddress = UserAddress.newInstance(user, request.getTel(), request.getName(), request.getZipCode(), request.getAddress(), request.getAddressExtra(), request.getIsMain());
+        List<UserAddress> userAddressList = user.getAddress();
+        for(UserAddress address: userAddressList){
+            if(request.getAddress().equals(address.getAddress()) && request.getAddressExtra().equals(address.getAddressExtra())){
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s %s> 기존에 추가되어 있는 배송 주소입니다.", request.getAddress(), request.getAddressExtra()));
+            }
+            if(request.getIsMain()){
+                address.updateMain(false);
+            }
+        }
+        userAddressRepository.save(userAddress);
+    }
+
+    @Transactional
+    public void deleteUserAddress(Long id){
+        User user = getUser();
+        UserAddress userAddress = userAddressRepository.findByIdAndUserId(id, user.getId());
+        if(userAddress==null){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("이미 삭제 처리 되었거나 존재하지 않는 사용자 배송 주소 아이디<%s>입니다.", id));
+        }
+        userAddressRepository.delete(userAddress);
+    }
 
     public void insertUserHasTerm(List<Long> termList, User user){
         List<Term> resultTermList = termRepository.findAllByInId(termList);

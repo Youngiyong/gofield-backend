@@ -16,7 +16,7 @@ import javax.persistence.*;
 @Table(	name = "user_sns")
 public class UserSns extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

@@ -13,6 +13,11 @@ public class LocalDateTimeUtils {
         return LocalDateTime.ofInstant(Instant.ofEpochSecond(epochMilli), ZONE_ID);
     }
 
+    public static LocalDateTime epochMillToLocalDateTime(long epochMilli) {
+        return LocalDateTime.ofInstant(Instant.ofEpochMilli(epochMilli), ZONE_ID);
+    }
+
+
     public static LocalDateTime now() {
         return LocalDateTime.now(ZONE_ID);
     }

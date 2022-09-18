@@ -106,7 +106,7 @@ public class AuthService {
         UserClientDetail userClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
         Authentication authentication = getAuthentication(userAccess.getUser().getUuid(), userAccess.getUser().getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, userClientDetail.getAccessTokenValidity(), userClientDetail.getRefreshTokenValidity());
-        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochToLocalDateTime(token.getRefreshTokenExpiresIn());
+        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
         if(userToken==null){
             userToken = UserToken.newInstance(userClientDetail.getId(), userAccess.getUser().getId(), userAccess.getId(), token.getRefreshToken(), refreshExpireDate);
             userTokenRepository.save(userToken);
@@ -201,7 +201,7 @@ public class AuthService {
 
         Authentication authentication = getAuthentication(userSns.getUser().getUuid(), userSns.getUser().getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
-        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochToLocalDateTime(token.getRefreshTokenExpiresIn());
+        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
 
         UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
         if(userToken==null){
@@ -298,7 +298,7 @@ public class AuthService {
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
         Authentication authentication = getAuthentication(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
-        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochToLocalDateTime(token.getRefreshTokenExpiresIn());
+        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
         userToken.updateToken(token.getRefreshToken(), refreshExpireDate);
         return token;
     }

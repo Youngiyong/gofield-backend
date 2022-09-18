@@ -47,7 +47,7 @@ public class UserController {
     @ApiOperation(value = "사용자 프로필 조회")
     @GetMapping("/{version}/profile")
     public ApiResponse<UserProfileResponse> getProfile(@PathVariable("version") EApiVersion apiVersion){
-        return ApiResponse.success(userService.getUserProfile());
+        return ApiResponse.success(userService.findUserProfile());
     }
 
     @ApiOperation(value = "사용자 프로필 업데이트")
@@ -69,7 +69,7 @@ public class UserController {
     @ApiOperation(value = "환불 계좌 조회")
     @GetMapping("/{version}/account")
     public ApiResponse getAccountInfo(@PathVariable("version") EApiVersion apiVersion){
-        return ApiResponse.success(userService.getUserAccount());
+        return ApiResponse.success(userService.findUserAccount());
     }
 
     @ApiOperation(value = "환불 계좌 업데이트")
@@ -87,5 +87,35 @@ public class UserController {
         return ApiResponse.SUCCESS;
     }
 
+    @ApiOperation(value = "사용자 배송지 조회")
+    @GetMapping("/{version}/address")
+    public ApiResponse findUserAddressList(@PathVariable("version") EApiVersion apiVersion){
+        return ApiResponse.success(userService.findUserAddressList());
+    }
+
+    @ApiOperation(value = "사용자 배송지 주소 추가")
+    @PostMapping("/{version}/address")
+    public ApiResponse insertUserAddress(@PathVariable("version") EApiVersion apiVersion,
+                                         @Valid @RequestBody UserRequest.UserAddress request){
+        userService.insertUserAddress(request);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "사용자 배송지 주소 수정")
+    @PutMapping("/{version}/address/{id}")
+    public ApiResponse updateUserAddress(@PathVariable("version") EApiVersion apiVersion,
+                                         @PathVariable Long id,
+                                         @RequestBody UserRequest.UserUpdateAddress request){
+        userService.updateUserAddress(id, request);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "사용자 배송지 주소 삭제")
+    @DeleteMapping("/{version}/address/{id}")
+    public ApiResponse deleteUserAddress(@PathVariable("version") EApiVersion apiVersion,
+                                         @PathVariable Long id){
+        userService.deleteUserAddress(id);
+        return ApiResponse.SUCCESS;
+    }
 
 }
