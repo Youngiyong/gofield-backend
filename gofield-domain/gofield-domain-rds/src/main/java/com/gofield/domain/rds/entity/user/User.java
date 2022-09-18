@@ -14,6 +14,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -81,6 +82,9 @@ public class User extends BaseTimeEntity {
     @Column
     private Long deleteId;
 
+    @Column
+    private LocalDateTime deleteDate;
+
     private User(String uuid, String nickName){
         this.uuid = uuid;
         this.nickName = nickName;
@@ -118,6 +122,11 @@ public class User extends BaseTimeEntity {
         this.thumbnail = thumbnail != null ? thumbnail : this.thumbnail;
         this.isAlertPush = isAlertPush != null ? isAlertPush : this.isAlertPush;
         this.isAlertPromotion = isAlertPromotion != null ? isAlertPromotion : this.isAlertPromotion;
+    }
+
+    public void withDraw(){
+        this.status = EStatusFlag.DELETE;
+        this.deleteDate = LocalDateTime.now();
     }
 
 }

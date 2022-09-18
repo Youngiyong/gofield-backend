@@ -1,9 +1,6 @@
 package com.gofield.common.utils;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.*;
 
 public class LocalDateTimeUtils {
     private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
@@ -20,5 +17,5 @@ public class LocalDateTimeUtils {
         return LocalDateTime.now(ZONE_ID);
     }
 
-    public static LocalDateTime tomorrowMinTime() { return LocalDate.MIN.atTime(0, 0);}
+    public static LocalDateTime tomorrowMinTime() { return LocalDateTime.now().plusDays(1).with(LocalTime.MIN); }
 }

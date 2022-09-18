@@ -6,8 +6,10 @@ import com.gofield.api.service.UserService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 
@@ -57,6 +59,13 @@ public class UserController {
         return ApiResponse.SUCCESS;
     }
 
+    @ApiOperation(value = "프로필 이미지 업데이트")
+    @PostMapping("/{version}/profile/upload")
+    public ApiResponse<String> uploadProfile(@PathVariable("version") EApiVersion apiVersion,
+                                             @RequestPart("profile")  MultipartFile profile){
+        return ApiResponse.success(userService.uploadProfile(profile));
+    }
+
     @ApiOperation(value = "환불 계좌 조회")
     @GetMapping("/{version}/account")
     public ApiResponse getAccountInfo(@PathVariable("version") EApiVersion apiVersion){
@@ -68,6 +77,13 @@ public class UserController {
     public ApiResponse updateAccountInfo(@PathVariable("version") EApiVersion apiVersion,
                                          @Valid @RequestBody UserRequest.UserAccountInfo request) {
         userService.updateAccountInfo(request);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "회원 탈퇴")
+    @DeleteMapping("/{version}/withdraw")
+    public ApiResponse userWithDraw(@PathVariable("version") EApiVersion apiVersion){
+        userService.userWithDraw();
         return ApiResponse.SUCCESS;
     }
 

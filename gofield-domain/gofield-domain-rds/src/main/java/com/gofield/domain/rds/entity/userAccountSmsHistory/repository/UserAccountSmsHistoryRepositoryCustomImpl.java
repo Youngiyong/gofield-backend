@@ -31,7 +31,8 @@ public class UserAccountSmsHistoryRepositoryCustomImpl implements UserAccountSms
         return jpaQueryFactory
                 .select(userAccountSmsHistory.id)
                 .from(userAccountSmsHistory)
-                .where(userAccountSmsHistory.createDate.before(LocalDateTimeUtils.tomorrowMinTime()))
+                .where(userAccountSmsHistory.userId.eq(userId)
+                        ,userAccountSmsHistory.createDate.before(LocalDateTimeUtils.tomorrowMinTime()))
                 .fetch();
     }
 }
