@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal;
+package com.gofield.infrastructure.s3;
 
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
