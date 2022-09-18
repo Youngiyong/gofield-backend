@@ -72,9 +72,7 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class AuthService {
-    private final TokenUtil tokenUtil;
     private final UserService userService;
-
     private final TermRepository termRepository;
     private final UserRepository userRepository;
     private final DeviceRepository deviceRepository;
@@ -90,18 +88,12 @@ public class AuthService {
     private final UserHasCategoryRepository userHasCategoryRepository;
     private final UserClientDetailRepository userClientDetailRepository;
 
-
     private final NaverAuthApiClient naverAuthApiClient;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
     private final AppleTokenDecoderImpl appleTokenDecoder;
 
-    private Authentication getAuthentication(String uuid, Long userId, String issue){
-        return Authentication.builder()
-                .uuid(uuid)
-                .userId(userId)
-                .issue(issue)
-                .build();
-    }
+    private final TokenUtil tokenUtil;
+
 
 
     @Transactional
@@ -112,7 +104,7 @@ public class AuthService {
         }
         UserAccess userAccess = userAccessRepository.findByDeviceIdAndAccessKey(device.getId(), request.getAccessKey());
         if(userAccess==null){
-            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("%s 일치하지 않는 엑세스키입니다..", request.getAccessKey()));
+            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("%s 일치하지 않는 엑세스키입니다.", request.getAccessKey()));
         }
         UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
         UserClientDetail userClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
@@ -159,7 +151,7 @@ public class AuthService {
         ClientResponse clientDetail = ApiUtil.base64EncodingStrToDecodeClientDetail(secret);
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(clientDetail.getClientId());
         if(resultClientDetail==null){
-            throw new NotFoundException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "유효하지 않는 클라이언트 아이디입니다.");
+            throw new NotFoundException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("<%s> 유효하지 않는 클라이언트 아이디입니다.", clientDetail.getClientId()));
         }
 
         if(request.getSocial().equals(ESocialFlag.KAKAO.KAKAO)){
@@ -173,7 +165,7 @@ public class AuthService {
             NaverProfileResponse profile = naverAuthApiClient.getProfileInfo(request.getToken());
             uniqueId = profile.getResponse().getId();
         } else {
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 로그인타입니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 로그인 타입입니다.");
         }
 
         UserSns userSns = userSnsRepository.findByUniQueIdAndRoute(uniqueId, request.getSocial());
@@ -233,15 +225,15 @@ public class AuthService {
         }
         User user = userRepository.findByUuid(userService.getUserDecryptUuid());
         if(user==null){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 사용자입니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("존재하지 않는 사용자입니다."));
         }
         if(user.getStatus().equals(EStatusFlag.ACTIVE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 가입되어 있는 사용자입니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 이미 가입되어 있는 사용자입니다.", user.getNickName()));
         } else if(!user.getStatus().equals(EStatusFlag.WAIT))
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "활성되었거나 대기 상태인 사용자가 아닙니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 활성된 상태가 아니거나 가입되어 있지 않는 사용자입니다.", user.getNickName()));
         UserAccount account = userAccountRepository.findByUserId(user.getId());
         if(account!=null){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 가입되어 있는 사용자입니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 이미 계정 정보가 등록되어 있는 사용자입니다.", user.getNickName()));
         } else {
             account = UserAccount.newInstance(user);
             userAccountRepository.save(account);
@@ -281,7 +273,7 @@ public class AuthService {
     public TokenResponse getToken(Long id){
         User resultUser = userRepository.findByIdAndStatusActive(id);
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(21L);
-        Authentication authentication = new Authentication(resultUser.getUuid(), resultUser.getId() ,"www.gofield.co.kr");
+        Authentication authentication = new Authentication(resultUser.getUuid(), resultUser.getId() ,Constants.TOKEN_ISSUER);
         return tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
     }
 
@@ -302,7 +294,7 @@ public class AuthService {
     public TokenResponse refresh(TokenRefreshRequest request){
         UserToken userToken = userTokenRepository.findByRefreshToken(request.getRefreshToken());
         if(userToken==null || userToken.getExpireDate().isBefore(LocalDateTime.now())){
-            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "유효하지 않는 리프레쉬 토큰입니다.");
+            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 로그아웃됩니다.");
         }
         User resultUser = userRepository.findByIdAndStatusActive(userToken.getUserId());
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
@@ -313,4 +305,14 @@ public class AuthService {
 
         return token;
     }
+
+
+    private Authentication getAuthentication(String uuid, Long userId, String issue){
+        return Authentication.builder()
+                .uuid(uuid)
+                .userId(userId)
+                .issue(issue)
+                .build();
+    }
 }
+

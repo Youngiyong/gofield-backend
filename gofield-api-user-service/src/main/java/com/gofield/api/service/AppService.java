@@ -5,14 +5,15 @@ import com.gofield.api.model.response.CategoryResponse;
 import com.gofield.api.model.response.TermResponse;
 import com.gofield.api.model.response.VersionResponse;
 import com.gofield.api.util.ApiUtil;
+import com.gofield.common.exception.BadGatewayException;
 import com.gofield.common.exception.InternalRuleException;
+import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.serverStatus.ServerStatus;
 import com.gofield.domain.rds.entity.serverStatus.ServerStatusRepository;
-import com.gofield.domain.rds.entity.term.Term;
 import com.gofield.domain.rds.entity.term.TermRepository;
 import com.gofield.domain.rds.entity.termGroup.TermGroup;
 import com.gofield.domain.rds.entity.termGroup.TermGroupRepository;
@@ -26,21 +27,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 
 @Slf4j
 @Service
 @RequiredArgsConstructor
 public class AppService {
-    private final TermRepository termRepository;
-    private final TermGroupRepository termGroupRepository;
     private final VersionRepository versionRepository;
-    private final ServerStatusRepository serverStatusRepository;
     private final CategoryRepository categoryRepository;
+    private final TermGroupRepository termGroupRepository;
+    private final ServerStatusRepository serverStatusRepository;
 
     @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoryList(){
@@ -56,6 +53,9 @@ public class AppService {
         } else if(type.equals(TermType.PRIVACY)){
             termGroup = termGroupRepository.findByGroupId(3L);
         }
+        if(termGroup==null){
+            throw new InvalidException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "존재하는 이용약관이 없습니다.");
+        }
         return TermResponse.of(termGroup.getTerms());
     }
 
@@ -63,7 +63,7 @@ public class AppService {
     public void healthCheck(){
         ServerStatus serverStatus = serverStatusRepository.findByServerType(EServerType.U);
         if(!serverStatus.getIsActive()){
-            throw new InternalRuleException(ErrorCode.E502_BAD_GATEWAY, ErrorAction.TOAST, serverStatus.getMessage());
+            throw new BadGatewayException(ErrorCode.E502_BAD_GATEWAY, ErrorAction.TOAST, serverStatus.getMessage());
         }
     }
 

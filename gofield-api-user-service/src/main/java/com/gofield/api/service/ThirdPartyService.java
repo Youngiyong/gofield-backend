@@ -28,13 +28,11 @@ public class ThirdPartyService {
 
     private final KaKaoApiCaller kaKaoApiCaller;
 
-    @Transactional
     public String callbackLoginAuth(String code, String state){
         KaKaoTokenResponse token = kaKaoApiCaller.getToken(KAKAO_CLIENT_ID, KAKAO_CALLBACK_URL, code, KAKAO_CLIENT_SECRET);
         return token.getAccessToken();
     }
 
-    @Transactional
     public String redirect(){
         return KAKAO_AUTH_URL + "?response_type=code&client_id=" +
                 KAKAO_CLIENT_ID + "&redirect_uri=" +
