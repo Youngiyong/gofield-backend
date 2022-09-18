@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.api.naver.config;
+package com.gofield.infrastructure.external.api.naver.config;
 
 import com.gofield.common.exception.BadGatewayException;
 import com.gofield.common.exception.InvalidException;

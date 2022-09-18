@@ -1,3 +1,3 @@
-# gofield-infrastructure-aws
-> AWS 연동 모듈
+# gofield-infrastructure-s3
+> s3 연동 모듈
 

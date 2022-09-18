@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.api.naver.dto.request;
+package com.gofield.infrastructure.external.api.naver.dto.request;
 
 import lombok.*;
 

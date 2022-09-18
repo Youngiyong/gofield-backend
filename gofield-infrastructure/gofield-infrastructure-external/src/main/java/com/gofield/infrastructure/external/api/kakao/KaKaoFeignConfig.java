@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.api.kakao;
+package com.gofield.infrastructure.external.api.kakao;
 
 import com.gofield.common.exception.BadGatewayException;
 import com.gofield.common.exception.InvalidException;

@@ -1,7 +1,7 @@
-package com.gofield.infrastructure.internal.api.kakao.test;
+package com.gofield.infrastructure.external.api.kakao.test;
 
-import com.gofield.infrastructure.internal.api.kakao.dto.response.KaKaoProfileResponse;
-import com.gofield.infrastructure.internal.api.kakao.dto.response.KaKaoTokenResponse;
+import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoProfileResponse;
+import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoTokenResponse;
 
 public interface KaKaoApiCaller {
 

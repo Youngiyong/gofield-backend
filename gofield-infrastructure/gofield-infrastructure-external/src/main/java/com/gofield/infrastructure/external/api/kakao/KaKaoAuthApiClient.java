@@ -1,6 +1,6 @@
-package com.gofield.infrastructure.internal.api.kakao;
+package com.gofield.infrastructure.external.api.kakao;
 
-import com.gofield.infrastructure.internal.api.kakao.dto.response.KaKaoProfileResponse;
+import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoProfileResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

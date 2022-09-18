@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.config.feign;
+package com.gofield.infrastructure.external.config.feign;
 
 import io.netty.channel.ChannelOption;
 import io.netty.handler.timeout.ReadTimeoutHandler;

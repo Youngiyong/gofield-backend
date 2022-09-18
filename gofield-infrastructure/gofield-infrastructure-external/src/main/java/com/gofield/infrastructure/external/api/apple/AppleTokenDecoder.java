@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.api.apple;
+package com.gofield.infrastructure.external.api.apple;
 
 public interface AppleTokenDecoder {
 

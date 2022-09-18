@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.api.apple.dto.model;
+package com.gofield.infrastructure.external.api.apple.dto.model;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategies;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;

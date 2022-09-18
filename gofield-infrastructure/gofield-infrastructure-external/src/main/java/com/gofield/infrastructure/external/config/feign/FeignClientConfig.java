@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.config.feign;
+package com.gofield.infrastructure.external.config.feign;
 
 import com.gofield.common.model.Constants;
 import org.springframework.cloud.openfeign.EnableFeignClients;

@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.internal.config.feign;
+package com.gofield.infrastructure.external.config.feign;
 
 import com.gofield.common.exception.BadGatewayException;
 import com.gofield.common.exception.InvalidException;

@@ -3,6 +3,5 @@ jar { enabled = true }
 
 dependencies {
     api project(':gofield-common')
-    api("org.springframework.cloud:spring-cloud-aws-messaging:${springCloudAwsVersion}")
     implementation("org.springframework.cloud:spring-cloud-starter-aws:${springCloudAwsVersion}")
 }
