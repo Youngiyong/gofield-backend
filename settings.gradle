@@ -12,6 +12,7 @@ include 'gofield-infrastructure:gofield-infrastructure-s3'
 include 'gofield-infrastructure:gofield-infrastructure-sqs'
 include 'gofield-infrastructure:gofield-infrastructure-firebase'
 include 'gofield-infrastructure:gofield-infrastructure-external'
+include 'gofield-infrastructure:gofield-infrastructure-internal'
 
 include 'gofield-domain:gofield-domain-rds'
 
