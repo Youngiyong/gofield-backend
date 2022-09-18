@@ -41,6 +41,7 @@ generated/
 application.yml
 application-rds.yml
 application-s3.yml
+application-sns.yml
 application-sqs.yml
 application-external.yml
 logs/

@@ -1,9 +1,16 @@
 bootJar { enabled = false }
 jar { enabled = true }
 
+ext{
+    set('springCloudVersion', "2020.0.5")
+    dependencyManagement{
+        imports{
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
 dependencies {
     api project(':gofield-common')
-    api("org.springframework.cloud:spring-cloud-aws-messaging:${springCloudAwsVersion}")
-    implementation("org.springframework.cloud:spring-cloud-aws-autoconfigure:${springCloudAwsVersion}")
-
+    implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }
