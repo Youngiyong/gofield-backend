@@ -44,4 +44,5 @@ application-s3.yml
 application-sns.yml
 application-sqs.yml
 application-external.yml
+application-internal.yml
 logs/
