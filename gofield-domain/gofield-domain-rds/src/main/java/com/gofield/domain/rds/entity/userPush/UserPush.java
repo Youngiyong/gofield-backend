@@ -1,25 +1,24 @@
 package com.gofield.domain.rds.entity.userPush;
 
-import com.gofield.domain.rds.converter.PlatformFlagConverter;
-import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.enums.EPlatformFlag;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_push")
-public class UserPush extends BaseTimeEntity {
+public class UserPush {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -34,12 +33,12 @@ public class UserPush extends BaseTimeEntity {
     private LocalDateTime createDate;
 
     @Column
-    private LocalDateTime lastLoginDate;
-
+    private LocalDateTime updateDate;
     private UserPush(User user, String pushKey, EPlatformFlag platform){
         this.user = user;
         this.pushKey = pushKey;
         this.platform = platform;
+        this.createDate = LocalDateTime.now();
     }
 
     public static UserPush newInstance(User user, String pushKey, EPlatformFlag platform){
@@ -48,7 +47,7 @@ public class UserPush extends BaseTimeEntity {
 
     public void update(String pushKey){
         this.pushKey = pushKey != null ? pushKey : this.pushKey;
-        this.lastLoginDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
     }
 
 }
