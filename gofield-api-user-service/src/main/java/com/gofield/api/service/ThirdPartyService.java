@@ -1,6 +1,5 @@
 package com.gofield.api.service;
 
-
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoTokenResponse;
 import com.gofield.infrastructure.external.api.kakao.test.KaKaoApiCaller;
@@ -8,7 +7,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service

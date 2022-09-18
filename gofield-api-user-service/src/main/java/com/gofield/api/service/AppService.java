@@ -14,7 +14,6 @@ import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.serverStatus.ServerStatus;
 import com.gofield.domain.rds.entity.serverStatus.ServerStatusRepository;
-import com.gofield.domain.rds.entity.term.TermRepository;
 import com.gofield.domain.rds.entity.termGroup.TermGroup;
 import com.gofield.domain.rds.entity.termGroup.TermGroupRepository;
 import com.gofield.domain.rds.entity.version.Version;
@@ -72,17 +71,13 @@ public class AppService {
         if(appVersion==null || platform==null) throw new InternalRuleException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "앱 버전과 OS를 입력해주세요.");
         String[] arrayVersion = appVersion.split("[.]");
         if(arrayVersion.length!=3) throw new InternalRuleException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "앱 버전 형식이 잘못되었습니다.");
-
         int intVersion = ApiUtil.stringConvertToIntVersion(arrayVersion);
         Version result = versionRepository.findByPlatformAndType(platform, EClientType.U);
         if(intVersion>result.getMaxTrans()){
-            log.error(platform.name() + " 지원되지 않는 최대 버전입니다.");
-            throw new InternalRuleException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원되지 않는 최대 버전입니다.\"");
+            throw new InternalRuleException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("%s 지원되지 않는 최대 버전입니다.", platform.name()));
         }
-
         String type;
         String message = "";
-
         if (intVersion == result.getMaxTrans()) {
             type = "NEWEST";
             message = "최신 버전입니다.";
@@ -94,7 +89,6 @@ public class AppService {
             type = "VALID";
             message = "지금 업데이트를 설치하시겠습니까?";
         }
-
         return VersionResponse.of(type, message, result.getMarketUrl());
     }
 }
