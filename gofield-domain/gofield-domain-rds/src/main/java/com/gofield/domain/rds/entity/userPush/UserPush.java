@@ -5,11 +5,13 @@ import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.enums.EPlatformFlag;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_push")

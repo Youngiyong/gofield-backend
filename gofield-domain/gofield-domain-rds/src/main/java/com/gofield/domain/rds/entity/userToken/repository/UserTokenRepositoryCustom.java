@@ -8,5 +8,6 @@ public interface UserTokenRepositoryCustom {
     List<UserToken> findByUserId(Long userId);
 
     UserToken findByRefreshToken(String refreshToken);
+    UserToken findByAccessId(Long accessId);
     void delete(List<Long> id);
 }

@@ -10,11 +10,15 @@ import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
 import com.gofield.domain.rds.entity.userSns.UserSns;
 import com.gofield.domain.rds.enums.EStatusFlag;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Getter
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user")

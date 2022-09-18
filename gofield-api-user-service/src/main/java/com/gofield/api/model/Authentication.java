@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Getter
 public class Authentication {
     private String uuid;

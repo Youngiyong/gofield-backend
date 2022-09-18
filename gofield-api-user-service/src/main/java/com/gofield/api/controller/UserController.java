@@ -58,8 +58,8 @@ public class UserController {
     }
 
     @ApiOperation(value = "환불 계좌 조회")
-    @PutMapping("/{version}/account")
-    public ApiResponse updateAccountInfo(@PathVariable("version") EApiVersion apiVersion){
+    @GetMapping("/{version}/account")
+    public ApiResponse getAccountInfo(@PathVariable("version") EApiVersion apiVersion){
         return ApiResponse.success(userService.getUserAccount());
     }
 

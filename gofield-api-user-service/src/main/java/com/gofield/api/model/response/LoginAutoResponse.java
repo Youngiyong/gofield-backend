@@ -6,9 +6,7 @@ import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public class LoginResponse {
-    private Boolean isFirst;
-    private String accessKey;
+public class LoginAutoResponse {
     private String grantType;
     private String accessToken;
     private String refreshToken;
@@ -16,9 +14,7 @@ public class LoginResponse {
     private Long refreshTokenExpiresIn;
 
     @Builder
-    private LoginResponse(Boolean isFirst, String accessKey, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
-        this.isFirst = isFirst;
-        this.accessKey = accessKey;
+    private LoginAutoResponse(String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
         this.grantType = grantType;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -26,10 +22,8 @@ public class LoginResponse {
         this.refreshTokenExpiresIn = refreshTokenExpiresIn;
     }
 
-    public static LoginResponse of(Boolean isFirst, String accessKey, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
-        return LoginResponse.builder()
-                .isFirst(isFirst)
-                .accessKey(accessKey)
+    public static LoginAutoResponse of(String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
+        return LoginAutoResponse.builder()
                 .grantType(grantType)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

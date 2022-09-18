@@ -8,15 +8,15 @@ import org.springframework.web.bind.annotation.RequestHeader;
 
 
 @FeignClient(
-    name = "NaverAuthApiClient",
-    url = "${external.client.naver.profile.base-url}",
+    name = "NaverSnsApiClient",
+    url = "${external.client.naver.sns.base-url}",
     configuration = {
         NaverAuthFeignConfig.class
     }
 )
 public interface NaverSnsApiClient {
 
-    @GetMapping("${external.client.naver.profile.url}")
+    @GetMapping("${external.client.naver.sns.url}")
     NaverProfileResponse getProfileInfo(@RequestHeader("Authorization") String accessToken);
 
 }

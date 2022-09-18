@@ -5,21 +5,15 @@ import com.gofield.domain.rds.converter.PlatformFlagConverter;
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.enums.EPlatformFlag;
 import com.gofield.domain.rds.enums.EClientType;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Getter
-@Setter
-@NoArgsConstructor
-@AllArgsConstructor
 @DynamicInsert
-@DynamicUpdate
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "version")
 public class Version extends BaseTimeEntity {

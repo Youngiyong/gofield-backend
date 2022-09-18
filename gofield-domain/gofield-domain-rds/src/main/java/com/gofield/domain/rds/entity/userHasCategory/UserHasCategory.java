@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_has_category")

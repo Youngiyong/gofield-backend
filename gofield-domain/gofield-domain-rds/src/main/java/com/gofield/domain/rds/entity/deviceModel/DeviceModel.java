@@ -3,11 +3,15 @@ package com.gofield.domain.rds.entity.deviceModel;
 import com.gofield.domain.rds.converter.PlatformFlagConverter;
 import com.gofield.domain.rds.enums.EPlatformFlag;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "device_model")

@@ -2,11 +2,13 @@ package com.gofield.domain.rds.entity.userAccountSmsHistory;
 
 import com.gofield.domain.rds.entity.userAccount.UserAccount;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_account_sms_history")

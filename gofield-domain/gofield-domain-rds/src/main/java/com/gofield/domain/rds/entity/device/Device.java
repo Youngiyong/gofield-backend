@@ -28,8 +28,6 @@ public class Device extends BaseTimeEntity {
     @Column(length = 10)
     private String platform;
 
-    @Column(length = 10)
-    private String platformVersion;
 
     @Column(length = 100)
     private String adid;
@@ -40,23 +38,19 @@ public class Device extends BaseTimeEntity {
     @Column(length = 2)
     private String language;
 
-    @Column(length = 50)
-    private String ip;
 
     @OneToMany(mappedBy = "user")
     private List<UserHasDevice> user;
 
-    private Device(String deviceKey, String version, String model, String platform, String platformVersion, String ip){
+    private Device(String deviceKey, String version, String model, String platform){
         this.deviceKey = deviceKey;
         this.version = version;
         this.model = model;
         this.platform = platform;
-        this.platformVersion = platformVersion;
-        this.ip = ip;
     }
 
-    public static Device newInstance(String deviceKey, String version, String model, String platform, String platformVersion, String ip){
-        return new Device(deviceKey, version, model, platform, platformVersion, ip);
+    public static Device newInstance(String deviceKey, String version, String model, String platform){
+        return new Device(deviceKey, version, model, platform);
     }
 
 }

@@ -5,10 +5,12 @@ import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.enums.ESocialFlag;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_sns")

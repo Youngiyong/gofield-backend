@@ -5,12 +5,16 @@ import com.gofield.domain.rds.enums.EServerType;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 
 @Getter
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "server_status")

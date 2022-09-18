@@ -3,10 +3,12 @@ package com.gofield.domain.rds.entity.userHasDevice;
 import com.gofield.domain.rds.entity.device.Device;
 import com.gofield.domain.rds.entity.user.User;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_has_device")

@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicUpdate;
 import javax.persistence.*;
 
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "user_address")

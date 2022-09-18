@@ -5,11 +5,15 @@ import com.gofield.domain.rds.converter.CategoryFlagConverter;
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.enums.ECategoryFlag;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Getter
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "category")
@@ -32,19 +36,5 @@ public class Category extends BaseTimeEntity {
 
     @Column
     private Boolean isActive;
-
-//    private Category(ELoginFlag route, User user, String uniqueId, String code, String state, String email, String nickName) {
-//        this.route = route;
-//        this.user = user;
-//        this.uniqueId = uniqueId;
-//        this.code = code;
-//        this.state = state;
-//        this.email = email;
-//        this.nickName = nickName;
-//    }
-//
-//    public static Category newInstance(ELoginFlag route, User user, String uniqueId, String code, String state, String email, String nickName) {
-//        return new Category(route, user, uniqueId, code, state, email, nickName);
-//    }
 
 }

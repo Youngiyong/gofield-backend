@@ -2,10 +2,12 @@ package com.gofield.api.service;
 
 
 import com.gofield.api.model.Authentication;
+import com.gofield.api.model.request.LoginAutoRequest;
 import com.gofield.api.model.request.LoginRequest;
 import com.gofield.api.model.request.SignupRequest;
 import com.gofield.api.model.request.TokenRefreshRequest;
 import com.gofield.api.model.response.ClientResponse;
+import com.gofield.api.model.response.LoginAutoResponse;
 import com.gofield.api.model.response.LoginResponse;
 import com.gofield.api.model.response.TokenResponse;
 import com.gofield.api.util.ApiUtil;
@@ -13,6 +15,7 @@ import com.gofield.api.util.TokenUtil;
 import com.gofield.common.exception.InternalRuleException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
+import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.RandomUtils;
@@ -26,6 +29,8 @@ import com.gofield.domain.rds.entity.term.Term;
 import com.gofield.domain.rds.entity.term.TermRepository;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.entity.user.UserRepository;
+import com.gofield.domain.rds.entity.userAccess.UserAccess;
+import com.gofield.domain.rds.entity.userAccess.UserAccessRepository;
 import com.gofield.domain.rds.entity.userAccessLog.UserAccessLog;
 import com.gofield.domain.rds.entity.userAccessLog.UserAccessLogRepository;
 import com.gofield.domain.rds.entity.userAccount.UserAccount;
@@ -76,6 +81,7 @@ public class AuthService {
     private final UserSnsRepository userSnsRepository;
     private final CategoryRepository categoryRepository;
     private final UserTokenRepository userTokenRepository;
+    private final UserAccessRepository userAccessRepository;
     private final DeviceModelRepository deviceModelRepository;
     private final UserHasTermRepository userHasTermRepository;
     private final UserAccountRepository userAccountRepository;
@@ -89,6 +95,38 @@ public class AuthService {
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
     private final AppleTokenDecoderImpl appleTokenDecoder;
 
+    private Authentication getAuthentication(String uuid, Long userId, String issue){
+        return Authentication.builder()
+                .uuid(uuid)
+                .userId(userId)
+                .issue(issue)
+                .build();
+    }
+
+
+    @Transactional
+    public TokenResponse loginAuto(LoginAutoRequest request){
+        Device device = deviceRepository.findByDeviceKey(request.getDeviceKey());
+        if(device==null){
+            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("%s 존재하지 않는 디바이스키입니다.", request.getDeviceKey()));
+        }
+        UserAccess userAccess = userAccessRepository.findByDeviceIdAndAccessKey(device.getId(), request.getAccessKey());
+        if(userAccess==null){
+            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("%s 일치하지 않는 엑세스키입니다..", request.getAccessKey()));
+        }
+        UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
+        UserClientDetail userClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
+        Authentication authentication = getAuthentication(userAccess.getUser().getUuid(), userAccess.getUser().getId() , Constants.TOKEN_ISSUER);
+        TokenResponse token = tokenUtil.generateToken(authentication, userClientDetail.getAccessTokenValidity(), userClientDetail.getRefreshTokenValidity());
+        LocalDateTime refreshExpireDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(token.getRefreshTokenExpiresIn()), ZoneId.systemDefault());
+        if(userToken==null){
+            userToken = UserToken.newInstance(userClientDetail.getId(), userAccess.getUser().getId(), userAccess.getId(), token.getRefreshToken(), refreshExpireDate);
+            userTokenRepository.save(userToken);
+        } else {
+            userToken.updateToken(token.getRefreshToken(), refreshExpireDate);
+        }
+        return token;
+    }
 
     @Transactional
     public LoginResponse login(LoginRequest request, String secret){
@@ -103,7 +141,6 @@ public class AuthService {
 
         String version = servletRequest.getHeader("version");
         String platform = servletRequest.getHeader("platform");
-        String osVersion = servletRequest.getHeader("os-version");
         String deviceModel = servletRequest.getHeader("device-model");
         String ipAddress = ApiUtil.getIpAddress(servletRequest);
         String userAgent = servletRequest.getHeader("User-Agent");
@@ -126,7 +163,7 @@ public class AuthService {
         }
 
         if(request.getSocial().equals(ESocialFlag.KAKAO.KAKAO)){
-            KaKaoProfileResponse profile = kaKaoAuthApiClient.getProfileInfo(request.getToken());
+            KaKaoProfileResponse profile = kaKaoAuthApiClient.getProfileInfo("bearer " + request.getToken());
             uniqueId = profile.getId();
             email = profile.getEmail();
             nickName = profile.getNickName();
@@ -151,18 +188,10 @@ public class AuthService {
         if(userAccount==null){
             isFirst = true;
         }
-        Authentication authentication = new Authentication(userSns.getUser().getUuid(), userSns.getUser().getId() ,"www.gofield.shop");
-        TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
-        LocalDateTime refreshExpireDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(token.getRefreshTokenExpiresIn()), ZoneId.systemDefault());
-        UserToken saveToken = UserToken.newInstance(resultClientDetail.getId(),
-                userSns.getUser().getId(),
-                token.getRefreshToken(),
-                refreshExpireDate);
-        userTokenRepository.save(saveToken);
 
         Device resultDevice = deviceRepository.findByDeviceKey(request.getDeviceKey());
         if(resultDevice==null){
-            Device saveDevice = Device.newInstance(request.getDeviceKey(), version, deviceName, platform, osVersion, ipAddress);
+            Device saveDevice = Device.newInstance(request.getDeviceKey(), version, deviceName, platform);
             deviceRepository.save(saveDevice);
             resultDevice=saveDevice;
         }
@@ -173,10 +202,28 @@ public class AuthService {
             userHasDeviceRepository.save(userHasDevice);
         }
 
+        UserAccess userAccess = userAccessRepository.findByUserIdAndDeviceId(userSns.getUser().getId(), resultDevice.getId());
+        if(userAccess==null){
+            userAccess = UserAccess.newInstance(userSns.getUser(), resultDevice, RandomUtils.makeRandomCode(64));
+            userAccessRepository.save(userAccess);
+        } else {
+            userAccess.update(RandomUtils.makeRandomCode(64));
+        }
+
+        Authentication authentication = getAuthentication(userSns.getUser().getUuid(), userSns.getUser().getId() , Constants.TOKEN_ISSUER);
+        TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
+        LocalDateTime refreshExpireDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(token.getRefreshTokenExpiresIn()), ZoneId.systemDefault());
+        UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
+        if(userToken==null){
+            userToken = UserToken.newInstance(resultClientDetail.getId(), userSns.getUser().getId(), userAccess.getId(), token.getRefreshToken(), refreshExpireDate);
+            userTokenRepository.save(userToken);
+        } else {
+            userToken.updateToken(token.getRefreshToken(), refreshExpireDate);
+        }
+
         UserAccessLog saveLog = UserAccessLog.newInstance(userSns.getUser().getId(), resultDevice.getId(), userAgent, ipAddress);
         userAccessLogRepository.save(saveLog);
-
-        return LoginResponse.of(isFirst, token.getGrantType(), token.getAccessToken(), token.getRefreshToken(), token.getAccessTokenExpiresIn(), token.getRefreshTokenExpiresIn());
+        return LoginResponse.of(isFirst, userAccess.getAccessKey(), token.getGrantType(), token.getAccessToken(), token.getRefreshToken(), token.getAccessTokenExpiresIn(), token.getRefreshTokenExpiresIn());
     }
 
     @Transactional
@@ -259,7 +306,7 @@ public class AuthService {
         }
         User resultUser = userRepository.findByIdAndStatusActive(userToken.getUserId());
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
-        Authentication authentication = new Authentication(resultUser.getUuid(), resultUser.getId() ,"www.gofield.co.kr");
+        Authentication authentication = getAuthentication(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
         LocalDateTime refreshExpireDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(token.getRefreshTokenExpiresIn()), ZoneId.systemDefault());
         userToken.updateToken(token.getRefreshToken(), refreshExpireDate);

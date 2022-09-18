@@ -1,5 +1,6 @@
 package com.gofield.api.service;
 
+import com.gofield.api.model.enums.TermType;
 import com.gofield.api.model.response.CategoryResponse;
 import com.gofield.api.model.response.TermResponse;
 import com.gofield.api.model.response.VersionResponse;
@@ -13,6 +14,8 @@ import com.gofield.domain.rds.entity.serverStatus.ServerStatus;
 import com.gofield.domain.rds.entity.serverStatus.ServerStatusRepository;
 import com.gofield.domain.rds.entity.term.Term;
 import com.gofield.domain.rds.entity.term.TermRepository;
+import com.gofield.domain.rds.entity.termGroup.TermGroup;
+import com.gofield.domain.rds.entity.termGroup.TermGroupRepository;
 import com.gofield.domain.rds.entity.version.Version;
 import com.gofield.domain.rds.entity.version.VersionRepository;
 import com.gofield.domain.rds.enums.EClientType;
@@ -23,7 +26,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 
@@ -32,6 +37,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class AppService {
     private final TermRepository termRepository;
+    private final TermGroupRepository termGroupRepository;
     private final VersionRepository versionRepository;
     private final ServerStatusRepository serverStatusRepository;
     private final CategoryRepository categoryRepository;
@@ -43,9 +49,14 @@ public class AppService {
     }
 
     @Transactional(readOnly = true)
-    public List<TermResponse> getTermList(){
-        List<Term> resultList = termRepository.findByGroupId(2L);
-        return TermResponse.of(resultList);
+    public List<TermResponse> getTermList(TermType type){
+        TermGroup termGroup = null;
+        if(type.equals(TermType.SIGNUP)){
+            termGroup = termGroupRepository.findByGroupId(2L);
+        } else if(type.equals(TermType.PRIVACY)){
+            termGroup = termGroupRepository.findByGroupId(3L);
+        }
+        return TermResponse.of(termGroup.getTerms());
     }
 
     @Transactional(readOnly = true)

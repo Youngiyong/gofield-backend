@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.ZonedDateTime;
 
 @Getter
+@DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_has_term")

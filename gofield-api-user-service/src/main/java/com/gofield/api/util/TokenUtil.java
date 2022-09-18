@@ -35,9 +35,6 @@ public class TokenUtil {
     private static final String AUTH_PREFIX = "Gofield";
     private final Key key;
 
-    @Value("${spring.config.activate.on-profile}")
-    private String ACTIVE_PROFILE;
-
     @Value("${gofield.token_key}")
     private String tokenEncryptKey;
 
@@ -83,16 +80,13 @@ public class TokenUtil {
 
         String refreshToken = UUID.randomUUID().toString();
 
-        return TokenResponse.of(AUTH_PREFIX, accessToken, refreshToken, accessTokenExpiresIn.getTime(), refreshValidity);
+        return TokenResponse.of(AUTH_PREFIX, accessToken, refreshToken, accessTokenExpiresIn.getTime(), refreshTokenExpireIn.getTime());
     }
-
 
     public String getEncKey(String accessToken){
         accessToken = resolveToken(accessToken);
         DecodedJWT jwt = JWT.decode(accessToken);
-
         Claim resultClaim =  jwt.getClaim("gti");
-
         return resultClaim.asString();
     }
 

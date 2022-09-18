@@ -2,12 +2,16 @@ package com.gofield.domain.rds.entity.serverErrorLog;
 
 import com.gofield.domain.rds.enums.EServerType;
 import lombok.*;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
+@DynamicInsert
+@DynamicUpdate
 @Table(name = "server_error_log")
 public class ServerErrorLog {
 
