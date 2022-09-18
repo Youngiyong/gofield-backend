@@ -10,6 +10,13 @@ buildscript {
     }
 }
 
+ext {
+    springCloudVersion = "2020.0.4"
+    swaggerVersion = "3.0.0"
+    springCloudAwsVersion = "2.2.6.RELEASE"
+}
+
+
 allprojects {
     group = 'com.gofield'
 }

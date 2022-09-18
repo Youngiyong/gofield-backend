@@ -1,7 +1,6 @@
 package com.gofield.api.service;
 
 
-import com.gofield.api.model.AppleTokenPayload;
 import com.gofield.api.model.Authentication;
 import com.gofield.api.model.request.LoginRequest;
 import com.gofield.api.model.request.SignupRequest;
@@ -45,11 +44,11 @@ import com.gofield.domain.rds.entity.userToken.UserToken;
 import com.gofield.domain.rds.entity.userToken.UserTokenRepository;
 import com.gofield.domain.rds.enums.ESocialFlag;
 import com.gofield.domain.rds.enums.EStatusFlag;
-import com.gofield.infrastructure.external.api.apple.AppleTokenDecoderImpl;
-import com.gofield.infrastructure.external.api.kakao.KaKaoAuthApiClient;
-import com.gofield.infrastructure.external.api.kakao.dto.response.KaKaoProfileResponse;
-import com.gofield.infrastructure.external.api.naver.NaverAuthApiClient;
-import com.gofield.infrastructure.external.api.naver.dto.response.NaverProfileResponse;
+import com.gofield.infrastructure.s3.api.apple.AppleTokenDecoderImpl;
+import com.gofield.infrastructure.s3.api.kakao.KaKaoAuthApiClient;
+import com.gofield.infrastructure.s3.api.kakao.dto.response.KaKaoProfileResponse;
+import com.gofield.infrastructure.s3.api.naver.NaverAuthApiClient;
+import com.gofield.infrastructure.s3.api.naver.dto.response.NaverProfileResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

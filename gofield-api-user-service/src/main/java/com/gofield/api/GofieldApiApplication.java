@@ -1,7 +1,7 @@
 package com.gofield.api;
 
 import com.gofield.domain.rds.GofieldDomainRdsRoot;
-import com.gofield.infrastructure.external.GofieldExternalRoot;
+import com.gofield.infrastructure.s3.GofieldExternalRoot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
