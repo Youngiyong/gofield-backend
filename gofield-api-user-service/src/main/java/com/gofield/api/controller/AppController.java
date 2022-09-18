@@ -24,14 +24,12 @@ public class AppController {
     @GetMapping("/{version}/term")
     public ApiResponse<List<TermResponse>> getTermList(@PathVariable("version") EApiVersion apiVersion,
                                                        @RequestParam TermType type){
-
         return ApiResponse.success(appService.getTermList(type));
     }
 
     @ApiOperation(value = "카테고리 리스트 조회")
     @GetMapping("/{version}/category")
     public ApiResponse<List<CategoryResponse>> getCategoryList(@PathVariable("version") EApiVersion apiVersion){
-
         return ApiResponse.success(appService.getCategoryList());
     }
 

@@ -32,12 +32,10 @@ import java.util.*;
 @Slf4j
 @Component
 public class TokenUtil {
-    private static final String AUTH_PREFIX = "Gofield";
     private final Key key;
-
+    private final String AUTH_PREFIX = "Gofield";
     @Value("${gofield.token_key}")
     private String tokenEncryptKey;
-
 
     public TokenUtil(@Value("${jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
@@ -49,17 +47,6 @@ public class TokenUtil {
             return accessToken.substring(8);
         }
         return null;
-    }
-
-    public String getUserUuid(String accessToken){
-        Claims claims = parseClaims(accessToken);
-
-        return claims.getId();
-    }
-
-    public DecodedJWT getDecodeJwt(String accessToken){
-
-        return JWT.decode(accessToken);
     }
 
     public TokenResponse generateToken(com.gofield.api.model.Authentication authentication,
@@ -77,9 +64,7 @@ public class TokenUtil {
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
-
         String refreshToken = UUID.randomUUID().toString();
-
         return TokenResponse.of(AUTH_PREFIX, accessToken, refreshToken, accessTokenExpiresIn.getTime(), refreshTokenExpireIn.getTime());
     }
 
@@ -91,13 +76,9 @@ public class TokenUtil {
     }
 
     public Authentication getAuthentication(String accessToken) {
-
         Claims claims = parseClaims(accessToken);
-
         Collection<? extends GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ROLE_USER"));
-
         UserDetails principal = new User(claims.getId(), "", authorities);
-
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
 
@@ -120,7 +101,6 @@ public class TokenUtil {
     private Claims parseClaims(String accessToken) {
         try {
             return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(accessToken).getBody();
-
         } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
             throw new UnAuthorizedException( ErrorCode.E401_UNAUTHORIZED, ErrorAction.NONE, "잘못된 JWT 서명입니다.");
