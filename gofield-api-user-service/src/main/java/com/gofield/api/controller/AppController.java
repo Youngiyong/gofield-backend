@@ -36,13 +36,11 @@ public class AppController {
     }
 
     @ApiOperation(value = "버전 체크 - 스플레쉬")
-
     @GetMapping("/{version}/version")
     public ApiResponse versionCheck(@RequestHeader(value="app-version", required = false) String appVersion,
                                     @RequestHeader(value="platform", required = false) EPlatformFlag platform,
-                                    @RequestHeader(value="os-version", required = false) String osVersion,
                                     @PathVariable("version") EApiVersion apiVersion) {
-        return ApiResponse.success(appService.versionCheck(appVersion, platform, osVersion));
+        return ApiResponse.success(appService.versionCheck(appVersion, platform));
     }
 
     @ApiOperation(value = "서버 점검 체크 - 스플래쉬")
