@@ -16,8 +16,8 @@ public class NaverSmsRequest {
         private List<SmsMessage> messages;
     }
 
-    @Builder
     @Getter
+    @AllArgsConstructor
     public static class SmsMessage{
         private String to;
     }

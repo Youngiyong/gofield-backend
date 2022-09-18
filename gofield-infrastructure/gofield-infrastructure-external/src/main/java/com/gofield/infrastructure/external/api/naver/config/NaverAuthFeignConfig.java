@@ -31,7 +31,6 @@ public class NaverAuthFeignConfig {
                     throw new BadGatewayException(String.format("네이버 Auth API 호출중 에러(%s)가 발생하였습니다. message: (%s) ", response.status(), exception.getMessage()));
             }
         }
-
     }
 
 }

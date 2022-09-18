@@ -44,11 +44,11 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     @Value("${cdn.url}")
     private String CDN_URL;
     @Value("${gofield.token_key}")
     private String tokenDecryptKey;
+
     private final TermRepository termRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;

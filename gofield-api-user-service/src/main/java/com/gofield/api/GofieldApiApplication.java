@@ -7,9 +7,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication(scanBasePackageClasses = {
-    GofieldDomainRdsRoot.class,
-    GofieldExternalRoot.class,
-        GofieldS3Root.class,
+    GofieldDomainRdsRoot.class, GofieldExternalRoot.class, GofieldS3Root.class,
     GofieldApiApplication.class,
 })
 public class GofieldApiApplication {
