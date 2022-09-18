@@ -18,6 +18,7 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.category.CategoryRepository;
@@ -94,23 +95,21 @@ public class AuthService {
 
     private final TokenUtil tokenUtil;
 
-
-
     @Transactional
     public TokenResponse loginAuto(LoginAutoRequest request){
         Device device = deviceRepository.findByDeviceKey(request.getDeviceKey());
         if(device==null){
-            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("%s 존재하지 않는 디바이스키입니다.", request.getDeviceKey()));
+            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("<%s> 존재하지 않는 디바이스키입니다.", request.getDeviceKey()));
         }
         UserAccess userAccess = userAccessRepository.findByDeviceIdAndAccessKey(device.getId(), request.getAccessKey());
         if(userAccess==null){
-            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("%s 일치하지 않는 엑세스키입니다.", request.getAccessKey()));
+            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("<%s> 일치하지 않는 엑세스키입니다.", request.getAccessKey()));
         }
         UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
         UserClientDetail userClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
         Authentication authentication = getAuthentication(userAccess.getUser().getUuid(), userAccess.getUser().getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, userClientDetail.getAccessTokenValidity(), userClientDetail.getRefreshTokenValidity());
-        LocalDateTime refreshExpireDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(token.getRefreshTokenExpiresIn()), ZoneId.systemDefault());
+        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochToLocalDateTime(token.getRefreshTokenExpiresIn());
         if(userToken==null){
             userToken = UserToken.newInstance(userClientDetail.getId(), userAccess.getUser().getId(), userAccess.getId(), token.getRefreshToken(), refreshExpireDate);
             userTokenRepository.save(userToken);
@@ -176,6 +175,7 @@ public class AuthService {
             userSnsRepository.save(saveSns);
             userSns = saveSns;
         }
+
         UserAccount userAccount = userAccountRepository.findByUserId(userSns.getUser().getId());
         if(userAccount==null){
             isFirst = true;
@@ -204,7 +204,8 @@ public class AuthService {
 
         Authentication authentication = getAuthentication(userSns.getUser().getUuid(), userSns.getUser().getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
-        LocalDateTime refreshExpireDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(token.getRefreshTokenExpiresIn()), ZoneId.systemDefault());
+        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochToLocalDateTime(token.getRefreshTokenExpiresIn());
+
         UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
         if(userToken==null){
             userToken = UserToken.newInstance(resultClientDetail.getId(), userSns.getUser().getId(), userAccess.getId(), token.getRefreshToken(), refreshExpireDate);
@@ -300,12 +301,10 @@ public class AuthService {
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
         Authentication authentication = getAuthentication(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
-        LocalDateTime refreshExpireDate = LocalDateTime.ofInstant(Instant.ofEpochMilli(token.getRefreshTokenExpiresIn()), ZoneId.systemDefault());
+        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochToLocalDateTime(token.getRefreshTokenExpiresIn());
         userToken.updateToken(token.getRefreshToken(), refreshExpireDate);
-
         return token;
     }
-
 
     private Authentication getAuthentication(String uuid, Long userId, String issue){
         return Authentication.builder()
