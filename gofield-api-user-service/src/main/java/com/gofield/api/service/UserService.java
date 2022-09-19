@@ -28,6 +28,9 @@ import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistory
 import com.gofield.domain.rds.entity.userSns.UserSns;
 import com.gofield.domain.rds.entity.userSns.UserSnsRepository;
 import com.gofield.domain.rds.enums.EStatusFlag;
+import com.gofield.infrastructure.external.api.naver.NaverSnsApiClient;
+import com.gofield.infrastructure.internal.api.sns.GofieldSnsApiClient;
+import com.gofield.infrastructure.internal.api.sns.dto.request.SmsRequest;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +49,9 @@ import java.util.List;
 public class UserService {
     @Value("${cdn.url}")
     private String CDN_URL;
+
+    @Value("${sns.auth}")
+    private String SNS_CERT_TOKEN;
     @Value("${gofield.token_key}")
     private String tokenDecryptKey;
 
@@ -59,6 +65,7 @@ public class UserService {
     private final UserAccountSmsHistoryRepository userAccountSmsHistoryRepository;
 
 
+    private final GofieldSnsApiClient gofieldSnsApiClient;
     private final S3FileStorageClient s3FileStorageClient;
 
     public String getUserDecryptUuid(){
@@ -99,6 +106,20 @@ public class UserService {
         }
         UserAccountSmsHistory userAccountSmsHistory = UserAccountSmsHistory.newInstance(user.getId(), request.getTel(), RandomUtils.makeRandomNumberCode(6));
         userAccountSmsHistoryRepository.save(userAccountSmsHistory);
+
+        String content = "" +
+                "[고필드 인증]\r\n" +
+                "본인확인 인증번호는\r\n" + "[" + userAccountSmsHistory.getCode() + "]" +
+                "입니다.\n";
+
+        SmsRequest.SmsCustom smsCustom = SmsRequest.SmsCustom.builder()
+                .messageType("LMS")
+                .tel(request.getTel())
+                .subject("고필드 [인증]")
+                .content(content)
+                .build();
+
+        gofieldSnsApiClient.sendSingleMessage(SNS_CERT_TOKEN, smsCustom);
     }
 
     @Transactional

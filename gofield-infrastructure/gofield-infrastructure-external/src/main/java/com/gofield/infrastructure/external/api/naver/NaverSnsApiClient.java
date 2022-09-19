@@ -16,9 +16,7 @@ import org.springframework.web.bind.annotation.*;
 )
 public interface NaverSnsApiClient {
 
-    @RequestMapping(method = RequestMethod.POST,
-            value = "${external.client.naver.sns.url}",
-            produces = "application/json")
+    @PostMapping("${external.client.naver.sns.url}")
     NaverSmsResponse sendSms(@RequestHeader("x-ncp-apigw-timestamp") String timsstamp,
                              @RequestHeader("x-ncp-iam-access-key") String accessKey,
                              @RequestHeader("x-ncp-apigw-signature-v2") String signature,

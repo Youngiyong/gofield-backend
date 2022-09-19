@@ -12,7 +12,7 @@ import static com.gofield.sns.handler.CertTokenHandler.validGofieldSnsCertToken;
 
 import javax.validation.Valid;
 
-@RequestMapping("/api/sms")
+@RequestMapping("/sms")
 @RestController
 @RequiredArgsConstructor
 public class SMSController {
