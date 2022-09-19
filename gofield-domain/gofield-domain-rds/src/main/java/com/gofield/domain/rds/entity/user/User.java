@@ -7,6 +7,7 @@ import com.gofield.domain.rds.entity.userAddress.UserAddress;
 import com.gofield.domain.rds.entity.userHasCategory.UserHasCategory;
 import com.gofield.domain.rds.entity.userHasDevice.UserHasDevice;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
+import com.gofield.domain.rds.entity.userKeyword.UserKeyword;
 import com.gofield.domain.rds.entity.userSns.UserSns;
 import com.gofield.domain.rds.enums.EStatusFlag;
 import lombok.*;
@@ -54,6 +55,9 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserSns> sns;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<UserKeyword> keyword;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAddress> address;
