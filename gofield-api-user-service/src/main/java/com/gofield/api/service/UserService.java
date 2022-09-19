@@ -25,10 +25,8 @@ import com.gofield.domain.rds.entity.userHasTerm.UserHasTermRepository;
 import com.gofield.domain.rds.entity.userPush.UserPush;
 import com.gofield.domain.rds.entity.userPush.UserPushRepository;
 import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistory;
-import com.gofield.domain.rds.entity.userSns.UserSns;
 import com.gofield.domain.rds.entity.userSns.UserSnsRepository;
 import com.gofield.domain.rds.enums.EStatusFlag;
-import com.gofield.infrastructure.external.api.naver.NaverSnsApiClient;
 import com.gofield.infrastructure.internal.api.sns.GofieldSnsApiClient;
 import com.gofield.infrastructure.internal.api.sns.dto.request.SmsRequest;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
@@ -65,8 +63,6 @@ public class UserService {
     private final UserAccountSmsHistoryRepository userAccountSmsHistoryRepository;
 
     private final SNSService snsService;
-
-    private final GofieldSnsApiClient gofieldSnsApiClient;
     private final S3FileStorageClient s3FileStorageClient;
 
     public String getUserDecryptUuid(){
