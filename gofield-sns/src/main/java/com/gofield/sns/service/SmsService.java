@@ -23,6 +23,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SmsService {
+    @Value("${sqs.topic.sms}")
+    private String SQS_TOPIC_SMS;
     @Value("${naver.cloud.client_id}")
     private String NAVER_CLIENT_ID;
     @Value("${naver.cloud.secret}")

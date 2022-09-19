@@ -64,6 +64,7 @@ public class UserService {
     private final UserAccountRepository userAccountRepository;
     private final UserAccountSmsHistoryRepository userAccountSmsHistoryRepository;
 
+    private final SNSService snsService;
 
     private final GofieldSnsApiClient gofieldSnsApiClient;
     private final S3FileStorageClient s3FileStorageClient;
@@ -107,19 +108,16 @@ public class UserService {
         UserAccountSmsHistory userAccountSmsHistory = UserAccountSmsHistory.newInstance(user.getId(), request.getTel(), RandomUtils.makeRandomNumberCode(6));
         userAccountSmsHistoryRepository.save(userAccountSmsHistory);
 
-        String content = "" +
-                "[고필드 인증]\r\n" +
-                "본인확인 인증번호는\r\n" + "[" + userAccountSmsHistory.getCode() + "]" +
-                "입니다.\n";
+        String content = String.format("본인확인 인증번호\n\r[%s]를 입력해주세요.\n", userAccountSmsHistory.getCode());
 
         SmsRequest.SmsCustom smsCustom = SmsRequest.SmsCustom.builder()
-                .messageType("LMS")
+                .messageType("SMS")
+                .subject("[고필드]")
                 .tel(request.getTel())
-                .subject("고필드 [인증]")
                 .content(content)
                 .build();
 
-        gofieldSnsApiClient.sendSingleMessage(SNS_CERT_TOKEN, smsCustom);
+        snsService.sendSms(smsCustom);
     }
 
     @Transactional

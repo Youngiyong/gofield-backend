@@ -12,6 +12,13 @@ dependencies {
     implementation project(":gofield-api-core:gofield-api-core-common")
 
     implementation project(':gofield-infrastructure:gofield-infrastructure-external')
+    implementation project(':gofield-infrastructure:gofield-infrastructure-sqs')
+
+    //json
+    implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
     // spring mvc
     implementation 'org.springframework.boot:spring-boot-starter-web'
 //    implementation 'org.springframework.boot:spring-boot-starter-mail'

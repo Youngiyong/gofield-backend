@@ -15,6 +15,7 @@ dependencies {
     implementation project(':gofield-infrastructure:gofield-infrastructure-external')
     implementation project(':gofield-infrastructure:gofield-infrastructure-internal')
     implementation project(':gofield-infrastructure:gofield-infrastructure-s3')
+    implementation project(':gofield-infrastructure:gofield-infrastructure-sqs')
 
     // spring mvc
     implementation 'org.springframework.boot:spring-boot-starter-web'
