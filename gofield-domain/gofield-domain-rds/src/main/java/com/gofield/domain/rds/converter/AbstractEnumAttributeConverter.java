@@ -10,7 +10,7 @@ public class AbstractEnumAttributeConverter<E extends Enum<E> & CodeEnum> implem
     private boolean nullable;
     private String enumName;
 
-    AbstractEnumAttributeConverter(Class<E> E,boolean nullable, String enumName){
+    protected AbstractEnumAttributeConverter(Class<E> E, boolean nullable, String enumName){
         this.targetEnumClass = E;
         this.nullable = nullable;
         this.enumName = enumName;

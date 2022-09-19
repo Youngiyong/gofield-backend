@@ -1,6 +1,7 @@
 package com.gofield.api.service;
 
 import com.gofield.api.model.enums.TermType;
+import com.gofield.api.model.response.BannerResponse;
 import com.gofield.api.model.response.CategoryResponse;
 import com.gofield.api.model.response.TermResponse;
 import com.gofield.api.model.response.VersionResponse;
@@ -10,6 +11,8 @@ import com.gofield.common.exception.InternalRuleException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.domain.rds.entity.banner.Banner;
+import com.gofield.domain.rds.entity.banner.BannerRepository;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.serverStatus.ServerStatus;
@@ -33,6 +36,7 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AppService {
+    private final BannerRepository bannerRepository;
     private final VersionRepository versionRepository;
     private final CategoryRepository categoryRepository;
     private final TermGroupRepository termGroupRepository;
@@ -42,6 +46,12 @@ public class AppService {
     public List<CategoryResponse> getCategoryList(){
         List<Category> resultList = categoryRepository.findAllIsActiveTrueOrderBySort();
         return CategoryResponse.of(resultList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<BannerResponse> getBannerList(){
+        List<Banner> resultList = bannerRepository.findAllActive();
+        return  BannerResponse.of(resultList);
     }
 
     @Transactional(readOnly = true)

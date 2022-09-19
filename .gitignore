@@ -46,3 +46,4 @@ application-sqs.yml
 application-external.yml
 application-internal.yml
 logs/
+V2_init.sql

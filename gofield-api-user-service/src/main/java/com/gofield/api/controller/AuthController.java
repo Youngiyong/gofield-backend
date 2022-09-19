@@ -23,7 +23,6 @@ import javax.validation.Valid;
 public class AuthController {
     private final AuthService authService;
 
-
     @ApiOperation(value = "회원가입")
 
     @PostMapping("/{version}/signup")

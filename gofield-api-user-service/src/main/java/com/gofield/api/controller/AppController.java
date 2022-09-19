@@ -1,6 +1,7 @@
 package com.gofield.api.controller;
 
 import com.gofield.api.model.enums.TermType;
+import com.gofield.api.model.response.BannerResponse;
 import com.gofield.api.model.response.CategoryResponse;
 import com.gofield.api.model.response.TermResponse;
 import com.gofield.api.service.AppService;
@@ -25,6 +26,12 @@ public class AppController {
     public ApiResponse<List<TermResponse>> getTermList(@PathVariable("version") EApiVersion apiVersion,
                                                        @RequestParam TermType type){
         return ApiResponse.success(appService.getTermList(type));
+    }
+
+    @ApiOperation(value = "배너 리스트 조회")
+    @GetMapping("/{version}/banner")
+    public ApiResponse<List<BannerResponse>> getBannerList(@PathVariable("version") EApiVersion apiVersion){
+        return ApiResponse.success(appService.getBannerList());
     }
 
     @ApiOperation(value = "카테고리 리스트 조회")
