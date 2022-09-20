@@ -24,7 +24,6 @@ public class AuthController {
     private final AuthService authService;
 
     @ApiOperation(value = "회원가입")
-
     @PostMapping("/{version}/signup")
     public ApiResponse register(@PathVariable("version") EApiVersion apiVersion,
                                 @Valid @RequestBody SignupRequest request) {
@@ -41,7 +40,6 @@ public class AuthController {
     }
 
     @ApiOperation(value = "자동 로그인")
-
     @PostMapping("/{version}/login/auto")
     public ApiResponse<TokenResponse> loginAuth(@PathVariable("version") EApiVersion apiVersion,
                                                 @Valid @RequestBody LoginAutoRequest request) {

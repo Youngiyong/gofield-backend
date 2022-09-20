@@ -19,7 +19,6 @@ import javax.validation.Valid;
 public class UserController {
 
     private final UserService userService;
-
     @ApiOperation(value = "푸쉬 키 업데이트")
     @PutMapping("/{version}/push")
     public ApiResponse updatePush(@PathVariable("version") EApiVersion apiVersion,
