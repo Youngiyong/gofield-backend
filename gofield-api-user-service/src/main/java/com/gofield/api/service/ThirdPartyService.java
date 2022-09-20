@@ -18,6 +18,7 @@ public class ThirdPartyService {
 
     @Value("${kakao.client_secret}")
     private String KAKAO_CLIENT_SECRET;
+
     @Value("${kakao.auth_url}")
     private String KAKAO_AUTH_URL;
 

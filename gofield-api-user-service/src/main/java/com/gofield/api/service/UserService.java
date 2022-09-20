@@ -45,13 +45,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     @Value("${cdn.url}")
     private String CDN_URL;
-
     @Value("${sns.auth}")
     private String SNS_CERT_TOKEN;
     @Value("${gofield.token_key}")
-    private String tokenDecryptKey;
+    private String TOKEN_DECRYPT_KEY;
 
     private final TermRepository termRepository;
     private final UserRepository userRepository;
@@ -66,7 +66,7 @@ public class UserService {
     private final S3FileStorageClient s3FileStorageClient;
 
     public String getUserDecryptUuid(){
-        return EncryptUtils.aes256Decrypt(tokenDecryptKey, UserUuidResolver.getCurrentUserUuid());
+        return EncryptUtils.aes256Decrypt(TOKEN_DECRYPT_KEY, UserUuidResolver.getCurrentUserUuid());
     }
 
     public String uploadProfile(MultipartFile file){
@@ -234,4 +234,5 @@ public class UserService {
             userHasTermRepository.save(userHasTerm);
         }
     }
+
 }
