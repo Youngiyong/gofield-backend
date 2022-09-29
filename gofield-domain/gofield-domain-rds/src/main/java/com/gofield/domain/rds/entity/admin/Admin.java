@@ -45,7 +45,7 @@ public class Admin extends BaseTimeEntity {
     @Column(name = "status_flag", nullable = false, length = 20)
     private EStatusFlag status;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "role_id")
     private AdminRole adminRole;
 

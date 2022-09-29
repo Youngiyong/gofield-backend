@@ -1,4 +1,4 @@
-package com.gofield.api.advice;
+package com.gofield.admin.advice;
 
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.common.api.core.common.dto.response.ErrorResponse;

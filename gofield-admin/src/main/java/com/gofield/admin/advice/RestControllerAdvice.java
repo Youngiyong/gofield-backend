@@ -1,4 +1,4 @@
-package com.gofield.api.advice;
+package com.gofield.admin.advice;
 
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.validation.BindException;
 import org.springframework.web.HttpMediaTypeException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
@@ -159,6 +160,22 @@ public class RestControllerAdvice {
                 .action(ErrorAction.NONE)
                 .code(e.getErrorCode().getCode())
                 .message(e.getMessage())
+                .build();
+
+        return ApiResponse.error(errorResponse);
+    }
+
+    /**
+     * 409 loadUserByUsername AuthenticationException
+     */
+    @ExceptionHandler(AuthenticationException.class)
+    protected ApiResponse<Object> handleAuthenticationException(final AuthenticationException e) {
+        log.error(e.getMessage(), e);
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .action(ErrorAction.NONE)
+                .code(ErrorCode.E400_INVALID_EXCEPTION.getCode())
+                .message(String.format(e.getMessage()))
                 .build();
 
         return ApiResponse.error(errorResponse);

@@ -1,19 +1,20 @@
 package com.gofield.admin;
 
+import com.gofield.domain.rds.GofieldDomainRdsRoot;
+import com.gofield.infrastructure.external.GofieldExternalRoot;
+import com.gofield.infrastructure.s3.GofieldS3Root;
+import com.gofield.infrastructure.sqs.GofieldSqsRoot;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.boot.autoconfigure.domain.EntityScan;
-import org.springframework.cloud.openfeign.EnableFeignClients;
-import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 import javax.annotation.PostConstruct;
 import java.util.TimeZone;
 
-@EntityScan(basePackages = {"com.tsid.domain"})
-@EnableJpaRepositories(basePackages = {"com.tsid.domain"})
-@SpringBootApplication
-@EnableFeignClients
-public class TSIDAdminApplication {
+@SpringBootApplication(scanBasePackageClasses = {
+        GofieldDomainRdsRoot.class, GofieldExternalRoot.class, GofieldS3Root.class,
+        GofieldAdminApplication.class, GofieldSqsRoot.class
+})
+public class GofieldAdminApplication {
 
     @PostConstruct
     public void init() {
@@ -21,6 +22,6 @@ public class TSIDAdminApplication {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(TSIDAdminApplication.class, args);
+        SpringApplication.run(GofieldAdminApplication.class, args);
     }
 }

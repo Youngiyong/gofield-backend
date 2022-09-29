@@ -1,6 +1,6 @@
-package com.gofield.admin.config;
+package com.gofield.admin.config.interceptor;
 
-import com.gofield.admin.dto.AdminDto;
+import com.gofield.admin.model.AdminDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;

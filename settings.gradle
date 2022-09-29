@@ -2,7 +2,7 @@ rootProject.name = 'gofield'
 
 include 'gofield-common'
 
-include 'gofield-api-admin-service'
+include 'gofield-admin'
 include 'gofield-api-user-service'
 include 'gofield-api-partner-service'
 
