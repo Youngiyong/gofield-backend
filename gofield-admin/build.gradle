@@ -1,0 +1,32 @@
+ext{
+    set('springCloudVersion', "2020.0.5")
+    dependencyManagement{
+        imports{
+            mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
+        }
+    }
+}
+
+dependencies {
+    implementation project(':gofield-common')
+    implementation project(":gofield-api-core:gofield-api-core-common")
+
+    implementation project(":gofield-domain:gofield-domain-rds")
+    implementation project(':gofield-infrastructure:gofield-infrastructure-external')
+    implementation project(':gofield-infrastructure:gofield-infrastructure-internal')
+    implementation project(':gofield-infrastructure:gofield-infrastructure-s3')
+    implementation project(':gofield-infrastructure:gofield-infrastructure-sqs')
+
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+
+    // swagger
+    implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
+    implementation group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.9.2'
+}
+
+test {
+//    useJUnitPlatform()
+    exclude '**/*'
+}
