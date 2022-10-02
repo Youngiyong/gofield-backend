@@ -1,6 +1,6 @@
 package com.gofield.admin.config.interceptor;
 
-import com.gofield.admin.model.AdminDto;
+import com.gofield.admin.dto.AdminSession;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.HandlerInterceptor;
@@ -16,7 +16,7 @@ public class Interceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        AdminDto admin = (AdminDto) request.getSession().getAttribute("tAdmin");
+        AdminSession admin = (AdminSession) request.getSession().getAttribute("sAdmin");
         if (admin == null) {
             String context = request.getContextPath();
             response.sendRedirect(context + "/login");

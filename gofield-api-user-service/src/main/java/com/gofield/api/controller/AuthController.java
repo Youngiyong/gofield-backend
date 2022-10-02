@@ -1,12 +1,12 @@
 package com.gofield.api.controller;
 
 
-import com.gofield.api.model.request.LoginAutoRequest;
-import com.gofield.api.model.request.LoginRequest;
-import com.gofield.api.model.request.TokenRefreshRequest;
-import com.gofield.api.model.request.SignupRequest;
-import com.gofield.api.model.response.LoginResponse;
-import com.gofield.api.model.response.TokenResponse;
+import com.gofield.api.dto.request.LoginAutoRequest;
+import com.gofield.api.dto.request.LoginRequest;
+import com.gofield.api.dto.request.TokenRefreshRequest;
+import com.gofield.api.dto.request.SignupRequest;
+import com.gofield.api.dto.response.LoginResponse;
+import com.gofield.api.dto.response.TokenResponse;
 import com.gofield.api.service.AuthService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;

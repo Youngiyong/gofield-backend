@@ -1,10 +1,10 @@
 package com.gofield.api.service;
 
 import com.gofield.api.config.resolver.UserUuidResolver;
-import com.gofield.api.model.request.UserRequest;
-import com.gofield.api.model.response.UserAccountResponse;
-import com.gofield.api.model.response.UserAddressResponse;
-import com.gofield.api.model.response.UserProfileResponse;
+import com.gofield.api.dto.request.UserRequest;
+import com.gofield.api.dto.response.UserAccountResponse;
+import com.gofield.api.dto.response.UserAddressResponse;
+import com.gofield.api.dto.response.UserProfileResponse;
 import com.gofield.common.exception.InternalRuleException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
@@ -27,7 +27,6 @@ import com.gofield.domain.rds.entity.userPush.UserPushRepository;
 import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistory;
 import com.gofield.domain.rds.entity.userSns.UserSnsRepository;
 import com.gofield.domain.rds.enums.EStatusFlag;
-import com.gofield.infrastructure.internal.api.sns.GofieldSnsApiClient;
 import com.gofield.infrastructure.internal.api.sns.dto.request.SmsRequest;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;

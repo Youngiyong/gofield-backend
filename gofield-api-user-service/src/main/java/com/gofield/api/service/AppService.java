@@ -1,10 +1,10 @@
 package com.gofield.api.service;
 
-import com.gofield.api.model.enums.TermType;
-import com.gofield.api.model.response.BannerResponse;
-import com.gofield.api.model.response.CategoryResponse;
-import com.gofield.api.model.response.TermResponse;
-import com.gofield.api.model.response.VersionResponse;
+import com.gofield.api.dto.enums.TermType;
+import com.gofield.api.dto.response.BannerResponse;
+import com.gofield.api.dto.response.CategoryResponse;
+import com.gofield.api.dto.response.TermResponse;
+import com.gofield.api.dto.response.VersionResponse;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.BadGatewayException;
 import com.gofield.common.exception.InternalRuleException;

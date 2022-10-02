@@ -1,6 +1,6 @@
 package com.gofield.api.util;
 
-import com.gofield.api.model.response.ClientResponse;
+import com.gofield.api.dto.response.ClientResponse;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;

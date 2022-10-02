@@ -3,10 +3,7 @@ package com.gofield.api.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gofield.api.model.AppleTokenPayload;
-import com.gofield.api.model.response.TokenResponse;
-import com.gofield.common.exception.InvalidException;
+import com.gofield.api.dto.response.TokenResponse;
 import com.gofield.common.exception.UnAuthorizedException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -25,7 +22,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
-import java.io.IOException;
+
 import java.security.Key;
 import java.util.*;
 
@@ -49,7 +46,7 @@ public class TokenUtil {
         return null;
     }
 
-    public TokenResponse generateToken(com.gofield.api.model.Authentication authentication,
+    public TokenResponse generateToken(com.gofield.api.dto.Authentication authentication,
                                                   Long accessValidity,
                                                   Long refreshValidity) {
 

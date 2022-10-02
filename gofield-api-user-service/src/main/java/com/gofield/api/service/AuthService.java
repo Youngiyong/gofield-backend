@@ -1,14 +1,14 @@
 package com.gofield.api.service;
 
 
-import com.gofield.api.model.Authentication;
-import com.gofield.api.model.request.LoginAutoRequest;
-import com.gofield.api.model.request.LoginRequest;
-import com.gofield.api.model.request.SignupRequest;
-import com.gofield.api.model.request.TokenRefreshRequest;
-import com.gofield.api.model.response.ClientResponse;
-import com.gofield.api.model.response.LoginResponse;
-import com.gofield.api.model.response.TokenResponse;
+import com.gofield.api.dto.Authentication;
+import com.gofield.api.dto.request.LoginAutoRequest;
+import com.gofield.api.dto.request.LoginRequest;
+import com.gofield.api.dto.request.SignupRequest;
+import com.gofield.api.dto.request.TokenRefreshRequest;
+import com.gofield.api.dto.response.ClientResponse;
+import com.gofield.api.dto.response.LoginResponse;
+import com.gofield.api.dto.response.TokenResponse;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.api.util.TokenUtil;
 import com.gofield.common.exception.InternalRuleException;

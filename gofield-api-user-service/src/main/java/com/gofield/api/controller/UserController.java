@@ -1,12 +1,11 @@
 package com.gofield.api.controller;
 
-import com.gofield.api.model.request.UserRequest;
-import com.gofield.api.model.response.UserProfileResponse;
+import com.gofield.api.dto.request.UserRequest;
+import com.gofield.api.dto.response.UserProfileResponse;
 import com.gofield.api.service.UserService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import io.swagger.annotations.ApiOperation;
-import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;

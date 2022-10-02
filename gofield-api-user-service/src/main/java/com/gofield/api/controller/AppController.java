@@ -1,9 +1,9 @@
 package com.gofield.api.controller;
 
-import com.gofield.api.model.enums.TermType;
-import com.gofield.api.model.response.BannerResponse;
-import com.gofield.api.model.response.CategoryResponse;
-import com.gofield.api.model.response.TermResponse;
+import com.gofield.api.dto.enums.TermType;
+import com.gofield.api.dto.response.BannerResponse;
+import com.gofield.api.dto.response.CategoryResponse;
+import com.gofield.api.dto.response.TermResponse;
 import com.gofield.api.service.AppService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
