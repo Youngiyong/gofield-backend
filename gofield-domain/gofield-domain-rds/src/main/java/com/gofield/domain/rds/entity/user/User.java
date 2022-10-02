@@ -49,7 +49,6 @@ public class User extends BaseTimeEntity {
     @Column(length = 128, name = "thumbnail_path")
     private String thumbnail;
 
-    @Convert(converter = StatusFlagConverter.class)
     @Column(name = "status_flag", nullable = false, length = 20)
     private EStatusFlag status;
 

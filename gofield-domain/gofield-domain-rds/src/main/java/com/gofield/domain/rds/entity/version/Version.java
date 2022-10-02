@@ -18,7 +18,6 @@ import javax.persistence.*;
 @Table(	name = "version")
 public class Version extends BaseTimeEntity {
 
-    @Convert(converter = PlatformFlagConverter.class)
     @Column(name = "platform_flag", nullable = false, length = 10)
     private EPlatformFlag platform;
 
