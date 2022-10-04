@@ -19,6 +19,7 @@ import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
 
 @Slf4j
@@ -236,4 +237,21 @@ public class RestControllerAdvice {
         return ApiResponse.error(errorResponse);
     }
 
+
+    @ExceptionHandler(InternalRuleException.class)
+    public ApiResponse handleGitlabException(InternalRuleException e, HttpServletResponse response) {
+        try {
+            response.setStatus(499);
+        } catch (Exception ex) {
+            e.printStackTrace();
+        }
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .action(e.getAction())
+                .code(e.getErrorCode().getCode())
+                .message(e.getMessage())
+                .build();
+
+        return ApiResponse.error(errorResponse);
+    }
 }

@@ -6,4 +6,5 @@ public interface UserAccessRepositoryCustom {
 
     UserAccess findByUserIdAndDeviceId(Long userId, Long deviceId);
     UserAccess findByDeviceIdAndAccessKey(Long deviceId, String accessKey);
+    UserAccess findByAccessKey(String accessKey);
 }

@@ -5,7 +5,7 @@ import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.LocalDateTimeUtils;
-import com.gofield.infrastructure.external.api.apple.dto.model.AppleIdTokenPayload;
+import com.gofield.infrastructure.external.api.apple.dto.AppleIdTokenPayload;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

@@ -62,9 +62,6 @@ public class AppService {
         } else if(type.equals(TermType.PRIVACY)){
             termGroup = termGroupRepository.findByGroupId(3L);
         }
-        if(termGroup==null){
-            throw new InvalidException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "존재하는 이용약관이 없습니다.");
-        }
         return TermResponse.of(termGroup.getTerms());
     }
 

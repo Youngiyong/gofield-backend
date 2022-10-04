@@ -103,12 +103,13 @@ public class AuthService {
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("<%s> 일치하지 않는 엑세스키입니다.", request.getAccessKey()));
         }
         UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
-        UserClientDetail userClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
+        UserClientDetail userClientDetail = userToken.getClient();
         Authentication authentication = getAuthentication(userAccess.getUser().getUuid(), userAccess.getUser().getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, userClientDetail.getAccessTokenValidity(), userClientDetail.getRefreshTokenValidity());
         LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
+        //토큰 테이블을 날릴경우 Null일 수 있음
         if(userToken==null){
-            userToken = UserToken.newInstance(userClientDetail.getId(), userAccess.getUser().getId(), userAccess.getId(), token.getRefreshToken(), refreshExpireDate);
+            userToken = UserToken.newInstance(userClientDetail, userToken.getUser(), userAccess, token.getRefreshToken(), refreshExpireDate);
             userTokenRepository.save(userToken);
         } else {
             userToken.updateToken(token.getRefreshToken(), refreshExpireDate);
@@ -205,7 +206,7 @@ public class AuthService {
 
         UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
         if(userToken==null){
-            userToken = UserToken.newInstance(resultClientDetail.getId(), userSns.getUser().getId(), userAccess.getId(), token.getRefreshToken(), refreshExpireDate);
+            userToken = UserToken.newInstance(resultClientDetail, userSns.getUser(), userAccess, token.getRefreshToken(), refreshExpireDate);
             userTokenRepository.save(userToken);
         } else {
             userToken.updateToken(token.getRefreshToken(), refreshExpireDate);
@@ -267,7 +268,7 @@ public class AuthService {
         user.updateSign(request.getEmail(), request.getWeight(), request.getHeight());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public TokenResponse getToken(Long id){
         User resultUser = userRepository.findByIdAndStatusActive(id);
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(21L);
@@ -276,17 +277,10 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(){
-        User user = userRepository.findByUuid(userService.getUserDecryptUuid());
-        List<UserToken> userTokenList = userTokenRepository.findByUserId(user.getId());
-        if(userTokenList.isEmpty()){
-            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "이미 로그아웃 처리된 사용자입니다.");
-        }
-        List<Long> idList = userTokenList
-                .stream()
-                .map(p->p.getUserId())
-                .collect(Collectors.toList());
-        userTokenRepository.delete(idList);
+    public void logout(String accessKey){
+        UserAccess userAccess = userAccessRepository.findByAccessKey(accessKey);
+        userTokenRepository.delete(userAccess.getId());
+        userAccessRepository.delete(userAccess);
     }
     @Transactional
     public TokenResponse refresh(TokenRefreshRequest request){
@@ -294,8 +288,8 @@ public class AuthService {
         if(userToken==null || userToken.getExpireDate().isBefore(LocalDateTime.now())){
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 로그아웃됩니다.");
         }
-        User resultUser = userRepository.findByIdAndStatusActive(userToken.getUserId());
-        UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClientId());
+        User resultUser = userRepository.findByIdAndStatusActive(userToken.getUser().getId());
+        UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClient().getId());
         Authentication authentication = getAuthentication(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
         LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());

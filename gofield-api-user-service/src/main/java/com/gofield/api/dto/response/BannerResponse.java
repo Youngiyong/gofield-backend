@@ -34,8 +34,7 @@ public class BannerResponse {
     }
 
     public static List<BannerResponse> of(List<Banner> list){
-        return list
-                .stream()
+        return list.stream()
                 .map(p -> BannerResponse.of(p.getTitle(), p.getDescription(), p.getLinkUrl(), p.getThumbnail()))
                 .collect(Collectors.toList());
     }

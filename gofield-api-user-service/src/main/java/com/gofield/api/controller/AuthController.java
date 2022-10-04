@@ -55,8 +55,9 @@ public class AuthController {
 
     @ApiOperation(value = "로그아웃")
     @PostMapping("/{version}/logout")
-    public ApiResponse logout(@PathVariable("version") EApiVersion apiVersion){
-        authService.logout();
+    public ApiResponse logout(@RequestHeader String accessKey,
+                              @PathVariable("version") EApiVersion apiVersion){
+        authService.logout(accessKey);
         return ApiResponse.SUCCESS;
     }
 

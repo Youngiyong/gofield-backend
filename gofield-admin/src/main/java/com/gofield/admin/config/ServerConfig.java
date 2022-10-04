@@ -1,11 +1,11 @@
-package com.gofield.admin.config.thymeleaf;
+package com.gofield.admin.config;
 
 import nz.net.ultraq.thymeleaf.LayoutDialect;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-public class ThymeleafConfig {
+public class ServerConfig {
 
     @Bean
     public LayoutDialect layoutDialect() {

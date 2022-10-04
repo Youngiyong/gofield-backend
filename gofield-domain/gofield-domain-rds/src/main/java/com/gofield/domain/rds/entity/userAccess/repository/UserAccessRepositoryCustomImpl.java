@@ -27,4 +27,12 @@ public class UserAccessRepositoryCustomImpl implements UserAccessRepositoryCusto
                         userAccess.accessKey.eq(accessKey))
                 .fetchOne();
     }
+
+    @Override
+    public UserAccess findByAccessKey(String accessKey) {
+        return jpaQueryFactory
+                .selectFrom(userAccess)
+                .where(userAccess.accessKey.eq(accessKey))
+                .fetchOne();
+    }
 }

@@ -30,12 +30,14 @@ public class UserTokenRepositoryCustomImpl implements UserTokenRepositoryCustom 
     }
 
     @Override
-    public void delete(List<Long> id) {
+    public void delete(Long accessId) {
         jpaQueryFactory
                 .delete(userToken)
-                .where(userToken.id.in(id))
+                .where(userToken.accessId.eq(accessId))
                 .execute();
     }
+
+
 
     @Override
     public List<UserToken> findByUserId(Long userId) {

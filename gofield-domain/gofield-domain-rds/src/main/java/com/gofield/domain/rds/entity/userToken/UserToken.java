@@ -2,6 +2,9 @@
 package com.gofield.domain.rds.entity.userToken;
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
+import com.gofield.domain.rds.entity.user.User;
+import com.gofield.domain.rds.entity.userAccess.UserAccess;
+import com.gofield.domain.rds.entity.userClientDetail.UserClientDetail;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
@@ -17,14 +20,17 @@ import java.time.LocalDateTime;
 @Table(	name = "user_token")
 public class UserToken extends BaseTimeEntity {
 
-    @Column
-    private Long clientId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "client_id")
+    private UserClientDetail client;
 
-    @Column
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column
-    private Long accessId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "access_id")
+    private UserAccess access;
 
     @Column(length = 36)
     private String refreshToken;
@@ -32,16 +38,16 @@ public class UserToken extends BaseTimeEntity {
     @Column
     private LocalDateTime expireDate;
 
-    private UserToken(Long clientId, Long userId, Long accessId, String refreshToken, LocalDateTime expireDate){
-        this.clientId = clientId;
-        this.userId = userId;
-        this.accessId = accessId;
+    private UserToken(UserClientDetail client, User user, UserAccess access, String refreshToken, LocalDateTime expireDate){
+        this.client = client;
+        this.user = user;
+        this.access = access;
         this.refreshToken = refreshToken;
         this.expireDate = expireDate;
     }
 
-    public static UserToken newInstance(Long clientId, Long userId, Long accessId, String refreshToken, LocalDateTime expireDate){
-        return new UserToken(clientId, userId, accessId, refreshToken, expireDate);
+    public static UserToken newInstance(UserClientDetail client, User user, UserAccess access, String refreshToken, LocalDateTime expireDate){
+        return new UserToken(client, user, access, refreshToken, expireDate);
     }
 
     public void updateToken(String refreshToken, LocalDateTime expireDate) {
