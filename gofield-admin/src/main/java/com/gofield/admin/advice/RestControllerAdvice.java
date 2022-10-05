@@ -239,7 +239,7 @@ public class RestControllerAdvice {
 
 
     @ExceptionHandler(InternalRuleException.class)
-    public ApiResponse handleGitlabException(InternalRuleException e, HttpServletResponse response) {
+    public ApiResponse handleInternalRuleException(InternalRuleException e, HttpServletResponse response) {
         try {
             response.setStatus(499);
         } catch (Exception ex) {

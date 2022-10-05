@@ -219,7 +219,7 @@ public class AuthService {
 
     @Transactional
     public void signup(SignupRequest request){
-        if(request.getAgreeList()==null || request.getAgreeList().isEmpty()){
+        if(request.getAgreeList()==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "필수 약관은 선택해 주셔야 됩니다.");
         }
         User user = userRepository.findByUuid(userService.getUserDecryptUuid());
