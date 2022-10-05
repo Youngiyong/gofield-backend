@@ -6,20 +6,20 @@ import lombok.*;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AdminDto {
-    private Long userId;
+    private Long adminId;
     private String name;
     private String uuid;
 
     @Builder
-    private AdminDto(Long userId, String name, String uuid){
-        this.userId = userId;
+    private AdminDto(Long adminId, String name, String uuid){
+        this.adminId = adminId;
         this.name = name;
         this.uuid = uuid;
     }
 
-    public static AdminDto of(Long userId, String name, String uuid){
+    public static AdminDto of(Long adminId, String name, String uuid){
         return AdminDto.builder()
-                .userId(userId)
+                .adminId(adminId)
                 .name(name)
                 .uuid(uuid)
                 .build();

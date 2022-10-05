@@ -25,7 +25,7 @@ public class UserTokenRepositoryCustomImpl implements UserTokenRepositoryCustom 
     public UserToken findByAccessId(Long accessId) {
         return jpaQueryFactory
                 .selectFrom(userToken)
-                .where(userToken.accessId.eq(accessId))
+                .where(userToken.access.id.eq(accessId))
                 .fetchOne();
     }
 
@@ -33,7 +33,7 @@ public class UserTokenRepositoryCustomImpl implements UserTokenRepositoryCustom 
     public void delete(Long accessId) {
         jpaQueryFactory
                 .delete(userToken)
-                .where(userToken.accessId.eq(accessId))
+                .where(userToken.access.id.eq(accessId))
                 .execute();
     }
 
@@ -43,7 +43,7 @@ public class UserTokenRepositoryCustomImpl implements UserTokenRepositoryCustom 
     public List<UserToken> findByUserId(Long userId) {
         return jpaQueryFactory
                 .selectFrom(userToken)
-                .where(userToken.userId.eq(userId))
+                .where(userToken.user.id.eq(userId))
                 .fetch();
     }
 }

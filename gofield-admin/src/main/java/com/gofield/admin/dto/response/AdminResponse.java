@@ -1,6 +1,7 @@
 package com.gofield.admin.dto.response;
 
 import com.gofield.domain.rds.entity.admin.Admin;
+import com.gofield.domain.rds.projections.AdminInfoProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,31 +16,31 @@ public class AdminResponse {
     private Long id;
     private String name;
     private String username;
-    private String tel;
+    private String role;
     private LocalDateTime createDate;
 
     @Builder
-    private AdminResponse(Long id, String name, String username, String tel, LocalDateTime createDate){
+    private AdminResponse(Long id, String name, String username, String role, LocalDateTime createDate){
         this.id = id;
         this.name = name;
         this.username = username;
-        this.tel = tel;
+        this.role = role;
         this.createDate = createDate;
     }
 
-    public static AdminResponse of(Long id, String name, String username, String tel, LocalDateTime createDate){
+    public static AdminResponse of(Long id, String name, String username, String role, LocalDateTime createDate){
         return AdminResponse.builder()
                 .id(id)
                 .name(name)
                 .username(username)
-                .tel(tel)
+                .role(role)
                 .createDate(createDate)
                 .build();
     }
 
-    public static List<AdminResponse> ofList(List<Admin> list){
+    public static List<AdminResponse> ofList(List<AdminInfoProjection> list){
         return list.stream()
-                .map(p -> AdminResponse.of(p.getId(), p.getName(), p.getUsername(), p.getTel(), p.getCreateDate()))
+                .map(p -> AdminResponse.of(p.getId(), p.getName(), p.getUsername(), p.getRole().getDescription(), p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 }

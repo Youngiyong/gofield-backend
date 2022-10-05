@@ -6,9 +6,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum EAdminRole {
-    ROLE_ADMIN("관리자", "M"),
-    ROLE_CEO("대표", "C"),
-    ROLE_DEVELOP("개발팀" ,"D");
+    ROLE_ADMIN("주관리자", "A"),
+    ROLE_OPERATOR("운영자", "O");
 
     private String description;
     private String code;

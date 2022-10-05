@@ -5,6 +5,8 @@ import com.gofield.domain.rds.enums.EStatusFlag;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import static com.gofield.domain.rds.entity.user.QUser.user;
 
 @RequiredArgsConstructor
@@ -53,4 +55,37 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .where(user.uuid.eq(uuid))
                 .fetchOne();
     }
+
+    @Override
+    public int findUserActiveTotalCount() {
+        List<Long> userList = jpaQueryFactory
+                .select(user.id)
+                .from(user)
+                .where(user.status.eq(EStatusFlag.ACTIVE))
+                .fetch();
+
+        return userList.size();
+    }
+
+    @Override
+    public int findUserDeleteTotalCount() {
+        List<Long> userList = jpaQueryFactory
+                .select(user.id)
+                .from(user)
+                .where(user.status.eq(EStatusFlag.DELETE))
+                .fetch();
+
+        return userList.size();
+    }
+
+    @Override
+    public int findUserTotalCount() {
+        List<Long> userList = jpaQueryFactory
+                .select(user.id)
+                .from(user)
+                .fetch();
+
+        return userList.size();
+    }
+
 }

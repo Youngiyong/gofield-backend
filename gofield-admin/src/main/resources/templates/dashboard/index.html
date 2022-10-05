@@ -7,6 +7,17 @@
 <body>
 <div layout:fragment="content">
     대시보드
+    <br>
+    <tr>
+        <br>
+        <th>사용자수: </th> <td th:text="${data.userCount}"></td>
+        <br>
+        <th>주문건수: </th> <td th:text="${data.orderCount}"></td>
+        <br>
+        <th>취소건수: </th> <td th:text="${data.cancelCount}"></td>
+        <br>
+        <th>교환건수: </th> <td th:text="${data.exchangeCount}"></td>
+    </tr>
 </div>
 </body>
 </html>

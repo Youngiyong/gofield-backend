@@ -1,10 +1,16 @@
 package com.gofield.domain.rds.entity.admin.repository;
 
 import com.gofield.domain.rds.entity.admin.Admin;
+import com.gofield.domain.rds.projections.AdminInfoProjection;
+import com.gofield.domain.rds.projections.QAdminInfoProjection;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
 
 import static com.gofield.domain.rds.entity.admin.QAdmin.admin;
+import static com.gofield.domain.rds.entity.adminRole.QAdminRole.adminRole;
 
 @RequiredArgsConstructor
 public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
@@ -12,10 +18,65 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Admin loadByUsername(String username) {
+    public Admin findByUsername(String username) {
         return jpaQueryFactory
                 .selectFrom(admin)
                 .where(admin.username.eq(username))
                 .fetchOne();
+    }
+
+    @Override
+    public Admin findByAdminId(Long adminId) {
+        return jpaQueryFactory
+                .selectFrom(admin)
+                .where(admin.id.eq(adminId))
+                .fetchOne();
+    }
+
+    @Override
+    public List<AdminInfoProjection> findAllAdminInfoList(Pageable pageable) {
+        return jpaQueryFactory
+                .select(new QAdminInfoProjection(
+                        admin.id,
+                        admin.name,
+                        admin.username,
+                        admin.password,
+                        admin.tel,
+                        adminRole.role,
+                        admin.createDate))
+                .from(admin)
+                .innerJoin(adminRole)
+                .on(admin.adminRole.id.eq(adminRole.id))
+//                .limit(pageable.getPageSize())
+//                .offset(pageable.getOffset())
+                .fetch();
+    }
+
+    @Override
+    public AdminInfoProjection findAdminInfoProjectionById(Long id) {
+        return jpaQueryFactory
+                .select(new QAdminInfoProjection(
+                        admin.id,
+                        admin.name,
+                        admin.username,
+                        admin.password,
+                        admin.tel,
+                        adminRole.role,
+                        admin.createDate))
+                .from(admin)
+                .innerJoin(adminRole)
+                .on(admin.adminRole.id.eq(adminRole.id))
+                .where(admin.id.eq(id))
+                .fetchOne();
+    }
+
+    @Override
+    public List<Admin> findAllList(Pageable pageable) {
+        return jpaQueryFactory
+                .selectFrom(admin)
+//                .limit(pageable.getPageSize())
+//                .offset(pageable.getOffset())
+                .orderBy(admin.id.desc())
+                .fetch();
     }
 }

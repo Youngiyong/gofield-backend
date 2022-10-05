@@ -426,6 +426,7 @@ a:focus {
   -moz-transition: -moz-transform 0.3s ease-in-out, width 0.3s ease-in-out;
   -o-transition: -o-transform 0.3s ease-in-out, width 0.3s ease-in-out;
   transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
+  background: black;
 }
 @media (max-width: 767px) {
   .main-sidebar,
@@ -510,6 +511,7 @@ a:focus {
   list-style: none;
   margin: 0;
   padding: 0;
+  background: white;
 }
 .sidebar-menu > li {
   position: relative;

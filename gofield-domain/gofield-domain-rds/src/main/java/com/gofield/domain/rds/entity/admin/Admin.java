@@ -1,5 +1,6 @@
 package com.gofield.domain.rds.entity.admin;
 
+import com.gofield.common.utils.EncryptUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.adminRole.AdminRole;
@@ -45,21 +46,26 @@ public class Admin extends BaseTimeEntity {
     @Column(name = "status_flag", nullable = false, length = 20)
     private EStatusFlag status;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "role_id")
     private AdminRole adminRole;
 
-    public static Admin newInstance(String name, String username, String password, String email, String tel, AdminRole adminRole) {
+    public static Admin newInstance(String name, String username, String password, String tel, AdminRole adminRole) {
         return Admin.builder()
                 .name(name)
                 .username(username)
                 .password(password)
-                .email(email)
                 .tel(tel)
                 .adminRole(adminRole)
                 .status(EStatusFlag.ACTIVE)
                 .uuid(RandomUtils.makeRandomUuid())
                 .build();
+    }
+
+    public void update(String password, String name, String tel){
+        this.password =  password != null ? password: this.password;
+        this.name =  name != null ? name : this.name;
+        this.tel =  tel != null ? tel : this.tel;
     }
 
 }

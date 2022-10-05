@@ -10,4 +10,8 @@ public interface UserRepositoryCustom {
     User findByUuid(String uuid);
     User findByUuidAndStatusActive(String uuid);
     Long findIdByUuidAndStatusActive(String uuid);
+
+    int findUserActiveTotalCount();
+    int findUserDeleteTotalCount();
+    int findUserTotalCount();
 }

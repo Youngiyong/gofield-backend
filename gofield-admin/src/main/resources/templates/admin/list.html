@@ -1,23 +1,16 @@
 <!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="layout">
 <head>
     <title>Admin</title>
 </head>
 <body>
-<section layout:fragment="header">
-    <h1>Clients</h1>
-<ol class="breadcrumb">
-    <li><a href="/"><i class="fa fa-dashboard"></i> Dashboard</a></li>
-    <li class="active">Clients</li>
-</ol>
-</section>
 <div layout:fragment="content">
     <div class="box">
         <div class="box-header with-border">
-            <h3 class="box-title">Lists</h3>
+            <h3 class="box-title">관리자 목록</h3>
             <div class="box-tools pull-right">
-                <a href="/customers/add" type="button" class="btn btn-box-tool"><i class="fa fa-plus"></i></a>
+                <a href="/admin/add" type="button" class="btn btn-box-tool"><i class="fa fa-plus"></i></a>
                 <br clear="all" />
             </div>
         </div>
@@ -27,33 +20,33 @@
                     <th>id</th>
                     <th>아이디</th>
                     <th>이름</th>
-                    <th>전화번호</th>
+                    <th>등급</th>
                     <th>등록 날짜</th>
                 </tr>
                 <tr th:each="data : ${list}">
                     <td th:text="${data.id}"></td>
                     <td th:text="${data.username}"></td>
                     <td th:text="${data.name}"></td>
-                    <td th:text="${data.tel}"></td>
+                    <td th:text="${data.role}"></td>
                     <td th:text="${data.createDate}"></td>
                     <!--  <td th:text="${row.firstname + ' ' + row.lastname}"></td>-->
 <!--                    <td th:text="${#dates.format(data.createDate, 'dd/MM/yyyy')}"></td>&ndash;&gt;-->
                     <td>
-                        <a th:href="${'/admin/edit/' + row.id}">수정</a> |
-                        <a th:href="${'/admin/delete/' + row.id}">삭제</a>
+                        <a th:href="${'/admin/edit/' + data.id}">수정</a> |
+                        <a th:href="${'/admin/delete/' + data.id}">삭제</a>
                     </td>
                 </tr>
             </table>
         </div>
-        <div class="box-footer clearfix">
-            <ul class="pagination pagination-sm no-margin pull-right">
-                <li><a href="/customers/1">First</a></li>
-                <li th:each="p : ${#numbers.sequence(1, endIndex/beginIndex)}" th:class="${p == currentIndex} ? 'active' : ''">
-                    <a th:href="${'/admin/' + p}" th:text="${p}"></a>
-                </li>
-                <li><a th:href="${'/admin/' + endIndex}">Last</a></li>
-            </ul>
-        </div>
+<!--        <div class="box-footer clearfix">-->
+<!--            <ul class="pagination pagination-sm no-margin pull-right">-->
+<!--                <li><a href="/customers/1">First</a></li>-->
+<!--                <li th:each="p : ${#numbers.sequence(1, endIndex/beginIndex)}" th:class="${p == currentIndex} ? 'active' : ''">-->
+<!--                    <a th:href="${'/admin/' + p}" th:text="${p}"></a>-->
+<!--                </li>-->
+<!--                <li><a th:href="${'/admin/' + endIndex}">Last</a></li>-->
+<!--            </ul>-->
+<!--        </div>-->
     </div>
 </div>
 </body>

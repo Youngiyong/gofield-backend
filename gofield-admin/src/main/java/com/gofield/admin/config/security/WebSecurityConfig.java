@@ -1,16 +1,15 @@
 package com.gofield.admin.config.security;
 
-import com.gofield.admin.service.AdminService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 
 @Configuration
@@ -18,40 +17,60 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public PasswordEncoder encoder() { return new BCryptPasswordEncoder(); }
-
-    private final AdminService adminService;
+    @Override
+    public void configure(WebSecurity webSecurity) throws Exception {
+        webSecurity.ignoring().antMatchers(
+                "/v2/api-docs",
+                "/configuration/ui",
+                "/swagger-resources/**",
+                "/configuration/security",
+                "/swagger-ui/**",
+                "/bootstrap/**",
+                "/dist/**",
+                "/plugins/**",
+                "/vue/**",
+                "/swagger-ui.html",
+                "/webjars/**");
+    }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers("/bootstrap/**", "/dist/**", "/plugins/**", "/vue/**").permitAll()
-                .antMatchers("/login").permitAll() // 누구나 접근 허용
+        // CSRF 설정 Disable
+        http.csrf().disable()
+                .headers()
+                .frameOptions()
+                .sameOrigin()
+
+                .and()
+                .cors().configurationSource(corsConfigurationSource())
+
+                .and()
+                .authorizeRequests()
+                .antMatchers("/login").permitAll()
+                .antMatchers("/").permitAll()
+                .antMatchers("/dashboard").permitAll()
+                .antMatchers("/admin/**").permitAll()
                 .antMatchers("/franchisees/**").permitAll()
                 .antMatchers("/tags/**").permitAll()
-                .antMatchers("/").hasAnyRole("MEMBER", "ADMIN")
                 .antMatchers("/users").hasRole("ADMIN")
-                .anyRequest().authenticated()
-                .and()
-            .formLogin()
-                .failureUrl("/login?error")
-                .loginPage("/login")
-                .defaultSuccessUrl("/dashboard")
-                .permitAll()
-                .and()
-            .logout()
-                .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
-                .logoutSuccessUrl("/login")
-                .permitAll()
-                .and().csrf().disable();
-
+                .anyRequest().authenticated();
 
     }
 
-    public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(adminService)
-                .passwordEncoder(new BCryptPasswordEncoder());
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("http://localhost:9600");
+        configuration.addAllowedOrigin("http://admin.gofield.shop");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+
+        return source;
     }
 
 }
