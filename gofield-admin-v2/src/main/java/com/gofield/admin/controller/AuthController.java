@@ -1,22 +1,20 @@
 package com.gofield.admin.controller;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-/**
- * Created by IntelliJ IDEA.
- * Project : springboot-adminlte3
- * User: hendisantika
- * Email: hendisantika@gmail.com
- * Telegram : @hendisantika34
- * Date: 25/11/20
- * Time: 08.40
- */
+import javax.servlet.http.HttpSession;
+import java.security.Principal;
+
+
 @Controller
-public class WebPageController {
+@RequiredArgsConstructor
+public class AuthController {
     @GetMapping("/")
-    public String index() {
+    public String index(HttpSession session, Principal principal) {
+        session.setAttribute("username", principal.getName());
         return "dashboard";
     }
 

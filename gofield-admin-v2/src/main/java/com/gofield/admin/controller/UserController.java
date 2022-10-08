@@ -2,29 +2,27 @@ package com.gofield.admin.controller;
 
 import com.gofield.domain.rds.entity.admin.Admin;
 import com.gofield.domain.rds.entity.admin.AdminRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-/**
- * Created by IntelliJ IDEA.
- * Project : springboot-adminlte3
- * User: hendisantika
- * Email: hendisantika@gmail.com
- * Telegram : @hendisantika34
- * Date: 25/11/20
- * Time: 08.41
- */
+import javax.servlet.http.HttpSession;
+import java.security.Principal;
+
 @Controller
-public class AdminPageController {
+@RequiredArgsConstructor
+public class UserController {
     @Autowired
     private AdminRepository adminRepository;
 
     @GetMapping({"/user/list", "/admin/user"})
-    public String listUser() {
-        return "user-list";
+    public String listUser(Model model, HttpSession session, Principal principal) {
+        session.setAttribute("username", principal.getName());
+        model.addAttribute("users", adminRepository.findAll());
+        return "user/list";
     }
 
     @GetMapping("/user/list2")

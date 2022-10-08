@@ -25,6 +25,6 @@ public class UserDetailServiceImpl implements UserDetailsService {
         Admin admin =  adminRepository.findByUsername(username);
         List<GrantedAuthority> authorities = new ArrayList<>();
         authorities.add(new SimpleGrantedAuthority(admin.getAdminRole().getRole().name()));
-        return new User(admin.getUsername(), admin.getPassword(), authorities);
+        return new User(admin.getName(), admin.getPassword(), authorities);
     }
 }
