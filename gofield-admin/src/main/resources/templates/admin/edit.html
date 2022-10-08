@@ -6,7 +6,7 @@
 </head>
 <body>
 <section layout:fragment="header">
-    <h1>Customer registration</h1>
+    <h1>관리자 수정</h1>
     <ol class="breadcrumb">
         <li><a href="/"><i class="fa fa-dashboard"></i>대시보드</a></li>
         <li class="active">관리자 등록</li>
@@ -17,7 +17,7 @@
         <div class="box-header with-border">
             <h3 class="box-title">관리자 정보 입력</h3>
             <div class="box-tools pull-right">
-                <a href="/customers" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
+                <a href="/admin" type="button" class="btn btn-box-tool"><i class="fa fa-list-ul"></i></a>
             </div>
         </div>
         <form data-toggle="validator" role="form" th:object="${admin}" th:action="@{/admin/save}" method="post">
