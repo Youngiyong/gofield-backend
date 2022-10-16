@@ -88,7 +88,7 @@ public class ThirdPartyService {
         } else if(social.equals(ESocialFlag.NAVER)){
             redirectUrl = NAVER_AUTH_URL + "?response_type=code&client_id=" +
                     NAVER_CLIENT_ID + "&redirect_uri=" +
-                    NAVER_CLIENT_SECRET + "&state=" + state;
+                    AUTH_CALLBACK_URL + "&state=" + state;
         }
 
         StateLog stateLog = StateLog.newInstance(state, social, environment);
@@ -100,12 +100,12 @@ public class ThirdPartyService {
         if(social.equals(ESocialFlag.KAKAO)){
             KaKaoTokenRequest request = KaKaoTokenRequest.of(code, KAKAO_CLIENT_ID, KAKAO_CLIENT_SECRET, AUTH_CALLBACK_URL);
             KaKaoTokenResponse tokenResponse = kaKaoAuthApiClient.getToken(request);
-            KaKaoProfileResponse profileResponse = kaKaoAuthApiClient.getProfileInfo("bearer " + tokenResponse.getAccessToken());
+            KaKaoProfileResponse profileResponse = kaKaoAuthApiClient.getProfileInfo("bearer " + tokenResponse.getAccess_token());
             return SocialAuthentication.of(profileResponse.getId(), profileResponse.getNickName());
         } else if(social.equals(ESocialFlag.NAVER)) {
-            NaverTokenRequest request = NaverTokenRequest.of(code, NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, AUTH_CALLBACK_URL);
+            NaverTokenRequest request = NaverTokenRequest.of(NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, code, state);
             NaverTokenResponse tokenResponse = naverAuthApiClient.getToken(request);
-            NaverProfileResponse profileResponse = naverProfileApiClient.getProfileInfo("bearer " + tokenResponse.getAccessToken());
+            NaverProfileResponse profileResponse = naverProfileApiClient.getProfileInfo("bearer " + tokenResponse.getAccess_token());
             return SocialAuthentication.of(profileResponse.getResponse().getId(), null);
         } else {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 소셜 로그인입니다.");

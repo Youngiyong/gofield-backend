@@ -43,6 +43,6 @@ public class KaKaoProfileResponse {
     @NoArgsConstructor
     private static class KaKaoAccountProfile {
         private String nickname;
-        public KaKaoAccountProfile(String nickName){ this.nickname = nickname; }
+        public KaKaoAccountProfile(String nickname){ this.nickname = nickname; }
     }
 }

@@ -11,22 +11,23 @@ import lombok.ToString;
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class NaverTokenRequest {
-    private String grantType;
-    private String clientId;
-    private String redirectUri;
+    private String grant_type;
+    private String client_id;
     private String code;
-    private String clientSecret;
 
-    private NaverTokenRequest(String code, String clientId, String clientSecret, String redirectUri){
-        this.grantType = "authorization_code";
+    private String state;
+    private String client_secret;
+
+    private NaverTokenRequest(String client_id, String client_secret, String code, String state){
+        this.grant_type = "authorization_code";
+        this.client_id = client_id;
+        this.client_secret = client_secret;
         this.code = code;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.redirectUri = redirectUri;
+        this.state = state;
     }
 
-    public static NaverTokenRequest of(String code, String clientId, String clientSecret, String redirectUri){
-        return new NaverTokenRequest(code, clientId, clientSecret, redirectUri);
+    public static NaverTokenRequest of(String clientId, String clientSecret, String code, String state){
+        return new NaverTokenRequest(clientId, clientSecret, code, state);
     }
 
 }

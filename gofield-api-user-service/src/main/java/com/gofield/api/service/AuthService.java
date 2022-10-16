@@ -109,8 +109,6 @@ public class AuthService {
 
     @Transactional
     public LoginResponse login(LoginRequest request, String secret){
-        String uniqueId = null;
-        String nickName = null;
         Boolean isFirst = false;
 
         HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -127,9 +125,9 @@ public class AuthService {
 
         UserSns userSns = userSnsRepository.findByUniQueIdAndRoute(socialAuthentication.getUniqueId(), request.getSocial());
         if(userSns==null){
-            User saveUser = User.newInstance(RandomUtils.makeRandomUuid(), nickName==null ? "신규고객" : nickName);
+            User saveUser = User.newInstance(RandomUtils.makeRandomUuid(), socialAuthentication.getNickName()==null ? "신규고객" : socialAuthentication.getNickName());
             userRepository.save(saveUser);
-            UserSns saveSns = UserSns.newInstance(saveUser, uniqueId, ESocialFlag.KAKAO);
+            UserSns saveSns = UserSns.newInstance(saveUser, socialAuthentication.getUniqueId(), request.getSocial());
             userSnsRepository.save(saveSns);
             userSns = saveSns;
         }

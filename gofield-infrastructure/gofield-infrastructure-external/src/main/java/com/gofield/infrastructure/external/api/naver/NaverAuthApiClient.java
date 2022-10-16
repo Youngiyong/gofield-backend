@@ -4,9 +4,9 @@ import com.gofield.infrastructure.external.api.naver.config.NaverAuthFeignConfig
 import com.gofield.infrastructure.external.api.naver.dto.request.NaverTokenRequest;
 import com.gofield.infrastructure.external.api.naver.dto.response.NaverTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-
 
 @FeignClient(
     name = "NaverAuthApiClient",
@@ -17,6 +17,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 )
 public interface NaverAuthApiClient {
 
-    @PostMapping("${external.client.naver.token.url}")
+    @PostMapping(value = "${external.client.naver.token.url}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     NaverTokenResponse getToken(@RequestBody NaverTokenRequest request);
 }
