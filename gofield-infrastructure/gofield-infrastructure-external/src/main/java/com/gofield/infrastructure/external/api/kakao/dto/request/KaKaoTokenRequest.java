@@ -1,7 +1,5 @@
 package com.gofield.infrastructure.external.api.kakao.dto.request;
 
-import com.fasterxml.jackson.databind.PropertyNamingStrategy;
-import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -9,24 +7,23 @@ import lombok.ToString;
 @ToString
 @Getter
 @NoArgsConstructor
-@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
 public class KaKaoTokenRequest {
-    private String grantType;
-    private String clientId;
-    private String redirectUri;
+    private String grant_type;
+    private String client_id;
+    private String redirect_uri;
     private String code;
-    private String clientSecret;
+    private String client_secret;
 
-    private KaKaoTokenRequest(String code, String clientId, String clientSecret, String redirectUri){
-        this.grantType = "authorization_code";
+    private KaKaoTokenRequest(String client_id, String redirect_uri, String code, String client_secret){
+        this.grant_type = "authorization_code";
+        this.client_id = client_id;
+        this.redirect_uri = redirect_uri;
         this.code = code;
-        this.clientId = clientId;
-        this.clientSecret = clientSecret;
-        this.redirectUri = redirectUri;
+        this.client_secret = client_secret;
     }
 
-    public static KaKaoTokenRequest of(String code, String clientId, String clientSecret, String redirectUri){
-        return new KaKaoTokenRequest(code, clientId, clientSecret, redirectUri);
+    public static KaKaoTokenRequest of(String client_id, String redirect_uri, String code, String client_secret){
+        return new KaKaoTokenRequest(client_id, redirect_uri, code, client_secret);
     }
 
 }

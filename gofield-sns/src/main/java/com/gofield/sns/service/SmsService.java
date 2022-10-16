@@ -1,12 +1,10 @@
 package com.gofield.sns.service;
 
 import com.gofield.common.exception.InternalServerException;
-import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.infrastructure.external.api.naver.NaverSnsApiClient;
 import com.gofield.infrastructure.external.api.naver.dto.request.NaverSmsRequest;
-import com.gofield.infrastructure.external.api.naver.dto.response.NaverSmsResponse;
 import com.gofield.sns.model.request.SmsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

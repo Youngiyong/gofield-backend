@@ -64,48 +64,18 @@ public class AuthService {
     private final UserService userService;
     private final TermRepository termRepository;
     private final UserRepository userRepository;
-    private final DeviceRepository deviceRepository;
     private final UserSnsRepository userSnsRepository;
     private final CategoryRepository categoryRepository;
     private final UserWebWebTokenRepository userWebTokenRepository;
-    private final UserAccessRepository userAccessRepository;
-    private final DeviceModelRepository deviceModelRepository;
     private final UserHasTermRepository userHasTermRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserWebWebAccessLogRepository userWebAccessLogRepository;
-    private final UserHasDeviceRepository userHasDeviceRepository;
     private final UserHasCategoryRepository userHasCategoryRepository;
     private final UserClientDetailRepository userClientDetailRepository;
 
     private final TokenUtil tokenUtil;
 
     private final ThirdPartyService thirdPartyService;
-
-
-//    @Transactional
-//    public TokenResponse loginAuto(LoginAutoRequest request){
-//        Device device = deviceRepository.findByDeviceKey(request.getDeviceKey());
-//        if(device==null){
-//            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("<%s> 존재하지 않는 디바이스키입니다.", request.getDeviceKey()));
-//        }
-//        UserAccess userAccess = userAccessRepository.findByDeviceIdAndAccessKey(device.getId(), request.getAccessKey());
-//        if(userAccess==null){
-//            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.NONE, String.format("<%s> 일치하지 않는 엑세스키입니다.", request.getAccessKey()));
-//        }
-//        UserToken userToken = userTokenRepository.findByAccessId(userAccess.getId());
-//        UserClientDetail userClientDetail = userToken.getClient();
-//        Authentication authentication = getAuthentication(userAccess.getUser().getUuid(), userAccess.getUser().getId() , Constants.TOKEN_ISSUER);
-//        TokenResponse token = tokenUtil.generateToken(authentication, userClientDetail.getAccessTokenValidity(), userClientDetail.getRefreshTokenValidity());
-//        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
-//        //토큰 테이블을 날릴경우 Null일 수 있음
-//        if(userToken==null){
-//            userToken = UserToken.newInstance(userClientDetail, userToken.getUser(), userAccess, token.getRefreshToken(), refreshExpireDate);
-//            userTokenRepository.save(userToken);
-//        } else {
-//            userToken.updateToken(token.getRefreshToken(), refreshExpireDate);
-//        }
-//        return token;
-//    }
 
     @Transactional
     public LoginResponse login(LoginRequest request, String secret){
@@ -195,7 +165,6 @@ public class AuthService {
                 }
             }
         }
-
         user.updateSign(request.getEmail(), request.getWeight(), request.getHeight());
     }
 
@@ -208,11 +177,12 @@ public class AuthService {
     }
 
     @Transactional
-    public void logout(String accessKey){
-        UserAccess userAccess = userAccessRepository.findByAccessKey(accessKey);
-        userWebTokenRepository.delete(userAccess.getId());
-        userAccessRepository.delete(userAccess);
+    public void logout(String Authorization){
+        String accessToken = tokenUtil.resolveToken(Authorization);
+        UserWebToken userWebToken = userWebTokenRepository.findByAccessToken(accessToken);
+        userWebTokenRepository.delete(userWebToken);
     }
+
     @Transactional
     public TokenResponse refresh(TokenRefreshRequest request){
         UserWebToken userWebToken = userWebTokenRepository.findByRefreshToken(request.getRefreshToken());
@@ -220,6 +190,9 @@ public class AuthService {
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 로그아웃됩니다.");
         }
         User resultUser = userRepository.findByIdAndStatusActive(userWebToken.getUser().getId());
+        if(resultUser==null){
+            throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 강제 로그아웃됩니다.");
+        }
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userWebToken.getClient().getId());
         Authentication authentication = getAuthentication(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());

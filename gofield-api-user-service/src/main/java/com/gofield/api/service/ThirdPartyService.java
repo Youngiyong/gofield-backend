@@ -4,6 +4,7 @@ import com.gofield.api.dto.SocialAuthentication;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.utils.HttpUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.entity.stateLog.StateLog;
 import com.gofield.domain.rds.entity.stateLog.StateLogRepository;
@@ -20,7 +21,6 @@ import com.gofield.infrastructure.external.api.naver.dto.response.NaverProfileRe
 import com.gofield.infrastructure.external.api.naver.dto.response.NaverTokenResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.auth.AUTH;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -55,12 +55,10 @@ public class ThirdPartyService {
     @Value("${auth.front_service_redirect_url}")
     private String AUTH_FRONT_SERVICE_REDIRECT_URL;
 
-    private final NaverAuthApiClient naverAuthApiClient;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
-
+    private final NaverAuthApiClient naverAuthApiClient;
     private final NaverProfileApiClient naverProfileApiClient;
     private final StateLogRepository stateLogRepository;
-
 
 
     public String callbackAuth(String code, String state){
@@ -98,14 +96,14 @@ public class ThirdPartyService {
 
     public SocialAuthentication getAuthentication(String state, String code, ESocialFlag social){
         if(social.equals(ESocialFlag.KAKAO)){
-            KaKaoTokenRequest request = KaKaoTokenRequest.of(code, KAKAO_CLIENT_ID, KAKAO_CLIENT_SECRET, AUTH_CALLBACK_URL);
+            KaKaoTokenRequest request = KaKaoTokenRequest.of(KAKAO_CLIENT_ID, AUTH_CALLBACK_URL, code, KAKAO_CLIENT_SECRET);
             KaKaoTokenResponse tokenResponse = kaKaoAuthApiClient.getToken(request);
-            KaKaoProfileResponse profileResponse = kaKaoAuthApiClient.getProfileInfo("bearer " + tokenResponse.getAccess_token());
+            KaKaoProfileResponse profileResponse = kaKaoAuthApiClient.getProfileInfo(HttpUtils.withBearerToken(tokenResponse.getAccess_token()));
             return SocialAuthentication.of(profileResponse.getId(), profileResponse.getNickName());
         } else if(social.equals(ESocialFlag.NAVER)) {
             NaverTokenRequest request = NaverTokenRequest.of(NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, code, state);
             NaverTokenResponse tokenResponse = naverAuthApiClient.getToken(request);
-            NaverProfileResponse profileResponse = naverProfileApiClient.getProfileInfo("bearer " + tokenResponse.getAccess_token());
+            NaverProfileResponse profileResponse = naverProfileApiClient.getProfileInfo(HttpUtils.withBearerToken(tokenResponse.getAccess_token()));
             return SocialAuthentication.of(profileResponse.getResponse().getId(), null);
         } else {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 소셜 로그인입니다.");
