@@ -3,29 +3,26 @@ package com.gofield.admin.dto.response;
 import lombok.*;
 import org.springframework.data.domain.Page;
 
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
 @ToString
 @Getter
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public class PaginationResponse<T> {
-    private int size;
-    private int currentPages;
-    private int currentElements;
-    private int totalPages;
-    private Long totalElements;
-    private Boolean last;
-    private Boolean first;
-    private Boolean empty;
+
+    private Page<T> data;
+    private int totalPage;
+    private List<Integer> pageNumber;
 
     private PaginationResponse(Page<T> page){
-        this.size = page.getSize();
-        this.currentPages = page.getNumber()+1;
-        this.currentElements = page.getNumberOfElements();
-        this.totalPages = page.getTotalPages();
-        this.totalElements = page.getTotalElements();
-        this.last = page.isLast();
-        this.first = page.isFirst();
-        this.empty = page.isEmpty();
+        this.data = page;
+        this.totalPage = page.getTotalPages();
+        this.pageNumber = IntStream.rangeClosed(1, totalPage)
+                .boxed()
+                .collect(Collectors.toList());
     }
 
     public static PaginationResponse of(Page page){

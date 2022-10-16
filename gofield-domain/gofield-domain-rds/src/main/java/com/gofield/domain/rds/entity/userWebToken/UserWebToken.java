@@ -17,7 +17,7 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "user_token")
+@Table(	name = "user_web_token")
 public class UserToken extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
@@ -28,29 +28,28 @@ public class UserToken extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "access_id")
-    private UserAccess access;
-
+    @Column(length = 312)
+    private String accessToken;
     @Column(length = 36)
     private String refreshToken;
 
     @Column
     private LocalDateTime expireDate;
 
-    private UserToken(UserClientDetail client, User user, UserAccess access, String refreshToken, LocalDateTime expireDate){
+    private UserToken(UserClientDetail client, User user, String accessToken, String refreshToken, LocalDateTime expireDate){
         this.client = client;
         this.user = user;
-        this.access = access;
+        this.accessToken = accessToken;
         this.refreshToken = refreshToken;
         this.expireDate = expireDate;
     }
 
-    public static UserToken newInstance(UserClientDetail client, User user, UserAccess access, String refreshToken, LocalDateTime expireDate){
-        return new UserToken(client, user, access, refreshToken, expireDate);
+    public static UserToken newInstance(UserClientDetail client, User user, String accessToken, String refreshToken, LocalDateTime expireDate){
+        return new UserToken(client, user, accessToken, refreshToken, expireDate);
     }
 
-    public void updateToken(String refreshToken, LocalDateTime expireDate) {
+    public void updateToken(String accessToken, String refreshToken, LocalDateTime expireDate) {
+        this.accessToken = accessToken != null ? accessToken : this.accessToken;
         this.refreshToken = refreshToken != null ? refreshToken : this.refreshToken;
         this.expireDate = expireDate;
     }

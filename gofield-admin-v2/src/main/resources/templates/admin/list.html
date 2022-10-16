@@ -42,66 +42,85 @@
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th style="width: 10px">#</th>
-                                    <th>Task</th>
-                                    <th>Progress</th>
-                                    <th style="width: 40px">Label</th>
+                                    <th>id</th>
+                                    <th>아이디</th>
+                                    <th>이름</th>
+                                    <th>등급</th>
+                                    <th>등록 날짜</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>Update software</td>
+                                <tr th:each="data : ${page.content}">
+                                    <td th:text="${data.id}"></td>
+                                    <td th:text="${data.username}"></td>
+                                    <td th:text="${data.name}"></td>
+                                    <td th:text="${data.role}"></td>
+                                    <td th:text="${data.createDate}"></td>
                                     <td>
-                                        <div class="progress progress-xs">
-                                            <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                                        </div>
+                                        <a class="btn btn-primary" role="button" th:href="${'/edit/'+data.id}"><span>수정</span></a>
+                                        <a class="btn btn-danger" role="button" th:href="${'/delete/'+data.id}"><span>삭제</span></a>
                                     </td>
-                                    <td><span class="badge bg-danger">55%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>2.</td>
-                                    <td>Clean database</td>
-                                    <td>
-                                        <div class="progress progress-xs">
-                                            <div class="progress-bar bg-warning" style="width: 70%"></div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-warning">70%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>3.</td>
-                                    <td>Cron job running</td>
-                                    <td>
-                                        <div class="progress progress-xs progress-striped active">
-                                            <div class="progress-bar bg-primary" style="width: 30%"></div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-primary">30%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>4.</td>
-                                    <td>Fix and squish bugs</td>
-                                    <td>
-                                        <div class="progress progress-xs progress-striped active">
-                                            <div class="progress-bar bg-success" style="width: 90%"></div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-success">90%</span></td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
-                        <div class="card-footer clearfix">
-                            <ul class="pagination pagination-sm m-0 float-right">
-                                <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
+
+<!--                        <div th:if="${page.totalPages> 0}" class="pagination"-->
+<!--                             th:each="pageNumber : ${pageNumbers}">-->
+<!--                            <a th:href="@{/admin/list(size=${page.content.size}, page=${pageNumber})}"-->
+<!--                               th:text="${pageNumber}"-->
+<!--                               th:class="${pageNumber==page.number + 1} ? active"></a>-->
+<!--                        </div>-->
+
+                        <nav aria-label="Page navigation example ">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/?page=1}" aria-label="Previous">
+                                        <span aria-hidden="true">처음</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/?page={page} (page = ${pagination.prevBlock})}" aria-label="Previous">
+                                        <span aria-hidden="true">이전</span>
+                                    </a>
+                                </li>
+                                <th:block  th:with="start = ${pagination.startPage}, end = ${pagination.endPage}">
+                                    <li class="page-item"
+                                        th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
+                                        th:each="pageButton : ${#numbers.sequence(start, end)}">
+                                        <a class="page-link" th:href="@{/?page={page} (page = ${pageButton})}" th:text=${pageButton}></a>
+                                    </li>
+                                </th:block>
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{?page={page} (page = ${pagination.nextBlock})}" aria-label="Next">
+                                        <span aria-hidden="true">다음</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{?page={page} (page = ${pagination.totalPageCnt})}" aria-label="Previous">
+                                        <span aria-hidden="true">끝</span>
+                                    </a>
+                                </li>
                             </ul>
-                        </div>
+<!--                        <div class="card-footer clearfix">-->
+<!--&lt;!&ndash;                             th:if="${page.totalPages> 0}" class="pagination"&ndash;&gt;-->
+<!--&lt;!&ndash;                             th:each="pageNumber : ${pageNumbers}">&ndash;&gt;-->
+<!--                            <ul class="pagination pagination-sm m-0 float-right">-->
+<!--                                <li><a href="/admin/list">First</a></li>-->
+<!--&lt;!&ndash;                                <li th:each="p : ${#numbers.sequence(1, data.page.getEndPage/data.page.getStartPage)}" th:class="${p == data.page.getCurrentPage} ? 'active' : ''">&ndash;&gt;-->
+<!--                                    <li th:if="${page.totalPages> 0}" class="pagination"-->
+<!--                                         th:each="pageNumber : ${pageNumbers}">-->
+<!--                                    <a class = "page-link"-->
+<!--                                       th:href="@{/admin/list(size=${page.content.size}, page=${pageNumber})}"-->
+<!--                                       th:text="${pageNumber}"-->
+<!--                                       th:class="${pageNumber==page.number + 1} ? active"></a>-->
+
+<!--&lt;!&ndash;                                    <a class="page-link" th:href="${'/admin/list?page=' + p}" th:text="${p}"></a>&ndash;&gt;-->
+<!--                                </li>-->
+<!--                                <li class="page-item"><a th:href="${'/admin/list?page=' + data.page.getEndPage}">Last</a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
                     </div>
                     <!-- /.card -->
                 </div>

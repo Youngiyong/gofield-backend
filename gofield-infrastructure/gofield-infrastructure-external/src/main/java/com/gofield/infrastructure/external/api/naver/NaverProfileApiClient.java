@@ -1,6 +1,6 @@
 package com.gofield.infrastructure.external.api.naver;
 
-import com.gofield.infrastructure.external.api.naver.config.NaverProfileFeignConfig;
+import com.gofield.infrastructure.external.api.naver.config.NaverAuthFeignConfig;
 import com.gofield.infrastructure.external.api.naver.dto.response.NaverProfileResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -11,10 +11,10 @@ import org.springframework.web.bind.annotation.RequestHeader;
     name = "NaverAuthApiClient",
     url = "${external.client.naver.profile.base-url}",
     configuration = {
-        NaverProfileFeignConfig.class
+        NaverAuthFeignConfig.class
     }
 )
-public interface NaverProfileApiClient {
+public interface NaverAuthApiClient {
 
     @GetMapping("${external.client.naver.profile.url}")
     NaverProfileResponse getProfileInfo(@RequestHeader("Authorization") String accessToken);

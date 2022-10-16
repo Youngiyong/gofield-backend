@@ -1,6 +1,5 @@
-package com.gofield.admin.dto.response;
+package com.gofield.admin.dto.response.projection;
 
-import com.gofield.domain.rds.entity.admin.Admin;
 import com.gofield.domain.rds.projections.AdminInfoProjection;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,7 +11,7 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-public class AdminResponse {
+public class AdminInfoProjectionResponse {
     private Long id;
     private String name;
     private String username;
@@ -21,7 +20,7 @@ public class AdminResponse {
 
 
     @Builder
-    private AdminResponse(Long id, String name, String username, String role, LocalDateTime createDate){
+    private AdminInfoProjectionResponse(Long id, String name, String username, String role, LocalDateTime createDate){
         this.id = id;
         this.name = name;
         this.username = username;
@@ -29,8 +28,8 @@ public class AdminResponse {
         this.createDate = createDate;
     }
 
-    public static AdminResponse of(Long id, String name, String username, String role, LocalDateTime createDate){
-        return AdminResponse.builder()
+    public static AdminInfoProjectionResponse of(Long id, String name, String username, String role, LocalDateTime createDate){
+        return AdminInfoProjectionResponse.builder()
                 .id(id)
                 .name(name)
                 .username(username)
@@ -39,9 +38,9 @@ public class AdminResponse {
                 .build();
     }
 
-    public static List<AdminResponse> ofList(List<AdminInfoProjection> list){
+    public static List<AdminInfoProjectionResponse> ofList(List<AdminInfoProjection> list){
         return list.stream()
-                .map(p -> AdminResponse.of(p.getId(), p.getName(), p.getUsername(), p.getRole().getDescription(), p.getCreateDate()))
+                .map(p -> AdminInfoProjectionResponse.of(p.getId(), p.getName(), p.getUsername(), p.getRole().getDescription(), p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 }

@@ -1,40 +1,31 @@
 package com.gofield.admin.dto.response;
 
+import com.gofield.admin.dto.response.projection.AdminInfoProjectionResponse;
 import com.gofield.domain.rds.projections.AdminInfoProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 
 @Getter
 @NoArgsConstructor
 public class AdminInfoResponse {
-    private Long id;
-    private String name;
-    private String username;
 
-    private String password;
-    private String tel;
-    private String role;
+    private List<AdminInfoProjectionResponse> list;
+    private int totalElements;
 
     @Builder
-    private AdminInfoResponse(Long id, String name, String username, String password, String tel, String role){
-        this.id = id;
-        this.name = name;
-        this.username = username;
-        this.password = password;
-        this.tel = tel;
-        this.role = role;
+    private AdminInfoResponse(List<AdminInfoProjectionResponse> list, int totalElements){
+        this.list = list;
+        this.totalElements = totalElements;
     }
 
-    public static AdminInfoResponse of(AdminInfoProjection projection){
+    public static AdminInfoResponse of(List<AdminInfoProjectionResponse> list, int totalElements){
         return AdminInfoResponse.builder()
-                .id(projection.getId())
-                .name(projection.getName())
-                .username(projection.getUsername())
-                .password("")
-                .tel(projection.getTel())
-                .role(projection.getRole().getDescription())
+                .list(list)
+                .totalElements(totalElements)
                 .build();
     }
 

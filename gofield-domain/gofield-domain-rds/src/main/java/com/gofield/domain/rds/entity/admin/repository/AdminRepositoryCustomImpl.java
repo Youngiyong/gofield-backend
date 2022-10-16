@@ -5,6 +5,8 @@ import com.gofield.domain.rds.projections.AdminInfoProjection;
 import com.gofield.domain.rds.projections.QAdminInfoProjection;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -34,8 +36,8 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public List<AdminInfoProjection> findAllAdminInfoList(Pageable pageable) {
-        return jpaQueryFactory
+    public Page<AdminInfoProjection> findAllAdminInfoList(Pageable pageable) {
+        List<AdminInfoProjection> content = jpaQueryFactory
                 .select(new QAdminInfoProjection(
                         admin.id,
                         admin.name,
@@ -47,9 +49,19 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 .from(admin)
                 .innerJoin(adminRole)
                 .on(admin.adminRole.id.eq(adminRole.id))
-//                .limit(pageable.getPageSize())
-//                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .orderBy(admin.id.desc())
                 .fetch();
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(admin.id)
+                .from(admin)
+                .innerJoin(adminRole)
+                .on(admin.adminRole.id.eq(adminRole.id))
+                .fetch();
+
+        return new PageImpl<>(content, pageable, totalCount.size());
     }
 
     @Override

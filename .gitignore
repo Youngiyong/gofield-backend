@@ -38,7 +38,9 @@ out/
 
 generated/
 
-application.yml
+application-local.yml
+application-dev.yml
+application-prod.yml
 application-rds.yml
 application-s3.yml
 application-sns.yml
