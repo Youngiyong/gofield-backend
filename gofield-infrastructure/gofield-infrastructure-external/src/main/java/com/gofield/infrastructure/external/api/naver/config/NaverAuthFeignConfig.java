@@ -7,7 +7,7 @@ import feign.Response;
 import feign.codec.ErrorDecoder;
 import org.springframework.context.annotation.Bean;
 
-public class NaverProfileFeignConfig {
+public class NaverAuthFeignConfig {
 
     @Bean
     public ErrorDecoder errorDecoder() {
@@ -15,7 +15,7 @@ public class NaverProfileFeignConfig {
     }
 
     /**
-     * <a href="https://developers.naver.com/docs/login/profile/profile.md">https://developers.naver.com/docs/login/profile/profile.md</a>
+     * <a href="https://developers.naver.com/docs/login/api/api.md</a>
      */
     private static class NaverAuthApiErrorDecoder implements ErrorDecoder {
 

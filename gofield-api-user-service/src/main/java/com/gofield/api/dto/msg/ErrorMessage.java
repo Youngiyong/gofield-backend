@@ -1,4 +1,4 @@
-package com.gofield.api.dto.message;
+package com.gofield.api.dto.msg;
 
 public class ErrorMessage {
 

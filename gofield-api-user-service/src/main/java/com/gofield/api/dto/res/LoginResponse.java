@@ -1,4 +1,4 @@
-package com.gofield.api.dto.response;
+package com.gofield.api.dto.res;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,7 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class LoginResponse {
     private Boolean isFirst;
-    private String accessKey;
     private String grantType;
     private String accessToken;
     private String refreshToken;
@@ -16,9 +15,8 @@ public class LoginResponse {
     private Long refreshTokenExpiresIn;
 
     @Builder
-    private LoginResponse(Boolean isFirst, String accessKey, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
+    private LoginResponse(Boolean isFirst, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
         this.isFirst = isFirst;
-        this.accessKey = accessKey;
         this.grantType = grantType;
         this.accessToken = accessToken;
         this.refreshToken = refreshToken;
@@ -26,10 +24,9 @@ public class LoginResponse {
         this.refreshTokenExpiresIn = refreshTokenExpiresIn;
     }
 
-    public static LoginResponse of(Boolean isFirst, String accessKey, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
+    public static LoginResponse of(Boolean isFirst, String grantType, String accessToken, String refreshToken, Long accessTokenExpiresIn, Long refreshTokenExpiresIn){
         return LoginResponse.builder()
                 .isFirst(isFirst)
-                .accessKey(accessKey)
                 .grantType(grantType)
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)

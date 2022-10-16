@@ -1,4 +1,4 @@
-package com.gofield.api.dto.request;
+package com.gofield.api.dto.req;
 
 import lombok.*;
 

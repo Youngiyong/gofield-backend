@@ -8,10 +8,10 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum ESocialFlag implements CodeEnum {
-    KAKAO("카카오", "K"),
-    NAVER( "네이버", "N"),
-    APPLE( "애플", "A");
+public enum EEnvironmentFlag implements CodeEnum {
+    LOCAL("로컬", "L"),
+    DEV( "개발", "D"),
+    PROD( "운영", "P");
 
     private String description;
     private String code;

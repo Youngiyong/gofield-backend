@@ -1,7 +1,7 @@
 package com.gofield.api.controller;
 
-import com.gofield.api.dto.request.UserRequest;
-import com.gofield.api.dto.response.UserProfileResponse;
+import com.gofield.api.dto.req.UserRequest;
+import com.gofield.api.dto.res.UserProfileResponse;
 import com.gofield.api.service.UserService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;

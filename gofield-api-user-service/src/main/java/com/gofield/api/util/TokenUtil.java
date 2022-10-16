@@ -3,7 +3,7 @@ package com.gofield.api.util;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.Claim;
 import com.auth0.jwt.interfaces.DecodedJWT;
-import com.gofield.api.dto.response.TokenResponse;
+import com.gofield.api.dto.res.TokenResponse;
 import com.gofield.common.exception.UnAuthorizedException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;

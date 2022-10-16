@@ -1,13 +1,13 @@
-package com.gofield.domain.rds.entity.userToken.repository;
+package com.gofield.domain.rds.entity.userWebToken.repository;
 
-import com.gofield.domain.rds.entity.userToken.UserToken;
+import com.gofield.domain.rds.entity.userWebToken.UserWebToken;
 
 import java.util.List;
 
-public interface UserTokenRepositoryCustom {
-    List<UserToken> findByUserId(Long userId);
+public interface UserWebTokenRepositoryCustom {
+    List<UserWebToken> findByUserId(Long userId);
 
-    UserToken findByRefreshToken(String refreshToken);
-    UserToken findByAccessId(Long accessId);
+    UserWebToken findByRefreshToken(String refreshToken);
+    UserWebToken findByAccessId(Long accessId);
     void delete(Long accessId);
 }

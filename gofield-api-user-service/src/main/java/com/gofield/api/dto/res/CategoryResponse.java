@@ -1,4 +1,4 @@
-package com.gofield.api.dto.response;
+package com.gofield.api.dto.res;
 
 import com.gofield.domain.rds.entity.category.Category;
 import lombok.Builder;

@@ -1,4 +1,4 @@
-package com.gofield.domain.rds.entity.userAccessLog.repository;
+package com.gofield.domain.rds.entity.userWebAccessLog.repository;
 
-public interface UserAccessLogRepositoryCustom {
+public interface UserWebAccessLogRepositoryCustom {
 }

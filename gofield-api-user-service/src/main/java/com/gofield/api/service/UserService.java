@@ -1,10 +1,10 @@
 package com.gofield.api.service;
 
 import com.gofield.api.config.resolver.UserUuidResolver;
-import com.gofield.api.dto.request.UserRequest;
-import com.gofield.api.dto.response.UserAccountResponse;
-import com.gofield.api.dto.response.UserAddressResponse;
-import com.gofield.api.dto.response.UserProfileResponse;
+import com.gofield.api.dto.req.UserRequest;
+import com.gofield.api.dto.res.UserAccountResponse;
+import com.gofield.api.dto.res.UserAddressResponse;
+import com.gofield.api.dto.res.UserProfileResponse;
 import com.gofield.common.exception.InternalRuleException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;

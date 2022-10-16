@@ -1,23 +1,22 @@
-package com.gofield.domain.rds.entity.serverStatus.repository;
+package com.gofield.domain.rds.entity.stateLog.repository;
 
-import com.gofield.domain.rds.entity.serverStatus.ServerStatus;
-import com.gofield.domain.rds.enums.EServerType;
+import com.gofield.domain.rds.entity.stateLog.StateLog;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 
-import static com.gofield.domain.rds.entity.serverStatus.QServerStatus.serverStatus;
+import static com.gofield.domain.rds.entity.stateLog.QStateLog.stateLog;
 
 @RequiredArgsConstructor
-public class ServerStatusRepositoryCustomImpl implements ServerStatusRepositoryCustom {
+public class StateLogRepositoryCustomImpl implements StateLogRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public ServerStatus findByServerType(EServerType serverType) {
+    public StateLog findByState(String state) {
         return jpaQueryFactory
-                .selectFrom(serverStatus)
-                .where(serverStatus.server.eq(serverType))
+                .selectFrom(stateLog)
+                .where(stateLog.state.eq(state))
                 .fetchOne();
     }
 }

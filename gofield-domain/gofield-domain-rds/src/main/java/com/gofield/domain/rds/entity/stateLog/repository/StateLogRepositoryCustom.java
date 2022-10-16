@@ -1,8 +1,8 @@
-package com.gofield.domain.rds.entity.stateLog;
+package com.gofield.domain.rds.entity.stateLog.repository;
 
-import com.gofield.domain.rds.entity.serverStatus.ServerStatus;
-import com.gofield.domain.rds.entity.serverStatus.repository.ServerStatusRepositoryCustom;
-import org.springframework.data.jpa.repository.JpaRepository;
 
-public interface StateLogRepository extends JpaRepository<ServerStatus, Long>, ServerStatusRepositoryCustom {
+import com.gofield.domain.rds.entity.stateLog.StateLog;
+
+public interface StateLogRepositoryCustom {
+    StateLog findByState(String state);
 }

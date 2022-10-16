@@ -1,4 +1,4 @@
-package com.gofield.api.dto.request;
+package com.gofield.api.dto.req;
 
 import com.gofield.domain.rds.enums.ESocialFlag;
 import lombok.*;
@@ -12,9 +12,11 @@ import javax.validation.constraints.NotNull;
 public class LoginRequest {
 
     @NotNull
-    private String token;
+    private String code;
+
     @NotNull
-    private String deviceKey;
+    private String state;
+
     @NotNull
     private ESocialFlag social;
 

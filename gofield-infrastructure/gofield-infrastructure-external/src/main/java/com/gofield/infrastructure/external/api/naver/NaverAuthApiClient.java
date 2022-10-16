@@ -1,23 +1,22 @@
 package com.gofield.infrastructure.external.api.naver;
 
-import com.gofield.infrastructure.external.api.naver.config.NaverProfileFeignConfig;
-import com.gofield.infrastructure.external.api.naver.dto.response.NaverProfileResponse;
+import com.gofield.infrastructure.external.api.naver.config.NaverAuthFeignConfig;
+import com.gofield.infrastructure.external.api.naver.dto.request.NaverTokenRequest;
+import com.gofield.infrastructure.external.api.naver.dto.response.NaverTokenResponse;
 import org.springframework.cloud.openfeign.FeignClient;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 
 
 @FeignClient(
     name = "NaverAuthApiClient",
-    url = "${external.client.naver.profile.base-url}",
+    url = "${external.client.naver.token.base-url}",
     configuration = {
-        NaverProfileFeignConfig.class
+        NaverAuthFeignConfig.class
     }
 )
-public interface NaverProfileApiClient {
+public interface NaverAuthApiClient {
 
-    @GetMapping("${external.client.naver.profile.url}")
-    NaverProfileResponse getProfileInfo(@RequestHeader("Authorization") String accessToken);
-
-
+    @PostMapping("${external.client.naver.token.url}")
+    NaverTokenResponse getToken(@RequestBody NaverTokenRequest request);
 }

@@ -1,20 +1,20 @@
-package com.gofield.domain.rds.entity.userToken.repository;
+package com.gofield.domain.rds.entity.userWebToken.repository;
 
-import com.gofield.domain.rds.entity.userToken.UserToken;
+import com.gofield.domain.rds.entity.userWebToken.UserWebToken;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
 
 import java.util.List;
 
-import static com.gofield.domain.rds.entity.userToken.QUserToken.userToken;
+import static com.gofield.domain.rds.entity.userWebToken.QUserToken.userToken;
 @RequiredArgsConstructor
-public class UserTokenRepositoryCustomImpl implements UserTokenRepositoryCustom {
+public class UserWebTokenRepositoryCustomImpl implements UserWebTokenRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public UserToken findByRefreshToken(String refreshToken) {
+    public UserWebToken findByRefreshToken(String refreshToken) {
         return jpaQueryFactory
                 .selectFrom(userToken)
                 .where(userToken.refreshToken.eq(refreshToken))
@@ -22,7 +22,7 @@ public class UserTokenRepositoryCustomImpl implements UserTokenRepositoryCustom 
     }
 
     @Override
-    public UserToken findByAccessId(Long accessId) {
+    public UserWebToken findByAccessId(Long accessId) {
         return jpaQueryFactory
                 .selectFrom(userToken)
                 .where(userToken.access.id.eq(accessId))
@@ -40,7 +40,7 @@ public class UserTokenRepositoryCustomImpl implements UserTokenRepositoryCustom 
 
 
     @Override
-    public List<UserToken> findByUserId(Long userId) {
+    public List<UserWebToken> findByUserId(Long userId) {
         return jpaQueryFactory
                 .selectFrom(userToken)
                 .where(userToken.user.id.eq(userId))

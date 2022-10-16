@@ -21,6 +21,7 @@ public class SearchService {
     private final TopKeywordRepository topKeywordRepository;
     private final UserKeywordRepository userKeywordRepository;
 
+
     @Transactional
     public void searchKeyword(String keyword){
         User user = userService.getUser();
@@ -43,4 +44,5 @@ public class SearchService {
             }
         }
     }
+
 }

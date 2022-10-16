@@ -37,7 +37,7 @@ out/
 .vscode/
 
 generated/
-
+application.yml
 application-local.yml
 application-dev.yml
 application-prod.yml

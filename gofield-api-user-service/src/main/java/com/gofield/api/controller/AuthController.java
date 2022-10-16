@@ -1,12 +1,12 @@
 package com.gofield.api.controller;
 
 
-import com.gofield.api.dto.request.LoginAutoRequest;
-import com.gofield.api.dto.request.LoginRequest;
-import com.gofield.api.dto.request.TokenRefreshRequest;
-import com.gofield.api.dto.request.SignupRequest;
-import com.gofield.api.dto.response.LoginResponse;
-import com.gofield.api.dto.response.TokenResponse;
+import com.gofield.api.dto.req.LoginAutoRequest;
+import com.gofield.api.dto.req.LoginRequest;
+import com.gofield.api.dto.req.TokenRefreshRequest;
+import com.gofield.api.dto.req.SignupRequest;
+import com.gofield.api.dto.res.LoginResponse;
+import com.gofield.api.dto.res.TokenResponse;
 import com.gofield.api.service.AuthService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -37,13 +37,6 @@ public class AuthController {
                                             @RequestHeader(defaultValue = "eyJjbGllbnRJZCI6Ill4WldiQ041ZHBmMEUxUk9lQVNDZHllSjd5bE44aFFDIn0=") @ApiParam(value = "{\"clientId\":\"YxZWbCN5dpf0E1ROeASCdyeJ7ylN8hQC\"} eyJjbGllbnRJZCI6IkNIRUVTRS1JT1MtQVBQIn0") String secret,
                                             @Valid @RequestBody LoginRequest request) {
         return ApiResponse.success(authService.login(request, secret));
-    }
-
-    @ApiOperation(value = "자동 로그인")
-    @PostMapping("/{version}/login/auto")
-    public ApiResponse<TokenResponse> loginAuth(@PathVariable("version") EApiVersion apiVersion,
-                                                @Valid @RequestBody LoginAutoRequest request) {
-        return ApiResponse.success(authService.loginAuto(request));
     }
 
     @ApiOperation(value = "토큰 갱신")

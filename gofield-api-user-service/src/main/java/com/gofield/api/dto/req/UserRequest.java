@@ -1,4 +1,4 @@
-package com.gofield.api.dto.request;
+package com.gofield.api.dto.req;
 
 import com.gofield.domain.rds.enums.EPlatformFlag;
 import io.swagger.annotations.ApiModelProperty;

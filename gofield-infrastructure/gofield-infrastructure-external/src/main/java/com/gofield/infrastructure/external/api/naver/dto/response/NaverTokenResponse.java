@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.external.api.kakao.dto.response;
+package com.gofield.infrastructure.external.api.naver.dto.response;
 
 import com.fasterxml.jackson.databind.PropertyNamingStrategy;
 import com.fasterxml.jackson.databind.annotation.JsonNaming;
@@ -10,7 +10,7 @@ import lombok.ToString;
 @Getter
 @NoArgsConstructor
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy.class)
-public class KaKaoTokenResponse {
+public class NaverTokenResponse {
     private String accessToken;
     private String tokenType;
     private String idToken;

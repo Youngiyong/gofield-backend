@@ -16,4 +16,17 @@ public class KaKaoTokenRequest {
     private String redirectUri;
     private String code;
     private String clientSecret;
+
+    private KaKaoTokenRequest(String code, String clientId, String clientSecret, String redirectUri){
+        this.grantType = "authorization_code";
+        this.code = code;
+        this.clientId = clientId;
+        this.clientSecret = clientSecret;
+        this.redirectUri = redirectUri;
+    }
+
+    public static KaKaoTokenRequest of(String code, String clientId, String clientSecret, String redirectUri){
+        return new KaKaoTokenRequest(code, clientId, clientSecret, redirectUri);
+    }
+
 }

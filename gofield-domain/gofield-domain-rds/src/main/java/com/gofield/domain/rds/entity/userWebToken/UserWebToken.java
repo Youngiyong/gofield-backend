@@ -1,9 +1,8 @@
 
-package com.gofield.domain.rds.entity.userToken;
+package com.gofield.domain.rds.entity.userWebToken;
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.user.User;
-import com.gofield.domain.rds.entity.userAccess.UserAccess;
 import com.gofield.domain.rds.entity.userClientDetail.UserClientDetail;
 import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
@@ -18,7 +17,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_web_token")
-public class UserToken extends BaseTimeEntity {
+public class UserWebToken extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "client_id")
@@ -36,7 +35,7 @@ public class UserToken extends BaseTimeEntity {
     @Column
     private LocalDateTime expireDate;
 
-    private UserToken(UserClientDetail client, User user, String accessToken, String refreshToken, LocalDateTime expireDate){
+    private UserWebToken(UserClientDetail client, User user, String accessToken, String refreshToken, LocalDateTime expireDate){
         this.client = client;
         this.user = user;
         this.accessToken = accessToken;
@@ -44,8 +43,8 @@ public class UserToken extends BaseTimeEntity {
         this.expireDate = expireDate;
     }
 
-    public static UserToken newInstance(UserClientDetail client, User user, String accessToken, String refreshToken, LocalDateTime expireDate){
-        return new UserToken(client, user, accessToken, refreshToken, expireDate);
+    public static UserWebToken newInstance(UserClientDetail client, User user, String accessToken, String refreshToken, LocalDateTime expireDate){
+        return new UserWebToken(client, user, accessToken, refreshToken, expireDate);
     }
 
     public void updateToken(String accessToken, String refreshToken, LocalDateTime expireDate) {

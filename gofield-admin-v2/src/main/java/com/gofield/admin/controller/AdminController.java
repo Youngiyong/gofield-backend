@@ -1,9 +1,7 @@
 package com.gofield.admin.controller;
 
 import com.gofield.admin.dto.response.AdminInfoResponse;
-import com.gofield.admin.dto.response.PaginationResponse;
 import com.gofield.admin.service.AdminService;
-import com.gofield.admin.util.Paginator;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -32,11 +30,6 @@ public class AdminController {
                             Principal principal) {
         session.setAttribute("username", principal.getName());
         AdminInfoResponse response =  adminService.findAdminList(pageable);
-        Paginator paginator = new Paginator(PAGES_PER_BLOCK, POSTS_PER_PAGE, response.getTotalElements());
-        Map<String, Object> pageInfo = paginator.getFixedBlock(pageable.getPageNumber());
-        model.addAttribute("pageInfo", pageInfo);
-        model.addAttribute("list", paginationResponse.getData());
-        model.addAttribute("pageNumbers", paginationResponse.getPageNumber());
         return "admin/list";
     }
 
