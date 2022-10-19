@@ -31,8 +31,8 @@ public class AdminService {
 
     @Transactional(readOnly = true)
     public List<AdminResponse> findAdminList() {
-        List<AdminInfoProjection> adminList = adminRepository.findAllAdminInfoList(null);
-        return AdminResponse.ofList(adminList);
+//        List<AdminInfoProjection> adminList = adminRepository.findAllAdminInfoList(null);
+        return AdminResponse.ofList(null);
     }
 
     @Transactional

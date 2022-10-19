@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -32,7 +33,7 @@ public class UserHasTerm {
     private Boolean isAgree;
 
     @Column
-    private ZonedDateTime createDate;
+    private LocalDateTime createDate;
 
     private UserHasTerm(User user, Term term){
         this.user = user;

@@ -1,18 +1,21 @@
 package com.gofield.api.service;
 
 import com.gofield.api.config.resolver.UserUuidResolver;
+import com.gofield.api.dto.enums.TermType;
 import com.gofield.api.dto.req.UserRequest;
-import com.gofield.api.dto.res.UserAccountResponse;
-import com.gofield.api.dto.res.UserAddressResponse;
-import com.gofield.api.dto.res.UserProfileResponse;
+import com.gofield.api.dto.res.*;
 import com.gofield.common.exception.InternalRuleException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.EncryptUtils;
 import com.gofield.common.utils.RandomUtils;
+import com.gofield.domain.rds.entity.category.Category;
+import com.gofield.domain.rds.entity.category.CartRepository;
 import com.gofield.domain.rds.entity.term.Term;
 import com.gofield.domain.rds.entity.term.TermRepository;
+import com.gofield.domain.rds.entity.termGroup.TermGroup;
+import com.gofield.domain.rds.entity.termGroup.TermGroupRepository;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.entity.user.UserRepository;
 import com.gofield.domain.rds.entity.userAccount.UserAccount;
@@ -51,8 +54,9 @@ public class UserService {
     private String SNS_CERT_TOKEN;
     @Value("${gofield.token_key}")
     private String TOKEN_DECRYPT_KEY;
-
     private final TermRepository termRepository;
+    private final TermGroupRepository termGroupRepository;
+    private final CartRepository categoryRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
     private final UserPushRepository userPushRepository;
@@ -71,6 +75,8 @@ public class UserService {
     public String uploadProfile(MultipartFile file){
         return s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
     }
+
+
 
     @Transactional(readOnly = true)
     public User getUser(){
@@ -226,6 +232,24 @@ public class UserService {
         userAddressRepository.delete(userAddress);
     }
 
+    @Transactional(readOnly = true)
+    public List<CategoryResponse> getCategoryList(){
+        List<Category> resultList = categoryRepository.findAllIsActiveTrueOrderBySort();
+        return CategoryResponse.of(resultList);
+    }
+
+    @Transactional(readOnly = true)
+    public List<TermResponse> getTermList(TermType type){
+        TermGroup termGroup = null;
+        if(type.equals(TermType.SIGNUP)){
+            termGroup = termGroupRepository.findByGroupId(2L);
+        } else if(type.equals(TermType.PRIVACY)){
+            termGroup = termGroupRepository.findByGroupId(3L);
+        }
+        return TermResponse.of(termGroup.getTerms());
+    }
+
+
     public void insertUserHasTerm(List<Long> termList, User user){
         List<Term> resultTermList = termRepository.findAllByInId(termList);
         for(Term term: resultTermList){
@@ -233,5 +257,6 @@ public class UserService {
             userHasTermRepository.save(userHasTerm);
         }
     }
+
 
 }

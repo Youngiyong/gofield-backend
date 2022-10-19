@@ -7,6 +7,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
 @Getter
@@ -30,5 +31,5 @@ public class AdminRoleHasMenu {
     private AdminMenu menu;
 
     @Column
-    private ZonedDateTime createDate;
+    private LocalDateTime createDate;
 }

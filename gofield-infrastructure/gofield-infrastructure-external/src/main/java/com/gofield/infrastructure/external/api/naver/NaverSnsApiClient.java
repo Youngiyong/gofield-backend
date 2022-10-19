@@ -1,8 +1,8 @@
 package com.gofield.infrastructure.external.api.naver;
 
 import com.gofield.infrastructure.external.api.naver.config.NaverSnsFeignConfig;
-import com.gofield.infrastructure.external.api.naver.dto.request.NaverSmsRequest;
-import com.gofield.infrastructure.external.api.naver.dto.response.NaverSmsResponse;
+import com.gofield.infrastructure.external.api.naver.dto.req.NaverSmsRequest;
+import com.gofield.infrastructure.external.api.naver.dto.res.NaverSmsResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

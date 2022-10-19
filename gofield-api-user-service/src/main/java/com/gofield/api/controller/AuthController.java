@@ -25,10 +25,10 @@ public class AuthController {
 
     @ApiOperation(value = "회원가입")
     @PostMapping("/{version}/signup")
-    public ApiResponse register(@PathVariable("version") EApiVersion apiVersion,
-                                @Valid @RequestBody SignupRequest request) {
-        authService.signup(request);
-        return ApiResponse.SUCCESS;
+    public ApiResponse<TokenResponse> signup(@PathVariable("version") EApiVersion apiVersion,
+                                             @RequestHeader String Authorization,
+                                             @Valid @RequestBody SignupRequest request) {
+        return ApiResponse.success(authService.signup(Authorization, request));
     }
 
     @ApiOperation(value = "로그인")
@@ -42,8 +42,9 @@ public class AuthController {
     @ApiOperation(value = "토큰 갱신")
     @PostMapping("/{version}/refresh")
     public ApiResponse<TokenResponse> refresh(@PathVariable("version") EApiVersion apiVersion,
+                                              @RequestHeader String Authorization,
                                               @Valid @RequestBody TokenRefreshRequest request) {
-        return ApiResponse.success(authService.refresh(request));
+        return ApiResponse.success(authService.refresh(Authorization, request));
     }
 
     @ApiOperation(value = "로그아웃")

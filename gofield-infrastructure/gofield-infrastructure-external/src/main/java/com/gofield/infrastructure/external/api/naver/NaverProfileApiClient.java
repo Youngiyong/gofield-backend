@@ -1,7 +1,7 @@
 package com.gofield.infrastructure.external.api.naver;
 
 import com.gofield.infrastructure.external.api.naver.config.NaverProfileFeignConfig;
-import com.gofield.infrastructure.external.api.naver.dto.response.NaverProfileResponse;
+import com.gofield.infrastructure.external.api.naver.dto.res.NaverProfileResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestHeader;

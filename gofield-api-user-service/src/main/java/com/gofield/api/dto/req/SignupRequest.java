@@ -1,5 +1,6 @@
 package com.gofield.api.dto.req;
 
+import com.gofield.api.dto.enums.TermSelectionType;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
@@ -19,6 +20,6 @@ public class SignupRequest {
     private List<Long> categoryList;
     @NotNull
     private List<Long> agreeList;
-    private List<Long> disAgreeList;
+    private List<TermSelectionType> selectionList;
 
 }

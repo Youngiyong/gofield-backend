@@ -75,15 +75,6 @@ public class User extends BaseTimeEntity {
     private Boolean isAlertPromotion;
 
     @Column
-    private Long createId;
-
-    @Column
-    private Long updateId;
-
-    @Column
-    private Long deleteId;
-
-    @Column
     private LocalDateTime deleteDate;
 
     private User(String uuid, String nickName){

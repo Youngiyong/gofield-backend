@@ -9,6 +9,7 @@ import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.EncryptUtils;
 import com.gofield.common.utils.RandomUtils;
+import com.gofield.domain.rds.enums.ESocialFlag;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -47,8 +48,10 @@ public class TokenUtil {
     }
 
     public TokenResponse generateToken(com.gofield.api.dto.Authentication authentication,
-                                                  Long accessValidity,
-                                                  Long refreshValidity) {
+                                       Long accessValidity,
+                                       Long refreshValidity,
+                                       Boolean isSign,
+                                       String social) {
 
         long now = (new Date()).getTime();
         Date accessTokenExpiresIn = new Date(now + accessValidity);
@@ -56,8 +59,9 @@ public class TokenUtil {
 
         String accessToken = Jwts.builder()
                 .setIssuer(authentication.getIssue())
-                .claim("gti", RandomUtils.makeRandomCode(32))
                 .setId(EncryptUtils.aes256Encrypt(tokenEncryptKey ,authentication.getUuid()))
+                .claim("isSign", isSign)
+                .claim("social", social)
                 .setExpiration(accessTokenExpiresIn)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
@@ -65,10 +69,10 @@ public class TokenUtil {
         return TokenResponse.of(AUTH_PREFIX, accessToken, refreshToken, accessTokenExpiresIn.getTime(), refreshTokenExpireIn.getTime());
     }
 
-    public String getEncKey(String accessToken){
+    public String getSocial(String accessToken){
         accessToken = resolveToken(accessToken);
         DecodedJWT jwt = JWT.decode(accessToken);
-        Claim resultClaim =  jwt.getClaim("gti");
+        Claim resultClaim =  jwt.getClaim("social");
         return resultClaim.asString();
     }
 

@@ -35,6 +35,9 @@ public class Category extends BaseTimeEntity {
     private Short sort;
 
     @Column
+    private String thumbnail;
+
+    @Column
     private Boolean isActive;
 
 }

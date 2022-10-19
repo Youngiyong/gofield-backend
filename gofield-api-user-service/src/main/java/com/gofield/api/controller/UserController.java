@@ -1,6 +1,9 @@
 package com.gofield.api.controller;
 
+import com.gofield.api.dto.enums.TermType;
 import com.gofield.api.dto.req.UserRequest;
+import com.gofield.api.dto.res.CategoryResponse;
+import com.gofield.api.dto.res.TermResponse;
 import com.gofield.api.dto.res.UserProfileResponse;
 import com.gofield.api.service.UserService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/user")
 @RestController
@@ -116,4 +120,16 @@ public class UserController {
         return ApiResponse.SUCCESS;
     }
 
+    @ApiOperation(value = "사용자 추천 카테고리 리스트 조회")
+    @GetMapping("/{version}/category")
+    public ApiResponse<List<CategoryResponse>> getCategoryList(@PathVariable("version") EApiVersion apiVersion){
+        return ApiResponse.success(userService.getCategoryList());
+    }
+
+    @ApiOperation(value = "이용약관 리스트 조회")
+    @GetMapping("/{version}/term")
+    public ApiResponse<List<TermResponse>> getTermList(@PathVariable("version") EApiVersion apiVersion,
+                                                       @RequestParam TermType type){
+        return ApiResponse.success(userService.getTermList(type));
+    }
 }

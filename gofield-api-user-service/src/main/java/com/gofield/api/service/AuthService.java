@@ -3,6 +3,7 @@ package com.gofield.api.service;
 
 import com.gofield.api.dto.Authentication;
 import com.gofield.api.dto.SocialAuthentication;
+import com.gofield.api.dto.enums.TermSelectionType;
 import com.gofield.api.dto.req.LoginRequest;
 import com.gofield.api.dto.req.SignupRequest;
 import com.gofield.api.dto.req.TokenRefreshRequest;
@@ -20,15 +21,11 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.entity.category.Category;
-import com.gofield.domain.rds.entity.category.CategoryRepository;
-import com.gofield.domain.rds.entity.device.DeviceRepository;
-import com.gofield.domain.rds.entity.deviceModel.DeviceModelRepository;
+import com.gofield.domain.rds.entity.category.CartRepository;
 import com.gofield.domain.rds.entity.term.Term;
 import com.gofield.domain.rds.entity.term.TermRepository;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.entity.user.UserRepository;
-import com.gofield.domain.rds.entity.userAccess.UserAccess;
-import com.gofield.domain.rds.entity.userAccess.UserAccessRepository;
 import com.gofield.domain.rds.entity.userWebAccessLog.UserWebAccessLog;
 import com.gofield.domain.rds.entity.userWebAccessLog.UserWebWebAccessLogRepository;
 import com.gofield.domain.rds.entity.userAccount.UserAccount;
@@ -37,7 +34,6 @@ import com.gofield.domain.rds.entity.userClientDetail.UserClientDetail;
 import com.gofield.domain.rds.entity.userClientDetail.UserClientDetailRepository;
 import com.gofield.domain.rds.entity.userHasCategory.UserHasCategory;
 import com.gofield.domain.rds.entity.userHasCategory.UserHasCategoryRepository;
-import com.gofield.domain.rds.entity.userHasDevice.UserHasDeviceRepository;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTermRepository;
 import com.gofield.domain.rds.entity.userSns.UserSns;
@@ -46,6 +42,7 @@ import com.gofield.domain.rds.entity.userWebToken.UserWebToken;
 import com.gofield.domain.rds.entity.userWebToken.UserWebWebTokenRepository;
 import com.gofield.domain.rds.enums.ESocialFlag;
 import com.gofield.domain.rds.enums.EStatusFlag;
+import com.gofield.domain.rds.enums.ETermFlag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,21 +62,19 @@ public class AuthService {
     private final TermRepository termRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
-    private final CategoryRepository categoryRepository;
+    private final CartRepository categoryRepository;
     private final UserWebWebTokenRepository userWebTokenRepository;
     private final UserHasTermRepository userHasTermRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserWebWebAccessLogRepository userWebAccessLogRepository;
     private final UserHasCategoryRepository userHasCategoryRepository;
     private final UserClientDetailRepository userClientDetailRepository;
-
     private final TokenUtil tokenUtil;
-
     private final ThirdPartyService thirdPartyService;
 
     @Transactional
     public LoginResponse login(LoginRequest request, String secret){
-        Boolean isFirst = false;
+        Boolean isSign = true;
 
         HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
 
@@ -91,7 +86,7 @@ public class AuthService {
         if(resultClientDetail==null){
             throw new NotFoundException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("<%s> 유효하지 않는 클라이언트 아이디입니다.", clientDetail.getClientId()));
         }
-        SocialAuthentication socialAuthentication = thirdPartyService.getAuthentication(request.getState(), request.getCode(), request.getSocial());
+        SocialAuthentication socialAuthentication = thirdPartyService.getSocialAuthentication(request.getState(), request.getCode(), request.getSocial());
 
         UserSns userSns = userSnsRepository.findByUniQueIdAndRoute(socialAuthentication.getUniqueId(), request.getSocial());
         if(userSns==null){
@@ -104,10 +99,10 @@ public class AuthService {
 
         UserAccount userAccount = userAccountRepository.findByUserId(userSns.getUser().getId());
         if(userAccount==null){
-            isFirst = true;
+            isSign = false;
         }
-        Authentication authentication = getAuthentication(userSns.getUser().getUuid(), userSns.getUser().getId() , Constants.TOKEN_ISSUER);
-        TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
+        Authentication authentication = Authentication.of(userSns.getUser().getUuid(), userSns.getUser().getId() , Constants.TOKEN_ISSUER);
+        TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity(), isSign, request.getSocial().getKey());
         LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
 
         UserWebToken userWebToken = UserWebToken.newInstance(resultClientDetail, userSns.getUser(), token.getAccessToken(), token.getRefreshToken(), refreshExpireDate);
@@ -115,65 +110,78 @@ public class AuthService {
 
         UserWebAccessLog saveLog = UserWebAccessLog.newInstance(userSns.getUser().getId(), userAgent, ipAddress);
         userWebAccessLogRepository.save(saveLog);
-        return LoginResponse.of(isFirst, token.getGrantType(), token.getAccessToken(), token.getRefreshToken(), token.getAccessTokenExpiresIn(), token.getRefreshTokenExpiresIn());
+        return LoginResponse.of(token.getGrantType(), token.getAccessToken(), token.getRefreshToken(), token.getAccessTokenExpiresIn(), token.getRefreshTokenExpiresIn());
     }
 
     @Transactional
-    public void signup(SignupRequest request){
-        if(request.getAgreeList()==null){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "필수 약관은 선택해 주셔야 됩니다.");
-        }
+    public TokenResponse signup(String Authorization, SignupRequest request){
+
         User user = userRepository.findByUuid(userService.getUserDecryptUuid());
         if(user==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("존재하지 않는 사용자입니다."));
         }
-        if(user.getStatus().equals(EStatusFlag.ACTIVE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 이미 가입되어 있는 사용자입니다.", user.getNickName()));
-        } else if(!user.getStatus().equals(EStatusFlag.WAIT))
+        if(!(user.getStatus().equals(EStatusFlag.ACTIVE) || user.getStatus().equals(EStatusFlag.WAIT))){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 활성된 상태가 아니거나 가입되어 있지 않는 사용자입니다.", user.getNickName()));
+        }
         UserAccount account = userAccountRepository.findByUserId(user.getId());
-        if(account!=null){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 이미 계정 정보가 등록되어 있는 사용자입니다.", user.getNickName()));
-        } else {
+        UserWebToken userWebToken = userWebTokenRepository.findByAccessToken(tokenUtil.resolveToken(Authorization));
+        UserClientDetail userClientDetail = userWebToken.getClient();
+        if(account==null){
             account = UserAccount.newInstance(user);
             userAccountRepository.save(account);
-        }
-        if(request.getCategoryList()!=null){
-            if(!request.getCategoryList().isEmpty()){
-                List<Category> resultCategoryList = categoryRepository.findAllByInId(request.getCategoryList());
-                for(Category category: resultCategoryList){
-                    UserHasCategory userHasCategory = UserHasCategory.newInstance(user, category);
-                    userHasCategoryRepository.save(userHasCategory);
-                }
-            }
-        }
-        if(request.getAgreeList()!=null){
-            if(!request.getAgreeList().isEmpty()){
-                userService.insertUserHasTerm(request.getAgreeList(), user);
-            }
-        }
-        if(request.getDisAgreeList()!=null){
-            if(!request.getDisAgreeList().isEmpty()){
-                List<Term> resultTermList = termRepository.findAllByInId(request.getDisAgreeList());
-                for(Term term: resultTermList){
-                    if(term.getIsEssential()){
-                        throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "선택 약관 리스트에 필수항목이 있습니다.");
-                    } else {
-                        UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-                        userHasTermRepository.save(userHasTerm);
+
+            if(request.getCategoryList()!=null){
+                if(!request.getCategoryList().isEmpty()){
+                    List<Category> resultCategoryList = categoryRepository.findAllByInId(request.getCategoryList());
+                    for(Category category: resultCategoryList){
+                        UserHasCategory userHasCategory = UserHasCategory.newInstance(user, category);
+                        userHasCategoryRepository.save(userHasCategory);
                     }
                 }
             }
+            if(request.getAgreeList()!=null){
+                if(!request.getAgreeList().isEmpty()){
+                    userService.insertUserHasTerm(request.getAgreeList(), user);
+                }
+            } else {
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "필수 약관은 선택해 주셔야 됩니다.");
+            }
+
+            if(request.getSelectionList()!=null){
+                if(!request.getSelectionList().isEmpty()){
+                    for(TermSelectionType type: request.getSelectionList()){
+                        if(type.equals(TermSelectionType.EMAIL)){
+                            Term term = termRepository.findByType(ETermFlag.MARKETING_EMAIL);
+                            UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
+                            userHasTermRepository.save(userHasTerm);
+                        } else if(type.equals(TermSelectionType.SMS)){
+                            Term term = termRepository.findByType(ETermFlag.MARKETING_SMS);
+                            UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
+                            userHasTermRepository.save(userHasTerm);
+                        } else if(type.equals(TermSelectionType.PUSH)){
+                            Term term = termRepository.findByType(ETermFlag.MARKETING_PUSH);
+                            UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
+                            userHasTermRepository.save(userHasTerm);
+                        }
+                    }
+                }
+            }
+            user.updateSign(request.getEmail(), request.getWeight(), request.getHeight());
         }
-        user.updateSign(request.getEmail(), request.getWeight(), request.getHeight());
+
+        Authentication authentication = Authentication.of(user.getUuid(), user.getId(), Constants.TOKEN_ISSUER);
+        TokenResponse token =  tokenUtil.generateToken(authentication, userClientDetail.getAccessTokenValidity(), userClientDetail.getRefreshTokenValidity(), true, tokenUtil.getSocial(Authorization));
+        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
+        userWebToken.updateToken(token.getAccessToken(), token.getRefreshToken(), refreshExpireDate);
+        return token;
     }
 
     @Transactional(readOnly = true)
     public TokenResponse getToken(Long id){
         User resultUser = userRepository.findByIdAndStatusActive(id);
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(21L);
-        Authentication authentication = new Authentication(resultUser.getUuid(), resultUser.getId() ,Constants.TOKEN_ISSUER);
-        return tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
+        Authentication authentication = Authentication.of(resultUser.getUuid(), resultUser.getId() ,Constants.TOKEN_ISSUER);
+        return tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity(), false, ESocialFlag.APPLE.getKey());
     }
 
     @Transactional
@@ -184,7 +192,7 @@ public class AuthService {
     }
 
     @Transactional
-    public TokenResponse refresh(TokenRefreshRequest request){
+    public TokenResponse refresh(String Authorization, TokenRefreshRequest request){
         UserWebToken userWebToken = userWebTokenRepository.findByRefreshToken(request.getRefreshToken());
         if(userWebToken ==null || userWebToken.getExpireDate().isBefore(LocalDateTime.now())){
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 로그아웃됩니다.");
@@ -194,19 +202,11 @@ public class AuthService {
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 강제 로그아웃됩니다.");
         }
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userWebToken.getClient().getId());
-        Authentication authentication = getAuthentication(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
-        TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity());
+        Authentication authentication = Authentication.of(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
+        TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity(), true,  tokenUtil.getSocial(Authorization));
         LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
-        userWebToken.updateToken(null, token.getRefreshToken(), refreshExpireDate);
+        userWebToken.updateToken(token.getAccessToken(), token.getRefreshToken(), refreshExpireDate);
         return token;
-    }
-
-    private Authentication getAuthentication(String uuid, Long userId, String issue){
-        return Authentication.builder()
-                .uuid(uuid)
-                .userId(userId)
-                .issue(issue)
-                .build();
     }
 }
 

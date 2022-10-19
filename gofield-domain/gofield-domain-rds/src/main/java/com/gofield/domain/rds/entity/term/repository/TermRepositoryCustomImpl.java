@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.entity.term.repository;
 
 import com.gofield.domain.rds.entity.term.Term;
+import com.gofield.domain.rds.enums.ETermFlag;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -19,5 +20,13 @@ public class TermRepositoryCustomImpl implements TermRepositoryCustom {
                 .selectFrom(term)
                 .where(term.id.in(idList))
                 .fetch();
+    }
+
+    @Override
+    public Term findByType(ETermFlag type) {
+        return jpaQueryFactory
+                .selectFrom(term)
+                .where(term.type.eq(type))
+                .fetchOne();
     }
 }
