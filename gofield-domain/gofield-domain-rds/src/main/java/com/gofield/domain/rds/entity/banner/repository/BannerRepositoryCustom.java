@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface BannerRepositoryCustom {
 
-    List<Banner> findAllActive();
+    List<Banner> findAllIsActive();
 }

@@ -88,11 +88,9 @@ public class UserService {
     public void updatePush(UserRequest.PushKey request){
         User user = getUser();
         UserWebPush userWebPush = userWebPushRepository.findByUserIdAndPushKey(user.getId(), request.getPushKey());
-        if(userWebPush ==null){
+        if(userWebPush==null){
             userWebPush = UserWebPush.newInstance(user, request.getPushKey());
             userWebPushRepository.save(userWebPush);
-        } else {
-            userWebPush.update(request.getPushKey());
         }
     }
 
@@ -196,11 +194,9 @@ public class UserService {
                 }
             }
         }
-
         if(!isUpdate){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("이미 삭제 처리 되었거나 존재하지 않는 사용자 배송 주소 아이디<%s>입니다.", id));
         }
-
     }
 
     @Transactional
@@ -231,7 +227,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoryList(){
-        List<Category> resultList = categoryRepository.findAllIsActiveTrueOrderBySort();
+        List<Category> resultList = categoryRepository.findAllIsActiveOrderBySort();
         return CategoryResponse.of(resultList);
     }
 

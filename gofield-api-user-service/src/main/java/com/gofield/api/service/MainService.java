@@ -24,8 +24,8 @@ public class MainService {
 
     @Transactional(readOnly = true)
     public MainResponse getMainContentList(){
-        List<Banner> bannerList = bannerRepository.findAllActive();
-        List<Category> categoryList = categoryRepository.findAllIsActiveTrueOrderBySort();
+        List<Banner> bannerList = bannerRepository.findAllIsActive();
+        List<Category> categoryList = categoryRepository.findAllIsActiveOrderBySort();
         return MainResponse.of(CategoryMainResponse.of(categoryList), BannerResponse.of(bannerList));
     }
 

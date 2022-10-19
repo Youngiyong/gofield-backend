@@ -115,7 +115,6 @@ public class AuthService {
 
     @Transactional
     public TokenResponse signup(String Authorization, SignupRequest request){
-
         User user = userRepository.findByUuid(userService.getUserDecryptUuid());
         if(user==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("존재하지 않는 사용자입니다."));
@@ -129,7 +128,6 @@ public class AuthService {
         if(account==null){
             account = UserAccount.newInstance(user);
             userAccountRepository.save(account);
-
             if(request.getCategoryList()!=null){
                 if(!request.getCategoryList().isEmpty()){
                     List<Category> resultCategoryList = categoryRepository.findAllByInId(request.getCategoryList());

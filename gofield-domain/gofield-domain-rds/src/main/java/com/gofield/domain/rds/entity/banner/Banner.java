@@ -23,19 +23,19 @@ public class Banner extends BaseTimeEntity {
     @Column(length = 50)
     private String title;
 
-    @Column
+    @Column(length = 256)
     private String description;
 
-    @Column
+    @Column(nullable = false)
     private EBannerTypeFlag type;
 
-    @Column
+    @Column(length = 1024)
     private String linkUrl;
 
-    @Column
+    @Column(nullable = false)
     private EStatusFlag status;
 
-    @Column
+    @Column(length = 128)
     private String thumbnail;
 
     @Column

@@ -30,8 +30,10 @@ import java.util.*;
 @Slf4j
 @Component
 public class TokenUtil {
+
     private final Key key;
     private final String AUTH_PREFIX = "Gofield";
+
     @Value("${gofield.token_key}")
     private String tokenEncryptKey;
 

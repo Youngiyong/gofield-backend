@@ -15,7 +15,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
 
     @Override
-    public List<Category> findAllIsActiveTrueOrderBySort() {
+    public List<Category> findAllIsActiveOrderBySort() {
         return jpaQueryFactory
                 .selectFrom(category)
                 .where(category.isActive.isTrue().and(category.parent.isNull()))

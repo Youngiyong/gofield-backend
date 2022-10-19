@@ -16,7 +16,7 @@ public class BannerRepositoryCustomImpl implements BannerRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Banner> findAllActive() {
+    public List<Banner> findAllIsActive() {
         return jpaQueryFactory
                 .selectFrom(banner)
                 .where(banner.status.eq(EStatusFlag.ACTIVE)
