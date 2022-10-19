@@ -25,8 +25,8 @@ import com.gofield.domain.rds.entity.userAddress.UserAddress;
 import com.gofield.domain.rds.entity.userAddress.UserAddressRepository;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTermRepository;
-import com.gofield.domain.rds.entity.userPush.UserPush;
-import com.gofield.domain.rds.entity.userPush.UserPushRepository;
+import com.gofield.domain.rds.entity.userWebPush.UserWebPush;
+import com.gofield.domain.rds.entity.userWebPush.UserWebWebPushRepository;
 import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistory;
 import com.gofield.domain.rds.entity.userSns.UserSnsRepository;
 import com.gofield.domain.rds.enums.EStatusFlag;
@@ -47,9 +47,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
+
     @Value("${cdn.url}")
     private String CDN_URL;
-
     @Value("${sns.auth}")
     private String SNS_CERT_TOKEN;
     @Value("${gofield.token_key}")
@@ -59,7 +59,7 @@ public class UserService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
-    private final UserPushRepository userPushRepository;
+    private final UserWebWebPushRepository userWebPushRepository;
     private final UserAddressRepository userAddressRepository;
     private final UserHasTermRepository userHasTermRepository;
     private final UserAccountRepository userAccountRepository;
@@ -75,7 +75,6 @@ public class UserService {
         return s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
     }
 
-
     @Transactional(readOnly = true)
     public User getUser(){
         User user =  userRepository.findByUuidAndStatusActive(getUserDecryptUuid());
@@ -88,12 +87,12 @@ public class UserService {
     @Transactional
     public void updatePush(UserRequest.PushKey request){
         User user = getUser();
-        UserPush userPush = userPushRepository.findByPlatformAndPushKey(request.getPlatform(), request.getPushKey());
-        if(userPush==null){
-            userPush = UserPush.newInstance(user, request.getPushKey(), request.getPlatform());
-            userPushRepository.save(userPush);
+        UserWebPush userWebPush = userWebPushRepository.findByUserIdAndPushKey(user.getId(), request.getPushKey());
+        if(userWebPush ==null){
+            userWebPush = UserWebPush.newInstance(user, request.getPushKey());
+            userWebPushRepository.save(userWebPush);
         } else {
-            userPush.update(request.getPushKey());
+            userWebPush.update(request.getPushKey());
         }
     }
 

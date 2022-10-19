@@ -1,4 +1,4 @@
-package com.gofield.domain.rds.entity.userPush;
+package com.gofield.domain.rds.entity.userWebPush;
 
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.enums.EPlatformFlag;
@@ -15,7 +15,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "user_push")
-public class UserPush {
+public class UserWebPush {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,24 +26,19 @@ public class UserPush {
 
     @Column(length = 256, nullable = false)
     private String pushKey;
-
-    @Column(name = "platform_flag", nullable = false, length = 10)
-    private EPlatformFlag platform;
-
     @Column
     private LocalDateTime createDate;
 
     @Column
     private LocalDateTime updateDate;
-    private UserPush(User user, String pushKey, EPlatformFlag platform){
+    private UserWebPush(User user, String pushKey){
         this.user = user;
         this.pushKey = pushKey;
-        this.platform = platform;
         this.createDate = LocalDateTime.now();
     }
 
-    public static UserPush newInstance(User user, String pushKey, EPlatformFlag platform){
-        return new UserPush(user, pushKey, platform);
+    public static UserWebPush newInstance(User user, String pushKey){
+        return new UserWebPush(user, pushKey);
     }
 
     public void update(String pushKey){
