@@ -5,8 +5,6 @@ package com.gofield.domain.rds.entity.orderShipping;
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.order.Order;
 import com.gofield.domain.rds.entity.seller.Seller;
-import com.gofield.domain.rds.entity.user.User;
-import com.gofield.domain.rds.enums.order.EOrderStatusFlag;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -18,9 +18,8 @@ import javax.persistence.*;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "order_shipping")
+@Table(	name = "order_shipping_address")
 public class OrderShippingAddress extends BaseTimeEntity {
-
 
 
     @Column(length = 20, nullable = false)

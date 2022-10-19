@@ -18,7 +18,7 @@ import javax.persistence.*;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "order_shipping")
+@Table(	name = "order_shipping_comment")
 public class OrderShippingComment extends BaseTimeEntity {
 
 
