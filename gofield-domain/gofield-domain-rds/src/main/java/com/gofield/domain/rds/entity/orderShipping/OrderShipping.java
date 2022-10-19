@@ -1,8 +1,9 @@
 
-package com.gofield.domain.rds.entity.order;
+package com.gofield.domain.rds.entity.orderShipping;
 
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
+import com.gofield.domain.rds.entity.order.Order;
 import com.gofield.domain.rds.entity.seller.Seller;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.enums.order.EOrderStatusFlag;
@@ -20,12 +21,12 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "order")
-public class Order extends BaseTimeEntity {
+@Table(	name = "order_shipping")
+public class OrderShipping extends BaseTimeEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "seller_id")
@@ -33,33 +34,5 @@ public class Order extends BaseTimeEntity {
 
     @Column(length = 20, nullable = false)
     private String orderNumber;
-
-    @Column
-    private int totalItem;
-
-    @Column
-    private int totalDelivery;
-
-    @Column
-    private int subtotalDelivery;
-
-    @Column
-    private int totalDiscount;
-
-    @Column
-    private int totalPoint;
-
-    @Column
-    private int totalPurchase;
-
-    @Column(nullable = false)
-    private EOrderStatusFlag status;
-
-    @Column
-    private LocalDateTime confirmDate;
-
-    @Column
-    private LocalDateTime purchaseDate;
-
 
 }

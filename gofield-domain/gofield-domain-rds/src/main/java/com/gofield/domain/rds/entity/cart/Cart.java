@@ -3,8 +3,6 @@ package com.gofield.domain.rds.entity.cart;
 
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
-import com.gofield.domain.rds.entity.item.Item;
-import com.gofield.domain.rds.entity.seller.Seller;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.enums.item.EDeliveryFlag;
 import lombok.AccessLevel;

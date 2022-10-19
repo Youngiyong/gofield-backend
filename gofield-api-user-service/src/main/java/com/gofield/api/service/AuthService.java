@@ -21,7 +21,7 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.entity.category.Category;
-import com.gofield.domain.rds.entity.category.CartRepository;
+import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.term.Term;
 import com.gofield.domain.rds.entity.term.TermRepository;
 import com.gofield.domain.rds.entity.user.User;
@@ -62,7 +62,7 @@ public class AuthService {
     private final TermRepository termRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
-    private final CartRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     private final UserWebWebTokenRepository userWebTokenRepository;
     private final UserHasTermRepository userHasTermRepository;
     private final UserAccountRepository userAccountRepository;

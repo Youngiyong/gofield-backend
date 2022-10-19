@@ -24,6 +24,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -62,7 +63,7 @@ public class ThirdPartyService {
     private final NaverProfileApiClient naverProfileApiClient;
     private final StateLogRepository stateLogRepository;
 
-
+    @Transactional(readOnly = true)
     public String callbackAuth(String code, String state){
         String redirectUrl = null;
         StateLog stateLog = stateLogRepository.findByState(state);
@@ -77,6 +78,7 @@ public class ThirdPartyService {
         return redirectUrl;
     }
 
+    @Transactional
     public String redirect(ESocialFlag social, EEnvironmentFlag environment){
         String state = RandomUtils.makeRandomCode(32);
         StateLog stateLog = StateLog.newInstance(state, social, environment);

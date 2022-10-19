@@ -11,7 +11,7 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.EncryptUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.entity.category.Category;
-import com.gofield.domain.rds.entity.category.CartRepository;
+import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.term.Term;
 import com.gofield.domain.rds.entity.term.TermRepository;
 import com.gofield.domain.rds.entity.termGroup.TermGroup;
@@ -47,16 +47,16 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     @Value("${cdn.url}")
     private String CDN_URL;
+
     @Value("${sns.auth}")
     private String SNS_CERT_TOKEN;
     @Value("${gofield.token_key}")
     private String TOKEN_DECRYPT_KEY;
     private final TermRepository termRepository;
     private final TermGroupRepository termGroupRepository;
-    private final CartRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
     private final UserPushRepository userPushRepository;
@@ -64,7 +64,6 @@ public class UserService {
     private final UserHasTermRepository userHasTermRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserAccountSmsHistoryRepository userAccountSmsHistoryRepository;
-
     private final SNSService snsService;
     private final S3FileStorageClient s3FileStorageClient;
 
@@ -75,7 +74,6 @@ public class UserService {
     public String uploadProfile(MultipartFile file){
         return s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
     }
-
 
 
     @Transactional(readOnly = true)
