@@ -19,6 +19,7 @@ public class AdminResponse {
     private String role;
     private LocalDateTime createDate;
 
+
     @Builder
     private AdminResponse(Long id, String name, String username, String role, LocalDateTime createDate){
         this.id = id;

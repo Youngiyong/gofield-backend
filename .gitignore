@@ -37,18 +37,8 @@ out/
 .vscode/
 
 generated/
-application.yml
-application-local.yml
-application-dev.yml
-application-prod.yml
-application-rds.yml
-application-s3.yml
-application-sns.yml
-application-sqs.yml
-application-external.yml
-application-internal-local.yml
-application-internal-dev.yml
 logs/
+
 V2_init.sql
 
 application-secret.yml

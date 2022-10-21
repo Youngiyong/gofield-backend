@@ -1,53 +1,193 @@
-<!DOCTYPE html SYSTEM "http://www.thymeleaf.org/dtd/xhtml1-strict-thymeleaf-spring4-4.dtd">
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
-      layout:decorate="layout">
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Admin</title>
+    <meta charset="UTF-8">
+    <title>List User</title>
 </head>
 <body>
+
+
 <div layout:fragment="content">
-    <div class="box">
-        <div class="box-header with-border">
-            <h3 class="box-title">관리자 목록</h3>
-            <div class="box-tools pull-right">
-                <a href="/admin/add" type="button" class="btn btn-box-tool"><i class="fa fa-plus"></i></a>
-                <br clear="all" />
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Simple Tables</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Simple Tables</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Bordered Table</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table class="table table-bordered">
+                                <thead>
+                                <tr>
+                                    <th>id</th>
+                                    <th>아이디</th>
+                                    <th>이름</th>
+                                    <th>등급</th>
+                                    <th>등록 날짜</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${page.content}">
+                                    <td th:text="${data.id}"></td>
+                                    <td th:text="${data.username}"></td>
+                                    <td th:text="${data.name}"></td>
+                                    <td th:text="${data.role}"></td>
+                                    <td th:text="${data.createDate}"></td>
+                                    <td>
+                                        <a class="btn btn-primary" role="button" th:href="${'/edit/'+data.id}"><span>수정</span></a>
+                                        <a class="btn btn-danger" role="button" th:href="${'/delete/'+data.id}"><span>삭제</span></a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+
+<!--                        <div th:if="${page.totalPages> 0}" class="pagination"-->
+<!--                             th:each="pageNumber : ${pageNumbers}">-->
+<!--                            <a th:href="@{/admin/list(size=${page.content.size}, page=${pageNumber})}"-->
+<!--                               th:text="${pageNumber}"-->
+<!--                               th:class="${pageNumber==page.number + 1} ? active"></a>-->
+<!--                        </div>-->
+
+                        <nav aria-label="Page navigation example ">
+                            <ul class="pagination">
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/?page=1}" aria-label="Previous">
+                                        <span aria-hidden="true">처음</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{/?page={page} (page = ${pagination.prevBlock})}" aria-label="Previous">
+                                        <span aria-hidden="true">이전</span>
+                                    </a>
+                                </li>
+                                <th:block  th:with="start = ${pagination.startPage}, end = ${pagination.endPage}">
+                                    <li class="page-item"
+                                        th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
+                                        th:each="pageButton : ${#numbers.sequence(start, end)}">
+                                        <a class="page-link" th:href="@{/?page={page} (page = ${pageButton})}" th:text=${pageButton}></a>
+                                    </li>
+                                </th:block>
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{?page={page} (page = ${pagination.nextBlock})}" aria-label="Next">
+                                        <span aria-hidden="true">다음</span>
+                                    </a>
+                                </li>
+                                <li class="page-item">
+                                    <a class="page-link" th:href="@{?page={page} (page = ${pagination.totalPageCnt})}" aria-label="Previous">
+                                        <span aria-hidden="true">끝</span>
+                                    </a>
+                                </li>
+                            </ul>
+<!--                        <div class="card-footer clearfix">-->
+<!--&lt;!&ndash;                             th:if="${page.totalPages> 0}" class="pagination"&ndash;&gt;-->
+<!--&lt;!&ndash;                             th:each="pageNumber : ${pageNumbers}">&ndash;&gt;-->
+<!--                            <ul class="pagination pagination-sm m-0 float-right">-->
+<!--                                <li><a href="/admin/list">First</a></li>-->
+<!--&lt;!&ndash;                                <li th:each="p : ${#numbers.sequence(1, data.page.getEndPage/data.page.getStartPage)}" th:class="${p == data.page.getCurrentPage} ? 'active' : ''">&ndash;&gt;-->
+<!--                                    <li th:if="${page.totalPages> 0}" class="pagination"-->
+<!--                                         th:each="pageNumber : ${pageNumbers}">-->
+<!--                                    <a class = "page-link"-->
+<!--                                       th:href="@{/admin/list(size=${page.content.size}, page=${pageNumber})}"-->
+<!--                                       th:text="${pageNumber}"-->
+<!--                                       th:class="${pageNumber==page.number + 1} ? active"></a>-->
+
+<!--&lt;!&ndash;                                    <a class="page-link" th:href="${'/admin/list?page=' + p}" th:text="${p}"></a>&ndash;&gt;-->
+<!--                                </li>-->
+<!--                                <li class="page-item"><a th:href="${'/admin/list?page=' + data.page.getEndPage}">Last</a></li>-->
+<!--                            </ul>-->
+<!--                        </div>-->
+                    </div>
+                    <!-- /.card -->
+                </div>
             </div>
         </div>
-        <div class="box-body no-padding">
-            <table class="table table-striped">
-                <tr>
-                    <th>id</th>
-                    <th>아이디</th>
-                    <th>이름</th>
-                    <th>등급</th>
-                    <th>등록 날짜</th>
-                </tr>
-                <tr th:each="data : ${list}">
-                    <td th:text="${data.id}"></td>
-                    <td th:text="${data.username}"></td>
-                    <td th:text="${data.name}"></td>
-                    <td th:text="${data.role}"></td>
-                    <td th:text="${data.createDate}"></td>
-                    <!--  <td th:text="${row.firstname + ' ' + row.lastname}"></td>-->
-<!--                    <td th:text="${#dates.format(data.createDate, 'dd/MM/yyyy')}"></td>&ndash;&gt;-->
-                    <td>
-                        <a th:href="${'/admin/edit/' + data.id}">수정</a> |
-                        <a th:href="${'/admin/delete/' + data.id}">삭제</a>
-                    </td>
-                </tr>
-            </table>
-        </div>
-<!--        <div class="box-footer clearfix">-->
-<!--            <ul class="pagination pagination-sm no-margin pull-right">-->
-<!--                <li><a href="/customers/1">First</a></li>-->
-<!--                <li th:each="p : ${#numbers.sequence(1, endIndex/beginIndex)}" th:class="${p == currentIndex} ? 'active' : ''">-->
-<!--                    <a th:href="${'/admin/' + p}" th:text="${p}"></a>-->
-<!--                </li>-->
-<!--                <li><a th:href="${'/admin/' + endIndex}">Last</a></li>-->
-<!--            </ul>-->
-<!--        </div>-->
-    </div>
+
+    </section>
+    <!-- Main content -->
+
+
 </div>
+
+
+<th:block layout:fragment="script">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        console.log("List User");
+        var user = {};
+
+        $(document).ready(function () {
+
+            /** TODO: Function OnClick **/
+
+
+            /** TODO: Function **/
+
+
+            /** TODO: OnLoad **/
+            user.findAll = function () {
+
+                $.ajax({
+                    url: "http://localhost:1111/api/v1/user",
+                    type: "GET",
+                    beforeSend: function (xhr) {
+                        xhr.setRequestHeader("Accept", "application/json");
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                    },
+                    success: function (data) {
+                        console.log(data);
+                        var event_data = '';
+                        $.each(data.user, function (index, value) {
+                            /*console.log(value);*/
+                            event_data += '<tr>';
+                            event_data += '<td>' + value.name + '</td>';
+                            event_data += '<td>' + value.id + '</td>';
+                            event_data += '</tr>';
+                        });
+                        $("#list_table_json").append(event_data);
+
+                    },
+                    error: function (jqXHR, textStatus, errorThrown) {
+                        var responseText = jQuery.parseJSON(jqXHR.responseText);
+                        console.log(responseText);
+                        console.log('Error: ' + textStatus + ' - ' + errorThrown);
+                    }
+                });
+
+            };
+
+            user.findAll();
+
+
+        });
+    </script>
+</th:block>
+
 </body>
 </html>

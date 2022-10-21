@@ -1,6 +1,5 @@
 package com.gofield.admin.dto.request;
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 
