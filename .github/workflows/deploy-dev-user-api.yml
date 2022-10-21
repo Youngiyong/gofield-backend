@@ -1,9 +1,10 @@
-name: [개발] 배포 User API
+name: deploy develop User API
 
 on:
   push:
     tags:
       - develop-*
+    branches: main
 
 jobs:
   build:
