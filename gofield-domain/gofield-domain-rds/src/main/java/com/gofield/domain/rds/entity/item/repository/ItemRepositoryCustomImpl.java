@@ -6,7 +6,7 @@ import lombok.RequiredArgsConstructor;
 
 
 @RequiredArgsConstructor
-public class ItemRepositoryCustomImpl implements ItemBundleRepositoryCustom {
+public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
