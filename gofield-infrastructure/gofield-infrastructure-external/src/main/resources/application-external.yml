@@ -20,7 +20,7 @@ external:
     naver:
       sns:
         base-url: https://sens.apigw.ntruss.com
-        url: ${secret.naver.sns.uri}
+        url: ${secret.naver.sns.url}
       profile:
         base-url: https://openapi.naver.com
         url: /v1/nid/me

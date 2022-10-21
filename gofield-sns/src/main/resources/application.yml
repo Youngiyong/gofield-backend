@@ -1,15 +1,12 @@
 spring.profiles.default: dev
 spring.config:
   import:
-    - classpath:/application-rds.yml
     - classpath:/application-external.yml
-    - classpath:/application-internal.yml
-    - classpath:/application-s3.yml
     - classpath:/application-sqs.yml
     - optional:classpath:/application-secret.yml
 
 server:
-  port: 9090
-  name: gofield-api-user
-  monitoring: 고필드 사용자 api
+  port: 9100
+  name: gofield-sns
+  monitoring: 고필드 SNS
 

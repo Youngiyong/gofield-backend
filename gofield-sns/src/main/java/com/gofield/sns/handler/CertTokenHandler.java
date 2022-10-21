@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class CertTokenHandler {
     private static String GOFIELD_SNS_CERT_TOKEN;
 
-    @Value("${sns.auth}")
+    @Value("${secret.sns.auth}")
     public void setGofieldSnsCertToken(String certToken) {
         this.GOFIELD_SNS_CERT_TOKEN = certToken;
     }

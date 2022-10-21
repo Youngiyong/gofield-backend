@@ -21,15 +21,13 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SmsService {
-    @Value("${sqs.topic.sms}")
-    private String SQS_TOPIC_SMS;
-    @Value("${naver.cloud.client_id}")
+    @Value("${secret.naver.cloud.client_id}")
     private String NAVER_CLIENT_ID;
-    @Value("${naver.cloud.secret}")
+    @Value("${secret.naver.cloud.secret}")
     private String NAVER_CLIENT_SECRET;
-    @Value("${naver.cloud.sns.from}")
+    @Value("${secret.naver.sns.from}")
     private String NAVER_SNS_FROM;
-    @Value("${naver.cloud.sns.url}")
+    @Value("${secret.naver.sns.url}")
     private String NAVER_SNS_URL;
     private final NaverSnsApiClient naverSnsApiClient;
 
