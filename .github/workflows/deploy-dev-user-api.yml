@@ -49,3 +49,4 @@ jobs:
         run: |
           cd gofield-api-user-service/src/main/resources/application-secret.yml
           pwd  
+          pwd
