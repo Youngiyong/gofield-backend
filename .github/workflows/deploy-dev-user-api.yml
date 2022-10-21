@@ -1,4 +1,9 @@
-name: "[개발] 배포 User API"
+name: [개발] 배포 User API
+
+on:
+  push:
+    tags:
+      - develop-*
 
 jobs:
   build:
