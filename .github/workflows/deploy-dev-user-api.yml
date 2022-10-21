@@ -43,10 +43,10 @@ jobs:
 
       - name: Generate Config Files
         run: |
+          pwd  
           echo "${{ secrets.SECRET_USER_ENVIORNMENT }}" >> gofield-api-user-service/src/main/resources/application-secret.yml
 
       - name: test
         run: |
           cd gofield-api-user-service/src/main/resources/application-secret.yml
-          pwd  
 
