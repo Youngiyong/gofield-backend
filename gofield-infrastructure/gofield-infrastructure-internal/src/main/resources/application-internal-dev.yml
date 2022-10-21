@@ -1,0 +1,15 @@
+feign:
+  client:
+    config:
+      default:
+        loggerLevel: FULL
+
+internal:
+  client:
+    sms:
+      base-url: http://localhost:9100
+      single:
+        url: /sms/send
+      bulk:
+        url: /sms/send/bulk
+

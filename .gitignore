@@ -46,6 +46,7 @@ application-s3.yml
 application-sns.yml
 application-sqs.yml
 application-external.yml
-application-internal.yml
+application-internal-local.yml
+application-internal-dev.yml
 logs/
 V2_init.sql
