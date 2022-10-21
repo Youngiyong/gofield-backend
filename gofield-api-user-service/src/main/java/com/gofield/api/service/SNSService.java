@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class SNSService {
 
-    @Value("${sqs.topic.sms}")
+    @Value("${secret.sqs.topic.sms}")
     private String SQS_SMS_TOPIC;
     private final QueueMessagingTemplate messagingTemplate;
 

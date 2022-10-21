@@ -48,11 +48,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class UserService {
 
-    @Value("${cdn.url}")
+    @Value("${secret.cdn.url}")
     private String CDN_URL;
-    @Value("${sns.auth}")
+    @Value("${secret.sns.auth}")
     private String SNS_CERT_TOKEN;
-    @Value("${gofield.token_key}")
+    @Value("${secret.gofield.token_key}")
     private String TOKEN_DECRYPT_KEY;
     private final TermRepository termRepository;
     private final TermGroupRepository termGroupRepository;

@@ -31,31 +31,31 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class ThirdPartyService {
 
-    @Value("${kakao.client_id}")
+    @Value("${secret.kakao.client_id}")
     private String KAKAO_CLIENT_ID;
 
-    @Value("${kakao.client_secret}")
+    @Value("${secret.kakao.client_secret}")
     private String KAKAO_CLIENT_SECRET;
 
-    @Value("${kakao.auth_url}")
+    @Value("${secret.kakao.auth_url}")
     private String KAKAO_AUTH_URL;
 
-    @Value("${naver.client_id}")
+    @Value("${secret.naver.client_id}")
     private String NAVER_CLIENT_ID;
 
-    @Value("${naver.client_secret}")
+    @Value("${secret.naver.client_secret}")
     private String NAVER_CLIENT_SECRET;
 
-    @Value("${naver.auth_url}")
+    @Value("${secret.naver.auth_url}")
     private String NAVER_AUTH_URL;
 
-    @Value("${auth.callback_url}")
+    @Value("${secret.auth.callback_url}")
     private String AUTH_CALLBACK_URL;
 
-    @Value("${auth.front_local_redirect_url}")
+    @Value("${secret.auth.front_local_redirect_url}")
     private String AUTH_FRONT_LOCAL_REDIRECT_URL;
 
-    @Value("${auth.front_service_redirect_url}")
+    @Value("${secret.auth.front_service_redirect_url}")
     private String AUTH_FRONT_SERVICE_REDIRECT_URL;
 
     private final KaKaoAuthApiClient kaKaoAuthApiClient;

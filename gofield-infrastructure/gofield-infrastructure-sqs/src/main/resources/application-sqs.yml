@@ -1,0 +1,17 @@
+cloud:
+  aws:
+    credentials:
+      access-key: AKIATPQPX7QNB6ZJBLHQ
+      secret-key: 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
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+sqs:
+  topic:
+    sms: gofield-sms
+    push:
+      user: gofield-user-push
+      admin: gofield-admin-push
+      partner: gofield-partner-push

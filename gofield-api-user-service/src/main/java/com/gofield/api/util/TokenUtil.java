@@ -34,10 +34,10 @@ public class TokenUtil {
     private final Key key;
     private final String AUTH_PREFIX = "Gofield";
 
-    @Value("${gofield.token_key}")
+    @Value("${secret.gofield.token_key}")
     private String tokenEncryptKey;
 
-    public TokenUtil(@Value("${jwt.secret}") String secretKey) {
+    public TokenUtil(@Value("${secret.jwt.secret}") String secretKey) {
         byte[] keyBytes = Decoders.BASE64.decode(secretKey);
         this.key = Keys.hmacShaKeyFor(keyBytes);
     }

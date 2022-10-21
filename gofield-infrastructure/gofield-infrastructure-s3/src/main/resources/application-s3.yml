@@ -1,0 +1,12 @@
+cloud:
+  aws:
+    credentials:
+      access-key: ${secret.aws.access-key}
+      secret-key: ${secret.aws.secret-key}
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+
+bucket:
+  name: gofield

@@ -7,6 +7,13 @@ ext{
     }
 }
 
+bootJar {
+    enabled = true
+}
+jar {
+    enabled = true
+}
+
 dependencies {
     implementation project(':gofield-common')
     implementation project(":gofield-api-core:gofield-api-core-common")
