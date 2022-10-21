@@ -48,5 +48,5 @@ jobs:
 
       - name: test
         run: |
-          cd /home/runner/work/gofield-backend/gofield-backend/gofield-api-user-service/src/main/resources/application-secret.yml
+          cd /home/runner/work/gofield-backend/gofield-backend/gofield-api-user-service/src/main/resources
           ls -al
