@@ -6,3 +6,6 @@ dependencies {
     api("org.springframework.cloud:spring-cloud-aws-messaging:${springCloudAwsVersion}")
     implementation("org.springframework.cloud:spring-cloud-aws-autoconfigure:${springCloudAwsVersion}")
 }
+
+
+

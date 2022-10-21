@@ -15,9 +15,28 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 11
-      - name: Grant execute permission for gradlew
-        run: chmod +x ./gradlew
-        shell: bash
       - name: Build with Gradle
         run: ./gradlew clean build
         shell: bash
+      - name: Public IP
+        id: ip
+        uses: haythem/public-ip@v1.2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_KEY }}
+          aws-region: ap-northeast-2
+      - name: aws ec2 ip, port open
+        run: >
+          aws ec2 authorize-security-group-ingress
+          --group-name ${{ secrets.SECURITY_GROUP_NAME }}
+          --protocol tcp
+          --port ${{ secrets.REMOTE_SSH_PORT }}
+          --cidr ${{ steps.ip.outputs.ipv4 }}/32
+          --query "none"
+      - name: Generate Config Files
+        run: |
+          echo "${{ secrets.SECRET_USER_ENVIORNMENT }}" >> gofield-api-user-service/src/main/resources/application-secret.yml
+      - name: cd folder
+        -run: cat gofield-api-user-service/src/main/resources/application-secret.yml
