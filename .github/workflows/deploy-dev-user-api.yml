@@ -2,8 +2,6 @@ name: test
 
 on:
   push:
-    tags:
-      - develop-*
     branches:
       - main
 
