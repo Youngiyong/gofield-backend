@@ -1,4 +1,4 @@
-name: [개발] 배포 User API
+name: test
 
 on:
   push:
