@@ -11,13 +11,10 @@ public class GofieldSnsFeignConfig {
 
     @Bean
     public ErrorDecoder errorDecoder() {
-        return new GofieldApiErrorDecoder();
+        return new GofieldSnsErrorDecoder();
     }
 
-    /**
-     * <a href="https://api.ncloud-docs.com/docs/ai-application-service-sens-smsv2</a>
-     */
-    private static class GofieldApiErrorDecoder implements ErrorDecoder {
+    private static class GofieldSnsErrorDecoder implements ErrorDecoder {
 
         @Override
         public Exception decode(String methodKey, Response response) {

@@ -5,18 +5,16 @@ include 'gofield-common'
 include 'gofield-admin'
 
 include 'gofield-api-user-service'
-include 'gofield-api-partner-service'
 
 include 'gofield-api-core:gofield-api-core-common'
 
 include 'gofield-infrastructure:gofield-infrastructure-s3'
 include 'gofield-infrastructure:gofield-infrastructure-sqs'
-include 'gofield-infrastructure:gofield-infrastructure-firebase'
+//include 'gofield-infrastructure:gofield-infrastructure-firebase'
 include 'gofield-infrastructure:gofield-infrastructure-external'
 include 'gofield-infrastructure:gofield-infrastructure-internal'
 
 include 'gofield-domain:gofield-domain-rds'
 
 include 'gofield-sns'
-include 'gofield-batch'
 

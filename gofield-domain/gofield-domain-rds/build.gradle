@@ -21,18 +21,5 @@ dependencies {
 
 }
 
-def queryDslDir = 'src/main/generated'
-
-sourceSets {
-    main.java.srcDirs += [queryDslDir]
-}
-
-tasks.withType(JavaCompile) {
-    options.annotationProcessorGeneratedSourcesDirectory = file(queryDslDir)
-}
-
-clean.doLast {
-    file(queryDslDir).deleteDir()
-}
 
 
