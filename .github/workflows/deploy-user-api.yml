@@ -57,7 +57,7 @@ jobs:
           source: "."
           target: "/opt/gofield/gofield-backend-deploy"
 
-      - name: start.sh 실행
+      - name: deploy.sh 실행
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_IP }}
@@ -65,8 +65,7 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
-            sh /opt/gofield/gofield-backend-deploy/script/stop.sh &
-            sh /opt/gofield/gofield-backend-deploy/script/start.sh &
+            sh /opt/gofield/gofield-backend-deploy/script/deploy.sh &
 
       - name: aws ec2 ip, port close
         run: >
