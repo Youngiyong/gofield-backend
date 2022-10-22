@@ -1,0 +1,14 @@
+spring.profiles.default: dev
+spring.config:
+  import:
+    - classpath:/application-rds.yml
+    - optional:classpath:/application-secret.yml
+
+server:
+  port: 9700
+  name: gofield-admin
+  monitoring: 고필드 관리자
+
+spring:
+  thymeleaf:
+    cache: false
