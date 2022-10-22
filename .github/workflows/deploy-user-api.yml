@@ -57,7 +57,7 @@ jobs:
           source: "."
           target: "/opt/gofield/gofield-backend-deploy"
 
-      - name: stop.sh 실행
+      - name: 스크립트 실행
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.REMOTE_IP }}
