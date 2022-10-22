@@ -1,4 +1,4 @@
-name: test
+name:
 
 on:
   push:
@@ -42,11 +42,16 @@ jobs:
           --query "none"
 
       - name: Generate Config Files
-        run: |
-          pwd  
+        run:
           echo "${{ secrets.SECRET_USER_ENVIORNMENT }}" >> gofield-api-user-service/src/main/resources/application-secret.yml
 
-      - name: test
-        run: |
-          cd /home/runner/work/gofield-backend/gofield-backend/gofield-api-user-service/src/main/resources
-          ls -al
+      - name: (scp) gofield-backend folder to ec2
+        uses: appleboy/scp-action@master
+        with:
+          host: ${{ secrets.REMOTE_IP }}
+          username: ${{ secrets.REMOTE_SSH_ID }}
+          key: ${{ secrets.REMOTE_SSH_KEY }}
+          port: ${{ secrets.REMOTE_SSH_PORT }}
+          source: "."
+          target: "/opt/gofield-backend-user"
+
