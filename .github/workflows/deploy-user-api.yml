@@ -44,9 +44,9 @@ jobs:
 
       - name: Generate Config Files
         run: |
-          echo "${{ secrets.SECRET_USER_ENVIORNMENT }}" >> gofield-api-user-service/src/main/resources/application-secret.yml
-          echo "${{ secrets.SECRET_SNS_ENVIORNMENT }}" >> gofield-sns/src/main/resources/application-secret.yml
-          echo "${{ secrets.SECRET_ADMIN_ENVIORNMENT }}" >> gofield-admin/src/main/resources/application-secret.yml
+          echo "${{ secrets.SECRET_USER_ENVIRONMENT }}" >> gofield-api-user-service/src/main/resources/application-secret.yml
+          echo "${{ secrets.SECRET_SNS_ENVIRONMENT }}" >> gofield-sns/src/main/resources/application-secret.yml
+          echo "${{ secrets.SECRET_ADMIN_ENVIRONMENT }}" >> gofield-admin/src/main/resources/application-secret.yml
 
       - name: (scp) gofield-backend folder to ec2
         uses: appleboy/scp-action@master
