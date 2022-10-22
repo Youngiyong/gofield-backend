@@ -27,7 +27,7 @@ public class MainController {
         return ApiResponse.success(mainService.getMainContentList());
     }
 
-    @GetMapping("/{version}/error")
+    @GetMapping("/{version}/error9")
     public ApiResponse  error(@PathVariable("version") EApiVersion apiVersion){
         throw new ForbiddenException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, ErrorCode.E403_FORBIDDEN_EXCEPTION.getMessage());
     }
