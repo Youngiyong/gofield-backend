@@ -53,5 +53,5 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           source: "."
-          target: "/opt/gofield-backend-user"
+          target: "/opt/gofield/gofield-backend-deploy-user"
 
