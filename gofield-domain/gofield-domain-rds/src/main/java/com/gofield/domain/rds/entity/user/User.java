@@ -25,7 +25,7 @@ import java.util.List;
 @Entity
 @Table(	name = "user")
 public class User extends BaseTimeEntity {
-    @Column(nullable = false, length = 36)
+    @Column(nullable = false, length = 32)
     private String uuid;
 
     @Column(length = 36)
