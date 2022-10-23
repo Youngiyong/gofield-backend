@@ -65,7 +65,6 @@ jobs:
           key: ${{ secrets.REMOTE_SSH_KEY }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
-            sudo su -
             sh /opt/gofield/gofield-backend-deploy/script/deploy.sh &
 
       - name: aws ec2 ip, port close
