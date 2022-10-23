@@ -66,8 +66,7 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             sudo su -
-            sh /opt/gofield/gofield-backend-deploy/script/stop.sh &
-            sh /opt/gofield/gofield-backend-deploy/script/start.sh &
+            sh /opt/gofield/gofield-backend-deploy/script/deploy.sh &
 
       - name: aws ec2 ip, port close
         run: >
