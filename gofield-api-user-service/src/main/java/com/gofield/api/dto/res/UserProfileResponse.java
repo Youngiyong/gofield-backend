@@ -11,17 +11,13 @@ import lombok.NoArgsConstructor;
 public class UserProfileResponse {
     private String name;
     private String nickName;
-    private Integer weight;
-    private Integer height;
     private String thumbnail;
 
 
     @Builder
-    private UserProfileResponse(String name, String nickName, Integer weight, Integer height, String thumbnail){
+    private UserProfileResponse(String name, String nickName, String thumbnail){
         this.name = name;
         this.nickName = nickName;
-        this.weight = weight;
-        this.height = height;
         this.thumbnail = thumbnail;
     }
 
@@ -29,8 +25,6 @@ public class UserProfileResponse {
         return UserProfileResponse.builder()
                 .name(user.getName())
                 .nickName(user.getNickName())
-                .weight(user.getWeight())
-                .height(user.getHeight())
                 .thumbnail(user.getThumbnail()==null ? null : CDN_URL.concat(user.getThumbnail()))
                 .build();
     }
