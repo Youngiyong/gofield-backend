@@ -4,6 +4,7 @@ package com.gofield.domain.rds.entity.itemBundle;
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.brand.Brand;
 import com.gofield.domain.rds.entity.category.Category;
+import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.entity.itemBundleImage.ItemBundleImage;
 import com.gofield.domain.rds.entity.itemImage.ItemImage;
 import lombok.AccessLevel;
@@ -45,7 +46,7 @@ public class ItemBundle extends BaseTimeEntity {
     private String thumbnail;
 
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ItemBundle> bundles = new ArrayList<>();
+    private final List<Item> items = new ArrayList<>();
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemBundleImage> images = new ArrayList<>();
 

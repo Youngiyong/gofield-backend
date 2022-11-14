@@ -30,8 +30,8 @@ import java.util.List;
 @Table(	name = "item")
 public class Item extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "bundle_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "bundle_id", nullable = false)
     private ItemBundle bundle;
 
     @OneToOne(fetch = FetchType.LAZY)

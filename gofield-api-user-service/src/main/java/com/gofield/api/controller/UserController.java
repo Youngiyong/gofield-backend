@@ -25,7 +25,7 @@ public class UserController {
     private final UserService userService;
 
     @ApiOperation(value = "장바구니 갯수")
-    @PutMapping("/{version}/push")
+    @GetMapping("/{version}/cart")
     public ApiResponse<CountResponse> getCartCount(@PathVariable("version") EApiVersion apiVersion){
         return ApiResponse.success(userService.getCartCount());
     }
