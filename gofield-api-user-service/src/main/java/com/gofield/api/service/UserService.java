@@ -1,6 +1,7 @@
 package com.gofield.api.service;
 
 import com.gofield.api.config.resolver.UserUuidResolver;
+import com.gofield.api.dto.enums.TermSelectionType;
 import com.gofield.api.dto.enums.TermType;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.*;
@@ -10,6 +11,7 @@ import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.EncryptUtils;
 import com.gofield.common.utils.RandomUtils;
+import com.gofield.domain.rds.entity.cart.CartRepository;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.term.Term;
@@ -30,6 +32,7 @@ import com.gofield.domain.rds.entity.userWebPush.UserWebWebPushRepository;
 import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistory;
 import com.gofield.domain.rds.entity.userSns.UserSnsRepository;
 import com.gofield.domain.rds.enums.EStatusFlag;
+import com.gofield.domain.rds.enums.ETermFlag;
 import com.gofield.infrastructure.internal.api.sns.dto.request.SmsRequest;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
@@ -50,10 +53,13 @@ public class UserService {
 
     @Value("${secret.cdn.url}")
     private String CDN_URL;
+
     @Value("${secret.sns.auth}")
     private String SNS_CERT_TOKEN;
     @Value("${secret.gofield.token_key}")
     private String TOKEN_DECRYPT_KEY;
+
+    private final CartRepository cartRepository;
     private final TermRepository termRepository;
     private final TermGroupRepository termGroupRepository;
     private final CategoryRepository categoryRepository;
@@ -73,6 +79,11 @@ public class UserService {
 
     public String uploadProfile(MultipartFile file){
         return s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
+    }
+
+    @Transactional(readOnly = true)
+    public CountResponse getCartCount(){
+        return CountResponse.of(cartRepository.getCartCount(getUserDecryptUuid()));
     }
 
     @Transactional(readOnly = true)
@@ -155,7 +166,7 @@ public class UserService {
     @Transactional
     public void updateProfile(UserRequest.UserProfile request){
         User user = getUser();
-        user.updateProfile(request.getName(), request.getNickName(), request.getThumbnail(), request.getWeight(), request.getHeight(), request.getIsAlertPromotion());
+        user.updateProfile(request.getName(), request.getNickName(), request.getThumbnail(),  request.getIsAlertPromotion());
     }
 
     @Transactional
@@ -250,6 +261,22 @@ public class UserService {
             userHasTermRepository.save(userHasTerm);
         }
     }
+
+    public void insertUserHasTerm(TermSelectionType selectionType, User user){
+        ETermFlag termFlag = ETermFlag.MARKETING;
+        if(selectionType.equals(ETermFlag.MARKETING_EMAIL)){
+            termFlag = ETermFlag.MARKETING_EMAIL;
+        } else if(selectionType.equals(ETermFlag.MARKETING_SMS)){
+            termFlag = ETermFlag.MARKETING_SMS;
+        } else if(selectionType.equals(ETermFlag.MARKETING_PUSH)){
+            termFlag = ETermFlag.MARKETING_PUSH;
+        }
+
+        Term term = termRepository.findByType(termFlag);
+        UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
+        userHasTermRepository.save(userHasTerm);
+    }
+
 
 
 }

@@ -20,13 +20,10 @@ import java.util.List;
 public class MainService {
     private final BannerRepository bannerRepository;
 
-    private final CategoryRepository categoryRepository;
-
     @Transactional(readOnly = true)
-    public MainResponse getMainContentList(){
+    public List<BannerResponse> getBannerList(){
         List<Banner> bannerList = bannerRepository.findAllIsActive();
-        List<Category> categoryList = categoryRepository.findAllIsActiveOrderBySort();
-        return MainResponse.of(CategoryMainResponse.of(categoryList), BannerResponse.of(bannerList));
+        return BannerResponse.of(bannerList);
     }
 
 

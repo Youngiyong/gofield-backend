@@ -3,6 +3,7 @@ package com.gofield.api.controller;
 import com.gofield.api.dto.enums.TermType;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.CategoryResponse;
+import com.gofield.api.dto.res.CountResponse;
 import com.gofield.api.dto.res.TermResponse;
 import com.gofield.api.dto.res.UserProfileResponse;
 import com.gofield.api.service.UserService;
@@ -22,6 +23,13 @@ import java.util.List;
 public class UserController {
 
     private final UserService userService;
+
+    @ApiOperation(value = "장바구니 갯수")
+    @PutMapping("/{version}/push")
+    public ApiResponse<CountResponse> getCartCount(@PathVariable("version") EApiVersion apiVersion){
+        return ApiResponse.success(userService.getCartCount());
+    }
+
     @ApiOperation(value = "푸쉬 키 업데이트")
     @PutMapping("/{version}/push")
     public ApiResponse updatePush(@PathVariable("version") EApiVersion apiVersion,

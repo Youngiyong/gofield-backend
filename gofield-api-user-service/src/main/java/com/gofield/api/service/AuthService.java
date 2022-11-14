@@ -59,15 +59,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuthService {
     private final UserService userService;
-    private final TermRepository termRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
-    private final CategoryRepository categoryRepository;
     private final UserWebWebTokenRepository userWebTokenRepository;
-    private final UserHasTermRepository userHasTermRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserWebWebAccessLogRepository userWebAccessLogRepository;
-    private final UserHasCategoryRepository userHasCategoryRepository;
     private final UserClientDetailRepository userClientDetailRepository;
     private final TokenUtil tokenUtil;
     private final ThirdPartyService thirdPartyService;
@@ -101,6 +97,7 @@ public class AuthService {
         if(userAccount==null){
             isSign = false;
         }
+
         Authentication authentication = Authentication.of(userSns.getUser().getUuid(), userSns.getUser().getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity(), isSign, request.getSocial().getKey());
         LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
@@ -128,15 +125,7 @@ public class AuthService {
         if(account==null){
             account = UserAccount.newInstance(user);
             userAccountRepository.save(account);
-            if(request.getCategoryList()!=null){
-                if(!request.getCategoryList().isEmpty()){
-                    List<Category> resultCategoryList = categoryRepository.findAllByInId(request.getCategoryList());
-                    for(Category category: resultCategoryList){
-                        UserHasCategory userHasCategory = UserHasCategory.newInstance(user, category);
-                        userHasCategoryRepository.save(userHasCategory);
-                    }
-                }
-            }
+
             if(request.getAgreeList()!=null){
                 if(!request.getAgreeList().isEmpty()){
                     userService.insertUserHasTerm(request.getAgreeList(), user);
@@ -148,23 +137,11 @@ public class AuthService {
             if(request.getSelectionList()!=null){
                 if(!request.getSelectionList().isEmpty()){
                     for(TermSelectionType type: request.getSelectionList()){
-                        if(type.equals(TermSelectionType.EMAIL)){
-                            Term term = termRepository.findByType(ETermFlag.MARKETING_EMAIL);
-                            UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-                            userHasTermRepository.save(userHasTerm);
-                        } else if(type.equals(TermSelectionType.SMS)){
-                            Term term = termRepository.findByType(ETermFlag.MARKETING_SMS);
-                            UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-                            userHasTermRepository.save(userHasTerm);
-                        } else if(type.equals(TermSelectionType.PUSH)){
-                            Term term = termRepository.findByType(ETermFlag.MARKETING_PUSH);
-                            UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-                            userHasTermRepository.save(userHasTerm);
-                        }
+                        userService.insertUserHasTerm(type, user);
                     }
                 }
             }
-            user.updateSign(request.getEmail(), request.getWeight(), request.getHeight());
+            user.updateSign();
         }
 
         Authentication authentication = Authentication.of(user.getUuid(), user.getId(), Constants.TOKEN_ISSUER);

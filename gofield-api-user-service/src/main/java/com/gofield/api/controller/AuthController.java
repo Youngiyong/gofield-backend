@@ -1,7 +1,5 @@
 package com.gofield.api.controller;
 
-
-import com.gofield.api.dto.req.LoginAutoRequest;
 import com.gofield.api.dto.req.LoginRequest;
 import com.gofield.api.dto.req.TokenRefreshRequest;
 import com.gofield.api.dto.req.SignupRequest;

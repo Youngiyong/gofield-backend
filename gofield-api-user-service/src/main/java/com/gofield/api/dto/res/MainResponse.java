@@ -10,12 +10,10 @@ import java.util.List;
 @NoArgsConstructor
 public class MainResponse {
 
-    private List<CategoryMainResponse> categoryList;
     private List<BannerResponse> bannerList;
 
     @Builder
     private MainResponse(List<CategoryMainResponse> categoryList, List<BannerResponse> bannerList){
-        this.categoryList = categoryList;
         this.bannerList = bannerList;
     }
 

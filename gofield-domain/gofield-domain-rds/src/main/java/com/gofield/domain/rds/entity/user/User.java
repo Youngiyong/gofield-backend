@@ -37,15 +37,6 @@ public class User extends BaseTimeEntity {
     @Column(length = 20)
     private String tel;
 
-    @Column(length = 50)
-    private String email;
-
-    @Column
-    private Integer weight;
-
-    @Column
-    private Integer height;
-
     @Column(length = 128, name = "thumbnail_path")
     private String thumbnail;
 
@@ -89,19 +80,14 @@ public class User extends BaseTimeEntity {
         return new User(uuid, nickName);
     }
 
-    public void updateProfile(String name, String nickName, String thumbnail, Integer weight, Integer height, Boolean isAlertPromotion){
+    public void updateProfile(String name, String nickName, String thumbnail, Boolean isAlertPromotion){
         this.name =  name != null ? name : this.name;
         this.nickName = nickName != null ? nickName : this.nickName;
         this.thumbnail = thumbnail != null ? thumbnail : this.thumbnail;
-        this.weight = weight != null ? weight : this.weight;
-        this.height = height != null ? height : this.height;
         this.isAlertPromotion = isAlertPromotion != null ? isAlertPromotion : this.isAlertPromotion;
 
     }
-    public void updateSign(String email, Integer weight, Integer height){
-        this.email =  email != null ? email : this.email;
-        this.weight = weight != null ? weight : this.weight;
-        this.height = height != null ? height : this.height;
+    public void updateSign(){
         this.status = EStatusFlag.ACTIVE;
     }
 

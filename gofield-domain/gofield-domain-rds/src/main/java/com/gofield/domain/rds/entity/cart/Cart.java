@@ -4,7 +4,7 @@ package com.gofield.domain.rds.entity.cart;
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.user.User;
-import com.gofield.domain.rds.enums.item.EDeliveryFlag;
+import com.gofield.domain.rds.enums.item.EItemDeliveryFlag;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,8 +21,6 @@ import javax.persistence.*;
 @Table(	name = "cart")
 public class Cart extends BaseTimeEntity {
 
-    @Column(name = "delivery_flag", nullable = false)
-    private EDeliveryFlag delivery;
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -34,25 +32,21 @@ public class Cart extends BaseTimeEntity {
     private int originalPrice;
 
     @Column
-    private int offerPrice;
-
-    @Column
     private int price;
 
     @Column
     private int qty;
 
-    private Cart(EDeliveryFlag delivery, User user, String itemNumber, int originalPrice, int offerPrice, int price, int qty){
-        this.delivery = delivery;
+    private Cart(User user, String itemNumber, int originalPrice, int price, int qty){
         this.user = user;
         this.itemNumber = itemNumber;
         this.originalPrice = originalPrice;
-        this.offerPrice = offerPrice;
         this.price = price;
         this.qty = qty;
     }
 
-    public static Cart newInstance(EDeliveryFlag delivery, User user, String itemNumber, int originalPrice, int offerPrice, int price, int qty){
-        return new Cart(delivery, user, itemNumber, originalPrice, offerPrice, price, qty);
+    public static Cart newInstance(User user, String itemNumber, int originalPrice, int price, int qty){
+        return new Cart(user, itemNumber, originalPrice, price, qty);
     }
+
 }

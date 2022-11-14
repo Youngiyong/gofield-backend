@@ -7,9 +7,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum EDeliveryFlag implements CodeEnum {
-    BUNDLE("묶음 배송", "B"),
-    EACH( "개별 배송", "E");
+public enum EItemClassificationFlag implements CodeEnum {
+    NEW("새상품", "N"),
+    USED( "중고상품", "U");
 
     private String description;
     private String code;

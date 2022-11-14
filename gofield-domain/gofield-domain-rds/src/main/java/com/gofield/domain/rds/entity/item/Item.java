@@ -2,10 +2,15 @@
 package com.gofield.domain.rds.entity.item;
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
+import com.gofield.domain.rds.entity.brand.Brand;
+import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.itemBundle.ItemBundle;
-import com.gofield.domain.rds.entity.itemBundleImage.ItemBundleImage;
 import com.gofield.domain.rds.entity.itemImage.ItemImage;
 import com.gofield.domain.rds.entity.itemOption.ItemOption;
+import com.gofield.domain.rds.enums.item.EItemGenderFlag;
+import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
+
+import com.gofield.domain.rds.enums.item.EItemSpecFlag;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +18,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,29 +34,52 @@ public class Item extends BaseTimeEntity {
     @JoinColumn(name = "bundle_id")
     private ItemBundle bundle;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "brand_id")
+    private Brand brand;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "category_id")
+    private Category category;
+
     @Column
     private String name;
 
     @Column(nullable = false, length = 20)
     private String itemNumber;
 
-    @Column(nullable = false, length = 32)
-    private String manufacturer;
-
-    @Column(nullable = false, length = 32)
-    private String origin;
+    @Column
+    private int originalPrice;
 
     @Column
-    private String deliveryType;
+    private int price;
 
-    @Column
-    private String product;
+    @Column(name = "classification_flag", nullable = false)
+    private EItemClassificationFlag classification;
 
-    @Column
-    private String proficiency;
+    @Column(name = "gender_flag", nullable = false)
+    private EItemGenderFlag gender;
+
+    @Column(name = "spec_flag", nullable = false)
+    private EItemSpecFlag spec;
 
     @Column
     private String description;
+
+    @Column
+    private Double discountRate;
+
+    @Column
+    private String manufactureCompany;
+
+    @Column
+    private String origin;
+
+    @Column
+    private String thumbnail;
+
+    @Column
+    private LocalDateTime manufactureDate;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemImage> images = new ArrayList<>();

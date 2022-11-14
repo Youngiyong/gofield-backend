@@ -5,6 +5,7 @@ import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.brand.Brand;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.itemBundleImage.ItemBundleImage;
+import com.gofield.domain.rds.entity.itemImage.ItemImage;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,6 +40,12 @@ public class ItemBundle extends BaseTimeEntity {
 
     @Column
     private Boolean isActive;
+
+    @Column
+    private String thumbnail;
+
+    @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ItemBundle> bundles = new ArrayList<>();
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemBundleImage> images = new ArrayList<>();
 
