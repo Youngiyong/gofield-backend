@@ -64,9 +64,9 @@ jobs:
           username: ${{ secrets.REMOTE_SSH_ID }}
           key: ${{ secrets.REMOTE_SSH_KEY }}
           port: ${{ secrets.REMOTE_SSH_PORT }}
-          script:
+          run:
             sh /opt/gofield/gofield-backend-deploy/script/deploy.sh
-
+          shell: bash
       - name: aws ec2 ip, port close
         run: >
           aws ec2 revoke-security-group-ingress
