@@ -8,17 +8,17 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class MainResponse {
+public class MainItemResponse {
 
-    private List<BannerResponse> bannerList;
+    private List<MainItemResponse> bannerList;
 
     @Builder
-    private MainResponse(List<CategoryMainResponse> categoryList, List<BannerResponse> bannerList){
+    private MainItemResponse(List<CategoryMainResponse> categoryList, List<MainItemResponse> bannerList){
         this.bannerList = bannerList;
     }
 
-    public static MainResponse of(List<CategoryMainResponse> categoryList, List<BannerResponse> bannerList){
-        return MainResponse.builder()
+    public static MainItemResponse of(List<CategoryMainResponse> categoryList, List<MainItemResponse> bannerList){
+        return MainItemResponse.builder()
                 .categoryList(categoryList)
                 .bannerList(bannerList)
                 .build();

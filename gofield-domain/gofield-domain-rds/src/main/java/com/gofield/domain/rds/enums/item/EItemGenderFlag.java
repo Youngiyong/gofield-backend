@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemGenderFlag implements CodeEnum {
     FEMALE("여성", "F"),
-    MALE( "남성", "I"),
+    MALE( "남성", "M"),
     CHILDREN("어린이", "C"),
     ETC("기타", "N")
     ;

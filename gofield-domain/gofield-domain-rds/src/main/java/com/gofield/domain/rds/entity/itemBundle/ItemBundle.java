@@ -43,6 +43,9 @@ public class ItemBundle extends BaseTimeEntity {
     private Boolean isActive;
 
     @Column
+    private Boolean isRecommend;
+
+    @Column
     private String thumbnail;
 
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)

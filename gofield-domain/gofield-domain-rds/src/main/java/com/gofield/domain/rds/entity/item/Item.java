@@ -66,9 +66,6 @@ public class Item extends BaseTimeEntity {
     private String description;
 
     @Column
-    private Double discountRate;
-
-    @Column
     private String manufactureCompany;
 
     @Column

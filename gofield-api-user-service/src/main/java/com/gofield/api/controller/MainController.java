@@ -1,6 +1,7 @@
 package com.gofield.api.controller;
 
 import com.gofield.api.dto.res.BannerResponse;
+import com.gofield.api.dto.res.MainItemResponse;
 import com.gofield.api.service.MainService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -26,5 +27,9 @@ public class MainController {
         return ApiResponse.success(mainService.getBannerList());
     }
 
-
+    @ApiOperation(value = "메인 상품 조회")
+    @GetMapping("/{version}/item")
+    public ApiResponse<MainItemResponse> getMainItemList(@PathVariable("version") EApiVersion apiVersion){
+        return ApiResponse.success(mainService.getMainItemList());
+    }
 }

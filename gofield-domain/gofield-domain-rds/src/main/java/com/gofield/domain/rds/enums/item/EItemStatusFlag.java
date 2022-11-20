@@ -8,8 +8,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemStatusFlag implements CodeEnum {
-    SOLD_OUT("품절", "S"),
-    SALE("판매중", "N")
+    SOLD_OUT("품절", "W"),
+    SALE("판매중", "A")
     ;
 
     private String description;
