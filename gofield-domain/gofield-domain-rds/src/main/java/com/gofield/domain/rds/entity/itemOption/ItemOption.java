@@ -1,9 +1,8 @@
-
-
 package com.gofield.domain.rds.entity.itemOption;
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.item.Item;
+import com.gofield.domain.rds.enums.item.EItemOptionTypeFlag;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -22,7 +21,23 @@ public class ItemOption extends BaseTimeEntity {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
+    @Column(nullable = false, length = 32)
+    private String itemNumber;
+
     @Column
+    private EItemOptionTypeFlag optionType;
+
+    @Column(name = "group_title")
+    private String groupTitle;
+
+    @Column(columnDefinition = "TEXT")
     private String name;
+
+    @Column
+    private int price;
+
+    @Column
+    private Boolean isUse;
+
 
 }

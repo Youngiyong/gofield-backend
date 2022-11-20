@@ -15,10 +15,10 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
 
     @Override
-    public List<Category> findAllIsActiveOrderBySort() {
+    public List<Category> findAllIsActiveAndIsAttentionOrderBySort() {
         return jpaQueryFactory
                 .selectFrom(category)
-                .where(category.isActive.isTrue().and(category.parent.isNull()))
+                .where(category.isActive.isTrue(), category.isAttention.isTrue())
                 .orderBy(category.sort.asc())
                 .fetch();
     }

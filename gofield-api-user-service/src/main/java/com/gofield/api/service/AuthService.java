@@ -1,6 +1,5 @@
 package com.gofield.api.service;
 
-
 import com.gofield.api.dto.Authentication;
 import com.gofield.api.dto.SocialAuthentication;
 import com.gofield.api.dto.enums.TermSelectionType;
@@ -66,6 +65,10 @@ public class AuthService {
     private final UserWebWebAccessLogRepository userWebAccessLogRepository;
     private final UserClientDetailRepository userClientDetailRepository;
     private final TokenUtil tokenUtil;
+
+    private final CategoryRepository categoryRepository;
+
+    private final UserHasCategoryRepository userHasCategoryRepository;
     private final ThirdPartyService thirdPartyService;
 
     @Transactional
@@ -133,6 +136,17 @@ public class AuthService {
             } else {
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "필수 약관은 선택해 주셔야 됩니다.");
             }
+
+            if(request.getCategoryList()!=null){
+                if(!request.getCategoryList().isEmpty()){
+                    List<Category> categoryList = categoryRepository.findAllByInId(request.getCategoryList());
+                    for(Category category: categoryList){
+                        UserHasCategory userHasCategory = UserHasCategory.newInstance(user, category);
+                        userHasCategoryRepository.save(userHasCategory);
+                    }
+                }
+            }
+
 
             if(request.getSelectionList()!=null){
                 if(!request.getSelectionList().isEmpty()){

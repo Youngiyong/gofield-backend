@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SignupRequest {
-//    private List<Long> categoryList;
+    private List<Long> categoryList;
     @NotNull
     private List<Long> agreeList;
     private List<TermSelectionType> selectionList;

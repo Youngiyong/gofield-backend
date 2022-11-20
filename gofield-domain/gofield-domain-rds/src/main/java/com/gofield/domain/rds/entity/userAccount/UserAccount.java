@@ -24,6 +24,9 @@ public class UserAccount extends BaseTimeEntity {
     @Column(length = 32)
     private String bankName;
 
+    @Column(length = 32)
+    private String bankCode;
+
     @Column(length = 30)
     private String bankHolderName;
 
@@ -37,8 +40,9 @@ public class UserAccount extends BaseTimeEntity {
     public static UserAccount newInstance(User user){
         return new UserAccount(user);
     }
-    public void updateAccountInfo(String bankName, String bankHolderName, String bankAccountNumber){
+    public void updateAccountInfo(String bankName, String bankCode, String bankHolderName, String bankAccountNumber){
         this.bankName = bankName != null ? bankName : this.bankName;
+        this.bankCode = bankCode != null ? bankCode : this.bankCode;
         this.bankHolderName = bankHolderName != null ? bankHolderName : this.bankHolderName;
         this.bankAccountNumber = bankAccountNumber != null ? bankAccountNumber : this.bankAccountNumber;
 

@@ -7,9 +7,8 @@ import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.itemBundle.ItemBundle;
 import com.gofield.domain.rds.entity.itemImage.ItemImage;
 import com.gofield.domain.rds.entity.itemOption.ItemOption;
-import com.gofield.domain.rds.enums.item.EItemGenderFlag;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
-
+import com.gofield.domain.rds.enums.item.EItemGenderFlag;
 import com.gofield.domain.rds.enums.item.EItemSpecFlag;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -45,7 +44,7 @@ public class Item extends BaseTimeEntity {
     @Column
     private String name;
 
-    @Column(nullable = false, length = 20)
+    @Column(nullable = false, length = 32)
     private String itemNumber;
 
     @Column
@@ -77,6 +76,9 @@ public class Item extends BaseTimeEntity {
 
     @Column
     private String thumbnail;
+
+    @Column
+    private Boolean isOption;
 
     @Column
     private LocalDateTime manufactureDate;

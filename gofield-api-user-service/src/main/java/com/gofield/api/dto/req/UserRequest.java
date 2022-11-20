@@ -63,6 +63,8 @@ public class UserRequest {
 
     @Getter
     public static class UserAccountInfo {
+        @NotNull(message = "은행코드는 필수값입니다.")
+        private String bankCode;
         @NotNull(message = "은행명은 필수값입니다.")
         private String bankName;
         @NotNull(message = "예금주명은 필수값입니다.")

@@ -6,7 +6,7 @@ import com.gofield.domain.rds.entity.category.Category;
 import java.util.List;
 
 public interface CategoryRepositoryCustom {
-    List<Category> findAllIsActiveOrderBySort();
+    List<Category> findAllIsActiveAndIsAttentionOrderBySort();
     List<Category> findAllByInId(List<Long> idList);
 
 }

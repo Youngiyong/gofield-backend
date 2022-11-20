@@ -142,7 +142,7 @@ public class UserService {
     public void updateAccountInfo(UserRequest.UserAccountInfo request){
         User user = getUser();
         UserAccount userAccount = userAccountRepository.findByUserId(user.getId());
-        userAccount.updateAccountInfo(request.getBankName(), request.getBankHolderName(), request.getBankAccountNumber());
+        userAccount.updateAccountInfo(request.getBankName(), request.getBankCode(), request.getBankHolderName(), request.getBankAccountNumber());
         if(request.getAgreeList()!=null){
             if(!request.getAgreeList().isEmpty()){
                 insertUserHasTerm(request.getAgreeList(), user);
@@ -166,7 +166,7 @@ public class UserService {
     @Transactional
     public void updateProfile(UserRequest.UserProfile request){
         User user = getUser();
-        user.updateProfile(request.getName(), request.getNickName(), request.getThumbnail(),  request.getIsAlertPromotion());
+        user.updateProfile(request.getName(), request.getNickName(), request.getThumbnail(),  request.getIsAlertPromotion(), request.getWeight(), request.getHeight());
     }
 
     @Transactional
@@ -238,7 +238,7 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public List<CategoryResponse> getCategoryList(){
-        List<Category> resultList = categoryRepository.findAllIsActiveOrderBySort();
+        List<Category> resultList = categoryRepository.findAllIsActiveAndIsAttentionOrderBySort();
         return CategoryResponse.of(resultList);
     }
 

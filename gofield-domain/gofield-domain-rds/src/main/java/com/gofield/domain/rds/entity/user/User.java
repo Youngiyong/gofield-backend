@@ -40,6 +40,12 @@ public class User extends BaseTimeEntity {
     @Column(length = 128, name = "thumbnail_path")
     private String thumbnail;
 
+    @Column
+    private Integer weight;
+
+    @Column
+    private Integer height;
+
     @Column(name = "status_flag", nullable = false, length = 20)
     private EStatusFlag status;
 
@@ -80,11 +86,13 @@ public class User extends BaseTimeEntity {
         return new User(uuid, nickName);
     }
 
-    public void updateProfile(String name, String nickName, String thumbnail, Boolean isAlertPromotion){
+    public void updateProfile(String name, String nickName, String thumbnail, Boolean isAlertPromotion, Integer weight, Integer height){
         this.name =  name != null ? name : this.name;
         this.nickName = nickName != null ? nickName : this.nickName;
         this.thumbnail = thumbnail != null ? thumbnail : this.thumbnail;
         this.isAlertPromotion = isAlertPromotion != null ? isAlertPromotion : this.isAlertPromotion;
+        this.weight = weight != null ? weight : this.weight;
+        this.height = height != null ? height : this.height;
 
     }
     public void updateSign(){

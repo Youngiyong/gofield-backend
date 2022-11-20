@@ -40,4 +40,6 @@ public class Category extends BaseTimeEntity {
     @Column
     private Boolean isActive;
 
+    @Column
+    private Boolean isAttention;
 }
