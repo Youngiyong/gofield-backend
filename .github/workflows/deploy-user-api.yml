@@ -66,7 +66,7 @@ jobs:
           port: ${{ secrets.REMOTE_SSH_PORT }}
           script: |
             sudo pkill -9 -f /opt/gofield/gofield-backend-deploy/gofield-sns/build/libs/gofield-sns.jar
-            sudo nohup java -jar -Dspring.profiles.active=dev /opt/gofield/gofield-backend-deploy/gofield-sns/build/libs/gofield-sns.jar
+            sudo nohup java -jar -Dspring.profiles.active=dev /opt/gofield/gofield-backend-deploy/gofield-sns/build/libs/gofield-sns.jar &
 
       - name: aws ec2 ip, port close
         run: >
