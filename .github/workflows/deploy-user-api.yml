@@ -68,6 +68,7 @@ jobs:
             sh /opt/gofield/gofield-backend-deploy/script/deploy.sh
 
       - name: aws ec2 ip, port close
+      - if: ${{ always() }}
         run: >
           aws ec2 revoke-security-group-ingress
           --group-name ${{ secrets.SECURITY_GROUP_NAME }}
