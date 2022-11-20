@@ -21,7 +21,7 @@ public class MainController {
     private final MainService mainService;
 
     @ApiOperation(value = "메인 배너 조회")
-    @GetMapping("/{version}/banner")
+    @GetMapping("/{version}/banner2")
     public ApiResponse<List<BannerResponse>> getBannerList(@PathVariable("version") EApiVersion apiVersion){
         return ApiResponse.success(mainService.getBannerList());
     }
