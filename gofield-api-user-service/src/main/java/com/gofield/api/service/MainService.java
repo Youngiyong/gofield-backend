@@ -1,6 +1,8 @@
 package com.gofield.api.service;
 
 import com.gofield.api.dto.res.BannerResponse;
+import com.gofield.api.dto.res.ItemBundlePopularResponse;
+import com.gofield.api.dto.res.ItemBundleRecommendResponse;
 import com.gofield.api.dto.res.MainItemResponse;
 import com.gofield.domain.rds.entity.banner.Banner;
 import com.gofield.domain.rds.entity.banner.BannerRepository;
@@ -34,7 +36,9 @@ public class MainService {
 
     @Transactional(readOnly = true)
     public MainItemResponse getMainItemList(){
-        return null;
+        List<ItemBundlePopularResponse> popularBundleList = itemService.getPopularItemBundleList();
+        List<ItemBundleRecommendResponse> recommendBundleList = itemService.getRecommendItemBundleList();
+        return MainItemResponse.of(popularBundleList, recommendBundleList, recommendBundleList);
     }
 
 

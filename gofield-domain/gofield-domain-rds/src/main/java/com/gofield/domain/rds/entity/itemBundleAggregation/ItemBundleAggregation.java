@@ -27,7 +27,7 @@ public class ItemBundleAggregation extends BaseTimeEntity {
     private int reviewCount;
 
     @Column
-    private int reviewScore;
+    private Double reviewScore;
 
     @Column
     private int newLowestPrice;

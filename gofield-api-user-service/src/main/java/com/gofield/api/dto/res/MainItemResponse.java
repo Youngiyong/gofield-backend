@@ -10,17 +10,22 @@ import java.util.List;
 @NoArgsConstructor
 public class MainItemResponse {
 
-    private List<MainItemResponse> bannerList;
+    private List<ItemBundlePopularResponse> popularBundleList;
+    private List<ItemBundleRecommendResponse> recommendBundleList;
+    private List<ItemBundleRecommendResponse> categoryBundleList;
 
     @Builder
-    private MainItemResponse(List<CategoryMainResponse> categoryList, List<MainItemResponse> bannerList){
-        this.bannerList = bannerList;
+    private MainItemResponse(List<ItemBundlePopularResponse> popularBundleList, List<ItemBundleRecommendResponse> recommendBundleList, List<ItemBundleRecommendResponse> categoryBundleList){
+        this.popularBundleList = popularBundleList;
+        this.recommendBundleList = recommendBundleList;
+        this.categoryBundleList = categoryBundleList;
     }
 
-    public static MainItemResponse of(List<CategoryMainResponse> categoryList, List<MainItemResponse> bannerList){
+    public static MainItemResponse of(List<ItemBundlePopularResponse> popularBundleList, List<ItemBundleRecommendResponse> recommendBundleList, List<ItemBundleRecommendResponse> categoryBundleList){
         return MainItemResponse.builder()
-                .categoryList(categoryList)
-                .bannerList(bannerList)
+                .popularBundleList(popularBundleList)
+                .recommendBundleList(recommendBundleList)
+                .categoryBundleList(categoryBundleList)
                 .build();
     }
 }

@@ -3,19 +3,23 @@ package com.gofield.api.service;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gofield.api.dto.res.ItemRecentResponse;
-import com.gofield.api.dto.res.MainItemResponse;
+import com.gofield.api.dto.res.ItemBundlePopularResponse;
+import com.gofield.api.dto.res.ItemBundleRecommendResponse;
+import com.gofield.api.dto.res.ItemClassificationResponse;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.entity.item.ItemRepository;
+import com.gofield.domain.rds.entity.itemBundle.ItemBundleRepository;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.entity.userLikeItem.UserLikeItem;
 import com.gofield.domain.rds.entity.userLikeItem.UserLikeItemRepository;
-import com.gofield.domain.rds.projections.ItemRecentProjection;
-import com.gofield.domain.rds.projections.ItemUsedRecentProjection;
+import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
+import com.gofield.domain.rds.projections.ItemBundlePopularProjection;
+import com.gofield.domain.rds.projections.ItemBundleRecommendProjection;
+import com.gofield.domain.rds.projections.ItemClassificationProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -32,10 +36,10 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ItemService {
 
-    @Value("${secret.cdn.url}")
-    private String CDN_URL;
     private final UserService userService;
     private final ItemRepository itemRepository;
+
+    private final ItemBundleRepository itemBundleRepository;
     private final UserLikeItemRepository userLikeItemRepository;
 
     @Transactional
@@ -58,14 +62,28 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemRecentResponse> getRecentItem(Long categoryId, Pageable pageable){
+    public List<ItemBundlePopularResponse> getPopularItemBundleList(){
+        List<ItemBundlePopularProjection> result = itemBundleRepository.findAllPopularBundleItemList();
+        return ItemBundlePopularResponse.ofList(result);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ItemBundleRecommendResponse> getRecommendItemBundleList(){
+        List<ItemBundleRecommendProjection> result = itemBundleRepository.findAllRecommendBundleItemList();
+        return ItemBundleRecommendResponse.ofList(result);
+    }
+
+
+    @Transactional(readOnly = true)
+    public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, Long categoryId, Pageable pageable){
         User user = userService.getUser();
-        List<ItemRecentProjection> result = itemRepository.findAllRecentItemByCategoryIdAndUserId(user.getId(), categoryId, pageable);
+        List<ItemClassificationProjection> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), categoryId, classification, pageable);
+        System.out.println(result.size());
         return result
                 .stream()
                 .map(p -> {
                     try {
-                        return ItemRecentResponse.of(p.getId(), p.getItemNumber(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
+                        return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
                                 new ObjectMapper().readValue(p.getOption(), new TypeReference<List<Map<String, Object>>>(){}
                                 ));
                     } catch (JsonProcessingException e) {
