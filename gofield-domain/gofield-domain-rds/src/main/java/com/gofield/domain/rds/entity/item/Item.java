@@ -5,9 +5,11 @@ import com.gofield.domain.rds.entity.BaseTimeEntity;
 import com.gofield.domain.rds.entity.brand.Brand;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.itemBundle.ItemBundle;
+import com.gofield.domain.rds.entity.itemDetail.ItemDetail;
 import com.gofield.domain.rds.entity.itemImage.ItemImage;
 import com.gofield.domain.rds.entity.itemOption.ItemOption;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
+import com.gofield.domain.rds.enums.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.enums.item.EItemGenderFlag;
 import com.gofield.domain.rds.enums.item.EItemSpecFlag;
 import lombok.AccessLevel;
@@ -41,6 +43,10 @@ public class Item extends BaseTimeEntity {
     @JoinColumn(name = "category_id")
     private Category category;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "detail_id")
+    private ItemDetail detail;
+
     @Column
     private String name;
 
@@ -53,32 +59,34 @@ public class Item extends BaseTimeEntity {
     @Column
     private int price;
 
+    @Column(name = "delivery_flag", nullable = false)
+    private EItemDeliveryFlag delivery;
+
     @Column(name = "classification_flag", nullable = false)
     private EItemClassificationFlag classification;
 
     @Column(name = "gender_flag", nullable = false)
     private EItemGenderFlag gender;
 
-    @Column(name = "spec_flag", nullable = false)
-    private EItemSpecFlag spec;
+//    @Column(name = "spec_flag", nullable = false)
+//    private EItemSpecFlag spec;
 
-    @Column
-    private String description;
-
-    @Column
-    private String manufactureCompany;
-
-    @Column
-    private String origin;
+//    @Column
+//    private String description;
+//
+//    @Column
+//    private String manufactureCompany;
+//
+//    @Column
+//    private String origin;
+//    @Column
+//    private LocalDateTime manufactureDate;
 
     @Column
     private String thumbnail;
 
     @Column
     private Boolean isOption;
-
-    @Column
-    private LocalDateTime manufactureDate;
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemImage> images = new ArrayList<>();

@@ -22,11 +22,9 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class MainService {
-    private final UserService userService;
+
+    private final ItemService itemService;
     private final BannerRepository bannerRepository;
-    private final ItemRepository itemRepository;
-    private final ItemBundleRepository itemBundleRepository;
-    private final ItemBundleAggregationRepository itemBundleAggregationRepository;
 
     @Transactional(readOnly = true)
     public List<BannerResponse> getBannerList(){
@@ -36,9 +34,8 @@ public class MainService {
 
     @Transactional(readOnly = true)
     public MainItemResponse getMainItemList(){
-        User user = userService.getUser();
-        List<ItemUsedRecentProjection> itemList = itemRepository.findUsedItemRecentList(user.getId());
-
         return null;
     }
+
+
 }

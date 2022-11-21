@@ -7,6 +7,11 @@ spring.config:
     - classpath:/application-s3.yml
     - classpath:/application-sqs.yml
     - optional:classpath:/application-secret.yml
+spring.data:
+  web:
+    pageable:
+      default-page-size: 10
+      one-indexed-parameters: true
 
 server:
   port: 9090
