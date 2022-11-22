@@ -128,11 +128,6 @@ public class UserController {
         return ApiResponse.SUCCESS;
     }
 
-    @ApiOperation(value = "사용자 추천 카테고리 리스트 조회")
-    @GetMapping("/{version}/category")
-    public ApiResponse<List<CategoryResponse>> getCategoryList(@PathVariable("version") EApiVersion apiVersion){
-        return ApiResponse.success(userService.getCategoryList());
-    }
 
     @ApiOperation(value = "이용약관 리스트 조회")
     @GetMapping("/{version}/term")

@@ -236,11 +236,6 @@ public class UserService {
         userAddressRepository.delete(userAddress);
     }
 
-    @Transactional(readOnly = true)
-    public List<CategoryResponse> getCategoryList(){
-        List<Category> resultList = categoryRepository.findAllIsActiveAndIsAttentionOrderBySort();
-        return CategoryResponse.of(resultList);
-    }
 
     @Transactional(readOnly = true)
     public List<TermResponse> getTermList(TermType type){

@@ -22,12 +22,6 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @ApiOperation(value = "상품 카테고리 조회")
-    @GetMapping("/{version}/category")
-    public ApiResponse<List<CategoryResponse>> getItemCategoryList(@PathVariable("version") EApiVersion apiVersion){
-        return ApiResponse.success(itemService.getItemCategoryList());
-    }
-
     @ApiOperation(value = "상품 좋아요/해제")
     @PostMapping("/{version}/like/{itemId}")
     public ApiResponse userLikeItem (@PathVariable("version") EApiVersion apiVersion,

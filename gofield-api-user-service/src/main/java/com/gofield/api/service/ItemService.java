@@ -33,8 +33,6 @@ public class ItemService {
 
     private final UserService userService;
     private final ItemRepository itemRepository;
-
-    private final CategoryRepository categoryRepository;
     private final ItemBundleRepository itemBundleRepository;
     private final UserLikeItemRepository userLikeItemRepository;
 
@@ -55,11 +53,6 @@ public class ItemService {
                 userLikeItemRepository.delete(userLikeItem);
             }
         }
-    }
-
-    @Transactional(readOnly = true)
-    public List<CategoryResponse> getItemCategoryList(){
-        return CategoryResponse.of(categoryRepository.findAllIsActiveAndIsAttentionOrderBySort());
     }
 
     @Transactional(readOnly = true)

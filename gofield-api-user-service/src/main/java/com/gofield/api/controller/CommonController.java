@@ -2,6 +2,7 @@ package com.gofield.api.controller;
 
 
 import com.gofield.api.dto.res.BannerResponse;
+import com.gofield.api.dto.res.CategoryResponse;
 import com.gofield.api.dto.res.CodeResponse;
 import com.gofield.api.service.CommonService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
@@ -26,4 +27,11 @@ public class CommonController {
                                                        @RequestParam ECodeGroup group){
         return ApiResponse.success(commonService.getCodeList(group));
     }
+
+    @ApiOperation(value = "카테고리 조회(카테고리 탭, 사용자 카테고리)")
+    @GetMapping("/{version}/category")
+    public ApiResponse<List<CategoryResponse>> getCategoryList(@PathVariable("version") EApiVersion apiVersion){
+        return ApiResponse.success(commonService.getCategoryList());
+    }
+
 }
