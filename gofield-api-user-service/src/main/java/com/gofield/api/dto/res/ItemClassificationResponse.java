@@ -1,14 +1,22 @@
 package com.gofield.api.dto.res;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.Constants;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
 import com.gofield.domain.rds.enums.item.EItemGenderFlag;
+import com.gofield.domain.rds.projections.ItemClassificationProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -51,4 +59,18 @@ public class ItemClassificationResponse {
                 .build();
     }
 
+    public static  List<ItemClassificationResponse> ofList(List<ItemClassificationProjection> result) {
+        return result
+                .stream()
+                .map(p -> {
+                    try {
+                        return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
+                                new ObjectMapper().readValue(p.getOption(), new TypeReference<List<Map<String, Object>>>(){}
+                                ));
+                    } catch (JsonProcessingException e) {
+                        throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
+                    }
+                })
+                .collect(Collectors.toList());
+    }
 }

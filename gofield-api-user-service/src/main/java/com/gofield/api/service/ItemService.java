@@ -1,15 +1,13 @@
 package com.gofield.api.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.api.dto.res.CategoryResponse;
 import com.gofield.api.dto.res.ItemBundlePopularResponse;
 import com.gofield.api.dto.res.ItemBundleRecommendResponse;
 import com.gofield.api.dto.res.ItemClassificationResponse;
-import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.domain.rds.entity.category.CategoryRepository;
 import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.entity.item.ItemRepository;
 import com.gofield.domain.rds.entity.itemBundle.ItemBundleRepository;
@@ -22,14 +20,11 @@ import com.gofield.domain.rds.projections.ItemBundleRecommendProjection;
 import com.gofield.domain.rds.projections.ItemClassificationProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -39,6 +34,7 @@ public class ItemService {
     private final UserService userService;
     private final ItemRepository itemRepository;
 
+    private final CategoryRepository categoryRepository;
     private final ItemBundleRepository itemBundleRepository;
     private final UserLikeItemRepository userLikeItemRepository;
 
@@ -62,6 +58,11 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
+    public List<CategoryResponse> getItemCategoryList(){
+        return CategoryResponse.of(categoryRepository.findAllIsActiveAndIsAttentionOrderBySort());
+    }
+
+    @Transactional(readOnly = true)
     public List<ItemBundlePopularResponse> getPopularItemBundleList(){
         List<ItemBundlePopularProjection> result = itemBundleRepository.findAllPopularBundleItemList();
         return ItemBundlePopularResponse.ofList(result);
@@ -73,24 +74,18 @@ public class ItemService {
         return ItemBundleRecommendResponse.ofList(result);
     }
 
+    @Transactional(readOnly = true)
+    public List<ItemClassificationResponse> getUserLikeItemList(Pageable pageable){
+        User user = userService.getUser();
+        List<ItemClassificationProjection> result = itemRepository.findAllUserLikeItemList(user.getId(), pageable);
+        return ItemClassificationResponse.ofList(result);
+    }
 
     @Transactional(readOnly = true)
     public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, Long categoryId, Pageable pageable){
         User user = userService.getUser();
         List<ItemClassificationProjection> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), categoryId, classification, pageable);
-        System.out.println(result.size());
-        return result
-                .stream()
-                .map(p -> {
-                    try {
-                        return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
-                                new ObjectMapper().readValue(p.getOption(), new TypeReference<List<Map<String, Object>>>(){}
-                                ));
-                    } catch (JsonProcessingException e) {
-                        throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-                    }
-                })
-                .collect(Collectors.toList());
+        return ItemClassificationResponse.ofList(result);
     }
 
 }

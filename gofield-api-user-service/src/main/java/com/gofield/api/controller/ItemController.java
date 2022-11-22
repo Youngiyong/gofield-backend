@@ -1,5 +1,6 @@
 package com.gofield.api.controller;
 
+import com.gofield.api.dto.res.CategoryResponse;
 import com.gofield.api.dto.res.ItemClassificationResponse;
 import com.gofield.api.service.ItemService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
@@ -21,8 +22,14 @@ public class ItemController {
 
     private final ItemService itemService;
 
-    @ApiOperation(value = "상품 좋아요")
-    @PostMapping("/{version}/{itemId}/like")
+    @ApiOperation(value = "상품 카테고리 조회")
+    @GetMapping("/{version}/category")
+    public ApiResponse<List<CategoryResponse>> getItemCategoryList(@PathVariable("version") EApiVersion apiVersion){
+        return ApiResponse.success(itemService.getItemCategoryList());
+    }
+
+    @ApiOperation(value = "상품 좋아요/해제")
+    @PostMapping("/{version}/like/{itemId}")
     public ApiResponse userLikeItem (@PathVariable("version") EApiVersion apiVersion,
                                      @PathVariable Long itemId,
                                      @RequestParam Boolean isLike){
@@ -30,21 +37,11 @@ public class ItemController {
         return ApiResponse.SUCCESS;
     }
 
-    @ApiOperation(value = "인기 상품 리스트")
-    @GetMapping("/{version}/popular")
-    public ApiResponse getPopularItemBundleList(@PathVariable("version") EApiVersion apiVersion,
-                                                @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-
-
-        return ApiResponse.success(itemService.getPopularItemBundleList());
-    }
-
-    @ApiOperation(value = "최근 등록된 상품 리스트")
-    @GetMapping("/{version}/recent")
-    public ApiResponse<List<ItemClassificationResponse>> getRecentItemList(@PathVariable("version") EApiVersion apiVersion,
-                                                                           @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable,
-                                                                           @RequestParam Long categoryId){
-        return ApiResponse.success(itemService.getClassificationItemList(null, categoryId, pageable));
+    @ApiOperation(value = "내가 좋아하는 상품 리스트")
+    @GetMapping("/{version}/like")
+    public ApiResponse<List<ItemClassificationResponse>> getUserLikeItemList(@PathVariable("version") EApiVersion apiVersion,
+                                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getUserLikeItemList(pageable));
     }
 
     @ApiOperation(value = "중고 상품 리스트")

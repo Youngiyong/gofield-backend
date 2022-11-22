@@ -71,6 +71,37 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetch();
     }
 
+    @Override
+    public List<ItemClassificationProjection> findAllUserLikeItemList(Long userId, Pageable pageable) {
+        return jpaQueryFactory
+                .select(new QItemClassificationProjection(
+                        item.id,
+                        item.itemNumber,
+                        brand.name.as("brandName"),
+                        item.thumbnail,
+                        item.price,
+                        userLikeItem.id.as("likeId"),
+                        item.classification,
+                        item.gender,
+                        itemDetail.option))
+                .from(itemStock)
+                .innerJoin(item)
+                .on(itemStock.item.id.eq(item.id))
+                .innerJoin(category)
+                .on(item.category.id.eq(category.id))
+                .innerJoin(itemDetail)
+                .on(item.detail.id.eq(itemDetail.id))
+                .innerJoin(brand)
+                .on(item.brand.id.eq(brand.id))
+                .innerJoin(userLikeItem)
+                .on(userLikeItem.item.id.eq(item.id))
+                .where(userLikeItem.user.id.eq(userId))
+                .orderBy(userLikeItem.createDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+    }
+
 
     @Override
     public Item findByItemId(Long itemId) {
