@@ -1,7 +1,6 @@
 package com.gofield.api.dto.res;
 
 import com.gofield.common.model.Constants;
-import com.gofield.domain.rds.projections.ItemBundlePopularProjection;
 import com.gofield.domain.rds.projections.ItemBundleRecommendProjection;
 import lombok.Builder;
 import lombok.Getter;
@@ -47,7 +46,7 @@ public class ItemBundleRecommendResponse {
                 .build();
     }
 
-    public static List<ItemBundleRecommendResponse> ofList(List<ItemBundleRecommendProjection> list){
+    public static List<ItemBundleRecommendResponse> of(List<ItemBundleRecommendProjection> list){
         return list
                 .stream()
                 .map(p -> ItemBundleRecommendResponse.of(p.getId(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getReviewCount(), p.getReviewScore(), p.getNewLowestPrice(), p.getUsedLowestPrice()))

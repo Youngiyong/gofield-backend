@@ -3,15 +3,7 @@ package com.gofield.api.service;
 import com.gofield.api.dto.res.*;
 import com.gofield.domain.rds.entity.banner.Banner;
 import com.gofield.domain.rds.entity.banner.BannerRepository;
-import com.gofield.domain.rds.entity.item.Item;
-import com.gofield.domain.rds.entity.item.ItemRepository;
-import com.gofield.domain.rds.entity.itemBundle.ItemBundleRepository;
-import com.gofield.domain.rds.entity.itemBundleAggregation.ItemBundleAggregationRepository;
-import com.gofield.domain.rds.entity.user.User;
-import com.gofield.domain.rds.entity.user.UserRepository;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
-import com.gofield.domain.rds.projections.ItemClassificationProjection;
-import com.gofield.domain.rds.projections.ItemUsedRecentProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -35,11 +27,11 @@ public class MainService {
     }
 
     @Transactional(readOnly = true)
-    public MainItemResponse getMainItemList(){
+    public MainResponse getMainItemList(){
         List<ItemBundlePopularResponse> popularBundleList = itemService.getPopularItemBundleList();
         List<ItemBundleRecommendResponse> recommendBundleList = itemService.getRecommendItemBundleList();
         List<ItemClassificationResponse> classificationItemList = itemService.getClassificationItemList(EItemClassificationFlag.USED, null, Pageable.ofSize(20));
-        return MainItemResponse.of(popularBundleList, recommendBundleList, recommendBundleList, classificationItemList);
+        return MainResponse.of(popularBundleList, recommendBundleList, recommendBundleList, classificationItemList);
     }
 
 

@@ -21,8 +21,6 @@ import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.category.CategoryRepository;
-import com.gofield.domain.rds.entity.term.Term;
-import com.gofield.domain.rds.entity.term.TermRepository;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.entity.user.UserRepository;
 import com.gofield.domain.rds.entity.userWebAccessLog.UserWebAccessLog;
@@ -33,15 +31,12 @@ import com.gofield.domain.rds.entity.userClientDetail.UserClientDetail;
 import com.gofield.domain.rds.entity.userClientDetail.UserClientDetailRepository;
 import com.gofield.domain.rds.entity.userHasCategory.UserHasCategory;
 import com.gofield.domain.rds.entity.userHasCategory.UserHasCategoryRepository;
-import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
-import com.gofield.domain.rds.entity.userHasTerm.UserHasTermRepository;
 import com.gofield.domain.rds.entity.userSns.UserSns;
 import com.gofield.domain.rds.entity.userSns.UserSnsRepository;
 import com.gofield.domain.rds.entity.userWebToken.UserWebToken;
 import com.gofield.domain.rds.entity.userWebToken.UserWebWebTokenRepository;
 import com.gofield.domain.rds.enums.ESocialFlag;
 import com.gofield.domain.rds.enums.EStatusFlag;
-import com.gofield.domain.rds.enums.ETermFlag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -65,9 +60,7 @@ public class AuthService {
     private final UserWebWebAccessLogRepository userWebAccessLogRepository;
     private final UserClientDetailRepository userClientDetailRepository;
     private final TokenUtil tokenUtil;
-
     private final CategoryRepository categoryRepository;
-
     private final UserHasCategoryRepository userHasCategoryRepository;
     private final ThirdPartyService thirdPartyService;
 

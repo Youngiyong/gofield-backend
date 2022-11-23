@@ -8,9 +8,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemSpecFlag implements CodeEnum {
-    PARALLEL_IMPORT("병행수입", "P"),
-    GENUINE( "정품", "G"),
-    ETC("기타", "E")
+    BEST("최상", "B"),
+    UPPER("상", "U"),
+    MIDDLE( "중", "M"),
+    LOWER("하", "L")
     ;
 
     private String description;

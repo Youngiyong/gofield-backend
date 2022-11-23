@@ -50,7 +50,7 @@ public class ItemClassificationResponse {
                 .id(id)
                 .itemNumber(itemNumber)
                 .brandName(brandName)
-                .thumbnail(thumbnail==null ? null : Constants.CDN_URL.concat(thumbnail))
+                .thumbnail(thumbnail)
                 .price(price)
                 .likeId(likeId)
                 .classification(classification)
@@ -59,7 +59,7 @@ public class ItemClassificationResponse {
                 .build();
     }
 
-    public static  List<ItemClassificationResponse> ofList(List<ItemClassificationProjection> result) {
+    public static  List<ItemClassificationResponse> of(List<ItemClassificationProjection> result) {
         return result
                 .stream()
                 .map(p -> {

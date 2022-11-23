@@ -1,7 +1,9 @@
 package com.gofield.api.controller;
 
-import com.gofield.api.dto.res.CategoryResponse;
+import com.gofield.api.dto.res.ItemBundleResponse;
+import com.gofield.api.dto.res.ItemBundleReviewResponse;
 import com.gofield.api.dto.res.ItemClassificationResponse;
+import com.gofield.api.dto.res.ItemResponse;
 import com.gofield.api.service.ItemService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -46,4 +48,26 @@ public class ItemController {
         return ApiResponse.success(itemService.getClassificationItemList(EItemClassificationFlag.USED, categoryId, pageable));
     }
 
+    @ApiOperation(value = "묶음 상품 - 상품 조회")
+    @GetMapping("/{version}/bundle/{bundleId}")
+    public ApiResponse<ItemBundleResponse> getBundleItemList(@PathVariable("version") EApiVersion apiVersion,
+                                                             @PathVariable Long bundleId,
+                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getBundleItemList(bundleId, pageable));
+    }
+
+    @ApiOperation(value = "묶음 상품 - 리뷰 조회")
+    @GetMapping("/{version}/bundle/{bundleId}/review")
+    public ApiResponse<List<ItemBundleReviewResponse>> getBundleItemReviewList(@PathVariable("version") EApiVersion apiVersion,
+                                                                               @PathVariable Long bundleId,
+                                                                               @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getBundleItemReviewList(bundleId, pageable));
+    }
+
+    @ApiOperation(value = "상품 상세 조회")
+    @GetMapping("/{version}/{itemId}")
+    public ApiResponse<ItemResponse> getItem(@PathVariable("version") EApiVersion apiVersion,
+                                             @PathVariable Long itemId){
+        return ApiResponse.success(itemService.getItem(itemId));
+    }
 }

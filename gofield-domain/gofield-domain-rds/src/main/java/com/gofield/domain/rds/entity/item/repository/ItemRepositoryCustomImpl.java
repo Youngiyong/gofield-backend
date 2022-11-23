@@ -1,5 +1,6 @@
 package com.gofield.domain.rds.entity.item.repository;
 
+import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
 import com.gofield.domain.rds.enums.item.EItemStatusFlag;
@@ -13,6 +14,8 @@ import java.util.List;
 
 import static com.gofield.domain.rds.entity.category.QCategory.category;
 import static com.gofield.domain.rds.entity.item.QItem.item;
+import static com.gofield.domain.rds.entity.brand.QBrand.brand;
+import static com.gofield.domain.rds.entity.itemImage.QItemImage.itemImage;
 import static com.gofield.domain.rds.entity.itemStock.QItemStock.itemStock;
 import static com.gofield.domain.rds.entity.userLikeItem.QUserLikeItem.userLikeItem;
 import static com.gofield.domain.rds.entity.brand.QBrand.brand;
@@ -45,11 +48,11 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.id,
                         item.itemNumber,
                         brand.name.as("brandName"),
-                        item.thumbnail,
+                        item.thumbnail.prepend(Constants.CDN_URL),
                         item.price,
                         userLikeItem.id.as("likeId"),
                         item.classification,
-                        item.gender,
+                        itemDetail.gender,
                         itemDetail.option))
                 .from(itemStock)
                 .innerJoin(item)
@@ -78,11 +81,11 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.id,
                         item.itemNumber,
                         brand.name.as("brandName"),
-                        item.thumbnail,
+                        item.thumbnail.prepend(Constants.CDN_URL),
                         item.price,
                         userLikeItem.id.as("likeId"),
                         item.classification,
-                        item.gender,
+                        itemDetail.gender,
                         itemDetail.option))
                 .from(itemStock)
                 .innerJoin(item)
@@ -100,6 +103,50 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+    }
+
+    @Override
+    public Item findItemInfoById(Long itemId, Long userId) {
+        ItemProjection test = jpaQueryFactory
+                .select(new QItemProjection(
+                        item.id,
+                        item.name,
+                        brand.name.as("brandName"),
+                        item.thumbnail,
+                        item.itemNumber,
+                        item.price,
+                        itemStock.qty,
+                        userLikeItem.id.as("likeId"),
+                        item.classification,
+                        itemDetail.spec,
+                        item.delivery,
+                        itemDetail.gender,
+                        itemDetail.option))
+                .from(itemStock)
+                .innerJoin(item)
+                .on(itemStock.item.id.eq(item.id))
+                .innerJoin(brand)
+                .on(item.brand.id.eq(brand.id))
+                .innerJoin(itemDetail)
+                .on(item.detail.id.eq(itemDetail.id))
+                .leftJoin(userLikeItem)
+                .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
+                .where(item.id.eq(itemId))
+                .fetchOne();
+
+        System.out.println("..");
+//        return jpaQueryFactory
+//                .select(item)
+//                .from(itemStock)
+//                .innerJoin(itemStock.item, item)
+//                .innerJoin(item.brand, brand)
+//                .innerJoin(item.detail, itemDetail)
+//                .leftJoin(item.images, itemImage).fetchJoin()
+//                .leftJoin(userLikeItem)
+//                .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
+//                .where(item.id.eq(itemId))
+//                .fetchOne();
+        return null;
     }
 
 

@@ -8,6 +8,7 @@ import com.gofield.domain.rds.entity.userHasCategory.UserHasCategory;
 import com.gofield.domain.rds.entity.userHasDevice.UserHasDevice;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
 import com.gofield.domain.rds.entity.userKeyword.UserKeyword;
+import com.gofield.domain.rds.entity.userLikeItem.UserLikeItem;
 import com.gofield.domain.rds.entity.userSns.UserSns;
 import com.gofield.domain.rds.enums.EStatusFlag;
 import lombok.*;
@@ -66,6 +67,10 @@ public class User extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "device")
     private List<UserHasDevice> devices;
+
+    @OneToMany(mappedBy = "user")
+    private List<UserLikeItem> item;
+
     @Column
     private Boolean isAlertPush;
     @Column

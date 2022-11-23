@@ -1,12 +1,12 @@
-package com.gofield.domain.rds.entity.itemDetail.repository;
+package com.gofield.domain.rds.entity.shippingTemplate.repository;
 
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+
 @RequiredArgsConstructor
-public class ItemDetailRepositoryCustomImpl implements ItemDetailRepositoryCustom {
+public class ShippingTemplateRepositoryCustomImpl implements ShippingTemplateRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
-
 
 }

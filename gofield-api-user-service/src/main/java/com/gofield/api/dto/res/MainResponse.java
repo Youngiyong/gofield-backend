@@ -8,7 +8,7 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class MainItemResponse {
+public class MainResponse {
 
     private List<ItemBundlePopularResponse> popularBundleList;
     private List<ItemBundleRecommendResponse> recommendBundleList;
@@ -17,15 +17,15 @@ public class MainItemResponse {
     private List<ItemClassificationResponse> classificationItemList;
 
     @Builder
-    private MainItemResponse(List<ItemBundlePopularResponse> popularBundleList, List<ItemBundleRecommendResponse> recommendBundleList, List<ItemBundleRecommendResponse> categoryBundleList,  List<ItemClassificationResponse> classificationItemList){
+    private MainResponse(List<ItemBundlePopularResponse> popularBundleList, List<ItemBundleRecommendResponse> recommendBundleList, List<ItemBundleRecommendResponse> categoryBundleList, List<ItemClassificationResponse> classificationItemList){
         this.popularBundleList = popularBundleList;
         this.recommendBundleList = recommendBundleList;
         this.categoryBundleList = categoryBundleList;
         this.classificationItemList = classificationItemList;
     }
 
-    public static MainItemResponse of(List<ItemBundlePopularResponse> popularBundleList, List<ItemBundleRecommendResponse> recommendBundleList, List<ItemBundleRecommendResponse> categoryBundleList, List<ItemClassificationResponse> classificationItemList){
-        return MainItemResponse.builder()
+    public static MainResponse of(List<ItemBundlePopularResponse> popularBundleList, List<ItemBundleRecommendResponse> recommendBundleList, List<ItemBundleRecommendResponse> categoryBundleList, List<ItemClassificationResponse> classificationItemList){
+        return MainResponse.builder()
                 .popularBundleList(popularBundleList)
                 .recommendBundleList(recommendBundleList)
                 .categoryBundleList(categoryBundleList)

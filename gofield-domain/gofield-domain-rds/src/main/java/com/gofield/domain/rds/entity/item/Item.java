@@ -8,6 +8,8 @@ import com.gofield.domain.rds.entity.itemBundle.ItemBundle;
 import com.gofield.domain.rds.entity.itemDetail.ItemDetail;
 import com.gofield.domain.rds.entity.itemImage.ItemImage;
 import com.gofield.domain.rds.entity.itemOption.ItemOption;
+import com.gofield.domain.rds.entity.shippingTemplate.ShippingTemplate;
+import com.gofield.domain.rds.entity.userLikeItem.UserLikeItem;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
 import com.gofield.domain.rds.enums.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.enums.item.EItemGenderFlag;
@@ -47,6 +49,10 @@ public class Item extends BaseTimeEntity {
     @JoinColumn(name = "detail_id")
     private ItemDetail detail;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_id")
+    private ShippingTemplate shipping;
+
     @Column
     private String name;
 
@@ -65,23 +71,6 @@ public class Item extends BaseTimeEntity {
     @Column(name = "classification_flag", nullable = false)
     private EItemClassificationFlag classification;
 
-    @Column(name = "gender_flag", nullable = false)
-    private EItemGenderFlag gender;
-
-//    @Column(name = "spec_flag", nullable = false)
-//    private EItemSpecFlag spec;
-
-//    @Column
-//    private String description;
-//
-//    @Column
-//    private String manufactureCompany;
-//
-//    @Column
-//    private String origin;
-//    @Column
-//    private LocalDateTime manufactureDate;
-
     @Column
     private String thumbnail;
 
@@ -91,12 +80,15 @@ public class Item extends BaseTimeEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemImage> images = new ArrayList<>();
 
-    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ItemOption> options = new ArrayList<>();
+    @OneToMany(mappedBy = "item")
+    private List<UserLikeItem> user;
 
-    public void addOption(ItemOption itemOption){
-        this.options.add(itemOption);
-    }
+//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+//    private final List<ItemOption> options = new ArrayList<>();
+
+//    public void addOption(ItemOption itemOption){
+//        this.options.add(itemOption);
+//    }
 
     public void addImage(ItemImage itemImage){
         this.images.add(itemImage);

@@ -13,7 +13,6 @@ public class UserProfileResponse {
     private String nickName;
     private String thumbnail;
 
-
     @Builder
     private UserProfileResponse(String name, String nickName, String thumbnail){
         this.name = name;
@@ -28,4 +27,5 @@ public class UserProfileResponse {
                 .thumbnail(user.getThumbnail()==null ? null : CDN_URL.concat(user.getThumbnail()))
                 .build();
     }
+
 }

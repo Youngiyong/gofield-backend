@@ -30,50 +30,39 @@ public class ItemQna extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(name = "status_flag")
-    private EQnaStatusFlag status;
-
     @Column
     private String title;
 
     @Column
-    private String content;
+    private String description;
 
     @Column
-    private String name;
+    private String answer;
+
+    @Column(name = "status_flag")
+    private EQnaStatusFlag status;
 
     @Column
     private Boolean isVisible;
 
     @Column
-    private String answer;
-
-    @Column
-    private Long answerId;
-
-    @Column
     private LocalDateTime answerDate;
 
-    private ItemQna(Item item, User user, String title, String content, String name, Boolean isVisible){
+    private ItemQna(Item item, User user, String title, String description, Boolean isVisible){
         this.item = item;
         this.user = user;
         this.title = title;
-        this.content = content;
-        this.name = name;
+        this.description = description;
         this.isVisible = isVisible;
+        this.status = EQnaStatusFlag.RECEIPT;
     }
 
-    public static ItemQna newInstance(Item item, User user, String title, String content, String name, Boolean isVisible){
-        return new ItemQna(item, user, title, content, name, isVisible);
+    public static ItemQna newInstance(Item item, User user, String title, String description, Boolean isVisible){
+        return new ItemQna(item, user, title, description, isVisible);
     }
 
-    public void updateVisible(Boolean isVisible){
-        this.isVisible = isVisible;
-    }
-
-    public void updateReplyAnswer(String answer, Long answerId){
+    public void updateReplyAnswer(String answer){
         this.answer = answer;
-        this.answerId = answerId;
         this.answerDate = LocalDateTime.now();
         this.status = EQnaStatusFlag.COMPLETE;
     }

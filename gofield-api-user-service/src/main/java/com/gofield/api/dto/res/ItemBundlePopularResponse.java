@@ -1,15 +1,12 @@
 package com.gofield.api.dto.res;
 
 import com.gofield.common.model.Constants;
-import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
-import com.gofield.domain.rds.enums.item.EItemGenderFlag;
 import com.gofield.domain.rds.projections.ItemBundlePopularProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Getter
@@ -41,7 +38,7 @@ public class ItemBundlePopularResponse {
                 .id(id)
                 .name(name)
                 .brandName(brandName)
-                .thumbnail(thumbnail==null ? null : Constants.CDN_URL.concat(thumbnail))
+                .thumbnail(thumbnail)
                 .reviewCount(reviewCount)
                 .reviewScore(reviewScore)
                 .newLowestPrice(newLowestPrice)
@@ -49,7 +46,7 @@ public class ItemBundlePopularResponse {
                 .build();
     }
 
-    public static List<ItemBundlePopularResponse> ofList(List<ItemBundlePopularProjection> list){
+    public static List<ItemBundlePopularResponse> of(List<ItemBundlePopularProjection> list){
         return list
                 .stream()
                 .map(p -> ItemBundlePopularResponse.of(p.getId(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getReviewCount(), p.getReviewScore(), p.getNewLowestPrice(), p.getUsedLowestPrice()))
