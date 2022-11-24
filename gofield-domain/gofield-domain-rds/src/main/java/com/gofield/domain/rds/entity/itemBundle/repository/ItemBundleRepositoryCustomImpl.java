@@ -4,6 +4,7 @@ import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.enums.item.EItemStatusFlag;
 import com.gofield.domain.rds.projections.*;
 import com.gofield.domain.rds.projections.response.ItemBundleImageProjectionResponse;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -47,8 +48,54 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
                 .orderBy(itemBundleAggregation.reviewCount.desc())
-                .limit(30)
                 .fetch();
+    }
+
+    @Override
+    public List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, Pageable pageable) {
+        if(subCategoryId!=null){
+            return jpaQueryFactory
+                    .select(new QItemBundlePopularProjection(
+                            itemBundle.id,
+                            itemBundle.name,
+                            itemBundle.brand.name.as("brandName"),
+                            itemBundle.thumbnail.prepend(Constants.CDN_URL),
+                            itemBundleAggregation.reviewCount,
+                            itemBundleAggregation.reviewScore,
+                            itemBundleAggregation.newLowestPrice,
+                            itemBundleAggregation.usedLowestPrice))
+                    .from(itemBundle)
+                    .innerJoin(itemBundleAggregation)
+                    .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
+                    .where(itemBundle.category.id.eq(subCategoryId))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .orderBy(itemBundleAggregation.reviewCount.desc())
+                    .fetch();
+
+        } else {
+            return jpaQueryFactory
+                    .select(new QItemBundlePopularProjection(
+                            itemBundle.id,
+                            itemBundle.name,
+                            itemBundle.brand.name.as("brandName"),
+                            itemBundle.thumbnail.prepend(Constants.CDN_URL),
+                            itemBundleAggregation.reviewCount,
+                            itemBundleAggregation.reviewScore,
+                            itemBundleAggregation.newLowestPrice,
+                            itemBundleAggregation.usedLowestPrice))
+                    .from(itemBundle)
+                    .innerJoin(itemBundleAggregation)
+                    .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
+                    .where(itemBundle.category.parent.id.eq(categoryId))
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .orderBy(itemBundleAggregation.reviewCount.desc())
+                    .fetch();
+        }
+
+
+
     }
 
     @Override

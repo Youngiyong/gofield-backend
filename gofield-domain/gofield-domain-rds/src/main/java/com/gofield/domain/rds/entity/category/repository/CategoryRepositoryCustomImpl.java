@@ -24,6 +24,16 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     }
 
     @Override
+    public List<Category> findAllSubCategoryByCategoryId(Long categoryId) {
+        return jpaQueryFactory
+                .selectFrom(category)
+                .where(category.parent.id.eq(categoryId),
+                        category.isActive.isTrue())
+                .orderBy(category.sort.asc())
+                .fetch();
+    }
+
+    @Override
     public List<Category> findAllByInId(List<Long> idList) {
         return jpaQueryFactory
                 .selectFrom(category)

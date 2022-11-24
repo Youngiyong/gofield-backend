@@ -39,13 +39,24 @@ public class ItemController {
         return ApiResponse.success(itemService.getUserLikeItemList(pageable));
     }
 
-    @ApiOperation(value = "중고 상품 리스트")
-    @GetMapping("/{version}/used")
-    public ApiResponse<List<ItemClassificationResponse>> getUsedItemList(@PathVariable("version") EApiVersion apiVersion,
-                                                                         @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable,
-                                                                         @RequestParam(required = false) Long categoryId){
-        return ApiResponse.success(itemService.getClassificationItemList(EItemClassificationFlag.USED, categoryId, pageable));
+    @ApiOperation(value = "새상품/중고 상품 리스트")
+    @GetMapping("/{version}")
+    public ApiResponse<List<ItemClassificationResponse>> getItemList(@PathVariable("version") EApiVersion apiVersion,
+                                                                     @RequestParam(required = false) Long categoryId,
+                                                                     @RequestParam(required = false) EItemClassificationFlag classification,
+                                                                     @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getClassificationItemList(classification, categoryId, pageable));
     }
+
+    @ApiOperation(value = "묶음 상품 - 카테고리 조회")
+    @GetMapping("/{version}/bundle")
+    public ApiResponse<List<ItemBundleCategoryResponse>> getBundleCategoryList(@PathVariable("version") EApiVersion apiVersion,
+                                                                               @RequestParam Long categoryId,
+                                                                               @RequestParam(required = false) Long subCategoryId,
+                                                                               @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getCategoryItemBundleList(categoryId, subCategoryId, pageable));
+    }
+
 
     @ApiOperation(value = "묶음 상품 - 상품 조회")
     @GetMapping("/{version}/bundle/{bundleId}")

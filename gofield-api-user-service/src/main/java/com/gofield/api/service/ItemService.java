@@ -63,6 +63,12 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
+    public List<ItemBundleCategoryResponse> getCategoryItemBundleList(Long categoryId, Long subCategoryId, Pageable pageable){
+        List<ItemBundlePopularProjection> result = itemBundleRepository.findAllByCategoryId(categoryId, subCategoryId, pageable);
+        return ItemBundleCategoryResponse.of(result);
+    }
+
+    @Transactional(readOnly = true)
     public List<ItemBundlePopularResponse> getPopularItemBundleList(){
         List<ItemBundlePopularProjection> result = itemBundleRepository.findAllPopularBundleItemList();
         return ItemBundlePopularResponse.of(result);

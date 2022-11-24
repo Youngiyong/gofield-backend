@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface CategoryRepositoryCustom {
     List<Category> findAllIsActiveAndIsAttentionOrderBySort();
+    List<Category> findAllSubCategoryByCategoryId(Long categoryId);
     List<Category> findAllByInId(List<Long> idList);
 
 }

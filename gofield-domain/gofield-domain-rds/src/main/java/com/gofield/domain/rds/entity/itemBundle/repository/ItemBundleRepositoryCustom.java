@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface ItemBundleRepositoryCustom {
     List<ItemBundlePopularProjection> findAllPopularBundleItemList();
+    List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, Pageable pageable);
     List<ItemBundleRecommendProjection> findAllRecommendBundleItemList();
     ItemBundleImageProjectionResponse findByBundleId(Long userId, Long bundleId, Pageable pageable);
 }

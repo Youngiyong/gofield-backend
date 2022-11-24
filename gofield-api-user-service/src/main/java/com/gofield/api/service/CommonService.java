@@ -35,4 +35,10 @@ public class CommonService {
         return CategoryResponse.of(resultList);
     }
 
+    @Transactional(readOnly = true)
+    public List<CategoryResponse> getSubCategoryList(Long categoryId){
+        List<Category> resultList = categoryRepository.findAllSubCategoryByCategoryId(categoryId);
+        return CategoryResponse.of(resultList);
+    }
+
 }

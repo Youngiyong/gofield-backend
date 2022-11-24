@@ -34,4 +34,11 @@ public class CommonController {
         return ApiResponse.success(commonService.getCategoryList());
     }
 
+    @ApiOperation(value = "서브 카테고리 조회")
+    @GetMapping("/{version}/category/{categoryId}")
+    public ApiResponse<List<CategoryResponse>> getSubCategoryList(@PathVariable("version") EApiVersion apiVersion,
+                                                                  @PathVariable Long categoryId){
+        return ApiResponse.success(commonService.getSubCategoryList(categoryId));
+    }
+
 }
