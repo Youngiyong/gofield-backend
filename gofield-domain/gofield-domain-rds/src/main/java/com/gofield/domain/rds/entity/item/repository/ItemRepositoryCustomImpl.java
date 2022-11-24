@@ -5,6 +5,7 @@ import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
 import com.gofield.domain.rds.enums.item.EItemStatusFlag;
 import com.gofield.domain.rds.projections.*;
+import com.gofield.domain.rds.projections.response.ItemProjectionResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -106,13 +107,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public Item findItemInfoById(Long itemId, Long userId) {
-        ItemProjection test = jpaQueryFactory
+    public ItemProjectionResponse findByItemIdAndUserId(Long itemId, Long userId) {
+        ItemProjection projection = jpaQueryFactory
                 .select(new QItemProjection(
                         item.id,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail,
+                        item.thumbnail.prepend(Constants.CDN_URL),
                         item.itemNumber,
                         item.price,
                         itemStock.qty,
@@ -134,19 +135,17 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .where(item.id.eq(itemId))
                 .fetchOne();
 
-        System.out.println("..");
-//        return jpaQueryFactory
-//                .select(item)
-//                .from(itemStock)
-//                .innerJoin(itemStock.item, item)
-//                .innerJoin(item.brand, brand)
-//                .innerJoin(item.detail, itemDetail)
-//                .leftJoin(item.images, itemImage).fetchJoin()
-//                .leftJoin(userLikeItem)
-//                .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-//                .where(item.id.eq(itemId))
-//                .fetchOne();
-        return null;
+        if(projection==null){
+            return null;
+        }
+
+        List<String> images = jpaQueryFactory
+                .select(itemImage.image.prepend(Constants.CDN_URL))
+                .from(itemImage)
+                .where(itemImage.item.id.eq(itemId))
+                .fetch();
+
+        return ItemProjectionResponse.of(projection, images);
     }
 
 
@@ -157,6 +156,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .where(item.id.eq(itemId))
                 .fetchOne();
     }
+
 
     @Override
     public Item findByItemNumber(String itemNumber) {

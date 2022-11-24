@@ -48,6 +48,7 @@ public class ItemQna extends BaseTimeEntity {
     @Column
     private LocalDateTime answerDate;
 
+
     private ItemQna(Item item, User user, String title, String description, Boolean isVisible){
         this.item = item;
         this.user = user;

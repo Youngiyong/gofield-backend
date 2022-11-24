@@ -1,9 +1,7 @@
 package com.gofield.api.controller;
 
-import com.gofield.api.dto.res.ItemBundleResponse;
-import com.gofield.api.dto.res.ItemBundleReviewResponse;
-import com.gofield.api.dto.res.ItemClassificationResponse;
-import com.gofield.api.dto.res.ItemResponse;
+import com.gofield.api.dto.req.ItemRequest;
+import com.gofield.api.dto.res.*;
 import com.gofield.api.service.ItemService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -15,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @RequestMapping("/api/item")
@@ -70,4 +69,41 @@ public class ItemController {
                                              @PathVariable Long itemId){
         return ApiResponse.success(itemService.getItem(itemId));
     }
+
+    @ApiOperation(value = "상품 상세 - 상품 문의 리스트")
+    @GetMapping("/{version}/{itemId}/qna")
+    public ApiResponse<List<ItemQnaResponse>> getQnaList(@PathVariable("version") EApiVersion apiVersion,
+                                                         @PathVariable Long itemId,
+                                                         @RequestParam(required = false, defaultValue = "false") Boolean isMe,
+                                                         @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getQnaList(itemId, isMe, pageable));
+    }
+
+    @ApiOperation(value = "상품 상세 - 상품 문의 상세")
+    @GetMapping("/{version}/{itemId}/qna/{qnaId}")
+    public ApiResponse<ItemQnaDetailResponse> getQna(@PathVariable("version") EApiVersion apiVersion,
+                                                     @PathVariable Long itemId,
+                                                     @PathVariable Long qnaId){
+        return ApiResponse.success(itemService.getQna(itemId, qnaId));
+    }
+
+    @ApiOperation(value = "상품 상세 - 상품 문의 등록")
+    @PostMapping("/{version}/{itemId}")
+    public ApiResponse insertQna(@PathVariable("version") EApiVersion apiVersion,
+                                 @PathVariable Long itemId,
+                                 @Valid @RequestBody ItemRequest.ItemQna request){
+        itemService.insertQna(itemId, request);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "상품 상세 - 상품 문의 삭제")
+    @DeleteMapping("/{version}/{itemId}}/qna/{qnaId}")
+    public ApiResponse deleteQna(@PathVariable("version") EApiVersion apiVersion,
+                                 @PathVariable Long itemId,
+                                 @PathVariable Long qnaId){
+        itemService.deleteQna(itemId, qnaId);
+        return ApiResponse.SUCCESS;
+    }
+
+
 }

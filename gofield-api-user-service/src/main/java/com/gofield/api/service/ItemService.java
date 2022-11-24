@@ -1,6 +1,8 @@
 package com.gofield.api.service;
 
+import com.gofield.api.dto.req.ItemRequest;
 import com.gofield.api.dto.res.*;
+import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -9,6 +11,8 @@ import com.gofield.domain.rds.entity.item.ItemRepository;
 import com.gofield.domain.rds.entity.itemBundle.ItemBundleRepository;
 import com.gofield.domain.rds.entity.itemBundleReview.ItemBundleReview;
 import com.gofield.domain.rds.entity.itemBundleReview.ItemBundleReviewRepository;
+import com.gofield.domain.rds.entity.itemQna.ItemQna;
+import com.gofield.domain.rds.entity.itemQna.ItemQnaRepository;
 import com.gofield.domain.rds.entity.user.User;
 import com.gofield.domain.rds.entity.userLikeItem.UserLikeItem;
 import com.gofield.domain.rds.entity.userLikeItem.UserLikeItemRepository;
@@ -17,6 +21,7 @@ import com.gofield.domain.rds.projections.ItemBundlePopularProjection;
 import com.gofield.domain.rds.projections.ItemBundleRecommendProjection;
 import com.gofield.domain.rds.projections.ItemClassificationProjection;
 import com.gofield.domain.rds.projections.response.ItemBundleImageProjectionResponse;
+import com.gofield.domain.rds.projections.response.ItemProjectionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -32,9 +37,10 @@ public class ItemService {
 
     private final UserService userService;
     private final ItemRepository itemRepository;
+
+    private final ItemQnaRepository itemQnaRepository;
     private final ItemBundleRepository itemBundleRepository;
     private final UserLikeItemRepository userLikeItemRepository;
-
     private final ItemBundleReviewRepository itemBundleReviewRepository;
 
     @Transactional
@@ -99,10 +105,40 @@ public class ItemService {
     @Transactional(readOnly = true)
     public ItemResponse getItem(Long itemId){
         User user = userService.getUser();
-        Item item = itemRepository.findItemInfoById(itemId, user.getId());
-        System.out.println(item.getImages().size());
-        System.out.println(item.getUser());
-        return null;
+        ItemProjectionResponse item = itemRepository.findByItemIdAndUserId(itemId, user.getId());
+        return ItemResponse.of(item);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ItemQnaResponse> getQnaList(Long itemId, Boolean isMe, Pageable pageable){
+        User user = userService.getUser();
+        List<ItemQna> result = itemQnaRepository.findAllByItemIdAndUserId(itemId, isMe ? user.getId() : null, pageable);
+        return ItemQnaResponse.of(result, user.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public ItemQnaDetailResponse getQna(Long itemId, Long qnaId){
+        User user = userService.getUser();
+        ItemQna result = itemQnaRepository.findByQnaIdAndItemId(qnaId, itemId);
+        return ItemQnaDetailResponse.of(result, user.getId());
+    }
+
+    @Transactional
+    public void insertQna(Long itemId, ItemRequest.ItemQna request){
+        User user = userService.getUser();
+        Item item = itemRepository.findByItemId(itemId);
+        ItemQna qna = ItemQna.newInstance(item, user, request.getTitle(), request.getDescription(), request.getIsVisible() == null ? true : request.getIsVisible());
+        itemQnaRepository.save(qna);
+    }
+
+    @Transactional
+    public void deleteQna(Long itemId, Long qnaId){
+        User user = userService.getUser();
+        ItemQna itemQna = itemQnaRepository.findByQnaIdAndUserId(qnaId, user.getId());
+        if(itemQna==null){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "삭제처리 되었거나 삭제가 불가능한 qna입니다.");
+        }
+        itemQnaRepository.delete(itemQna);
     }
 
 }

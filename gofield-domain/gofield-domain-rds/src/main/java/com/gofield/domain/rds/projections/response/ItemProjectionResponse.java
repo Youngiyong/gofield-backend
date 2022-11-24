@@ -27,11 +27,11 @@ public class ItemProjectionResponse {
     private EItemSpecFlag spec;
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
-    private String option;
     private List<String> images;
+    private String option;
 
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String option, List<String> images) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, List<String> images, String option) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -44,8 +44,8 @@ public class ItemProjectionResponse {
         this.spec = spec;
         this.delivery = delivery;
         this.gender = gender;
-        this.option = option;
         this.images = images;
+        this.option = option;
     }
 
     public static ItemProjectionResponse of(ItemProjection projection, List<String> images){
@@ -62,8 +62,8 @@ public class ItemProjectionResponse {
                 .spec(projection.getSpec())
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
-                .option(projection.getOption())
                 .images(images)
+                .option(projection.getOption())
                 .build();
     }
 }

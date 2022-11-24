@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EQnaStatusFlag implements CodeEnum {
     COMPLETE("완료", "C"),
-    RECEIPT( "접수", "R");
+    RECEIPT( "접수", "W");
 
     private String description;
     private String code;

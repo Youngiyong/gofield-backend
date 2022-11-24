@@ -59,8 +59,8 @@ public class ItemClassificationResponse {
                 .build();
     }
 
-    public static  List<ItemClassificationResponse> of(List<ItemClassificationProjection> result) {
-        return result
+    public static  List<ItemClassificationResponse> of(List<ItemClassificationProjection> list) {
+        return list
                 .stream()
                 .map(p -> {
                     try {

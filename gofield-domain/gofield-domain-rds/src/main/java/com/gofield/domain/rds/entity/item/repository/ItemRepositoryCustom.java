@@ -5,6 +5,7 @@ import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
 import com.gofield.domain.rds.projections.ItemClassificationProjection;
 import com.gofield.domain.rds.projections.ItemUsedRecentProjection;
+import com.gofield.domain.rds.projections.response.ItemProjectionResponse;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -16,5 +17,5 @@ public interface ItemRepositoryCustom {
     List<ItemClassificationProjection> findAllClassificationItemByCategoryIdAndUserId(Long userId, Long categoryId, EItemClassificationFlag classification, Pageable pageable);
     List<ItemClassificationProjection> findAllUserLikeItemList(Long userId, Pageable pageable);
 
-    Item findItemInfoById(Long itemId, Long userId);
+    ItemProjectionResponse findByItemIdAndUserId(Long itemId, Long userId);
 }

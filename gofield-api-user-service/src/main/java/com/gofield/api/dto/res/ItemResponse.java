@@ -1,12 +1,19 @@
 package com.gofield.api.dto.res;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.Constants;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
 import com.gofield.domain.rds.enums.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.enums.item.EItemGenderFlag;
 import com.gofield.domain.rds.enums.item.EItemSpecFlag;
 import com.gofield.domain.rds.projections.response.ItemBundleImageProjectionResponse;
+import com.gofield.domain.rds.projections.response.ItemProjectionResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -62,14 +69,27 @@ public class ItemResponse {
         this.option = option;
     }
 
-    public static ItemResponse of(Item item){
-        List<String> images = item.getImages().isEmpty() ? new ArrayList<>() :
-                item.getImages().stream()
-                        .map(p -> Constants.CDN_URL.concat(p.getImage()))
-                        .collect(Collectors.toList());
-
-        return null;
+    public static ItemResponse of(ItemProjectionResponse projection){
+        try {
+            return ItemResponse.builder()
+                    .id(projection.getId())
+                    .name(projection.getName())
+                    .brandName(projection.getBrandName())
+                    .thumbnail(projection.getThumbnail())
+                    .itemNumber(projection.getItemNumber())
+                    .price(projection.getPrice())
+                    .qty(projection.getQty())
+                    .likeId(projection.getLikeId())
+                    .classification(projection.getClassification())
+                    .spec(projection.getSpec())
+                    .delivery(projection.getDelivery())
+                    .gender(projection.getGender())
+                    .images(projection.getImages())
+                    .option(new ObjectMapper().readValue(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
+                    .build();
+        } catch (JsonProcessingException e) {
+            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
+        }
     }
-
 
 }
