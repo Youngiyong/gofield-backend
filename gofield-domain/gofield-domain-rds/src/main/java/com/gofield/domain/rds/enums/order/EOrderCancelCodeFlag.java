@@ -7,12 +7,10 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum EOrderStatusFlag implements CodeEnum {
-    ORDER_CREATE("주문 생성", "200"),
-    ORDER_CANCEL("주문 취소", "201"),
-    ORDER_APPROVAL_READY("주문 승인 대기", "202"),
-    ORDER_APPROVAL("주문 승인", "203"),
-    ORDER_COMPLETE("주문 완료","210"),
+public enum EOrderCancelCodeFlag implements CodeEnum {
+    USER("사용자 취소", "101"),
+    ADMIN("관리자 취소", "102"),
+    SELLER("셀러 취소", "103"),
     ;
 
     private String description;

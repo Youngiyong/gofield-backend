@@ -18,7 +18,7 @@ import javax.persistence.*;
 @Table(	name = "item_stock")
 public class ItemStock extends BaseTimeEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 

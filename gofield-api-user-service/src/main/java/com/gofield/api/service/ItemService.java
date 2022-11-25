@@ -133,7 +133,7 @@ public class ItemService {
     public void insertQna(Long itemId, ItemRequest.ItemQna request){
         User user = userService.getUser();
         Item item = itemRepository.findByItemId(itemId);
-        ItemQna qna = ItemQna.newInstance(item, user, request.getTitle(), request.getDescription(), request.getIsVisible() == null ? true : request.getIsVisible());
+        ItemQna qna = ItemQna.newInstance(item, user, user.getNickName()==null ? user.getName() : user.getNickName(), request.getTitle(), request.getDescription(), request.getIsVisible() == null ? true : request.getIsVisible());
         itemQnaRepository.save(qna);
     }
 

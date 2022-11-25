@@ -3,8 +3,8 @@ package com.gofield.domain.rds.entity.cart;
 
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
+import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.entity.user.User;
-import com.gofield.domain.rds.enums.item.EItemDeliveryFlag;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -25,11 +25,12 @@ public class Cart extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column
-    private String itemNumber;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id", nullable = false)
+    private Item item;
 
     @Column
-    private int originalPrice;
+    private String itemNumber;
 
     @Column
     private int price;
@@ -37,16 +38,20 @@ public class Cart extends BaseTimeEntity {
     @Column
     private int qty;
 
-    private Cart(User user, String itemNumber, int originalPrice, int price, int qty){
+    @Column
+    private Boolean isNow;
+
+    private Cart(User user, Item item, String itemNumber, int price, int qty, Boolean isNow){
         this.user = user;
+        this.item = item;
         this.itemNumber = itemNumber;
-        this.originalPrice = originalPrice;
         this.price = price;
         this.qty = qty;
+        this.isNow = isNow;
     }
 
-    public static Cart newInstance(User user, String itemNumber, int originalPrice, int price, int qty){
-        return new Cart(user, itemNumber, originalPrice, price, qty);
+    public static Cart newInstance(User user, Item item, String itemNumber, int price, int qty, Boolean isNow){
+        return new Cart(user, item, itemNumber, price, qty, isNow);
     }
 
 }

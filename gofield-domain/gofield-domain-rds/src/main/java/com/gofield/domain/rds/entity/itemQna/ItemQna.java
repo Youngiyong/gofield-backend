@@ -31,6 +31,9 @@ public class ItemQna extends BaseTimeEntity {
     private User user;
 
     @Column
+    private String name;
+
+    @Column
     private String title;
 
     @Column
@@ -49,17 +52,18 @@ public class ItemQna extends BaseTimeEntity {
     private LocalDateTime answerDate;
 
 
-    private ItemQna(Item item, User user, String title, String description, Boolean isVisible){
+    private ItemQna(Item item, User user, String name, String title, String description, Boolean isVisible){
         this.item = item;
         this.user = user;
+        this.name = name;
         this.title = title;
         this.description = description;
         this.isVisible = isVisible;
         this.status = EQnaStatusFlag.RECEIPT;
     }
 
-    public static ItemQna newInstance(Item item, User user, String title, String description, Boolean isVisible){
-        return new ItemQna(item, user, title, description, isVisible);
+    public static ItemQna newInstance(Item item, User user, String name, String title, String description, Boolean isVisible){
+        return new ItemQna(item, user, name, title, description, isVisible);
     }
 
     public void updateReplyAnswer(String answer){

@@ -7,13 +7,9 @@ import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.itemBundle.ItemBundle;
 import com.gofield.domain.rds.entity.itemDetail.ItemDetail;
 import com.gofield.domain.rds.entity.itemImage.ItemImage;
-import com.gofield.domain.rds.entity.itemOption.ItemOption;
 import com.gofield.domain.rds.entity.shippingTemplate.ShippingTemplate;
 import com.gofield.domain.rds.entity.userLikeItem.UserLikeItem;
-import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
-import com.gofield.domain.rds.enums.item.EItemDeliveryFlag;
-import com.gofield.domain.rds.enums.item.EItemGenderFlag;
-import com.gofield.domain.rds.enums.item.EItemSpecFlag;
+import com.gofield.domain.rds.enums.item.*;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,7 +17,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,8 +45,8 @@ public class Item extends BaseTimeEntity {
     private ItemDetail detail;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipping_id")
-    private ShippingTemplate shipping;
+    @JoinColumn(name = "shipping_template_id")
+    private ShippingTemplate shippingTemplate;
 
     @Column
     private String name;
@@ -67,6 +62,9 @@ public class Item extends BaseTimeEntity {
 
     @Column(name = "delivery_flag", nullable = false)
     private EItemDeliveryFlag delivery;
+
+    @Column(name = "goods_flag", nullable = false)
+    private EItemGoodsFlag goods;
 
     @Column(name = "classification_flag", nullable = false)
     private EItemClassificationFlag classification;

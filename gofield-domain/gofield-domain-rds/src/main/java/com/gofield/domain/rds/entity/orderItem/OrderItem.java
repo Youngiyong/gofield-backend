@@ -1,8 +1,9 @@
 
-package com.gofield.domain.rds.entity.orderShippingAddress;
+package com.gofield.domain.rds.entity.orderItem;
 
 
 import com.gofield.domain.rds.entity.BaseTimeEntity;
+import com.gofield.domain.rds.entity.item.Item;
 import com.gofield.domain.rds.entity.order.Order;
 import com.gofield.domain.rds.entity.seller.Seller;
 import lombok.AccessLevel;
@@ -18,34 +19,36 @@ import javax.persistence.*;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "order_shipping_address")
-public class OrderShippingAddress extends BaseTimeEntity {
+@Table(	name = "order_item")
+public class OrderItem extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Column(length = 20, nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "seller_id")
+    private Seller seller;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @Column
     private String orderNumber;
 
     @Column
-    private String receiptName;
+    private String itemNumber;
 
     @Column
-    private String receiptCp;
+    private String name;
 
     @Column
-    private String zipCode;
+    private int qty;
 
     @Column
-    private String address;
+    private int cancelQty;
 
     @Column
-    private String addressExtra;
-
-    @Column
-    private String jibunAddress;
-
-    @Column
-    private String comment;
+    private int price;
 }
