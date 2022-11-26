@@ -53,6 +53,13 @@ public class ItemController {
         return ApiResponse.success(itemService.getRecommendItemBundleList(pageable));
     }
 
+    @ApiOperation(value ="종목 추천 상품 리스트")
+    @GetMapping("/{version}/recommend/category")
+    public ApiResponse<List<ItemBundleRecommendResponse>> getRecommendCategoryItemBundleList(@PathVariable("version") EApiVersion apiVersion,
+                                                                                     @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getRecommendItemBundleList(pageable));
+    }
+
     @ApiOperation(value = "새상품/중고 상품 리스트")
     @GetMapping("/{version}")
     public ApiResponse<List<ItemClassificationResponse>> getItemList(@PathVariable("version") EApiVersion apiVersion,
