@@ -38,7 +38,7 @@ public class ItemBundleRecommendResponse {
                 .id(id)
                 .name(name)
                 .brandName(brandName)
-                .thumbnail(thumbnail==null ? null : Constants.CDN_URL.concat(thumbnail))
+                .thumbnail(thumbnail)
                 .reviewCount(reviewCount)
                 .reviewScore(reviewScore)
                 .newLowestPrice(newLowestPrice)

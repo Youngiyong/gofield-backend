@@ -59,7 +59,6 @@ public class UserService {
     @Value("${secret.gofield.token_key}")
     private String TOKEN_DECRYPT_KEY;
 
-    private final CartRepository cartRepository;
     private final TermRepository termRepository;
     private final TermGroupRepository termGroupRepository;
     private final CategoryRepository categoryRepository;
@@ -81,10 +80,7 @@ public class UserService {
         return s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
     }
 
-    @Transactional(readOnly = true)
-    public CountResponse getCartCount(){
-        return CountResponse.of(cartRepository.getCartCount(getUserDecryptUuid()));
-    }
+
 
     @Transactional(readOnly = true)
     public User getUser(){

@@ -69,14 +69,14 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemBundlePopularResponse> getPopularItemBundleList(){
-        List<ItemBundlePopularProjection> result = itemBundleRepository.findAllPopularBundleItemList();
+    public List<ItemBundlePopularResponse> getPopularItemBundleList(Pageable pageable){
+        List<ItemBundlePopularProjection> result = itemBundleRepository.findAllPopularBundleItemList(pageable);
         return ItemBundlePopularResponse.of(result);
     }
 
     @Transactional(readOnly = true)
-    public List<ItemBundleRecommendResponse> getRecommendItemBundleList(){
-        List<ItemBundleRecommendProjection> result = itemBundleRepository.findAllRecommendBundleItemList();
+    public List<ItemBundleRecommendResponse> getRecommendItemBundleList(Pageable pageable){
+        List<ItemBundleRecommendProjection> result = itemBundleRepository.findAllRecommendBundleItemList(pageable);
         return ItemBundleRecommendResponse.of(result);
     }
 

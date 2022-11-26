@@ -39,6 +39,20 @@ public class ItemController {
         return ApiResponse.success(itemService.getUserLikeItemList(pageable));
     }
 
+    @ApiOperation(value ="인기 상품 리스트")
+    @GetMapping("/{version}/popular")
+    public ApiResponse<List<ItemBundlePopularResponse>> getPopularItemBundleList(@PathVariable("version") EApiVersion apiVersion,
+                                                                                 @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getPopularItemBundleList(pageable));
+    }
+
+    @ApiOperation(value ="추천 상품 리스트")
+    @GetMapping("/{version}/recommend")
+    public ApiResponse<List<ItemBundleRecommendResponse>> getRecommendItemBundleList(@PathVariable("version") EApiVersion apiVersion,
+                                                                                     @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getRecommendItemBundleList(pageable));
+    }
+
     @ApiOperation(value = "새상품/중고 상품 리스트")
     @GetMapping("/{version}")
     public ApiResponse<List<ItemClassificationResponse>> getItemList(@PathVariable("version") EApiVersion apiVersion,

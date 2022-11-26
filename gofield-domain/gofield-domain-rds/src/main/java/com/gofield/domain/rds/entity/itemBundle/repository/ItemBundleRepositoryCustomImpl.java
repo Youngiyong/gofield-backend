@@ -33,7 +33,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<ItemBundlePopularProjection> findAllPopularBundleItemList() {
+    public List<ItemBundlePopularProjection> findAllPopularBundleItemList(Pageable pageable) {
         return jpaQueryFactory
                 .select(new QItemBundlePopularProjection(
                         itemBundle.id,
@@ -48,6 +48,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
                 .orderBy(itemBundleAggregation.reviewCount.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .fetch();
     }
 
@@ -99,7 +101,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     @Override
-    public List<ItemBundleRecommendProjection> findAllRecommendBundleItemList() {
+    public List<ItemBundleRecommendProjection> findAllRecommendBundleItemList(Pageable pageable) {
         return jpaQueryFactory
                 .select(new QItemBundleRecommendProjection(
                         itemBundle.id,
@@ -113,9 +115,10 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                .orderBy(itemBundleAggregation.reviewCount.desc())
                 .where(itemBundle.isRecommend.isTrue())
-                .limit(30)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(itemBundleAggregation.reviewCount.desc())
                 .fetch();
     }
 
