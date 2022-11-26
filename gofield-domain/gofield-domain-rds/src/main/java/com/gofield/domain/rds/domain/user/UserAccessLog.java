@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "user_web_access_log")
+@Table(	name = "user_access_log")
 public class UserAccessLog {
 
     @Id
