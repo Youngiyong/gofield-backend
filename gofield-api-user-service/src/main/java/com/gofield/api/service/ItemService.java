@@ -21,6 +21,7 @@ import com.gofield.domain.rds.projections.ItemBundlePopularProjection;
 import com.gofield.domain.rds.projections.ItemBundleRecommendProjection;
 import com.gofield.domain.rds.projections.ItemClassificationProjection;
 import com.gofield.domain.rds.projections.response.ItemBundleImageProjectionResponse;
+import com.gofield.domain.rds.projections.response.ItemClassificationProjectionResponse;
 import com.gofield.domain.rds.projections.response.ItemProjectionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -83,14 +84,14 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<ItemClassificationResponse> getUserLikeItemList(Pageable pageable){
         User user = userService.getUser();
-        List<ItemClassificationProjection> result = itemRepository.findAllUserLikeItemList(user.getId(), pageable);
+        List<ItemClassificationProjectionResponse> result = itemRepository.findAllUserLikeItemList(user.getId(), pageable);
         return ItemClassificationResponse.of(result);
     }
 
     @Transactional(readOnly = true)
     public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, Long categoryId, Pageable pageable){
         User user = userService.getUser();
-        List<ItemClassificationProjection> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), categoryId, classification, pageable);
+        List<ItemClassificationProjectionResponse> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), categoryId, classification, pageable);
         return ItemClassificationResponse.of(result);
     }
 

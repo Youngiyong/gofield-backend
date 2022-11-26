@@ -25,10 +25,10 @@ public class ItemBundleImageProjectionResponse {
 
     private List<String> images;
 
-    private List<ItemClassificationProjection> items;
+    private List<ItemClassificationProjectionResponse> items;
 
     @Builder
-    public ItemBundleImageProjectionResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, List<String> images, List<ItemClassificationProjection> items) {
+    public ItemBundleImageProjectionResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, List<String> images, List<ItemClassificationProjectionResponse> items) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -41,7 +41,7 @@ public class ItemBundleImageProjectionResponse {
         this.items = items;
     }
 
-    public static ItemBundleImageProjectionResponse of(ItemBundleImageProjection projection,  List<String> images, List<ItemClassificationProjection> items){
+    public static ItemBundleImageProjectionResponse of(ItemBundleImageProjection projection,  List<String> images, List<ItemClassificationProjectionResponse> items){
         return ItemBundleImageProjectionResponse.builder()
                 .id(projection.getId())
                 .name(projection.getName())

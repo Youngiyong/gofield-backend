@@ -8,8 +8,6 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.ToString;
 
-import java.util.List;
-
 @ToString
 @Getter
 public class ItemProjection {
@@ -26,10 +24,11 @@ public class ItemProjection {
     private final EItemSpecFlag spec;
     private final EItemDeliveryFlag delivery;
     private final EItemGenderFlag gender;
+    private final String tags;
     private final String option;
 
     @QueryProjection
-    public ItemProjection(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String option) {
+    public ItemProjection(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -42,6 +41,7 @@ public class ItemProjection {
         this.spec = spec;
         this.delivery = delivery;
         this.gender = gender;
+        this.tags = tags;
         this.option = option;
     }
 }

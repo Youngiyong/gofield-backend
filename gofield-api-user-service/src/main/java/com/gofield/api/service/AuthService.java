@@ -160,10 +160,14 @@ public class AuthService {
 
     @Transactional(readOnly = true)
     public TokenResponse getToken(Long id){
-        User resultUser = userRepository.findByIdAndStatusActive(id);
-        UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(21L);
-        Authentication authentication = Authentication.of(resultUser.getUuid(), resultUser.getId() ,Constants.TOKEN_ISSUER);
-        return tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity(), false, ESocialFlag.APPLE.getKey());
+        Authentication authentication = null;
+        if(id.equals(30L)){
+            authentication = Authentication.of("nonMember", null, Constants.TOKEN_ISSUER);
+        } else {
+            User resultUser = userRepository.findByIdAndStatusActive(id);
+            authentication = Authentication.of(resultUser.getUuid(), resultUser.getId() ,Constants.TOKEN_ISSUER);
+        }
+        return tokenUtil.generateToken(authentication,9947483647000L , 9947483647000L, false, ESocialFlag.APPLE.getKey());
     }
 
     @Transactional

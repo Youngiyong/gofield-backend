@@ -10,6 +10,7 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
 import com.gofield.domain.rds.enums.item.EItemGenderFlag;
 import com.gofield.domain.rds.projections.ItemClassificationProjection;
+import com.gofield.domain.rds.projections.response.ItemClassificationProjectionResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -31,10 +32,10 @@ public class ItemClassificationResponse {
     private Long likeId;
     private EItemClassificationFlag classification;
     private EItemGenderFlag gender;
-    private List<Map<String, Object>> option;
+    private List<String> tags;
 
     @Builder
-    private ItemClassificationResponse(Long id, String itemNumber, String name,  String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<Map<String, Object>> option){
+    private ItemClassificationResponse(Long id, String itemNumber, String name,  String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<String> tags){
         this.id = id;
         this.name = name;
         this.itemNumber = itemNumber;
@@ -44,10 +45,10 @@ public class ItemClassificationResponse {
         this.likeId = likeId;
         this.classification = classification;
         this.gender = gender;
-        this.option = option;
+        this.tags = tags;
     }
 
-    public static ItemClassificationResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<Map<String, Object>> option){
+    public static ItemClassificationResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<String> tags){
         return ItemClassificationResponse.builder()
                 .id(id)
                 .itemNumber(itemNumber)
@@ -58,17 +59,17 @@ public class ItemClassificationResponse {
                 .likeId(likeId)
                 .classification(classification)
                 .gender(gender)
-                .option(option)
+                .tags(tags)
                 .build();
     }
 
-    public static  List<ItemClassificationResponse> of(List<ItemClassificationProjection> list) {
+    public static  List<ItemClassificationResponse> of(List<ItemClassificationProjectionResponse> list) {
         return list
                 .stream()
                 .map(p -> {
                     try {
                         return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
-                                new ObjectMapper().readValue(p.getOption(), new TypeReference<List<Map<String, Object>>>(){}
+                                new ObjectMapper().readValue(p.getTags(), new TypeReference<List<String>>(){}
                                 ));
                     } catch (JsonProcessingException e) {
                         throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());

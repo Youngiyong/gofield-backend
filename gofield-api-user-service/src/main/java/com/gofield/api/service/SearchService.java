@@ -1,15 +1,23 @@
 package com.gofield.api.service;
 
+import com.gofield.api.dto.res.ItemClassificationResponse;
+import com.gofield.api.dto.res.PopularKeywordResponse;
+import com.gofield.domain.rds.entity.item.ItemRepository;
+import com.gofield.domain.rds.entity.popularKeyword.PopularKeyword;
+import com.gofield.domain.rds.entity.popularKeyword.PopularKeywordRepository;
+import com.gofield.domain.rds.entity.searchLog.SearchLog;
 import com.gofield.domain.rds.entity.topKeyword.TopKeyword;
 import com.gofield.domain.rds.entity.topKeyword.TopKeywordRepository;
 import com.gofield.domain.rds.entity.user.User;
-import com.gofield.domain.rds.entity.userKeyword.UserKeyword;
-import com.gofield.domain.rds.entity.userKeyword.UserKeywordRepository;
+import com.gofield.domain.rds.entity.searchLog.SearchLogRepository;
+import com.gofield.domain.rds.projections.response.ItemClassificationProjectionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 
 
 @Slf4j
@@ -18,31 +26,27 @@ import org.springframework.transaction.annotation.Transactional;
 public class SearchService {
 
     private final UserService userService;
-    private final TopKeywordRepository topKeywordRepository;
-    private final UserKeywordRepository userKeywordRepository;
+    private final ItemRepository itemRepository;
+    private final SearchLogRepository searchLogRepository;
+    private final PopularKeywordRepository popularKeywordRepository;
 
+
+    @Transactional(readOnly = true)
+    public List<PopularKeywordResponse> getPopularKeywordList(int size){
+        return PopularKeywordResponse.of(popularKeywordRepository.findAllPopularKeywordList(size));
+    }
 
     @Transactional
-    public void searchKeyword(String keyword){
+    public List<ItemClassificationResponse> searchKeyword(String keyword, Pageable pageable){
         User user = userService.getUser();
-        TopKeyword topKeyword = topKeywordRepository.findByKeyword(keyword);
-        if(topKeyword!=null){
-            topKeyword.updateCount();
-        } else {
-            topKeyword = TopKeyword.newInstance(keyword);
-            topKeywordRepository.save(topKeyword);
+        List<ItemClassificationProjectionResponse> result =  itemRepository.findAllClassificationItemByKeyword(keyword, user.getId(), pageable);
+        Boolean isSearch = true;
+        if(result.isEmpty()){
+            isSearch = false;
         }
-
-        //비회원일 경우?
-        if(user!=null){
-            UserKeyword userKeyword = userKeywordRepository.findByUserIdAndKeyword(user.getId(), keyword);
-            if(userKeyword==null){
-                userKeyword = UserKeyword.newInstance(user, keyword);
-                userKeywordRepository.save(userKeyword);
-            } else {
-                userKeyword.updateCount();
-            }
-        }
+        SearchLog searchLog = SearchLog.newInstance(user.getId(), keyword, isSearch);
+        searchLogRepository.save(searchLog);
+        return ItemClassificationResponse.of(result);
     }
 
 }

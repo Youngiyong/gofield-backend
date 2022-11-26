@@ -1,6 +1,6 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.searchLog.SearchLog;
+import com.gofield.domain.rds.entity.popularKeyword.PopularKeyword;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -10,27 +10,27 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-public class UserSearchResponse {
+public class PopularKeywordResponse {
     private Long id;
     private String keyword;
 
     @Builder
-    private UserSearchResponse(Long id, String keyword){
+    private PopularKeywordResponse(Long id, String keyword){
         this.id = id;
         this.keyword = keyword;
     }
 
-    public static UserSearchResponse of(Long id, String keyword){
-        return UserSearchResponse.builder()
+    public static PopularKeywordResponse of(Long id, String keyword){
+        return PopularKeywordResponse.builder()
                 .id(id)
                 .keyword(keyword)
                 .build();
     }
 
-    public static List<UserSearchResponse> of(List<SearchLog> list){
+    public static List<PopularKeywordResponse> of(List<PopularKeyword> list){
         return list
                 .stream()
-                .map(p -> UserSearchResponse.of(p.getId(), p.getKeyword()))
+                .map(p -> PopularKeywordResponse.of(p.getId(), p.getKeyword()))
                 .collect(Collectors.toList());
     }
 }

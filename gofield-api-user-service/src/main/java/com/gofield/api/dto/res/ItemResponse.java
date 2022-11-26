@@ -31,28 +31,21 @@ public class ItemResponse {
     private String name;
     private String brandName;
     private String thumbnail;
-
     private String itemNumber;
-
     private int price;
-
     private int qty;
     private Long likeId;
-
     private EItemClassificationFlag classification;
-
     private EItemSpecFlag spec;
-
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
-
     private List<String> images;
-
     private List<Map<String, Object>> option;
+    private List<String> tags;
 
     @Builder
     private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber,
-                         int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option){
+                         int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -67,6 +60,7 @@ public class ItemResponse {
         this.gender = gender;
         this.images = images;
         this.option = option;
+        this.tags = tags;
     }
 
     public static ItemResponse of(ItemProjectionResponse projection){
@@ -85,7 +79,8 @@ public class ItemResponse {
                     .delivery(projection.getDelivery())
                     .gender(projection.getGender())
                     .images(projection.getImages())
-                    .option(new ObjectMapper().readValue(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
+                    .option(projection.getOption()==null ? null : new ObjectMapper().readValue(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
+                    .tags(projection.getTags()==null ? null : new ObjectMapper().readValue(projection.getTags(), new TypeReference<List<String>>(){}))
                     .build();
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());

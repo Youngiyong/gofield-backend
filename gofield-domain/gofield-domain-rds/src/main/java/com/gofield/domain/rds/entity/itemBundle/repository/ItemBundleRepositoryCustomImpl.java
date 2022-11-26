@@ -4,6 +4,7 @@ import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.enums.item.EItemStatusFlag;
 import com.gofield.domain.rds.projections.*;
 import com.gofield.domain.rds.projections.response.ItemBundleImageProjectionResponse;
+import com.gofield.domain.rds.projections.response.ItemClassificationProjectionResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -177,7 +178,9 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        return ItemBundleImageProjectionResponse.of(bundle, bundleImages, items);
+
+
+        return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.of(items));
     }
 
 }

@@ -5,4 +5,6 @@ import java.util.List;
 
 public interface TagRepositoryCustom {
 
+    List<String> findAllByItemId(Long itemId);
+
 }

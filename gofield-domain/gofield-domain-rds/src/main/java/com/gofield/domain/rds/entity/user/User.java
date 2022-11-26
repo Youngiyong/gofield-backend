@@ -1,13 +1,12 @@
 package com.gofield.domain.rds.entity.user;
 
 
-import com.gofield.domain.rds.converter.StatusFlagConverter;
 import com.gofield.domain.rds.entity.BaseTimeEntity;
+import com.gofield.domain.rds.entity.searchLog.SearchLog;
 import com.gofield.domain.rds.entity.userAddress.UserAddress;
 import com.gofield.domain.rds.entity.userHasCategory.UserHasCategory;
 import com.gofield.domain.rds.entity.userHasDevice.UserHasDevice;
 import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
-import com.gofield.domain.rds.entity.userKeyword.UserKeyword;
 import com.gofield.domain.rds.entity.userLikeItem.UserLikeItem;
 import com.gofield.domain.rds.entity.userSns.UserSns;
 import com.gofield.domain.rds.enums.EStatusFlag;
@@ -54,9 +53,6 @@ public class User extends BaseTimeEntity {
     private List<UserSns> sns;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<UserKeyword> keyword;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<UserAddress> address;
 
     @OneToMany(mappedBy = "term")
@@ -87,6 +83,8 @@ public class User extends BaseTimeEntity {
         this.isAlertPromotion = false;
     }
 
+
+    public static User newNonMemberInstance() { return new User("nonMember", "비회원"); }
     public static User newInstance(String uuid, String nickName){
         return new User(uuid, nickName);
     }

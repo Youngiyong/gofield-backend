@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.ToString;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @ToString
 @Getter
@@ -28,10 +29,11 @@ public class ItemProjectionResponse {
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
     private List<String> images;
+    private String tags;
     private String option;
 
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, List<String> images, String option) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -45,25 +47,28 @@ public class ItemProjectionResponse {
         this.delivery = delivery;
         this.gender = gender;
         this.images = images;
+        this.tags = tags;
         this.option = option;
     }
 
-    public static ItemProjectionResponse of(ItemProjection projection, List<String> images){
+    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images){
         return ItemProjectionResponse.builder()
-                .id(projection.getId())
-                .name(projection.getName())
-                .brandName(projection.getBrandName())
-                .thumbnail(projection.getThumbnail())
-                .itemNumber(projection.getItemNumber())
-                .price(projection.getPrice())
-                .qty(projection.getQty())
-                .likeId(projection.getLikeId())
-                .classification(projection.getClassification())
-                .spec(projection.getSpec())
-                .delivery(projection.getDelivery())
-                .gender(projection.getGender())
+                .id(id)
+                .name(name)
+                .brandName(brandName)
+                .thumbnail(thumbnail)
+                .itemNumber(itemNumber)
+                .price(price)
+                .qty(qty)
+                .likeId(likeId)
+                .classification(classification)
+                .spec(spec)
+                .delivery(delivery)
+                .gender(gender)
                 .images(images)
-                .option(projection.getOption())
+                .tags(tags)
+                .option(option)
                 .build();
     }
+
 }

@@ -6,6 +6,7 @@ import com.gofield.domain.rds.entity.brand.Brand;
 import com.gofield.domain.rds.entity.category.Category;
 import com.gofield.domain.rds.entity.itemBundle.ItemBundle;
 import com.gofield.domain.rds.entity.itemDetail.ItemDetail;
+import com.gofield.domain.rds.entity.itemHasTag.ItemHasTag;
 import com.gofield.domain.rds.entity.itemImage.ItemImage;
 import com.gofield.domain.rds.entity.shippingTemplate.ShippingTemplate;
 import com.gofield.domain.rds.entity.userLikeItem.UserLikeItem;
@@ -75,11 +76,17 @@ public class Item extends BaseTimeEntity {
     @Column
     private Boolean isOption;
 
+    @Column
+    private String tags;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "item")
     private List<UserLikeItem> user;
+
+    @OneToMany(mappedBy = "item")
+    private List<ItemHasTag> tag;
 
 //    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
 //    private final List<ItemOption> options = new ArrayList<>();

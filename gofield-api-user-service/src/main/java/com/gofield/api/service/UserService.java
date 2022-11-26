@@ -5,6 +5,7 @@ import com.gofield.api.dto.enums.TermSelectionType;
 import com.gofield.api.dto.enums.TermType;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.*;
+import com.gofield.common.exception.ForbiddenException;
 import com.gofield.common.exception.InternalRuleException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
@@ -80,10 +81,20 @@ public class UserService {
         return s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
     }
 
+    public void validateNonMember(User user){
+        if(user.getUuid().equals("nonMember")){
+            throw new ForbiddenException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, "비회원은 접근이 불가합니다.");
+        }
+    }
 
 
     @Transactional(readOnly = true)
     public User getUser(){
+        String uuid = getUserDecryptUuid();
+        if(uuid.equals("nonMember")){
+            System.out.println("nonMember");
+            return User.newNonMemberInstance();
+        }
         User user =  userRepository.findByUuidAndStatusActive(getUserDecryptUuid());
         if(user==null){
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "삭제 처리되었거나 정상 사용자가 아닙니다.");
@@ -104,6 +115,7 @@ public class UserService {
     @Transactional
     public void sendSms(UserRequest.UserAccountTel request){
         User user = getUser();
+        validateNonMember(user);
         List<Long> smsAccountCount = userAccountSmsHistoryRepository.todaySmsAccountCount(user.getId());
         if(smsAccountCount.size()>5){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("하루 인증 횟수(5)가 초과되었습니다. 다음날에 다시 이용해주세요..", smsAccountCount.size()));
@@ -126,6 +138,7 @@ public class UserService {
     @Transactional
     public void certSms(UserRequest.UserAccountCode request){
         User user = getUser();
+        validateNonMember(user);
         UserAccountSmsHistory userAccountSmsHistory = userAccountSmsHistoryRepository.findByUserIdAndCode(user.getId(), request.getCode());
         if(userAccountSmsHistory==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("%s 일치하지 않는 코드입니다.", request.getCode()));
@@ -137,6 +150,7 @@ public class UserService {
     @Transactional
     public void updateAccountInfo(UserRequest.UserAccountInfo request){
         User user = getUser();
+        validateNonMember(user);
         UserAccount userAccount = userAccountRepository.findByUserId(user.getId());
         userAccount.updateAccountInfo(request.getBankName(), request.getBankCode(), request.getBankHolderName(), request.getBankAccountNumber());
         if(request.getAgreeList()!=null){
@@ -149,12 +163,14 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserProfileResponse findUserProfile(){
         User user = getUser();
+        validateNonMember(user);
         return UserProfileResponse.of(user, CDN_URL);
     }
 
     @Transactional(readOnly = true)
     public UserAccountResponse findUserAccount(){
         User user = getUser();
+        validateNonMember(user);
         UserAccount userAccount = userAccountRepository.findByUserId(user.getId());
         return UserAccountResponse.of(userAccount);
     }
@@ -162,12 +178,14 @@ public class UserService {
     @Transactional
     public void updateProfile(UserRequest.UserProfile request){
         User user = getUser();
+        validateNonMember(user);
         user.updateProfile(request.getName(), request.getNickName(), request.getThumbnail(),  request.getIsAlertPromotion(), request.getWeight(), request.getHeight());
     }
 
     @Transactional
     public void userWithDraw(){
         User user = getUser();
+        validateNonMember(user);
         if(user.getStatus().equals(EStatusFlag.DELETE)){
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, String.format("%s 이미 탈퇴한 사용자입니다.", user.getNickName()));
         }
@@ -181,6 +199,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public List<UserAddressResponse> findUserAddressList(){
         User user = getUser();
+        validateNonMember(user);
         List<UserAddress> userAddressList = user.getAddress();
         return UserAddressResponse.of(userAddressList);
     }
@@ -188,6 +207,7 @@ public class UserService {
     @Transactional
     public void updateUserAddress(Long id, UserRequest.UserUpdateAddress request){
         User user = getUser();
+        validateNonMember(user);
         List<UserAddress> userAddressList = user.getAddress();
         Boolean isUpdate = false;
 
@@ -209,6 +229,7 @@ public class UserService {
     @Transactional
     public void insertUserAddress(UserRequest.UserAddress request){
         User user = getUser();
+        validateNonMember(user);
         UserAddress userAddress = UserAddress.newInstance(user, request.getTel(), request.getName(), request.getZipCode(), request.getAddress(), request.getAddressExtra(), request.getIsMain());
         List<UserAddress> userAddressList = user.getAddress();
         for(UserAddress address: userAddressList){
@@ -225,6 +246,7 @@ public class UserService {
     @Transactional
     public void deleteUserAddress(Long id){
         User user = getUser();
+        validateNonMember(user);
         UserAddress userAddress = userAddressRepository.findByIdAndUserId(id, user.getId());
         if(userAddress==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("이미 삭제 처리 되었거나 존재하지 않는 사용자 배송 주소 아이디<%s>입니다.", id));
