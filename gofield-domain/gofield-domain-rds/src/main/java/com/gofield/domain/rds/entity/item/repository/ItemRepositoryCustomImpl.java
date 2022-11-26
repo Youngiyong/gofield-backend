@@ -262,7 +262,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.detail.id.eq(itemDetail.id))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
-                .innerJoin(userLikeItem)
+                .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.name.like(keyword))
                 .orderBy(userLikeItem.createDate.desc())
