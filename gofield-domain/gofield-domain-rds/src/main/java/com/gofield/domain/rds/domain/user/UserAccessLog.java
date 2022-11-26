@@ -8,6 +8,7 @@ import org.springframework.data.annotation.CreatedDate;
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
+
 @Getter
 @DynamicInsert
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,7 +29,7 @@ public class UserAccessLog {
     @Column
     private String ip;
 
-    @CreatedDate
+    @Column
     private LocalDateTime createDate;
 
     private UserAccessLog(Long userId, String userAgent, String ip){
