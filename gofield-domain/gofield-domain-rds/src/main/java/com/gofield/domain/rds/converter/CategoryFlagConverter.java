@@ -1,6 +1,6 @@
 package com.gofield.domain.rds.converter;
 
-import com.gofield.domain.rds.enums.ECategoryFlag;
+import com.gofield.domain.rds.domain.item.ECategoryFlag;
 import javax.persistence.Converter;
 
 @Converter(autoApply = true)

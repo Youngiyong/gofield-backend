@@ -1,7 +1,6 @@
 package com.gofield.admin.dto.response;
 
 import com.gofield.admin.dto.response.projection.AdminInfoProjectionResponse;
-import com.gofield.domain.rds.projections.AdminInfoProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

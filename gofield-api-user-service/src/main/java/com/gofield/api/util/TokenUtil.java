@@ -8,8 +8,6 @@ import com.gofield.common.exception.UnAuthorizedException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.EncryptUtils;
-import com.gofield.common.utils.RandomUtils;
-import com.gofield.domain.rds.enums.ESocialFlag;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;

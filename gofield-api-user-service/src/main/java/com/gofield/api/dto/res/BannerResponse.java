@@ -1,6 +1,6 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.banner.Banner;
+import com.gofield.domain.rds.domain.banner.Banner;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

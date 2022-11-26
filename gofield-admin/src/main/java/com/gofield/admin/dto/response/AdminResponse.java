@@ -1,7 +1,6 @@
 package com.gofield.admin.dto.response;
 
-import com.gofield.domain.rds.entity.admin.Admin;
-import com.gofield.domain.rds.projections.AdminInfoProjection;
+import com.gofield.domain.rds.domain.admin.projection.AdminInfoProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

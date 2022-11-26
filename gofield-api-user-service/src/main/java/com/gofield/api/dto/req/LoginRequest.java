@@ -1,6 +1,6 @@
 package com.gofield.api.dto.req;
 
-import com.gofield.domain.rds.enums.ESocialFlag;
+import com.gofield.domain.rds.domain.user.ESocialFlag;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;

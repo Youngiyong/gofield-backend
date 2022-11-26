@@ -1,15 +1,9 @@
 package com.gofield.admin.controller;
 
-import com.gofield.domain.rds.entity.admin.Admin;
-import com.gofield.domain.rds.entity.admin.AdminRepository;
-import com.gofield.domain.rds.entity.adminRole.AdminRole;
-import com.gofield.domain.rds.entity.adminRole.AdminRoleRepository;
-import com.gofield.domain.rds.enums.admin.EAdminRole;
+import com.gofield.domain.rds.domain.admin.AdminRepository;
+import com.gofield.domain.rds.domain.admin.AdminRoleRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.annotation.PostConstruct;
 
 @RestController
 @RequiredArgsConstructor

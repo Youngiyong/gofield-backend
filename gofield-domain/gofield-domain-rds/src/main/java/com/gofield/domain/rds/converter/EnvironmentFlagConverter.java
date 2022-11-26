@@ -1,6 +1,6 @@
 package com.gofield.domain.rds.converter;
 
-import com.gofield.domain.rds.enums.EEnvironmentFlag;
+import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 
 import javax.persistence.Converter;
 

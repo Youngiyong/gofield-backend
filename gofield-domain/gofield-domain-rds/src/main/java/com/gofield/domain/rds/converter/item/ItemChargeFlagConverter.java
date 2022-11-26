@@ -1,8 +1,7 @@
 package com.gofield.domain.rds.converter.item;
 
 import com.gofield.domain.rds.converter.AbstractEnumAttributeConverter;
-import com.gofield.domain.rds.enums.item.EItemChargeFlag;
-import com.gofield.domain.rds.enums.item.EItemDeliveryFlag;
+import com.gofield.domain.rds.domain.item.EItemChargeFlag;
 
 import javax.persistence.Converter;
 

@@ -1,7 +1,7 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.term.Term;
-import com.gofield.domain.rds.enums.ETermFlag;
+import com.gofield.domain.rds.domain.user.Term;
+import com.gofield.domain.rds.domain.user.ETermFlag;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.userAddress.UserAddress;
+import com.gofield.domain.rds.domain.user.UserAddress;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,8 +1,8 @@
 package com.gofield.api.service;
 
 import com.gofield.api.dto.res.CountResponse;
-import com.gofield.domain.rds.entity.cart.CartRepository;
-import com.gofield.domain.rds.entity.user.User;
+import com.gofield.domain.rds.domain.cart.CartRepository;
+import com.gofield.domain.rds.domain.user.User;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

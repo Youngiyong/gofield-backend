@@ -1,23 +1,12 @@
 package com.gofield.api.dto.res;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gofield.common.exception.InternalServerException;
-import com.gofield.common.model.Constants;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
-import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
-import com.gofield.domain.rds.enums.item.EItemGenderFlag;
-import com.gofield.domain.rds.projections.ItemClassificationProjection;
-import com.gofield.domain.rds.projections.response.ItemBundleImageProjectionResponse;
+import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
+import com.gofield.domain.rds.domain.item.projection.ItemBundleImageProjectionResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 
 @Getter

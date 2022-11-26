@@ -1,7 +1,7 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.code.Code;
-import com.gofield.domain.rds.enums.ECodeGroup;
+import com.gofield.domain.rds.domain.code.Code;
+import com.gofield.domain.rds.domain.code.ECodeGroup;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

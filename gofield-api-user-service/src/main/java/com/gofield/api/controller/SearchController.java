@@ -1,12 +1,10 @@
 package com.gofield.api.controller;
 
-import com.gofield.api.dto.res.CodeResponse;
 import com.gofield.api.dto.res.ItemClassificationResponse;
 import com.gofield.api.dto.res.PopularKeywordResponse;
 import com.gofield.api.service.SearchService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
-import com.gofield.domain.rds.enums.ECodeGroup;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

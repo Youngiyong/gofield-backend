@@ -2,8 +2,8 @@ package com.gofield.api.controller;
 
 import com.gofield.api.service.ThirdPartyService;
 import com.gofield.common.api.core.common.dto.enums.EApiVersion;
-import com.gofield.domain.rds.enums.EEnvironmentFlag;
-import com.gofield.domain.rds.enums.ESocialFlag;
+import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
+import com.gofield.domain.rds.domain.user.ESocialFlag;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

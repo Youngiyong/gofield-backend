@@ -1,10 +1,7 @@
 package com.gofield.api.dto.res;
 
 import com.gofield.common.model.Constants;
-import com.gofield.domain.rds.entity.itemBundleReview.ItemBundleReview;
-import com.gofield.domain.rds.projections.ItemBundleImageProjection;
-import com.gofield.domain.rds.projections.ItemBundleReviewImageProjection;
-import com.gofield.domain.rds.projections.response.ItemBundleReviewImageProjectionResponse;
+import com.gofield.domain.rds.domain.item.ItemBundleReview;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

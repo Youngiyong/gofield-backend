@@ -1,8 +1,7 @@
 package com.gofield.domain.rds.converter.order;
 
 import com.gofield.domain.rds.converter.AbstractEnumAttributeConverter;
-import com.gofield.domain.rds.enums.order.EOrderShippingStatusFlag;
-import com.gofield.domain.rds.enums.order.EOrderStatusFlag;
+import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
 
 import javax.persistence.Converter;
 

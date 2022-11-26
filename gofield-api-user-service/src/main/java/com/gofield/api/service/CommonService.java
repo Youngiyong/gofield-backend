@@ -2,11 +2,11 @@ package com.gofield.api.service;
 
 import com.gofield.api.dto.res.CategoryResponse;
 import com.gofield.api.dto.res.CodeResponse;
-import com.gofield.domain.rds.entity.category.Category;
-import com.gofield.domain.rds.entity.category.CategoryRepository;
-import com.gofield.domain.rds.entity.code.Code;
-import com.gofield.domain.rds.entity.code.CodeRepository;
-import com.gofield.domain.rds.enums.ECodeGroup;
+import com.gofield.domain.rds.domain.item.Category;
+import com.gofield.domain.rds.domain.item.CategoryRepository;
+import com.gofield.domain.rds.domain.code.Code;
+import com.gofield.domain.rds.domain.code.CodeRepository;
+import com.gofield.domain.rds.domain.code.ECodeGroup;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

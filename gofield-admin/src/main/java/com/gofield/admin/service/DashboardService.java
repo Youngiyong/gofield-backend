@@ -1,7 +1,7 @@
 package com.gofield.admin.service;
 
 import com.gofield.admin.dto.response.DashboardResponse;
-import com.gofield.domain.rds.entity.user.UserRepository;
+import com.gofield.domain.rds.domain.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

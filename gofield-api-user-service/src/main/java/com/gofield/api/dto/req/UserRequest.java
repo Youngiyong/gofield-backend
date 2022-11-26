@@ -1,6 +1,5 @@
 package com.gofield.api.dto.req;
 
-import com.gofield.domain.rds.enums.EPlatformFlag;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 
@@ -11,15 +10,7 @@ import java.util.List;
 
 public class UserRequest {
 
-    @Getter
-    public static class PushKey{
-        @NotNull(message = "푸쉬키는 필수값입니다.")
-        @ApiModelProperty(value = "푸쉬키", example = "fSt6Fu3ERtaxMhTxcaIt68:APA91bGuv8011hBRNL_r4Sz_4mgHzdvHsQXuy81JBb8a1_ehIDZJLk1qXwR0xH_zcqzsMepCU9t7jRMFZS6dhPOcGt657usiZlF9-3SvljmCOgvCcrzWyS0JtsdxQdAFqgeIEDeWOqu_", dataType = "java.lang.String")
-        private String pushKey;
-        @NotNull(message = "플랫폼은 필수값입니다.")
-        @ApiModelProperty(value = "ANDROID/IOS", example = "ANDROID", dataType = "java.lang.String")
-        private EPlatformFlag platform;
-    }
+
 
     @Getter
     public static class UserAccountTel {

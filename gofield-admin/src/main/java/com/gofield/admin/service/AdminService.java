@@ -1,18 +1,15 @@
 package com.gofield.admin.service;
 
-import com.gofield.admin.dto.AdminDto;
 import com.gofield.admin.dto.request.AdminRequest;
 import com.gofield.admin.dto.response.AdminInfoResponse;
-import com.gofield.admin.dto.response.AdminResponse;
-import com.gofield.admin.dto.response.PaginationResponse;
 import com.gofield.admin.dto.response.projection.AdminInfoProjectionResponse;
 import com.gofield.common.utils.EncryptUtils;
-import com.gofield.domain.rds.entity.admin.Admin;
-import com.gofield.domain.rds.entity.admin.AdminRepository;
-import com.gofield.domain.rds.entity.adminRole.AdminRole;
-import com.gofield.domain.rds.entity.adminRole.AdminRoleRepository;
-import com.gofield.domain.rds.enums.admin.EAdminRole;
-import com.gofield.domain.rds.projections.AdminInfoProjection;
+import com.gofield.domain.rds.domain.admin.Admin;
+import com.gofield.domain.rds.domain.admin.AdminRepository;
+import com.gofield.domain.rds.domain.admin.AdminRole;
+import com.gofield.domain.rds.domain.admin.AdminRoleRepository;
+import com.gofield.domain.rds.domain.admin.EAdminRole;
+import com.gofield.domain.rds.domain.admin.projection.AdminInfoProjection;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -20,8 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j

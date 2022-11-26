@@ -1,6 +1,6 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.category.Category;
+import com.gofield.domain.rds.domain.item.Category;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

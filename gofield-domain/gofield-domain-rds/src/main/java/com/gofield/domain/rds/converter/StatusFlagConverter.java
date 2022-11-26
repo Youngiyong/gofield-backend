@@ -1,7 +1,7 @@
 package com.gofield.domain.rds.converter;
 
 
-import com.gofield.domain.rds.enums.EStatusFlag;
+import com.gofield.domain.rds.domain.common.EStatusFlag;
 
 import javax.persistence.Converter;
 

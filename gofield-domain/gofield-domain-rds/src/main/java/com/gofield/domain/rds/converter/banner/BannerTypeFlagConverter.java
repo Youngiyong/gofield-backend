@@ -1,8 +1,7 @@
 package com.gofield.domain.rds.converter.banner;
 
 import com.gofield.domain.rds.converter.AbstractEnumAttributeConverter;
-import com.gofield.domain.rds.enums.EPlatformFlag;
-import com.gofield.domain.rds.enums.banner.EBannerTypeFlag;
+import com.gofield.domain.rds.domain.banner.EBannerTypeFlag;
 
 import javax.persistence.Converter;
 

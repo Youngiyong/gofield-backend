@@ -1,7 +1,7 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.itemQna.ItemQna;
-import com.gofield.domain.rds.enums.qna.EQnaStatusFlag;
+import com.gofield.domain.rds.domain.item.ItemQna;
+import com.gofield.domain.rds.domain.item.EItemQnaStatusFlag;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -9,21 +9,20 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
 public class ItemQnaResponse {
     private Long id;
     private String title;
-    private EQnaStatusFlag status;
+    private EItemQnaStatusFlag status;
     private Boolean isVisible;
 
     private Boolean isMe;
     private LocalDateTime createDate;
 
     @Builder
-    private ItemQnaResponse(Long id, String title, EQnaStatusFlag status, Boolean isVisible, Boolean isMe, LocalDateTime createDate){
+    private ItemQnaResponse(Long id, String title, EItemQnaStatusFlag status, Boolean isVisible, Boolean isMe, LocalDateTime createDate){
         this.id = id;
         this.title = title;
         this.status = status;
@@ -32,7 +31,7 @@ public class ItemQnaResponse {
         this.createDate = createDate;
     }
 
-    public static ItemQnaResponse of(Long id, String title, EQnaStatusFlag status, Boolean isVisible, Boolean isMe, LocalDateTime createDate){
+    public static ItemQnaResponse of(Long id, String title, EItemQnaStatusFlag status, Boolean isVisible, Boolean isMe, LocalDateTime createDate){
         return ItemQnaResponse.builder()
                 .id(id)
                 .title(title)

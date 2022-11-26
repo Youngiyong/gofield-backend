@@ -1,7 +1,7 @@
 package com.gofield.admin.controller;
 
-import com.gofield.domain.rds.entity.admin.Admin;
-import com.gofield.domain.rds.entity.admin.AdminRepository;
+import com.gofield.domain.rds.domain.admin.Admin;
+import com.gofield.domain.rds.domain.admin.AdminRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

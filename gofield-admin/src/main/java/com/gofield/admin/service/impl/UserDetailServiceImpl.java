@@ -1,7 +1,7 @@
 package com.gofield.admin.service.impl;
 
-import com.gofield.domain.rds.entity.admin.Admin;
-import com.gofield.domain.rds.entity.admin.AdminRepository;
+import com.gofield.domain.rds.domain.admin.Admin;
+import com.gofield.domain.rds.domain.admin.AdminRepository;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;

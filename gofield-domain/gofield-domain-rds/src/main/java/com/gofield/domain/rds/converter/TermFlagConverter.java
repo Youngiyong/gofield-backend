@@ -1,6 +1,6 @@
 package com.gofield.domain.rds.converter;
 
-import com.gofield.domain.rds.enums.ETermFlag;
+import com.gofield.domain.rds.domain.user.ETermFlag;
 import javax.persistence.Converter;
 
 @Converter(autoApply = true)

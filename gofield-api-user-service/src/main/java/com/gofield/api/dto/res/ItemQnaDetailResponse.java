@@ -1,7 +1,7 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.itemQna.ItemQna;
-import com.gofield.domain.rds.enums.qna.EQnaStatusFlag;
+import com.gofield.domain.rds.domain.item.ItemQna;
+import com.gofield.domain.rds.domain.item.EItemQnaStatusFlag;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,7 +15,7 @@ public class ItemQnaDetailResponse {
     private String title;
     private String description;
     private String answer;
-    private EQnaStatusFlag status;
+    private EItemQnaStatusFlag status;
     private Boolean isVisible;
 
     private Boolean isMe;
@@ -23,7 +23,7 @@ public class ItemQnaDetailResponse {
     private LocalDateTime createDate;
 
     @Builder
-    private ItemQnaDetailResponse(Long qnaId, String title, String description, String answer, EQnaStatusFlag status, Boolean isVisible, Boolean isMe, LocalDateTime answerDate, LocalDateTime createDate){
+    private ItemQnaDetailResponse(Long qnaId, String title, String description, String answer, EItemQnaStatusFlag status, Boolean isVisible, Boolean isMe, LocalDateTime answerDate, LocalDateTime createDate){
         this.qnaId = qnaId;
         this.title = title;
         this.description = description;

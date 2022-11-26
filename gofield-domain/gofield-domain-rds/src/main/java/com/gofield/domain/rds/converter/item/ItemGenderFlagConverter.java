@@ -2,7 +2,7 @@ package com.gofield.domain.rds.converter.item;
 
 
 import com.gofield.domain.rds.converter.AbstractEnumAttributeConverter;
-import com.gofield.domain.rds.enums.item.EItemGenderFlag;
+import com.gofield.domain.rds.domain.item.EItemGenderFlag;
 
 import javax.persistence.Converter;
 

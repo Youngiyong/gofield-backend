@@ -1,6 +1,6 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.projections.ItemBundlePopularProjection;
+import com.gofield.domain.rds.domain.item.projection.ItemBundlePopularProjection;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

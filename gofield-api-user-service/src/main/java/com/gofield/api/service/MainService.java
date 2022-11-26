@@ -1,9 +1,9 @@
 package com.gofield.api.service;
 
 import com.gofield.api.dto.res.*;
-import com.gofield.domain.rds.entity.banner.Banner;
-import com.gofield.domain.rds.entity.banner.BannerRepository;
-import com.gofield.domain.rds.enums.item.EItemClassificationFlag;
+import com.gofield.domain.rds.domain.banner.Banner;
+import com.gofield.domain.rds.domain.banner.BannerRepository;
+import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;

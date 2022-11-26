@@ -24,15 +24,6 @@ public class UserController {
 
     private final UserService userService;
 
-
-    @ApiOperation(value = "푸쉬 키 업데이트")
-    @PutMapping("/{version}/push")
-    public ApiResponse updatePush(@PathVariable("version") EApiVersion apiVersion,
-                                  @Valid @RequestBody UserRequest.PushKey request) {
-        userService.updatePush(request);
-        return ApiResponse.SUCCESS;
-    }
-
     @ApiOperation(value = "휴대폰 번호 변경 - 요청")
     @PostMapping("/{version}/sms")
     public ApiResponse accountSms(@PathVariable("version") EApiVersion apiVersion,

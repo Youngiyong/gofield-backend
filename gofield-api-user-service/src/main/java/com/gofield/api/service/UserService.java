@@ -12,28 +12,24 @@ import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.EncryptUtils;
 import com.gofield.common.utils.RandomUtils;
-import com.gofield.domain.rds.entity.cart.CartRepository;
-import com.gofield.domain.rds.entity.category.Category;
-import com.gofield.domain.rds.entity.category.CategoryRepository;
-import com.gofield.domain.rds.entity.term.Term;
-import com.gofield.domain.rds.entity.term.TermRepository;
-import com.gofield.domain.rds.entity.termGroup.TermGroup;
-import com.gofield.domain.rds.entity.termGroup.TermGroupRepository;
-import com.gofield.domain.rds.entity.user.User;
-import com.gofield.domain.rds.entity.user.UserRepository;
-import com.gofield.domain.rds.entity.userAccount.UserAccount;
-import com.gofield.domain.rds.entity.userAccount.UserAccountRepository;
-import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistoryRepository;
-import com.gofield.domain.rds.entity.userAddress.UserAddress;
-import com.gofield.domain.rds.entity.userAddress.UserAddressRepository;
-import com.gofield.domain.rds.entity.userHasTerm.UserHasTerm;
-import com.gofield.domain.rds.entity.userHasTerm.UserHasTermRepository;
-import com.gofield.domain.rds.entity.userWebPush.UserWebPush;
-import com.gofield.domain.rds.entity.userWebPush.UserWebWebPushRepository;
-import com.gofield.domain.rds.entity.userAccountSmsHistory.UserAccountSmsHistory;
-import com.gofield.domain.rds.entity.userSns.UserSnsRepository;
-import com.gofield.domain.rds.enums.EStatusFlag;
-import com.gofield.domain.rds.enums.ETermFlag;
+import com.gofield.domain.rds.domain.item.CategoryRepository;
+import com.gofield.domain.rds.domain.user.Term;
+import com.gofield.domain.rds.domain.user.TermRepository;
+import com.gofield.domain.rds.domain.user.TermGroup;
+import com.gofield.domain.rds.domain.user.TermGroupRepository;
+import com.gofield.domain.rds.domain.user.User;
+import com.gofield.domain.rds.domain.user.UserRepository;
+import com.gofield.domain.rds.domain.user.UserAccount;
+import com.gofield.domain.rds.domain.user.UserAccountRepository;
+import com.gofield.domain.rds.domain.user.UserAccountSmsHistoryRepository;
+import com.gofield.domain.rds.domain.user.UserAddress;
+import com.gofield.domain.rds.domain.user.UserAddressRepository;
+import com.gofield.domain.rds.domain.user.UserTerm;
+import com.gofield.domain.rds.domain.user.UserTermRepository;
+import com.gofield.domain.rds.domain.user.UserAccountSmsHistory;
+import com.gofield.domain.rds.domain.user.UserSnsRepository;
+import com.gofield.domain.rds.domain.common.EStatusFlag;
+import com.gofield.domain.rds.domain.user.ETermFlag;
 import com.gofield.infrastructure.internal.api.sns.dto.request.SmsRequest;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
@@ -65,9 +61,8 @@ public class UserService {
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
-    private final UserWebWebPushRepository userWebPushRepository;
     private final UserAddressRepository userAddressRepository;
-    private final UserHasTermRepository userHasTermRepository;
+    private final UserTermRepository userTermRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserAccountSmsHistoryRepository userAccountSmsHistoryRepository;
     private final SNSService snsService;
@@ -100,16 +95,6 @@ public class UserService {
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "삭제 처리되었거나 정상 사용자가 아닙니다.");
         }
         return user;
-    }
-
-    @Transactional
-    public void updatePush(UserRequest.PushKey request){
-        User user = getUser();
-        UserWebPush userWebPush = userWebPushRepository.findByUserIdAndPushKey(user.getId(), request.getPushKey());
-        if(userWebPush==null){
-            userWebPush = UserWebPush.newInstance(user, request.getPushKey());
-            userWebPushRepository.save(userWebPush);
-        }
     }
 
     @Transactional
@@ -270,8 +255,8 @@ public class UserService {
     public void insertUserHasTerm(List<Long> termList, User user){
         List<Term> resultTermList = termRepository.findAllByInId(termList);
         for(Term term: resultTermList){
-            UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-            userHasTermRepository.save(userHasTerm);
+            UserTerm userTerm = UserTerm.newInstance(user, term);
+            userTermRepository.save(userTerm);
         }
     }
 
@@ -286,8 +271,8 @@ public class UserService {
         }
 
         Term term = termRepository.findByType(termFlag);
-        UserHasTerm userHasTerm = UserHasTerm.newInstance(user, term);
-        userHasTermRepository.save(userHasTerm);
+        UserTerm userTerm = UserTerm.newInstance(user, term);
+        userTermRepository.save(userTerm);
     }
 
 

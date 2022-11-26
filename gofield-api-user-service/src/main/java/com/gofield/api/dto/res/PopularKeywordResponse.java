@@ -1,6 +1,6 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.domain.rds.entity.popularKeyword.PopularKeyword;
+import com.gofield.domain.rds.domain.search.PopularKeyword;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
