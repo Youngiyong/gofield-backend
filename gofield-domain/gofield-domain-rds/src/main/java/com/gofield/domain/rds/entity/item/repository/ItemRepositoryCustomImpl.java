@@ -48,6 +48,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .select(new QItemClassificationProjection(
                         item.id,
                         item.itemNumber,
+                        item.name,
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL),
                         item.price,
@@ -81,6 +82,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .select(new QItemClassificationProjection(
                         item.id,
                         item.itemNumber,
+                        item.name,
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL),
                         item.price,

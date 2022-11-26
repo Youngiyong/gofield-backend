@@ -24,6 +24,7 @@ import java.util.stream.Collectors;
 public class ItemClassificationResponse {
     private Long id;
     private String itemNumber;
+    private String name;
     private String brandName;
     private String thumbnail;
     private int price;
@@ -33,8 +34,9 @@ public class ItemClassificationResponse {
     private List<Map<String, Object>> option;
 
     @Builder
-    private ItemClassificationResponse(Long id, String itemNumber, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<Map<String, Object>> option){
+    private ItemClassificationResponse(Long id, String itemNumber, String name,  String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<Map<String, Object>> option){
         this.id = id;
+        this.name = name;
         this.itemNumber = itemNumber;
         this.brandName = brandName;
         this.thumbnail = thumbnail;
@@ -45,10 +47,11 @@ public class ItemClassificationResponse {
         this.option = option;
     }
 
-    public static ItemClassificationResponse of(Long id, String itemNumber, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<Map<String, Object>> option){
+    public static ItemClassificationResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, List<Map<String, Object>> option){
         return ItemClassificationResponse.builder()
                 .id(id)
                 .itemNumber(itemNumber)
+                .name(name)
                 .brandName(brandName)
                 .thumbnail(thumbnail)
                 .price(price)
@@ -64,7 +67,7 @@ public class ItemClassificationResponse {
                 .stream()
                 .map(p -> {
                     try {
-                        return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
+                        return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
                                 new ObjectMapper().readValue(p.getOption(), new TypeReference<List<Map<String, Object>>>(){}
                                 ));
                     } catch (JsonProcessingException e) {

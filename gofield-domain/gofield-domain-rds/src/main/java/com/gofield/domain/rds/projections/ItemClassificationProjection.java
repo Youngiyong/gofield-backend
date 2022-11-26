@@ -12,6 +12,8 @@ public class ItemClassificationProjection {
 
     private final Long id;
     private final String itemNumber;
+
+    private final String name;
     private final String brandName;
     private final String thumbnail;
     private final int price;
@@ -21,9 +23,10 @@ public class ItemClassificationProjection {
     private final String option;
 
     @QueryProjection
-    public ItemClassificationProjection(Long id, String itemNumber, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, String option) {
+    public ItemClassificationProjection(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, String option) {
         this.id = id;
         this.itemNumber = itemNumber;
+        this.name = name;
         this.brandName = brandName;
         this.thumbnail = thumbnail;
         this.price = price;
