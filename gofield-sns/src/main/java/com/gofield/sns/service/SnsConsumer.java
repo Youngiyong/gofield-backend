@@ -19,7 +19,6 @@ public class SnsConsumer {
     private final String SQS_TOPIC_USER_PUSH = "gofield-user-push";
     private final String SQS_TOPIC_PARTNER_PUSH = "gofield-partner-push";
     private final String SQS_TOPIC_ADMIN_PUSH = "gofield-admin-push";
-
     private final SmsService smsService;
 
     @SqsListener(value = SQS_TOPIC_SMS, deletionPolicy = SqsMessageDeletionPolicy.ON_SUCCESS)
