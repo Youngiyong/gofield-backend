@@ -25,9 +25,6 @@ public class ItemOption extends BaseTimeEntity {
     @Column
     private EItemOptionTypeFlag optionType;
 
-    @Column(name = "group_title")
-    private String groupTitle;
-
     @Column(columnDefinition = "TEXT")
     private String name;
 

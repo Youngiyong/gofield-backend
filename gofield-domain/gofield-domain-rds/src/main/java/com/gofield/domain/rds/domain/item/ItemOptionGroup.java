@@ -19,17 +19,11 @@ public class ItemOptionGroup extends BaseTimeEntity {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
-    @Column(nullable = false, length = 32)
-    private String itemNumber;
-
     @Column
     private EItemOptionTypeFlag optionType;
 
-    @Column(name = "group_title")
-    private String groupTitle;
-
     @Column(name = "option_group")
-    private String group;
+    private String optionGroup;
 
     @Column(name = "price_group")
     private String priceGroup;

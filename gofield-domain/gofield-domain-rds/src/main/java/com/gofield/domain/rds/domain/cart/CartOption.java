@@ -20,16 +20,12 @@ import javax.persistence.*;
 @Table(	name = "cart_option")
 public class CartOption extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cart_id")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cart_id", nullable = false)
     private Cart cart;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_option_id", nullable = false)
-    private ItemOption itemOption;
-
     @Column
-    private String groupTitle;
+    private Long optionId;
 
     @Column(columnDefinition = "TEXT")
     private String name;

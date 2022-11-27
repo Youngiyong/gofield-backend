@@ -7,10 +7,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum EItemGoodsFlag implements CodeEnum {
-    DISCOUNT("할인상품", "D"),
-    NEW_PRICE("정가상품", "N"),
-    OPTION("옵션상품", "O")
+public enum EItemStockFlag implements CodeEnum {
+    COMMON("일반 상품", "C"),
+    OPTION("옵션 상품", "O")
     ;
 
     private String description;

@@ -4,6 +4,7 @@ package com.gofield.domain.rds.domain.cart;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.item.Item;
+import com.gofield.domain.rds.domain.item.ItemStock;
 import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -12,6 +13,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @DynamicInsert
@@ -40,6 +43,9 @@ public class Cart extends BaseTimeEntity {
 
     @Column
     private Boolean isNow;
+
+    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<CartOption> options = new ArrayList<>();
 
     private Cart(User user, Item item, String itemNumber, int price, int qty, Boolean isNow){
         this.user = user;

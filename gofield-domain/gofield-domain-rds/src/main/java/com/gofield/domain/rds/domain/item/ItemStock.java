@@ -16,16 +16,15 @@ import javax.persistence.*;
 @Table(	name = "item_stock")
 public class ItemStock extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
     @Column(nullable = false, length = 32)
     private String itemNumber;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @Column
+    private Long sellerId;
 
     @Column
     private int qty;

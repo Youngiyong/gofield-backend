@@ -39,9 +39,8 @@ public class Item extends BaseTimeEntity {
     @JoinColumn(name = "detail_id")
     private ItemDetail detail;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "shipping_template_id")
-    private ShippingTemplate shippingTemplate;
+    @Column
+    private Long shippingTemplateId;
 
     @Column
     private String name;
@@ -58,9 +57,6 @@ public class Item extends BaseTimeEntity {
     @Column(name = "delivery_flag", nullable = false)
     private EItemDeliveryFlag delivery;
 
-    @Column(name = "goods_flag", nullable = false)
-    private EItemGoodsFlag goods;
-
     @Column(name = "classification_flag", nullable = false)
     private EItemClassificationFlag classification;
 
@@ -76,22 +72,25 @@ public class Item extends BaseTimeEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemImage> images = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ItemStock> stocks = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ItemOption> options = new ArrayList<>();
+
     @OneToMany(mappedBy = "item")
     private List<UserLikeItem> user;
 
     @OneToMany(mappedBy = "item")
     private List<ItemHasTag> tag;
 
-//    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-//    private final List<ItemOption> options = new ArrayList<>();
 
-//    public void addOption(ItemOption itemOption){
-//        this.options.add(itemOption);
-//    }
+    public void addOption(ItemOption itemOption){
+        this.options.add(itemOption);
+    }
 
     public void addImage(ItemImage itemImage){
         this.images.add(itemImage);
     }
 
-//    private Item(ItemBundle itemBundle, String name, String itemNumber, String manufacturer, String origin, String deliveryType,)
 }
