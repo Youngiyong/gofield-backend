@@ -44,6 +44,14 @@ public class SmsService {
 
         String timeStamp = String.valueOf(System.currentTimeMillis());
         String signature = makeSignature(timeStamp);
+
+        System.out.println("timestamp: " + timeStamp + "\n" +
+                            "clientId: " +NAVER_CLIENT_ID + "\n" +
+                            "signature: " + signature + "\n"+
+                            "body: " + body.getFrom() + "\n"+
+                            "content: " + body.getContent() + "\n"+
+                            "massage: " + body.getMessages().get(0).toString());
+
         naverSnsApiClient.sendSms(timeStamp, NAVER_CLIENT_ID, signature, body);
     }
 
@@ -63,6 +71,7 @@ public class SmsService {
                 .append(NAVER_CLIENT_ID)
                 .toString();
 
+        System.out.println("message:"+message+"\n");
         String encode = "";
         try {
             SecretKeySpec signingKey = new SecretKeySpec(NAVER_CLIENT_SECRET.getBytes("UTF-8"), "HmacSHA256");

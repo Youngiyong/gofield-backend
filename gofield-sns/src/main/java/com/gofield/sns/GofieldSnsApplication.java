@@ -14,14 +14,8 @@ import java.util.TimeZone;
     GofieldSnsApplication.class , GofieldExternalRoot.class, GofieldSqsRoot.class
 })
 public class GofieldSnsApplication {
-
-    @PostConstruct
-    public void started() {
-        System.out.println("현재시각: " + new Date());
-        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")));
-        System.out.println("현재시각: " + new Date());
-    }
     public static void main(String[] args) {
+        TimeZone.setDefault(TimeZone.getTimeZone(ZoneId.of("Asia/Seoul")));
         SpringApplication.run(GofieldSnsApplication.class, args);
     }
 }
