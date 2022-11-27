@@ -13,11 +13,17 @@ public class UserProfileResponse {
     private String nickName;
     private String thumbnail;
 
+    private Integer weight;
+
+    private Integer height;
+
     @Builder
-    private UserProfileResponse(String name, String nickName, String thumbnail){
+    private UserProfileResponse(String name, String nickName, String thumbnail, Integer weight, Integer height){
         this.name = name;
         this.nickName = nickName;
         this.thumbnail = thumbnail;
+        this.weight = weight;
+        this.height = height;
     }
 
     public static UserProfileResponse of(User user, String CDN_URL){
@@ -25,6 +31,8 @@ public class UserProfileResponse {
                 .name(user.getName())
                 .nickName(user.getNickName())
                 .thumbnail(user.getThumbnail()==null ? null : CDN_URL.concat(user.getThumbnail()))
+                .weight(user.getWeight())
+                .height(user.getHeight())
                 .build();
     }
 
