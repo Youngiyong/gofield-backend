@@ -12,9 +12,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
     GofieldApiApplication.class, GofieldSqsRoot.class
 })
 public class GofieldApiApplication {
-
     public static void main(String[] args) {
         SpringApplication.run(GofieldApiApplication.class, args);
     }
-
 }
