@@ -4,6 +4,7 @@ import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.item.EItemGenderFlag;
 import com.gofield.domain.rds.domain.item.EItemSpecFlag;
+import com.gofield.domain.rds.domain.seller.ShippingTemplate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -30,8 +31,10 @@ public class ItemProjectionResponse {
     private String tags;
     private String option;
 
+    private ShippingTemplate shippingTemplate;
+
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -47,9 +50,10 @@ public class ItemProjectionResponse {
         this.images = images;
         this.tags = tags;
         this.option = option;
+        this.shippingTemplate = shippingTemplate;
     }
 
-    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images){
+    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
         return ItemProjectionResponse.builder()
                 .id(id)
                 .name(name)
@@ -66,6 +70,7 @@ public class ItemProjectionResponse {
                 .images(images)
                 .tags(tags)
                 .option(option)
+                .shippingTemplate(shippingTemplate)
                 .build();
     }
 

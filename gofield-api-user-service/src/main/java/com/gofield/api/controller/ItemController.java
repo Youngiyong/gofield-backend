@@ -96,10 +96,17 @@ public class ItemController {
     }
 
     @ApiOperation(value = "상품 상세 조회")
-    @GetMapping("/{version}/{itemId}")
+    @GetMapping("/{version}/{itemNumber}")
     public ApiResponse<ItemResponse> getItem(@PathVariable("version") EApiVersion apiVersion,
-                                             @PathVariable Long itemId){
-        return ApiResponse.success(itemService.getItem(itemId));
+                                             @PathVariable String itemNumber){
+        return ApiResponse.success(itemService.getItem(itemNumber));
+    }
+
+    @ApiOperation(value = "상품 상세 옵션 조회")
+    @GetMapping("/{version}/{itemId}/option")
+    public ApiResponse<ItemOptionDetailResponse> getItemOption(@PathVariable("version") EApiVersion apiVersion,
+                                                   @PathVariable Long itemId){
+        return ApiResponse.success(itemService.getItemOption(itemId));
     }
 
     @ApiOperation(value = "상품 상세 - 상품 문의 리스트")

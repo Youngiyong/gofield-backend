@@ -25,6 +25,9 @@ public class ShippingTemplate extends BaseTimeEntity {
     private Seller seller;
 
     @Column
+    private String title;
+
+    @Column
     private Boolean isCondition;
 
     @Column

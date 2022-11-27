@@ -32,6 +32,9 @@ public class ItemOption extends BaseTimeEntity {
     private int price;
 
     @Column
+    private Short sort;
+
+    @Column
     private Boolean isUse;
 
 

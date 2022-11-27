@@ -22,6 +22,9 @@ public class ItemOptionGroup extends BaseTimeEntity {
     @Column
     private EItemOptionTypeFlag optionType;
 
+    @Column(length = 128)
+    private String groupTitle;
+
     @Column(name = "option_group")
     private String optionGroup;
 

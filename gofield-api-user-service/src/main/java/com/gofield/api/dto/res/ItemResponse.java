@@ -38,9 +38,11 @@ public class ItemResponse {
     private List<Map<String, Object>> option;
     private List<String> tags;
 
+    private ShippingTemplateResponse shippingTemplate;
+
     @Builder
     private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber,
-                         int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags){
+                         int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -56,6 +58,7 @@ public class ItemResponse {
         this.images = images;
         this.option = option;
         this.tags = tags;
+        this.shippingTemplate = shippingTemplate;
     }
 
     public static ItemResponse of(ItemProjectionResponse projection){
@@ -76,6 +79,7 @@ public class ItemResponse {
                     .images(projection.getImages())
                     .option(projection.getOption()==null ? null : new ObjectMapper().readValue(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
                     .tags(projection.getTags()==null ? null : new ObjectMapper().readValue(projection.getTags(), new TypeReference<List<String>>(){}))
+                    .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))
                     .build();
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());

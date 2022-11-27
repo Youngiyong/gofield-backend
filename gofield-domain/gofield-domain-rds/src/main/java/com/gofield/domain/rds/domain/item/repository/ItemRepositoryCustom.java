@@ -16,5 +16,5 @@ public interface ItemRepositoryCustom {
     List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, Long categoryId, EItemClassificationFlag classification, Pageable pageable);
     List<ItemClassificationProjectionResponse> findAllUserLikeItemList(Long userId, Pageable pageable);
     List<ItemClassificationProjectionResponse> findAllClassificationItemByKeyword(String keyword, Long userId, Pageable pageable);
-    ItemProjectionResponse findByItemIdAndUserId(Long itemId, Long userId);
+    ItemProjectionResponse findByItemNumberAndUserId(String itemNumber, Long userId);
 }

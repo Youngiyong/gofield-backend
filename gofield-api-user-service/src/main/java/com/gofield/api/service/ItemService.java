@@ -6,28 +6,18 @@ import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
-import com.gofield.domain.rds.domain.item.Item;
-import com.gofield.domain.rds.domain.item.ItemRepository;
-import com.gofield.domain.rds.domain.item.ItemBundleRepository;
-import com.gofield.domain.rds.domain.item.ItemBundleReview;
-import com.gofield.domain.rds.domain.item.ItemBundleReviewRepository;
-import com.gofield.domain.rds.domain.item.ItemQna;
-import com.gofield.domain.rds.domain.item.ItemQnaRepository;
+import com.gofield.domain.rds.domain.item.*;
+import com.gofield.domain.rds.domain.item.projection.*;
 import com.gofield.domain.rds.domain.user.User;
 import com.gofield.domain.rds.domain.user.UserLikeItem;
 import com.gofield.domain.rds.domain.user.UserLikeItemRepository;
-import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
-import com.gofield.domain.rds.domain.item.projection.ItemBundlePopularProjection;
-import com.gofield.domain.rds.domain.item.projection.ItemBundleRecommendProjection;
-import com.gofield.domain.rds.domain.item.projection.ItemBundleImageProjectionResponse;
-import com.gofield.domain.rds.domain.item.projection.ItemClassificationProjectionResponse;
-import com.gofield.domain.rds.domain.item.projection.ItemProjectionResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -41,6 +31,8 @@ public class ItemService {
     private final ItemBundleRepository itemBundleRepository;
     private final UserLikeItemRepository userLikeItemRepository;
     private final ItemBundleReviewRepository itemBundleReviewRepository;
+    private final ItemOptionRepository itemOptionRepository;
+    private final ItemOptionGroupRepository itemOptionGroupRepository;
 
     @Transactional
     public void userLikeItem(Long itemId, Boolean isLike){
@@ -108,10 +100,21 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ItemResponse getItem(Long itemId){
+    public ItemResponse getItem(String itemNumber){
         User user = userService.getUser();
-        ItemProjectionResponse item = itemRepository.findByItemIdAndUserId(itemId, user.getId());
+        ItemProjectionResponse item = itemRepository.findByItemNumberAndUserId(itemNumber, user.getId());
         return ItemResponse.of(item);
+    }
+
+    @Transactional(readOnly = true)
+    public ItemOptionDetailResponse getItemOption(Long itemId){
+        User user = userService.getUser();
+        List<ItemOptionGroup> itemOptionGroupList = itemOptionGroupRepository.findAllItemOptionGroupByItemId(itemId);
+        if(itemOptionGroupList.isEmpty()){
+            return ItemOptionDetailResponse.of(null, null);
+        }
+        List<ItemOptionProjection> itemOptionProjectionList = itemOptionRepository.findAllItemOptionByItemId(itemId);
+        return ItemOptionDetailResponse.of(ItemOptionGroupResponse.of(itemOptionGroupList), ItemOptionResponse.of(itemOptionProjectionList));
     }
 
     @Transactional(readOnly = true)

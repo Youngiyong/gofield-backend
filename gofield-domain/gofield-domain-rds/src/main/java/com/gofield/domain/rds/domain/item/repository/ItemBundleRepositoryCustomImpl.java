@@ -155,7 +155,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemDetail.option))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)

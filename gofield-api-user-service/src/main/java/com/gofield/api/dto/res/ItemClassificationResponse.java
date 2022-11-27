@@ -66,7 +66,7 @@ public class ItemClassificationResponse {
                 .map(p -> {
                     try {
                         return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
-                                new ObjectMapper().readValue(p.getTags(), new TypeReference<List<String>>(){}
+                               p.getTags()==null ? null : new ObjectMapper().readValue(p.getTags(), new TypeReference<List<String>>(){}
                                 ));
                     } catch (JsonProcessingException e) {
                         throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());

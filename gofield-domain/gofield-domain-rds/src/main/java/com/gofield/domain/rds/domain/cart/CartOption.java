@@ -27,6 +27,9 @@ public class CartOption extends BaseTimeEntity {
     @Column
     private Long optionId;
 
+    @Column(length = 128)
+    private String groupTitle;
+
     @Column(columnDefinition = "TEXT")
     private String name;
 

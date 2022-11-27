@@ -21,12 +21,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class SearchService {
-
     private final UserService userService;
     private final ItemRepository itemRepository;
     private final SearchLogRepository searchLogRepository;
     private final PopularKeywordRepository popularKeywordRepository;
-
 
     @Transactional(readOnly = true)
     public List<PopularKeywordResponse> getPopularKeywordList(int size){

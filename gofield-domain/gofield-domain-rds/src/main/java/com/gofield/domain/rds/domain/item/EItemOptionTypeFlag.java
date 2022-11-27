@@ -8,9 +8,8 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemOptionTypeFlag implements CodeEnum {
-    SINGLE("단독형", "S"),
-    COMBINATION("조합형", "C"),
-    INPUT("입력형", "I")
+    SIMPLE("단독형", "S"),
+    COMBINATION("조합형", "C")
     ;
 
     private String description;

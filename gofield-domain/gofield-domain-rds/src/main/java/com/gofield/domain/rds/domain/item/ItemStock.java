@@ -20,6 +20,12 @@ public class ItemStock extends BaseTimeEntity {
     @JoinColumn(name = "item_id", nullable = false)
     private Item item;
 
+    @Column(name = "status_flag", nullable = false, length = 20)
+    private EItemStatusFlag status;
+
+    @Column(name = "type_flag" , nullable = false)
+    private EItemStockFlag type;
+
     @Column(nullable = false, length = 32)
     private String itemNumber;
 
@@ -28,7 +34,4 @@ public class ItemStock extends BaseTimeEntity {
 
     @Column
     private int qty;
-
-    @Column(name = "status_flag", nullable = false, length = 20)
-    private EItemStatusFlag status;
 }

@@ -10,6 +10,7 @@ import com.gofield.domain.rds.domain.item.Item;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.projection.*;
+import com.gofield.domain.rds.domain.seller.ShippingTemplate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +20,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
+import static com.gofield.domain.rds.domain.seller.QShippingTemplate.shippingTemplate;
 import static com.gofield.domain.rds.domain.item.QCategory.category;
 import static com.gofield.domain.rds.domain.item.QItem.item;
 import static com.gofield.domain.rds.domain.item.QItemDetail.itemDetail;
+import static com.gofield.domain.rds.domain.item.QItemImage.itemImage;
 import static com.gofield.domain.rds.domain.item.QItemStock.itemStock;
-import static com.gofield.domain.rds.domain.item.repository.QItemImage.itemImage;
 import static com.gofield.domain.rds.domain.user.QUserLikeItem.userLikeItem;
 
 
@@ -62,7 +64,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.tags))
                     .from(itemStock)
                     .innerJoin(item)
-                    .on(itemStock.item.id.eq(item.id))
+                    .on(itemStock.item.itemNumber.eq(item.itemNumber))
                     .innerJoin(category)
                     .on(item.category.id.eq(category.id))
                     .innerJoin(itemDetail)
@@ -94,7 +96,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -132,7 +134,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -164,7 +166,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -193,7 +195,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -222,7 +224,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -251,7 +253,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -282,7 +284,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -311,7 +313,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -327,6 +329,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     @Override
     public List<ItemClassificationProjectionResponse> findAllClassificationItemByKeyword(String keyword, Long userId, Pageable pageable) {
+
         Category resultCat = jpaQueryFactory
                 .selectFrom(category)
                 .where(category.name.eq(keyword))
@@ -339,7 +342,6 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
             } else {
                 List<ItemNonMemberClassificationProjection> projection = findAllNonMemberClassificationByCategoryId(resultCat.getId(), pageable);
                 return ItemClassificationProjectionResponse.ofNon(projection);
-
             }
         }
 
@@ -368,13 +370,14 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public ItemProjectionResponse findByItemIdAndUserId(Long itemId, Long userId){
+    public ItemProjectionResponse findByItemNumberAndUserId(String itemNumber, Long userId){
         if(userId==null){
             ItemNonMemberProjection projection = jpaQueryFactory
                     .select(new QItemNonMemberProjection(
                             item.id,
                             item.name,
                             brand.name.as("brandName"),
+                            itemStock.sellerId,
                             item.thumbnail.prepend(Constants.CDN_URL),
                             item.itemNumber,
                             item.price,
@@ -387,30 +390,35 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             itemDetail.option))
                     .from(itemStock)
                     .innerJoin(item)
-                    .on(itemStock.item.id.eq(item.id))
+                    .on(itemStock.item.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
                     .innerJoin(itemDetail)
                     .on(item.detail.id.eq(itemDetail.id))
                     .leftJoin(userLikeItem)
                     .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
-                    .where(item.id.eq(itemId))
                     .fetchOne();
 
             if(projection==null){
-                throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 상품 아이디입니다.");
+                throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST,  String.format("<%s> 존재하지 않는 상품번호입니다.", itemNumber));
             }
+
+            ShippingTemplate resultShip = jpaQueryFactory
+                    .select(shippingTemplate)
+                    .from(shippingTemplate)
+                    .where(shippingTemplate.seller.id.eq(projection.getSellerId()))
+                    .fetchOne();
 
             List<String> images = jpaQueryFactory
                     .select(itemImage.image.prepend(Constants.CDN_URL))
                     .from(itemImage)
-                    .where(itemImage.item.id.eq(itemId))
+                    .where(itemImage.item.id.eq(projection.getId()))
                     .fetch();
 
             return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
                     projection.getThumbnail(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
                     null, projection.getClassification(), projection.getSpec(), projection.getDelivery(),
-                    projection.getGender(), projection.getTags(), projection.getOption(), images);
+                    projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
         }
 
         ItemProjection projection = jpaQueryFactory
@@ -418,6 +426,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.id,
                         item.name,
                         brand.name.as("brandName"),
+                        itemStock.sellerId,
                         item.thumbnail.prepend(Constants.CDN_URL),
                         item.itemNumber,
                         item.price,
@@ -431,30 +440,35 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.option))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.item.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(itemDetail)
                 .on(item.detail.id.eq(itemDetail.id))
                 .leftJoin(userLikeItem)
                 .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
-                .where(item.id.eq(itemId))
                 .fetchOne();
 
         if(projection==null){
-            return null;
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST,  String.format("<%s> 존재하지 않는 상품번호입니다.", itemNumber));
         }
+
+        ShippingTemplate resultShip = jpaQueryFactory
+                .select(shippingTemplate)
+                .from(shippingTemplate)
+                .where(shippingTemplate.seller.id.eq(projection.getSellerId()))
+                .fetchOne();
 
         List<String> images = jpaQueryFactory
                 .select(itemImage.image.prepend(Constants.CDN_URL))
                 .from(itemImage)
-                .where(itemImage.item.id.eq(itemId))
+                .where(itemImage.item.id.eq(projection.getId()))
                 .fetch();
 
         return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
                 projection.getThumbnail(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
                 projection.getLikeId(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
-                projection.getGender(), projection.getTags(), projection.getOption(), images);
+                projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
 
     }
 
