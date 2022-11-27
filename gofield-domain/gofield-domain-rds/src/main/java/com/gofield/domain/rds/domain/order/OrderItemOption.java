@@ -23,7 +23,7 @@ public class OrderItemOption extends BaseTimeEntity {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "orde_item_option_id")
+    @JoinColumn(name = "order_item_option_id")
     private OrderItem orderItem;
 
     @OneToOne(fetch = FetchType.LAZY)

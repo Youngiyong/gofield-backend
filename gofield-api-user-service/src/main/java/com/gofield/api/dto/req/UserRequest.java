@@ -70,7 +70,6 @@ public class UserRequest {
     public static class UserProfile {
         private String name;
         private String nickName;
-        private String thumbnail;
         private Integer weight;
         private Integer height;
         private Boolean isAlertPromotion;

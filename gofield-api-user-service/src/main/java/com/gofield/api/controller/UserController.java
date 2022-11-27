@@ -48,18 +48,11 @@ public class UserController {
 
     @ApiOperation(value = "사용자 프로필 업데이트")
     @PutMapping("/{version}/profile")
-    public ApiResponse updateProfile(@PathVariable("version") EApiVersion apiVersion,
-                                     @Valid @RequestBody UserRequest.UserProfile request){
-
-        userService.updateProfile(request);
+    public ApiResponse uploadProfile(@PathVariable("version") EApiVersion apiVersion,
+                                             @RequestPart(value = "user") UserRequest.UserProfile request,
+                                             @RequestPart(value = "image", required = false) MultipartFile image){
+        userService.updateProfile(request, image);
         return ApiResponse.SUCCESS;
-    }
-
-    @ApiOperation(value = "프로필 이미지 업데이트")
-    @PostMapping("/{version}/profile/upload")
-    public ApiResponse<String> uploadProfile(@PathVariable("version") EApiVersion apiVersion,
-                                             @RequestPart("profile")  MultipartFile profile){
-        return ApiResponse.success(userService.uploadProfile(profile));
     }
 
     @ApiOperation(value = "환불 계좌 조회")

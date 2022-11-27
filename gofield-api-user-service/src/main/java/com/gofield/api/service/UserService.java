@@ -72,10 +72,6 @@ public class UserService {
         return EncryptUtils.aes256Decrypt(TOKEN_DECRYPT_KEY, UserUuidResolver.getCurrentUserUuid());
     }
 
-    public String uploadProfile(MultipartFile file){
-        return s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
-    }
-
     public void validateNonMember(User user){
         if(user.getUuid().equals("nonMember")){
             throw new ForbiddenException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, "비회원은 접근이 불가합니다.");
@@ -161,10 +157,14 @@ public class UserService {
     }
 
     @Transactional
-    public void updateProfile(UserRequest.UserProfile request){
+    public void updateProfile(UserRequest.UserProfile request, MultipartFile file){
+        String thumbnail = null;
+        if(file!=null && !file.isEmpty()){
+            thumbnail = s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
+        }
         User user = getUser();
         validateNonMember(user);
-        user.updateProfile(request.getName(), request.getNickName(), request.getThumbnail(),  request.getIsAlertPromotion(), request.getWeight(), request.getHeight());
+        user.updateProfile(request.getName(), request.getNickName(), thumbnail,  request.getIsAlertPromotion(), request.getWeight(), request.getHeight());
     }
 
     @Transactional
