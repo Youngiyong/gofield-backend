@@ -1,6 +1,9 @@
 package com.gofield.domain.rds.domain.item.repository;
 
+import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -133,7 +136,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .where(itemBundle.id.eq(bundleId))
                 .fetchOne();
 
-        if(bundle==null) return null;
+        if(bundle==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("존재하지 않는 <%s> bundleId 입니다.", bundleId) );
 
         List<String> bundleImages = jpaQueryFactory
                 .select(itemBundleImage.image.prepend(Constants.CDN_URL))
