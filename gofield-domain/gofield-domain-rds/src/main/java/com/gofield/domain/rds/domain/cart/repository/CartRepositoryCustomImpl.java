@@ -1,5 +1,6 @@
 package com.gofield.domain.rds.domain.cart.repository;
 
+import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.cart.Cart;
 import com.gofield.domain.rds.domain.cart.projection.CartProjection;
 import com.gofield.domain.rds.domain.cart.projection.QCartProjection;
@@ -54,7 +55,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                         itemStock.sellerId,
                         seller.name,
                         itemOption.name,
-                        item.thumbnail,
+                        item.thumbnail.prepend(Constants.CDN_URL),
                         cart.qty,
                         cart.isOrder,
                         item.classification,
