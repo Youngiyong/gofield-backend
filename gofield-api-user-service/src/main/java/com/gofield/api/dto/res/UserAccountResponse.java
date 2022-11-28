@@ -8,12 +8,15 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public class UserAccountResponse {
+
+    private String bankCode;
     private String bankName;
     private String bankHolderName;
     private String bankAccountNumber;
 
     @Builder
-    private UserAccountResponse(String bankName, String bankHolderName, String bankAccountNumber){
+    private UserAccountResponse(String bankCode, String bankName, String bankHolderName, String bankAccountNumber){
+        this.bankCode = bankCode;
         this.bankName = bankName;
         this.bankHolderName = bankHolderName;
         this.bankAccountNumber = bankAccountNumber;
@@ -21,6 +24,7 @@ public class UserAccountResponse {
 
     public static UserAccountResponse of(UserAccount userAccount){
         return UserAccountResponse.builder()
+                .bankCode(userAccount.getBankCode())
                 .bankName(userAccount.getBankName())
                 .bankHolderName(userAccount.getBankHolderName())
                 .bankAccountNumber(userAccount.getBankAccountNumber())
