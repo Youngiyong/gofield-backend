@@ -18,4 +18,12 @@ public class ItemRequest {
 
         private Boolean isVisible;
     }
+
+    @Getter
+    public static class Cart {
+        @NotNull(message = "아이템 고유번호는 필수값입니다.")
+        private String itemNumber;
+        private Integer qty;
+        private Boolean isNow;
+    }
 }

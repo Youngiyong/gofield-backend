@@ -1,5 +1,7 @@
 package com.gofield.domain.rds.domain.item.repository;
 
-public interface ItemStockRepositoryCustom {
+import com.gofield.domain.rds.domain.item.ItemStock;
 
+public interface ItemStockRepositoryCustom {
+    ItemStock findByItemNumber(String itemNumber);
 }

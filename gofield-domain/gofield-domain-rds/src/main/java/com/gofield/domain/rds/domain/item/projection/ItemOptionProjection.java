@@ -19,6 +19,8 @@ public class ItemOptionProjection {
     private final EItemOptionTypeFlag optionType;
     private final EItemStatusFlag status;
     private final int price;
+
+    private final int optionPrice;
     private final int qty;
     private final Short sort;
     private final Boolean isUse;
@@ -26,7 +28,7 @@ public class ItemOptionProjection {
 
 
     @QueryProjection
-    public ItemOptionProjection(Long id, Long itemId, String itemNumber, String name, EItemOptionTypeFlag optionType, EItemStatusFlag status, int price, int qty, Short sort, Boolean isUse, LocalDateTime createDate) {
+    public ItemOptionProjection(Long id, Long itemId, String itemNumber, String name, EItemOptionTypeFlag optionType, EItemStatusFlag status, int price, int optionPrice, int qty, Short sort, Boolean isUse, LocalDateTime createDate) {
         this.id = id;
         this.itemId = itemId;
         this.itemNumber = itemNumber;
@@ -34,6 +36,7 @@ public class ItemOptionProjection {
         this.optionType = optionType;
         this.status = status;
         this.price = price;
+        this.optionPrice = optionPrice;
         this.qty = qty;
         this.sort = sort;
         this.isUse = isUse;

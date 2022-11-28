@@ -3,9 +3,6 @@ package com.gofield.domain.rds.domain.cart;
 
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import com.gofield.domain.rds.domain.item.Item;
-import com.gofield.domain.rds.domain.item.ItemStock;
-import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,8 +10,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.List;
 
 @Getter
 @DynamicInsert
@@ -24,13 +19,11 @@ import java.util.List;
 @Table(	name = "cart")
 public class Cart extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column
+    private Long userId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id", nullable = false)
-    private Item item;
+    @Column
+    private Long itemId;
 
     @Column
     private String itemNumber;
@@ -42,22 +35,41 @@ public class Cart extends BaseTimeEntity {
     private int qty;
 
     @Column
+    private Boolean isOrder;
+
+    @Column
     private Boolean isNow;
 
-    @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<CartOption> options = new ArrayList<>();
-
-    private Cart(User user, Item item, String itemNumber, int price, int qty, Boolean isNow){
-        this.user = user;
-        this.item = item;
+    private Cart(Long userId, Long itemId, String itemNumber, int price, int qty, Boolean isOrder,  Boolean isNow){
+        this.userId = userId;
+        this.itemId = itemId;
         this.itemNumber = itemNumber;
         this.price = price;
         this.qty = qty;
+        this.isOrder = isOrder;
         this.isNow = isNow;
     }
 
-    public static Cart newInstance(User user, Item item, String itemNumber, int price, int qty, Boolean isNow){
-        return new Cart(user, item, itemNumber, price, qty, isNow);
+    public static Cart newInstance(Long userId, Long itemId, String itemNumber, int price, int qty, Boolean isOrder, Boolean isNow){
+        return new Cart(userId, itemId, itemNumber, price, qty, isOrder, isNow);
+    }
+
+    public void updateQty(int qty, int remainQty){
+        if(remainQty>qty){
+            this.isOrder = true;
+        } else {
+            this.isOrder = false;
+        }
+        this.qty = qty;
+    }
+
+    public void updateOne(int remainQty){
+        if(remainQty>qty){
+            this.isOrder = true;
+        } else {
+            this.isOrder = false;
+        }
+        this.qty+=1;
     }
 
 }

@@ -28,12 +28,13 @@ public class ItemOptionResponse {
     private EItemOptionTypeFlag optionType;
     private EItemStatusFlag status;
     private int price;
+    private int optionPrice;
     private int qty;
     private Boolean isUse;
     private LocalDateTime createDate;
 
     @Builder
-    private ItemOptionResponse(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status, int price, int qty, Boolean isUse, LocalDateTime createDate) {
+    private ItemOptionResponse(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status, int price, int optionPrice, int qty, Boolean isUse, LocalDateTime createDate) {
         this.id = id;
         this.itemId = itemId;
         this.itemNumber = itemNumber;
@@ -41,12 +42,13 @@ public class ItemOptionResponse {
         this.optionType = optionType;
         this.status = status;
         this.price = price;
+        this.optionPrice = optionPrice;
         this.qty = qty;
         this.isUse = isUse;
         this.createDate = createDate;
     }
 
-    public static ItemOptionResponse of(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status,  int price, int qty, Boolean isUse, LocalDateTime createDate){
+    public static ItemOptionResponse of(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status,  int price, int optionPrice, int qty, Boolean isUse, LocalDateTime createDate){
         return ItemOptionResponse
                 .builder()
                 .id(id)
@@ -56,6 +58,7 @@ public class ItemOptionResponse {
                 .optionType(optionType)
                 .status(status)
                 .price(price)
+                .optionPrice(optionPrice)
                 .qty(qty)
                 .isUse(isUse)
                 .createDate(createDate)
@@ -67,7 +70,7 @@ public class ItemOptionResponse {
                 .stream()
                 .map(p -> {
                     try {
-                        return ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : new ObjectMapper().readValue(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getQty(), p.getIsUse(), p.getCreateDate());
+                        return ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : new ObjectMapper().readValue(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getOptionPrice(), p.getQty(), p.getIsUse(), p.getCreateDate());
                     } catch (JsonProcessingException e) {
                         throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
                     }

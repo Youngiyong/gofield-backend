@@ -27,6 +27,7 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
                         itemOption.optionType,
                         itemStock.status,
                         itemOption.price,
+                        itemOption.optionPrice,
                         itemStock.qty,
                         itemOption.sort,
                         itemOption.isUse,
@@ -36,5 +37,13 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
                 .on(itemOption.itemNumber.eq(itemStock.itemNumber))
                 .where(itemOption.item.id.eq(itemId))
                 .fetch();
+    }
+
+    @Override
+    public ItemOption findByItemNumber(String itemNumber) {
+        return jpaQueryFactory
+                .selectFrom(itemOption)
+                .where(itemOption.itemNumber.eq(itemNumber))
+                .fetchFirst();
     }
 }
