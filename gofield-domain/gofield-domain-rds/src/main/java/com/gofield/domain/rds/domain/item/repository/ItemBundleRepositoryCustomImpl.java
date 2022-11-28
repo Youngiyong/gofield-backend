@@ -152,7 +152,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         userLikeItem.id.as("likeId"),
                         item.classification,
                         itemDetail.gender,
-                        itemDetail.option))
+                        item.tags))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.item.itemNumber.eq(item.itemNumber))
@@ -169,8 +169,6 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
-
-
 
         return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.of(items));
     }

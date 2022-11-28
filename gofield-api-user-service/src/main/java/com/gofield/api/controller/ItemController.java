@@ -102,10 +102,10 @@ public class ItemController {
         return ApiResponse.success(itemService.getItem(itemNumber));
     }
 
-    @ApiOperation(value = "상품 상세 옵션 조회")
+    @ApiOperation(value = "상품 옵션 조회")
     @GetMapping("/{version}/{itemId}/option")
     public ApiResponse<ItemOptionDetailResponse> getItemOption(@PathVariable("version") EApiVersion apiVersion,
-                                                   @PathVariable Long itemId){
+                                                               @PathVariable Long itemId){
         return ApiResponse.success(itemService.getItemOption(itemId));
     }
 

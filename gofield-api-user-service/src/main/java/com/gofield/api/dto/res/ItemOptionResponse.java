@@ -8,16 +8,13 @@ import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.item.EItemOptionTypeFlag;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
-import com.gofield.domain.rds.domain.item.ItemOption;
 import com.gofield.domain.rds.domain.item.projection.ItemOptionProjection;
-import com.gofield.domain.rds.domain.item.projection.ItemProjectionResponse;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 
@@ -32,12 +29,11 @@ public class ItemOptionResponse {
     private EItemStatusFlag status;
     private int price;
     private int qty;
-    private Short sort;
     private Boolean isUse;
     private LocalDateTime createDate;
 
     @Builder
-    private ItemOptionResponse(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status, int price, int qty, Short sort, Boolean isUse, LocalDateTime createDate) {
+    private ItemOptionResponse(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status, int price, int qty, Boolean isUse, LocalDateTime createDate) {
         this.id = id;
         this.itemId = itemId;
         this.itemNumber = itemNumber;
@@ -46,12 +42,11 @@ public class ItemOptionResponse {
         this.status = status;
         this.price = price;
         this.qty = qty;
-        this.sort = sort;
         this.isUse = isUse;
         this.createDate = createDate;
     }
 
-    public static ItemOptionResponse of(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status,  int price, int qty, Short sort, Boolean isUse, LocalDateTime createDate){
+    public static ItemOptionResponse of(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status,  int price, int qty, Boolean isUse, LocalDateTime createDate){
         return ItemOptionResponse
                 .builder()
                 .id(id)
@@ -62,7 +57,6 @@ public class ItemOptionResponse {
                 .status(status)
                 .price(price)
                 .qty(qty)
-                .sort(sort)
                 .isUse(isUse)
                 .createDate(createDate)
                 .build();
@@ -73,7 +67,7 @@ public class ItemOptionResponse {
                 .stream()
                 .map(p -> {
                     try {
-                        return ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : new ObjectMapper().readValue(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getQty(), p.getSort(), p.getIsUse(), p.getCreateDate());
+                        return ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : new ObjectMapper().readValue(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getQty(), p.getIsUse(), p.getCreateDate());
                     } catch (JsonProcessingException e) {
                         throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
                     }
