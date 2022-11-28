@@ -379,6 +379,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             brand.name.as("brandName"),
                             itemStock.sellerId,
                             item.thumbnail.prepend(Constants.CDN_URL),
+                            itemDetail.description,
                             item.itemNumber,
                             item.price,
                             itemStock.qty,
@@ -416,7 +417,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .fetch();
 
             return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
-                    projection.getThumbnail(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
+                    projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
                     null, projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                     projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
         }
@@ -428,6 +429,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         itemStock.sellerId,
                         item.thumbnail.prepend(Constants.CDN_URL),
+                        itemDetail.description,
                         item.itemNumber,
                         item.price,
                         itemStock.qty,
@@ -466,7 +468,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetch();
 
         return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
-                projection.getThumbnail(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
+                projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
                 projection.getLikeId(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                 projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
 

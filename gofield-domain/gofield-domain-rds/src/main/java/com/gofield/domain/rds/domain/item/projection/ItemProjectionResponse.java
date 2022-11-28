@@ -19,6 +19,7 @@ public class ItemProjectionResponse {
     private String name;
     private String brandName;
     private String thumbnail;
+    private String description;
     private String itemNumber;
     private int price;
     private int qty;
@@ -34,11 +35,12 @@ public class ItemProjectionResponse {
     private ShippingTemplate shippingTemplate;
 
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
         this.thumbnail = thumbnail;
+        this.description = description;
         this.itemNumber = itemNumber;
         this.price = price;
         this.qty = qty;
@@ -53,12 +55,13 @@ public class ItemProjectionResponse {
         this.shippingTemplate = shippingTemplate;
     }
 
-    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
+    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
         return ItemProjectionResponse.builder()
                 .id(id)
                 .name(name)
                 .brandName(brandName)
                 .thumbnail(thumbnail)
+                .description(description)
                 .itemNumber(itemNumber)
                 .price(price)
                 .qty(qty)

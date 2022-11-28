@@ -156,9 +156,9 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         item.classification,
                         itemDetail.gender,
                         item.tags))
-                .from(itemStock)
-                .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
