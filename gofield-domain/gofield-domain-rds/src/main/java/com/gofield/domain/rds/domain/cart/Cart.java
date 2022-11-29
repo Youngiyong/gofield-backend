@@ -23,9 +23,6 @@ public class Cart extends BaseTimeEntity {
     private Long userId;
 
     @Column
-    private Long itemId;
-
-    @Column
     private String itemNumber;
 
     @Column
@@ -40,9 +37,8 @@ public class Cart extends BaseTimeEntity {
     @Column
     private Boolean isNow;
 
-    private Cart(Long userId, Long itemId, String itemNumber, int price, int qty, Boolean isOrder,  Boolean isNow){
+    private Cart(Long userId, String itemNumber, int price, int qty, Boolean isOrder,  Boolean isNow){
         this.userId = userId;
-        this.itemId = itemId;
         this.itemNumber = itemNumber;
         this.price = price;
         this.qty = qty;
@@ -50,12 +46,12 @@ public class Cart extends BaseTimeEntity {
         this.isNow = isNow;
     }
 
-    public static Cart newInstance(Long userId, Long itemId, String itemNumber, int price, int qty, Boolean isOrder, Boolean isNow){
-        return new Cart(userId, itemId, itemNumber, price, qty, isOrder, isNow);
+    public static Cart newInstance(Long userId,  String itemNumber, int price, int qty, Boolean isOrder, Boolean isNow){
+        return new Cart(userId, itemNumber, price, qty, isOrder, isNow);
     }
 
-    public void updateQty(int qty, int remainQty){
-        if(remainQty>qty){
+    public void updateQty(int qty, int stockQty){
+        if(stockQty>qty){
             this.isOrder = true;
         } else {
             this.isOrder = false;
@@ -63,8 +59,8 @@ public class Cart extends BaseTimeEntity {
         this.qty = qty;
     }
 
-    public void updateOne(int remainQty){
-        if(remainQty>qty){
+    public void updateOne(int stockQty){
+        if(stockQty>qty){
             this.isOrder = true;
         } else {
             this.isOrder = false;

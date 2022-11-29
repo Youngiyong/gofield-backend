@@ -51,9 +51,23 @@ public class CartService {
         Item item = itemStock.getItem();
         ItemOption itemOption = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOptionRepository.findByItemNumber(request.getItemNumber()) : null;
         int price = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOption.getPrice() : item.getPrice();
-        Boolean isOrder = itemStock.getStatus().equals(EItemStatusFlag.SALE) && itemStock.getQty()>= request.getQty() ? true : false;
-        cart = Cart.newInstance(user.getId(), itemStock.getItem().getId(), request.getItemNumber(), price, request.getQty(), isOrder, request.getIsNow());
+        Boolean isOrder = itemStock.getStatus().equals(EItemStatusFlag.SALE) && itemStock.getQty()<1 ? true : false;
+        cart = Cart.newInstance(user.getId(), request.getItemNumber(), price, 1, isOrder, request.getIsNow());
         cartRepository.save(cart);
+    }
+
+    @Transactional
+    public void updateCart(ItemRequest.CartQty request){
+        User user = userService.getUser();
+        ItemStock itemStock = itemStockRepository.findByItemNumber(request.getItemNumber());
+        if(itemStock==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 상품 번호입니다.", request.getItemNumber()));
+        }
+        Cart cart = cartRepository.findByUserIdAndItemNumber(user.getId(), request.getItemNumber());
+        if(cart==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 장바구니에 존재하지 않는 상품 번호입니다.", request.getItemNumber()));
+        }
+        cart.updateQty(request.getQty(), itemStock.getQty());
     }
 
     @Transactional

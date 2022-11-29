@@ -87,6 +87,16 @@ public class ItemController {
         return ApiResponse.success(itemService.getBundleItemList(bundleId, pageable));
     }
 
+    @ApiOperation(value = "묶음 상품 - 다른 (새/중고) 상품 조회")
+    @GetMapping("/{version}/bundle/{bundleId}/other/{itemId}")
+    public ApiResponse<List<ItemClassificationResponse>> getBundleOtherItemList(@PathVariable("version") EApiVersion apiVersion,
+                                                             @PathVariable Long bundleId,
+                                                             @PathVariable Long itemId,
+                                                             @RequestParam(required = false) EItemClassificationFlag classification,
+                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getOtherItemList(bundleId, itemId, classification, pageable));
+    }
+
     @ApiOperation(value = "묶음 상품 - 리뷰 조회")
     @GetMapping("/{version}/bundle/{bundleId}/review")
     public ApiResponse<List<ItemBundleReviewResponse>> getBundleItemReviewList(@PathVariable("version") EApiVersion apiVersion,
@@ -127,7 +137,7 @@ public class ItemController {
     }
 
     @ApiOperation(value = "상품 상세 - 상품 문의 등록")
-    @PostMapping("/{version}/{itemId}")
+    @PostMapping("/{version}/{itemId}/qna")
     public ApiResponse insertQna(@PathVariable("version") EApiVersion apiVersion,
                                  @PathVariable Long itemId,
                                  @Valid @RequestBody ItemRequest.ItemQna request){

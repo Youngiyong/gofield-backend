@@ -30,15 +30,22 @@ public class CartController {
     @PostMapping("/{version}")
     public ApiResponse insertCart(@PathVariable("version") EApiVersion apiVersion,
                                   @Valid @RequestBody ItemRequest.Cart request){
-
         cartService.insertCart(request);
         return ApiResponse.SUCCESS;
     }
 
+    @ApiOperation(value = "장바구니 수량 업데이트")
+    @PutMapping("/{version}")
+    public ApiResponse updateCart(@PathVariable("version") EApiVersion apiVersion,
+                                  @Valid @RequestBody ItemRequest.CartQty request){
+        cartService.updateCart(request);
+        return ApiResponse.SUCCESS;
+    }
+
+
     @ApiOperation(value = "장바구니 리스트")
     @GetMapping("/{version}")
     public ApiResponse<List<CartResponse>> getCartList(@PathVariable("version") EApiVersion apiVersion){
-
         return ApiResponse.success(cartService.getCartList());
     }
 

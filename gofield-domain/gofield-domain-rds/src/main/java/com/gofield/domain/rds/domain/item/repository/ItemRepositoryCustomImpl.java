@@ -117,6 +117,74 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
+    public List<ItemClassificationProjectionResponse> findAllClassificationItemByBundleIdAndClassificationAndNotNqItemId(Long userId, Long bundleId, Long itemId, EItemClassificationFlag classification, Pageable pageable) {
+        if(userId==null){
+            List<ItemNonMemberClassificationProjection> projection =  jpaQueryFactory
+                    .select(new QItemNonMemberClassificationProjection(
+                            item.id,
+                            item.itemNumber,
+                            item.name,
+                            brand.name.as("brandName"),
+                            item.thumbnail.prepend(Constants.CDN_URL),
+                            item.price,
+                            item.classification,
+                            itemDetail.gender,
+                            item.tags))
+                    .from(itemStock)
+                    .innerJoin(item)
+                    .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                    .innerJoin(category)
+                    .on(item.category.id.eq(category.id))
+                    .innerJoin(itemDetail)
+                    .on(item.detail.id.eq(itemDetail.id))
+                    .innerJoin(brand)
+                    .on(item.brand.id.eq(brand.id))
+                    .where(item.bundle.id.eq(bundleId), item.id.ne(itemId),
+                            itemStock.status.eq(EItemStatusFlag.SALE),
+                            eqClassification(classification))
+                    .orderBy(itemStock.createDate.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            return ItemClassificationProjectionResponse.ofNon(projection);
+        }
+
+        List<ItemClassificationProjection> projection =  jpaQueryFactory
+                .select(new QItemClassificationProjection(
+                        item.id,
+                        item.itemNumber,
+                        item.name,
+                        brand.name.as("brandName"),
+                        item.thumbnail.prepend(Constants.CDN_URL),
+                        item.price,
+                        userLikeItem.id.as("likeId"),
+                        item.classification,
+                        itemDetail.gender,
+                        item.tags))
+                .from(itemStock)
+                .innerJoin(item)
+                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .innerJoin(category)
+                .on(item.category.id.eq(category.id))
+                .innerJoin(itemDetail)
+                .on(item.detail.id.eq(itemDetail.id))
+                .innerJoin(brand)
+                .on(item.brand.id.eq(brand.id))
+                .leftJoin(userLikeItem)
+                .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
+                .where(item.bundle.id.eq(bundleId), item.id.ne(itemId),
+                        itemStock.status.eq(EItemStatusFlag.SALE),
+                        eqClassification(classification))
+                .orderBy(itemStock.createDate.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        return ItemClassificationProjectionResponse.of(projection);
+    }
+
+    @Override
     public List<ItemClassificationProjectionResponse> findAllUserLikeItemList(Long userId, Pageable pageable) {
         if(userId==null) return new ArrayList<>();
 

@@ -93,6 +93,14 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
+    public List<ItemClassificationResponse> getOtherItemList(Long bundleId, Long itemId,  EItemClassificationFlag classification, Pageable pageable){
+        User user = userService.getUser();
+        List<ItemClassificationProjectionResponse> result = itemRepository.findAllClassificationItemByBundleIdAndClassificationAndNotNqItemId(user.getId(), bundleId, itemId, classification, pageable);
+        return ItemClassificationResponse.of(result);
+    }
+
+
+    @Transactional(readOnly = true)
     public List<ItemBundleReviewResponse> getBundleItemReviewList(Long bundleId, Pageable pageable){
         User user = userService.getUser();
         List<ItemBundleReview> result = itemBundleReviewRepository.findByBundleId(bundleId, pageable);
