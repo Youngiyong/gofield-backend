@@ -56,7 +56,7 @@ public class ItemController {
     @ApiOperation(value ="종목 추천 상품 리스트")
     @GetMapping("/{version}/recommend/category")
     public ApiResponse<List<ItemBundleRecommendResponse>> getRecommendCategoryItemBundleList(@PathVariable("version") EApiVersion apiVersion,
-                                                                                     @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+                                                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getRecommendItemBundleList(pageable));
     }
 
@@ -90,10 +90,10 @@ public class ItemController {
     @ApiOperation(value = "묶음 상품 - 다른 (새/중고) 상품 조회")
     @GetMapping("/{version}/bundle/{bundleId}/other/{itemId}")
     public ApiResponse<List<ItemClassificationResponse>> getBundleOtherItemList(@PathVariable("version") EApiVersion apiVersion,
-                                                             @PathVariable Long bundleId,
-                                                             @PathVariable Long itemId,
-                                                             @RequestParam(required = false) EItemClassificationFlag classification,
-                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+                                                                                @PathVariable Long bundleId,
+                                                                                @PathVariable Long itemId,
+                                                                                @RequestParam(required = false) EItemClassificationFlag classification,
+                                                                                @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getOtherItemList(bundleId, itemId, classification, pageable));
     }
 

@@ -21,14 +21,12 @@ import javax.persistence.*;
 @Table(	name = "order_shipping_item")
 public class OrderItemOption extends BaseTimeEntity {
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_option_id")
     private OrderItem orderItem;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_option_id")
-    private ItemOption option;
+    @Column
+    private Long itemOptionId;
 
     @Column
     private EItemOptionTypeFlag optionType;

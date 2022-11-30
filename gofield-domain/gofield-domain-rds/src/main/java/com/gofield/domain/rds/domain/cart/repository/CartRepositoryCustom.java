@@ -11,4 +11,5 @@ public interface CartRepositoryCustom {
     Cart findByUserIdAndItemNumber(Long userId, String itemNumber);
     Cart findByCartIdAndUserId(Long cartId, Long userId);
     List<CartProjection> findAllByUserId(Long userId);
+    List<Long> findAllInCartIdList(List<Long> cartIdList, Long userId);
 }

@@ -1,10 +1,13 @@
 package com.gofield.domain.rds.domain.item.repository;
 
 
+import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.ItemStock;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+
+import java.util.List;
 
 import static com.gofield.domain.rds.domain.item.QItemStock.itemStock;
 
@@ -20,4 +23,5 @@ public class ItemStockRepositoryCustomImpl implements ItemStockRepositoryCustom 
                 .where(itemStock.itemNumber.eq(itemNumber))
                 .fetchFirst();
     }
+
 }

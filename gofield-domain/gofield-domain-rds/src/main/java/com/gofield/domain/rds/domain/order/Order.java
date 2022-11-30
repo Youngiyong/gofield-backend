@@ -53,7 +53,6 @@ public class Order extends BaseTimeEntity {
     @Column(nullable = false)
     private EOrderStatusFlag status;
 
-
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderShipping> orderShippings = new ArrayList<>();
 

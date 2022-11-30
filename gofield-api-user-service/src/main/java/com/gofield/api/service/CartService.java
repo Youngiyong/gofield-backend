@@ -1,6 +1,6 @@
 package com.gofield.api.service;
 
-import com.gofield.api.dto.req.ItemRequest;
+import com.gofield.api.dto.req.CartRequest;
 import com.gofield.api.dto.res.CartResponse;
 import com.gofield.api.dto.res.CountResponse;
 import com.gofield.common.exception.InvalidException;
@@ -29,8 +29,6 @@ public class CartService {
     private final ItemStockRepository itemStockRepository;
     private final ItemOptionRepository itemOptionRepository;
 
-    private final ItemRepository itemRepository;
-
     @Transactional
     public void deleteCart(Long cartId){
         User user = userService.getUser();
@@ -50,7 +48,7 @@ public class CartService {
     }
 
     @Transactional
-    public void insertCart(ItemRequest.Cart request){
+    public void insertCart(CartRequest.Cart request){
         User user = userService.getUser();
         ItemStock itemStock = itemStockRepository.findByItemNumber(request.getItemNumber());
         if(itemStock==null){
@@ -70,7 +68,7 @@ public class CartService {
     }
 
     @Transactional
-    public void updateCart(ItemRequest.CartQty request){
+    public void updateCart(CartRequest.CartQty request){
         User user = userService.getUser();
         ItemStock itemStock = itemStockRepository.findByItemNumber(request.getItemNumber());
         if(itemStock==null){

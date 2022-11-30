@@ -22,9 +22,8 @@ import java.time.LocalDateTime;
 @Table(	name = "order_shipping")
 public class OrderShipping extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @Column
+    private Long sellerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")

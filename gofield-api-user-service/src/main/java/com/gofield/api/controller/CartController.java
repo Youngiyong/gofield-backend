@@ -1,5 +1,6 @@
 package com.gofield.api.controller;
 
+import com.gofield.api.dto.req.CartRequest;
 import com.gofield.api.dto.req.ItemRequest;
 import com.gofield.api.dto.res.CartResponse;
 import com.gofield.api.dto.res.CountResponse;
@@ -29,7 +30,7 @@ public class CartController {
     @ApiOperation(value = "바로구매/장바구니 담기")
     @PostMapping("/{version}")
     public ApiResponse insertCart(@PathVariable("version") EApiVersion apiVersion,
-                                  @Valid @RequestBody ItemRequest.Cart request){
+                                  @Valid @RequestBody CartRequest.Cart request){
         cartService.insertCart(request);
         return ApiResponse.SUCCESS;
     }
@@ -37,7 +38,7 @@ public class CartController {
     @ApiOperation(value = "장바구니 수량 업데이트")
     @PutMapping("/{version}")
     public ApiResponse updateCart(@PathVariable("version") EApiVersion apiVersion,
-                                  @Valid @RequestBody ItemRequest.CartQty request){
+                                  @Valid @RequestBody CartRequest.CartQty request){
         cartService.updateCart(request);
         return ApiResponse.SUCCESS;
     }

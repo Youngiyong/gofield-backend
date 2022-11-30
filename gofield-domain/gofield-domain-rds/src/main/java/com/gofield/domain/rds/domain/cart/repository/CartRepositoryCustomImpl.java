@@ -65,6 +65,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                         seller.name,
                         itemOption.name,
                         item.thumbnail.prepend(Constants.CDN_URL),
+                        cart.price,
                         cart.qty,
                         cart.isOrder,
                         item.classification,
@@ -90,6 +91,15 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                 .innerJoin(itemDetail)
                 .on(item.detail.id.eq(itemDetail.id))
                 .where(cart.userId.eq(userId))
+                .fetch();
+    }
+
+    @Override
+    public List<Long> findAllInCartIdList(List<Long> cartIdList, Long userId) {
+        return jpaQueryFactory
+                .select(cart.id)
+                .from(cart)
+                .where(cart.id.in(cartIdList), cart.userId.eq(userId))
                 .fetch();
     }
 }

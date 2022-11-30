@@ -25,13 +25,11 @@ public class OrderItem extends BaseTimeEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @Column
+    private Long sellerId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private Item item;
+    @Column
+    private Long itemId;
 
     @Column
     private String orderNumber;

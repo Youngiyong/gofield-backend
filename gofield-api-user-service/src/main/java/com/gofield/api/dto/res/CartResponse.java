@@ -28,6 +28,7 @@ public class CartResponse {
     private String sellerName;
     private List<String> optionName;
     private String thumbnail;
+    private int price;
     private int qty;
     private Boolean isOrder;
     private EItemClassificationFlag classification;
@@ -42,7 +43,7 @@ public class CartResponse {
 
     @Builder
     private CartResponse(Long id, String itemName, String itemNumber, Long sellerId, String sellerName,
-                         List<String> optionName, String thumbnail, int qty, Boolean isOrder, EItemClassificationFlag classification,
+                         List<String> optionName, String thumbnail, int price, int qty, Boolean isOrder, EItemClassificationFlag classification,
                          EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition,
                          EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
         this.id = id;
@@ -52,6 +53,7 @@ public class CartResponse {
         this.sellerName = sellerName;
         this.optionName = optionName;
         this.thumbnail = thumbnail;
+        this.price = price;
         this.qty = qty;
         this.isOrder = isOrder;
         this.classification = classification;
@@ -66,7 +68,7 @@ public class CartResponse {
     }
 
     public static CartResponse of(Long id, String itemName, String itemNumber, Long sellerId, String sellerName,
-                                  List<String> optionName, String thumbnail, int qty, Boolean isOrder, EItemClassificationFlag classification,
+                                  List<String> optionName, String thumbnail, int price, int qty, Boolean isOrder, EItemClassificationFlag classification,
                                   EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition,
                                   EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
         return CartResponse.builder()
@@ -77,6 +79,7 @@ public class CartResponse {
                 .sellerName(sellerName)
                 .optionName(optionName)
                 .thumbnail(thumbnail)
+                .price(price)
                 .qty(qty)
                 .isOrder(isOrder)
                 .classification(classification)
@@ -98,7 +101,7 @@ public class CartResponse {
                     try {
                         return CartResponse.of(p.getId(), p.getItemName(), p.getItemNumber(), p.getSellerId(),
                                 p.getSellerName(), p.getOptionName()==null ? null : new ObjectMapper().readValue(p.getOptionName(), new TypeReference<List<String>>(){}),
-                                p.getThumbnail(), p.getQty(), p.getIsOrder(), p.getClassification(), p.getSpec(),
+                                p.getThumbnail(), p.getPrice(), p.getQty(), p.getIsOrder(), p.getClassification(), p.getSpec(),
                                 p.getGender(), p.getIsCondition(), p.getCondition(), p.getChargeType(), p.getCharge(), p.getFeeJeju(), p.getFeeJejuBesides());
                     } catch (JsonProcessingException e) {
                         throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());

@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -38,7 +37,6 @@ public class ItemService {
     public void userLikeItem(Long itemId, Boolean isLike){
         User user = userService.getUser();
         UserLikeItem userLikeItem = userLikeItemRepository.findByUserIdAndItemId(user.getId(), itemId);
-
         if(isLike){
             if(userLikeItem==null){
                 Item item = itemRepository.findByItemId(itemId);
