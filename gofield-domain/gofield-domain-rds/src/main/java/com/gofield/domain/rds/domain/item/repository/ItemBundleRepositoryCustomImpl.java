@@ -92,8 +92,6 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .fetch();
         }
 
-
-
     }
 
     @Override

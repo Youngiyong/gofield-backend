@@ -441,11 +441,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     public ItemProjectionResponse findByItemNumberAndUserId(String itemNumber, Long userId){
         if(userId==null){
             ItemNonMemberProjection projection = jpaQueryFactory
-                    .select(new QItemNonMemberProjection(
+                    .select(
+                            new QItemNonMemberProjection(
                             item.id,
                             item.name,
                             brand.name.as("brandName"),
                             itemStock.sellerId,
+                            item.bundle.id,
                             item.thumbnail.prepend(Constants.CDN_URL),
                             itemDetail.description,
                             item.itemNumber,
@@ -485,7 +487,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .fetch();
 
             return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
-                    projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
+                    projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(), projection.getPrice(), projection.getQty(),
                     null, projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                     projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
         }
@@ -496,6 +498,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.name,
                         brand.name.as("brandName"),
                         itemStock.sellerId,
+                        item.bundle.id,
                         item.thumbnail.prepend(Constants.CDN_URL),
                         itemDetail.description,
                         item.itemNumber,
@@ -536,7 +539,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetch();
 
         return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
-                projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getPrice(), projection.getQty(),
+                projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(),  projection.getPrice(), projection.getQty(),
                 projection.getLikeId(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                 projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
 
