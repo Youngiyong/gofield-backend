@@ -3,6 +3,7 @@ package com.gofield.api.service;
 import com.gofield.api.dto.req.ItemRequest;
 import com.gofield.api.dto.res.CartResponse;
 import com.gofield.api.dto.res.CountResponse;
+import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -27,7 +28,19 @@ public class CartService {
     private final CartRepository cartRepository;
     private final ItemStockRepository itemStockRepository;
     private final ItemOptionRepository itemOptionRepository;
+
     private final ItemRepository itemRepository;
+
+    @Transactional
+    public void deleteCart(Long cartId){
+        User user = userService.getUser();
+        userService.validateNonMember(user);
+        Cart cart = cartRepository.findByCartIdAndUserId(cartId, user.getId());
+        if(cart==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 상품 카트 번호입니다.", cartId));
+        }
+        cartRepository.delete(cart);
+    }
 
     @Transactional(readOnly = true)
     public CountResponse getCartCount(){
@@ -51,7 +64,7 @@ public class CartService {
         Item item = itemStock.getItem();
         ItemOption itemOption = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOptionRepository.findByItemNumber(request.getItemNumber()) : null;
         int price = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOption.getPrice() : item.getPrice();
-        Boolean isOrder = itemStock.getStatus().equals(EItemStatusFlag.SALE) && itemStock.getQty()<1 ? true : false;
+        Boolean isOrder = itemStock.getStatus().equals(EItemStatusFlag.SALE) && itemStock.getQty()>=1 ? true : false;
         cart = Cart.newInstance(user.getId(), request.getItemNumber(), price, 1, isOrder, request.getIsNow());
         cartRepository.save(cart);
     }
@@ -62,6 +75,12 @@ public class CartService {
         ItemStock itemStock = itemStockRepository.findByItemNumber(request.getItemNumber());
         if(itemStock==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 상품 번호입니다.", request.getItemNumber()));
+        }
+        if(!itemStock.getStatus().equals(EItemStatusFlag.SALE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "판매중이지 않는 상품입니다.");
+        }
+        if(request.getQty()>itemStock.getQty()){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "상품 재고가 부족하여 수량 추가가 불가합니다.");
         }
         Cart cart = cartRepository.findByUserIdAndItemNumber(user.getId(), request.getItemNumber());
         if(cart==null){

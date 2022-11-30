@@ -153,6 +153,4 @@ public class ItemController {
         itemService.deleteQna(itemId, qnaId);
         return ApiResponse.SUCCESS;
     }
-
-
 }

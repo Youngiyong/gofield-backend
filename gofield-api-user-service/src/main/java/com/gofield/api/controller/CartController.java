@@ -42,11 +42,18 @@ public class CartController {
         return ApiResponse.SUCCESS;
     }
 
-
     @ApiOperation(value = "장바구니 리스트")
     @GetMapping("/{version}")
     public ApiResponse<List<CartResponse>> getCartList(@PathVariable("version") EApiVersion apiVersion){
         return ApiResponse.success(cartService.getCartList());
+    }
+
+    @ApiOperation(value = "장바구니 삭제")
+    @DeleteMapping("/{version}/{cartId}")
+    public ApiResponse deleteCart(@PathVariable("version") EApiVersion apiVersion,
+                                  @PathVariable Long cartId){
+        cartService.deleteCart(cartId);
+        return ApiResponse.SUCCESS;
     }
 
 }

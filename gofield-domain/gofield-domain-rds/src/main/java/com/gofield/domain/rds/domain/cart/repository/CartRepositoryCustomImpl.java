@@ -46,6 +46,15 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
     }
 
     @Override
+    public Cart findByCartIdAndUserId(Long cartId, Long userId) {
+        return jpaQueryFactory
+                .selectFrom(cart)
+                .where(cart.id.eq(cartId),
+                        cart.userId.eq(userId))
+                .fetchFirst();
+    }
+
+    @Override
     public List<CartProjection> findAllByUserId(Long userId) {
         return jpaQueryFactory
                 .select(new QCartProjection(
