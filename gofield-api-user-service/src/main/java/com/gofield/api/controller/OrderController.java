@@ -42,5 +42,4 @@ public class OrderController {
         response.sendRedirect(orderService.createOrderWait(request));
     }
 
-
 }

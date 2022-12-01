@@ -24,15 +24,13 @@ import java.util.List;
 @Table(	name = "order")
 public class Order extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column
+    private Long userId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @Column
+    private Long sellerId;
 
-    @Column(length = 20, nullable = false)
+    @Column(length = 64, nullable = false)
     private String orderNumber;
 
     @Column
