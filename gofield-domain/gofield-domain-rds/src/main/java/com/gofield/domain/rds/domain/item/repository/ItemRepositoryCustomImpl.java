@@ -301,7 +301,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.brand.id.eq(brand.id))
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                .where(item.name.like(keyword))
+                .where(item.name.contains(keyword))
                 .orderBy(userLikeItem.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -328,7 +328,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.detail.id.eq(itemDetail.id))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
-                .where(item.name.like(keyword))
+                .where(item.name.contains(keyword))
                 .orderBy(itemStock.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -400,7 +400,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
         Category resultCat = jpaQueryFactory
                 .selectFrom(category)
-                .where(category.name.eq(keyword))
+                .where(category.name.contains(keyword))
                 .fetchFirst();
 
         if(resultCat!=null){
@@ -415,7 +415,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
         Brand resultBra = jpaQueryFactory
                 .selectFrom(brand)
-                .where(brand.name.eq(keyword))
+                .where(brand.name.contains(keyword))
                 .fetchFirst();
 
         if(resultBra!=null){
