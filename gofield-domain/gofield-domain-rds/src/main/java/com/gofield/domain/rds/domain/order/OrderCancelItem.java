@@ -19,9 +19,8 @@ import javax.persistence.*;
 @Table(	name = "order_cancel_item")
 public class OrderCancelItem extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cancel_id")
-    private OrderCancel orderCancel;
+    @Column
+    private Long cancelId;
 
     @Column
     private EOrderCancelItemFlag item;

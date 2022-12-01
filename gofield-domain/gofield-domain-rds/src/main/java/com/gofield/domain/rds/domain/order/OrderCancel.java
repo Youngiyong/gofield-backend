@@ -1,9 +1,6 @@
-
 package com.gofield.domain.rds.domain.order;
 
-
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import com.gofield.domain.rds.domain.item.Item;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,12 +17,32 @@ import javax.persistence.*;
 @Table(	name = "order_cancel")
 public class OrderCancel extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column
+    private Long orderId;
+
+    @Column
+    private Long itemId;
+
+    @Column
+    private String orderNumber;
+
+    @Column
+    private String itemNumber;
 
     @Column
     private EOrderCancelCodeFlag code;
+
+    @Column
+    private String name;
+
+    @Column
+    private int qty;
+
+    @Column
+    private int cancelQty;
+
+    @Column
+    private int price;
 
     @Column
     private int amount;
@@ -41,26 +58,4 @@ public class OrderCancel extends BaseTimeEntity {
 
     @Column
     private String content;
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "item_id")
-    private Item item;
-
-    @Column
-    private String orderNumber;
-
-    @Column
-    private String itemNumber;
-
-    @Column
-    private String name;
-
-    @Column
-    private int qty;
-
-    @Column
-    private int cancelQty;
-
-    @Column
-    private int price;
 }

@@ -1,9 +1,7 @@
 
 package com.gofield.domain.rds.domain.order;
 
-
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -20,14 +19,15 @@ import javax.persistence.*;
 @Table(	name = "order_cancel_comment")
 public class OrderCancelComment extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cancel_id")
-    private OrderCancel cancel;
+    @Column
+    private Long cancelId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column
+    private Long userId;
 
     @Column
     private String content;
+
+    @Column
+    private LocalDateTime deleteDate;
 }
