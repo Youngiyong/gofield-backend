@@ -1,15 +1,12 @@
 
-package com.gofield.domain.rds.domain.cart;
+package com.gofield.domain.rds.domain.order;
 
 
-import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
-import org.springframework.data.annotation.CreatedDate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,8 +16,8 @@ import java.util.UUID;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @DynamicInsert
 @Entity
-@Table(	name = "cart_temp")
-public class CartTemp  {
+@Table(	name = "order_sheet")
+public class OrderSheet {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,22 +30,22 @@ public class CartTemp  {
     private String uuid;
 
     @Column(columnDefinition = "TEXT")
-    private String temp;
+    private String sheet;
 
     @Column
     private LocalDateTime createDate;
 
     @Builder
-    private CartTemp(Long userId, String temp, String uuid){
+    private OrderSheet(Long userId, String sheet, String uuid){
         this.userId = userId;
-        this.temp = temp;
+        this.sheet = sheet;
         this.uuid = uuid;
     }
 
-    public static CartTemp newInstance(Long userId, String temp){
-        return CartTemp.builder()
+    public static OrderSheet newInstance(Long userId, String sheet){
+        return OrderSheet.builder()
                 .userId(userId)
-                .temp(temp)
+                .sheet(sheet)
                 .uuid(UUID.randomUUID().toString())
                 .build();
     }

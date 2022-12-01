@@ -31,7 +31,7 @@ public class SearchController {
     @ApiOperation(value = "검색")
     @GetMapping("/{version}")
     public ApiResponse<List<ItemClassificationResponse>> getSearchList(@PathVariable("version") EApiVersion apiVersion,
-                                                                       @RequestParam(required = false) String keyword,
+                                                                       @RequestParam String keyword,
                                                                        @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(searchService.searchKeyword(keyword, pageable));
     }

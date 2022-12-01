@@ -9,20 +9,20 @@ import java.util.Map;
 
 @Getter
 @NoArgsConstructor
-public class OrderTempResponse {
+public class OrderSheetResponse {
     private List<Map<String, Object>> orderItemList;
     private UserAddressResponse shippingAddress;
     private List<CodeResponse> shippingCodeList;
 
     @Builder
-    private OrderTempResponse(List<Map<String, Object>> orderItemList, UserAddressResponse shippingAddress, List<CodeResponse> shippingCodeList){
+    private OrderSheetResponse(List<Map<String, Object>> orderItemList, UserAddressResponse shippingAddress, List<CodeResponse> shippingCodeList){
         this.orderItemList = orderItemList;
         this.shippingAddress = shippingAddress;
         this.shippingCodeList = shippingCodeList;
     }
 
-    public static OrderTempResponse of(List<Map<String, Object>> orderItemList, UserAddressResponse shippingAddress, List<CodeResponse> shippingCodeList){
-        return OrderTempResponse.builder()
+    public static OrderSheetResponse of(List<Map<String, Object>> orderItemList, UserAddressResponse shippingAddress, List<CodeResponse> shippingCodeList){
+        return OrderSheetResponse.builder()
                 .orderItemList(orderItemList)
                 .shippingAddress(shippingAddress)
                 .shippingCodeList(shippingCodeList)
