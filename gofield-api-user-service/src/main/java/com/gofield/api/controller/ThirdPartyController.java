@@ -1,7 +1,6 @@
 package com.gofield.api.controller;
 
 import com.gofield.api.service.ThirdPartyService;
-import com.gofield.common.api.core.common.dto.enums.EApiVersion;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
 import io.swagger.annotations.ApiOperation;
@@ -20,18 +19,16 @@ public class ThirdPartyController {
     private final ThirdPartyService thirdPartyService;
 
     @ApiOperation(value = "소셜 로그인 페이지 이동")
-    @GetMapping("/{version}/ready")
-    public void thirdPartyReady(@PathVariable("version") EApiVersion apiVersion,
-                                @RequestParam ESocialFlag social,
+    @GetMapping("/v1/ready")
+    public void thirdPartyReady(@RequestParam ESocialFlag social,
                                 @RequestParam EEnvironmentFlag environment,
                                 HttpServletResponse response) throws IOException {
         response.sendRedirect(thirdPartyService.redirect(social, environment));
     }
 
     @ApiOperation(value = "테스트 - 카카오 인증 콜백")
-    @GetMapping("/{version}/callback")
-    public void callbackLoginAuto(@PathVariable("version") EApiVersion apiVersion,
-                                  @RequestParam String code,
+    @GetMapping("/v1/callback")
+    public void callbackLoginAuto(@RequestParam String code,
                                   @RequestParam String state,
                                   HttpServletResponse response) throws IOException {
          response.sendRedirect(thirdPartyService.callbackAuth(code, state));

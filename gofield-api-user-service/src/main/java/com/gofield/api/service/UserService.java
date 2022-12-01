@@ -252,6 +252,7 @@ public class UserService {
     }
 
 
+    @Transactional
     public void insertUserHasTerm(List<Long> termList, User user){
         List<Term> resultTermList = termRepository.findAllByInId(termList);
         for(Term term: resultTermList){
@@ -260,6 +261,7 @@ public class UserService {
         }
     }
 
+    @Transactional
     public void insertUserHasTerm(TermSelectionType selectionType, User user){
         ETermFlag termFlag = ETermFlag.MARKETING;
         if(selectionType.equals(ETermFlag.MARKETING_EMAIL)){
@@ -275,7 +277,7 @@ public class UserService {
         userTermRepository.save(userTerm);
     }
 
-
+    @Transactional(readOnly = true)
     public UserAddress getUserMainAddress(Long userId){
         return userAddressRepository.findByUserIdOrderByMain(userId);
     }

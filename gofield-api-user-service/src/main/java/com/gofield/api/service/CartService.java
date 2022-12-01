@@ -109,43 +109,5 @@ public class CartService {
         return CartResponse.of(result);
     }
 
-    @Transactional(readOnly = true)
-    public OrderSheetResponse getOrderSheetTemp(String code) {
-        User user = userService.getUser();
-        userService.validateNonMember(user);
-        OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(user.getId(), code);
-        if (orderSheet == null) {
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "장바구니 임시 정보가 존재하지 않습니다.");
-        }
-        try {
-            List<Map<String, Object>> result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<List<Map<String, Object>>>() {});
-            UserAddressResponse userAddressResponse = UserAddressResponse.of(userService.getUserMainAddress(user.getId()));
-            List<CodeResponse> codeResponseList = commonService.getCodeList(ECodeGroup.SHIPPING_COMMENT);
-            return OrderSheetResponse.of(result, userAddressResponse, codeResponseList);
-        } catch (JsonProcessingException e) {
-            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-        }
-    }
 
-
-    @Transactional
-    public CommonCodeResponse createOrderSheet(List<Map<String,Object>> request){
-        User user = userService.getUser();
-
-        List<Long> cartIdList = request
-                .stream()
-                .map(p -> Long.valueOf(String.valueOf(p.get("id"))))
-                .collect(Collectors.toList());
-        if(cartIdList.isEmpty()){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 장바구니 아이디 리스트입니다.");
-        }
-        List<Long> resultCartIdList = cartRepository.findAllInCartIdList(cartIdList, user.getId());
-        if(request.size()!=resultCartIdList.size()){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 장바구니 아이디가 있습니다.");
-        }
-
-        OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new Gson().toJson(request));
-        orderSheetRepository.save(orderSheet);
-        return CommonCodeResponse.of(orderSheet.getUuid());
-    }
 }
