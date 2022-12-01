@@ -6,6 +6,7 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum ECodeGroup {
-    BANK
+    BANK,
+    SHIPPING_COMMENT,
     ;
 }

@@ -84,9 +84,9 @@ public class UserController {
 
     @ApiOperation(value = "사용자 배송지 주소 추가")
     @PostMapping("/{version}/address")
-    public ApiResponse insertUserAddress(@PathVariable("version") EApiVersion apiVersion,
+    public ApiResponse createUserAddress(@PathVariable("version") EApiVersion apiVersion,
                                          @Valid @RequestBody UserRequest.UserAddress request){
-        userService.insertUserAddress(request);
+        userService.createUserAddress(request);
         return ApiResponse.SUCCESS;
     }
 

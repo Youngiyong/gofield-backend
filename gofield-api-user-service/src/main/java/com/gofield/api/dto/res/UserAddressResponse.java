@@ -32,21 +32,22 @@ public class UserAddressResponse {
         this.isMain = isMain;
     }
 
-    public static UserAddressResponse of(Long id, String tel, String name, String zipCode, String address, String addressExtra, Boolean isMain){
+    public static UserAddressResponse of(UserAddress userAddress) {
+        if (userAddress == null) return null;
         return UserAddressResponse.builder()
-                .id(id)
-                .tel(tel)
-                .name(name)
-                .zipCode(zipCode)
-                .address(address)
-                .addressExtra(addressExtra)
-                .isMain(isMain)
+                .id(userAddress.getId())
+                .tel(userAddress.getTel())
+                .name(userAddress.getName())
+                .zipCode(userAddress.getZipCode())
+                .address(userAddress.getAddress())
+                .addressExtra(userAddress.getAddressExtra())
+                .isMain(userAddress.getIsMain())
                 .build();
     }
 
     public static List<UserAddressResponse> of(List<UserAddress> list){
         return list.stream()
-                .map(p -> UserAddressResponse.of(p.getId(), p.getTel(), p.getName(), p.getZipCode(), p.getAddress(), p.getAddressExtra(), p.getIsMain()))
+                .map(p -> UserAddressResponse.of(p))
                 .collect(Collectors.toList());
     }
 }

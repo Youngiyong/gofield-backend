@@ -138,10 +138,10 @@ public class ItemController {
 
     @ApiOperation(value = "상품 상세 - 상품 문의 등록")
     @PostMapping("/{version}/{itemId}/qna")
-    public ApiResponse insertQna(@PathVariable("version") EApiVersion apiVersion,
+    public ApiResponse createItemQna(@PathVariable("version") EApiVersion apiVersion,
                                  @PathVariable Long itemId,
                                  @Valid @RequestBody ItemRequest.ItemQna request){
-        itemService.insertQna(itemId, request);
+        itemService.createItemQna(itemId, request);
         return ApiResponse.SUCCESS;
     }
 

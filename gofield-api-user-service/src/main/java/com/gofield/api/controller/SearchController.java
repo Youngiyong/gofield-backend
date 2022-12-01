@@ -29,7 +29,7 @@ public class SearchController {
     }
 
     @ApiOperation(value = "검색")
-    @PostMapping("/{version}")
+    @GetMapping("/{version}")
     public ApiResponse<List<ItemClassificationResponse>> getSearchList(@PathVariable("version") EApiVersion apiVersion,
                                                                        @RequestParam(required = false) String keyword,
                                                                        @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){

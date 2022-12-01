@@ -22,4 +22,14 @@ public class UserAddressRepositoryCustomImpl implements UserAddressRepositoryCus
                 .fetchOne();
     }
 
+    @Override
+    public UserAddress findByUserIdOrderByMain(Long userId) {
+        return jpaQueryFactory
+                .select(userAddress)
+                .from(userAddress)
+                .where(userAddress.user.id.eq(userId))
+                .orderBy(userAddress.isMain.desc())
+                .fetchFirst();
+    }
+
 }

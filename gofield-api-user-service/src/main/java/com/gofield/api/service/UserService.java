@@ -212,7 +212,7 @@ public class UserService {
     }
 
     @Transactional
-    public void insertUserAddress(UserRequest.UserAddress request){
+    public void createUserAddress(UserRequest.UserAddress request){
         User user = getUser();
         validateNonMember(user);
         UserAddress userAddress = UserAddress.newInstance(user, request.getTel(), request.getName(), request.getZipCode(), request.getAddress(), request.getAddressExtra(), request.getIsMain());
@@ -275,6 +275,10 @@ public class UserService {
         userTermRepository.save(userTerm);
     }
 
+
+    public UserAddress getUserMainAddress(Long userId){
+        return userAddressRepository.findByUserIdOrderByMain(userId);
+    }
 
 
 }

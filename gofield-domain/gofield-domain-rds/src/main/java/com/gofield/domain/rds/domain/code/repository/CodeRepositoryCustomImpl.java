@@ -20,7 +20,8 @@ public class CodeRepositoryCustomImpl implements CodeRepositoryCustom {
     public List<Code> findByGroup(ECodeGroup group) {
         return jpaQueryFactory
                 .selectFrom(code1)
-                .where(code1.group.eq(group))
+                .where(code1.group.eq(group), code1.isActive.isTrue())
+                .orderBy(code1.sort.asc())
                 .fetch();
     }
 }
