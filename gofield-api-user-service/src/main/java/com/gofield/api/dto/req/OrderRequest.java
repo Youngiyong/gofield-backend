@@ -4,12 +4,11 @@ import com.gofield.api.dto.enums.PaymentType;
 import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
 
-public class PaymentRequest {
+public class OrderRequest {
 
     @Getter
-    public static class PaymentCreate {
+    public static class Order {
         @NotNull
         private PaymentType paymentType;
         @NotNull(message = "주문 코드는 필수값입니다.")

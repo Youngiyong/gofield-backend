@@ -1,9 +1,6 @@
 package com.gofield.domain.rds.domain.item.projection;
 
-import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
-import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
-import com.gofield.domain.rds.domain.item.EItemGenderFlag;
-import com.gofield.domain.rds.domain.item.EItemSpecFlag;
+import com.gofield.domain.rds.domain.item.*;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.ToString;
@@ -24,6 +21,8 @@ public class ItemNonMemberProjection {
     private final String itemNumber;
     private final int price;
     private final int qty;
+    private final EItemStatusFlag status;
+
     private final EItemClassificationFlag classification;
     private final EItemSpecFlag spec;
     private final EItemDeliveryFlag delivery;
@@ -32,7 +31,7 @@ public class ItemNonMemberProjection {
     private final String option;
 
     @QueryProjection
-    public ItemNonMemberProjection(Long id, String name, String brandName, Long sellerId, Long bundleId, String thumbnail, String description, String itemNumber, int price, int qty, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option) {
+    public ItemNonMemberProjection(Long id, String name, String brandName, Long sellerId, Long bundleId, String thumbnail, String description, String itemNumber, int price, int qty, EItemStatusFlag status, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -43,6 +42,7 @@ public class ItemNonMemberProjection {
         this.itemNumber = itemNumber;
         this.price = price;
         this.qty = qty;
+        this.status = status;
         this.classification = classification;
         this.spec = spec;
         this.delivery = delivery;

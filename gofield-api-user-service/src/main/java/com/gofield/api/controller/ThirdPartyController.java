@@ -33,4 +33,11 @@ public class ThirdPartyController {
                                   HttpServletResponse response) throws IOException {
          response.sendRedirect(thirdPartyService.callbackAuth(code, state));
     }
+
+    @ApiOperation(value = "테스트 - 카카오 인증 콜백")
+    @GetMapping("/v1/payment/callback")
+    public void callbackPayment(@RequestParam String code,
+                                HttpServletResponse response) throws IOException {
+        response.sendRedirect(thirdPartyService.callbackPayment(code));
+    }
 }

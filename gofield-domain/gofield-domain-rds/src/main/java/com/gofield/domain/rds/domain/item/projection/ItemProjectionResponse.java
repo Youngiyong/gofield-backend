@@ -1,9 +1,6 @@
 package com.gofield.domain.rds.domain.item.projection;
 
-import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
-import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
-import com.gofield.domain.rds.domain.item.EItemGenderFlag;
-import com.gofield.domain.rds.domain.item.EItemSpecFlag;
+import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.seller.ShippingTemplate;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,15 +18,17 @@ public class ItemProjectionResponse {
     private String thumbnail;
     private String description;
     private String itemNumber;
-
     private Long bundleId;
     private int price;
     private int qty;
     private Long likeId;
+
+    private EItemStatusFlag status;
     private EItemClassificationFlag classification;
     private EItemSpecFlag spec;
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
+
     private List<String> images;
     private String tags;
     private String option;
@@ -37,7 +36,7 @@ public class ItemProjectionResponse {
     private ShippingTemplate shippingTemplate;
 
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -47,6 +46,7 @@ public class ItemProjectionResponse {
         this.bundleId = bundleId;
         this.price = price;
         this.qty = qty;
+        this.status = status;
         this.likeId = likeId;
         this.classification = classification;
         this.spec = spec;
@@ -58,7 +58,7 @@ public class ItemProjectionResponse {
         this.shippingTemplate = shippingTemplate;
     }
 
-    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int qty, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
+    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
         return ItemProjectionResponse.builder()
                 .id(id)
                 .name(name)
@@ -68,6 +68,7 @@ public class ItemProjectionResponse {
                 .itemNumber(itemNumber)
                 .bundleId(bundleId)
                 .price(price)
+                .status(status)
                 .qty(qty)
                 .likeId(likeId)
                 .classification(classification)

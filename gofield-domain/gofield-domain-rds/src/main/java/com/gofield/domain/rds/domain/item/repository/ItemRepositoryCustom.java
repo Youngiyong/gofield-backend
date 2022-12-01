@@ -4,6 +4,7 @@ package com.gofield.domain.rds.domain.item.repository;
 import com.gofield.domain.rds.domain.item.Item;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.projection.ItemClassificationProjectionResponse;
+import com.gofield.domain.rds.domain.item.projection.ItemListProjectionResponse;
 import com.gofield.domain.rds.domain.item.projection.ItemProjectionResponse;
 import org.springframework.data.domain.Pageable;
 
@@ -18,6 +19,6 @@ public interface ItemRepositoryCustom {
     List<ItemClassificationProjectionResponse> findAllClassificationItemByBundleIdAndClassificationAndNotNqItemId(Long userId, Long bundleId, Long itemId, EItemClassificationFlag classification, Pageable pageable);
 
     List<ItemClassificationProjectionResponse> findAllUserLikeItemList(Long userId, Pageable pageable);
-    List<ItemClassificationProjectionResponse> findAllClassificationItemByKeyword(String keyword, Long userId, Pageable pageable);
+    ItemListProjectionResponse findAllClassificationItemByKeyword(String keyword, Long userId, Pageable pageable);
     ItemProjectionResponse findByItemNumberAndUserId(String itemNumber, Long userId);
 }

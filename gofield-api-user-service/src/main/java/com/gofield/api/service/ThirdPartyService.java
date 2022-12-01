@@ -58,6 +58,10 @@ public class ThirdPartyService {
     @Value("${secret.auth.front_service_redirect_url}")
     private String AUTH_FRONT_SERVICE_REDIRECT_URL;
 
+    @Value("${secret.payment.front_service_redirect_url}")
+    private String AUTH_FRONT_PAYMENT_SERVICE_REDIRECT_URL;
+
+    private final OrderService orderService;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
     private final KaKaoProfileApiClient kaKaoProfileApiClient;
     private final NaverAuthApiClient naverAuthApiClient;
@@ -79,6 +83,11 @@ public class ThirdPartyService {
         return redirectUrl;
     }
 
+    @Transactional
+    public String callbackPayment(String oid){
+
+        return AUTH_FRONT_PAYMENT_SERVICE_REDIRECT_URL;
+    }
     @Transactional
     public String redirect(ESocialFlag social, EEnvironmentFlag environment){
         String state = RandomUtils.makeRandomCode(32);

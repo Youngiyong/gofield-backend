@@ -1,8 +1,10 @@
 package com.gofield.api.service;
 
+import com.gofield.api.dto.res.ItemClassificationListResponse;
 import com.gofield.api.dto.res.ItemClassificationResponse;
 import com.gofield.api.dto.res.PopularKeywordResponse;
 import com.gofield.domain.rds.domain.item.ItemRepository;
+import com.gofield.domain.rds.domain.item.projection.ItemListProjectionResponse;
 import com.gofield.domain.rds.domain.search.PopularKeywordRepository;
 import com.gofield.domain.rds.domain.search.SearchLog;
 import com.gofield.domain.rds.domain.user.User;
@@ -32,16 +34,17 @@ public class SearchService {
     }
 
     @Transactional
-    public List<ItemClassificationResponse> searchKeyword(String keyword, Pageable pageable){
+    public ItemClassificationListResponse searchKeyword(String keyword, Pageable pageable){
         User user = userService.getUser();
-        List<ItemClassificationProjectionResponse> result =  itemRepository.findAllClassificationItemByKeyword(keyword, user.getId(), pageable);
+        ItemListProjectionResponse result =  itemRepository.findAllClassificationItemByKeyword(keyword, user.getId(), pageable);
         Boolean isSearch = true;
-        if(result.isEmpty()){
+        if(result.getList().isEmpty()){
             isSearch = false;
         }
+        List<ItemClassificationResponse> itemList = ItemClassificationResponse.of(result.getList());
         SearchLog searchLog = SearchLog.newInstance(user.getId(), keyword, isSearch);
         searchLogRepository.save(searchLog);
-        return ItemClassificationResponse.of(result);
+        return ItemClassificationListResponse.of(itemList, result.getTotalCount());
     }
 
 }

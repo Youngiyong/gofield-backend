@@ -1,6 +1,6 @@
 package com.gofield.api.controller;
 
-import com.gofield.api.dto.res.ItemClassificationResponse;
+import com.gofield.api.dto.res.ItemClassificationListResponse;
 import com.gofield.api.dto.res.PopularKeywordResponse;
 import com.gofield.api.service.SearchService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -28,8 +28,8 @@ public class SearchController {
 
     @ApiOperation(value = "검색")
     @GetMapping("/v1")
-    public ApiResponse<List<ItemClassificationResponse>> getSearchList(@RequestParam String keyword,
-                                                                       @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+    public ApiResponse<ItemClassificationListResponse> getSearchList(@RequestParam String keyword,
+                                                                     @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(searchService.searchKeyword(keyword, pageable));
     }
 
