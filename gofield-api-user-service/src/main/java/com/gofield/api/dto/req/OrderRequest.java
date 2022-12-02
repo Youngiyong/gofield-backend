@@ -26,8 +26,9 @@ public class OrderRequest {
     @Getter
     public static class OrderSheet {
         private Boolean isCart;
+        private int totalDelivery;
+        private int totalPrice;
         private List<OrderSheetItem> items;
-
         @Getter
         public static class OrderSheetItem {
             private Long cartId;
