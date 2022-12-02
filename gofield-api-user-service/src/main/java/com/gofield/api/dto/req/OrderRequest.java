@@ -25,7 +25,15 @@ public class OrderRequest {
 
     @Getter
     public static class OrderSheet {
-        private int totalPrice;
-        private List<Map<String, Object>> itemList;
+        private Boolean isCart;
+        private List<OrderSheetItem> items;
+
+        @Getter
+        public static class OrderSheetItem {
+            private Long cartId;
+            @NotNull
+            private String itemNumber;
+            private int qty;
+        }
     }
 }

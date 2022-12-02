@@ -24,4 +24,13 @@ public class ItemStockRepositoryCustomImpl implements ItemStockRepositoryCustom 
                 .fetchFirst();
     }
 
+    @Override
+    public List<ItemStock> findAllInItemNumber(List<String> itemNumberList) {
+        return jpaQueryFactory
+                .select(itemStock)
+                .from(itemStock)
+                .where(itemStock.itemNumber.in(itemNumberList))
+                .fetch();
+    }
+
 }

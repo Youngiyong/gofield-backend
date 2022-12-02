@@ -29,7 +29,7 @@ public class Purchase {
     private String message;
 
     @Column
-    private String orderId;
+    private String orderNumber;
 
     @Column
     private String paymentKey;
@@ -44,8 +44,8 @@ public class Purchase {
     private LocalDateTime createDate;
 
     @Builder
-    private Purchase(String orderId, String code, String message, String paymentKey, int amount, Boolean isSuccess){
-        this.orderId = orderId;
+    private Purchase(String orderNumber, String code, String message, String paymentKey, int amount, Boolean isSuccess){
+        this.orderNumber = orderNumber;
         this.code = code;
         this.message = message;
         this.paymentKey = paymentKey;
@@ -53,18 +53,18 @@ public class Purchase {
         this.isSuccess = isSuccess;
     }
 
-    public static Purchase newFailInstance(String orderId, String code, String message){
+    public static Purchase newFailInstance(String orderNumber, String code, String message){
         return Purchase.builder()
-                .orderId(orderId)
+                .orderNumber(orderNumber)
                 .code(code)
                 .message(message)
                 .isSuccess(false)
                 .build();
     }
 
-    public static Purchase newSuccessInstance(String orderId, String paymentKey, int amount){
+    public static Purchase newSuccessInstance(String orderNumber, String paymentKey, int amount){
         return Purchase.builder()
-                .orderId(orderId)
+                .orderNumber(orderNumber)
                 .paymentKey(paymentKey)
                 .amount(amount)
                 .isSuccess(true)

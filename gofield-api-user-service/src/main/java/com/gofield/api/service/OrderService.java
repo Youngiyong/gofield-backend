@@ -15,6 +15,7 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.cart.CartRepository;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
+import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.order.OrderSheet;
 import com.gofield.domain.rds.domain.order.OrderSheetRepository;
 import com.gofield.domain.rds.domain.order.OrderWait;
@@ -39,7 +40,8 @@ public class OrderService {
 
     private final UserService userService;
     private final CommonService commonService;
-    private final CartRepository cartRepository;
+    private final ItemOptionRepository itemOptionRepository;
+    private final ItemStockRepository itemStockRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final OrderSheetRepository orderSheetRepository;
     private final ThirdPartyService thirdPartyService;
@@ -53,7 +55,7 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "장바구니 임시 정보가 존재하지 않습니다.");
         }
         try {
-            List<Map<String, Object>> result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<List<Map<String, Object>>>() {});
+            OrderRequest.OrderSheet result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderRequest.OrderSheet>() {});
             UserAddressResponse userAddressResponse = UserAddressResponse.of(userService.getUserMainAddress(user.getId()));
             List<CodeResponse> codeResponseList = commonService.getCodeList(ECodeGroup.SHIPPING_COMMENT);
             return OrderSheetResponse.of(result, userAddressResponse, codeResponseList);
@@ -66,20 +68,27 @@ public class OrderService {
     @Transactional
     public CommonCodeResponse createOrderSheet(OrderRequest.OrderSheet request){
         User user = userService.getUser();
-
-        List<Long> cartIdList = request.getItemList()
-                .stream()
-                .map(p -> Long.valueOf(String.valueOf(p.get("id"))))
-                .collect(Collectors.toList());
-        if(cartIdList.isEmpty()){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 장바구니 아이디 리스트입니다.");
+        int totalPrice = 0;
+        /*
+        ToDo: 배송비 정책 정해지면 배송비 반영해서 가격 계산
+         */
+        for(OrderRequest.OrderSheet.OrderSheetItem sheetItem: request.getItems()){
+            ItemStock itemStock = itemStockRepository.findByItemNumber(sheetItem.getItemNumber());
+            if(itemStock==null){
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", sheetItem.getItemNumber()));
+            }
+            if(!itemStock.getStatus().equals(EItemStatusFlag.SALE)){
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST,  String.format("<%s>는 판매중이지 않는 상품번호입니다.", sheetItem.getItemNumber()));
+            }
+            if(sheetItem.getQty()>itemStock.getQty()){
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 판매 상품 갯수가 초가된 상품입니다.", sheetItem.getItemNumber()));
+            }
+            Item item = itemStock.getItem();
+            ItemOption itemOption = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOptionRepository.findByItemNumber(sheetItem.getItemNumber()) : null;
+            int price = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOption.getPrice() : item.getPrice();
+            totalPrice += price*sheetItem.getQty();
         }
-        List<Long> resultCartIdList = cartRepository.findAllInCartIdList(cartIdList, user.getId());
-        if(request.getItemList().size()!=resultCartIdList.size()){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 장바구니 아이디가 있습니다.");
-        }
-
-        OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new Gson().toJson(request), request.getTotalPrice());
+        OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new Gson().toJson(request), totalPrice);
         orderSheetRepository.save(orderSheet);
         return CommonCodeResponse.of(orderSheet.getUuid());
     }
@@ -102,7 +111,7 @@ public class OrderService {
         String easyPay = request.getPaymentType().equals(PaymentType.EASYPAY) ? request.getCompanyCode() : null;
         TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, RandomUtils.makeRandomCode(32), makeOrderName(orderSheet.getSheet()), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
         TossPaymentResponse response = thirdPartyService.getPaymentReadyInfo(externalRequest);
-        OrderWait orderWait = OrderWait.newInstance(user.getId(), RandomUtils.makeRandomNumberCode(64), new Gson().toJson(response), request.getEnvironment());
+        OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), new Gson().toJson(response), request.getEnvironment());
         orderWaitRepository.save(orderWait);
         return OrderWaitResponse.of(response.getCheckout().getUrl());
     }

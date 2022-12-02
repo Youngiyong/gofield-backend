@@ -29,21 +29,21 @@ public class OrderSheet {
     @Column
     private String uuid;
 
-    @Column(columnDefinition = "TEXT")
-    private String sheet;
-
     @Column
     private int totalPrice;
+
+    @Column(columnDefinition = "TEXT")
+    private String sheet;
 
     @Column
     private LocalDateTime createDate;
 
     @Builder
-    private OrderSheet(Long userId, String sheet, int totalPrice, String uuid){
+    private OrderSheet(Long userId, String sheet, String uuid, int totalPrice){
         this.userId = userId;
         this.sheet = sheet;
-        this.totalPrice = totalPrice;
         this.uuid = uuid;
+        this.totalPrice = totalPrice;
     }
 
     public static OrderSheet newInstance(Long userId, String sheet, int totalPrice){

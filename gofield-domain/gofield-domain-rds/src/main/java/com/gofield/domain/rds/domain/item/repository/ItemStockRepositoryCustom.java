@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface ItemStockRepositoryCustom {
     ItemStock findByItemNumber(String itemNumber);
+    List<ItemStock> findAllInItemNumber(List<String> itemNumberList);
 }

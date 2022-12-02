@@ -1,9 +1,14 @@
 package com.gofield.api.dto.req;
 
+import com.gofield.domain.rds.domain.item.EItemChargeFlag;
+import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
+import com.gofield.domain.rds.domain.item.EItemGenderFlag;
+import com.gofield.domain.rds.domain.item.EItemSpecFlag;
 import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
+import java.util.List;
 
 public class ItemRequest {
 
