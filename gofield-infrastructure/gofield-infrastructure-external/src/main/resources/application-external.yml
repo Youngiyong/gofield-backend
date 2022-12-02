@@ -30,8 +30,10 @@ external:
     slack:
       webhook:
         base-url: https://hooks.slack.com/services
-
-
+    toss:
+      payment:
+        base-url: https://api.tosspayments.com
+        url: /v1/payments
 
 
 

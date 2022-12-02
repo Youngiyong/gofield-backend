@@ -7,6 +7,10 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.HttpUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
+import com.gofield.domain.rds.domain.order.OrderWait;
+import com.gofield.domain.rds.domain.order.OrderWaitRepository;
+import com.gofield.domain.rds.domain.order.Purchase;
+import com.gofield.domain.rds.domain.order.PurchaseRepository;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
 import com.gofield.domain.rds.domain.user.StateLog;
 import com.gofield.domain.rds.domain.user.StateLogRepository;
@@ -20,11 +24,16 @@ import com.gofield.infrastructure.external.api.naver.NaverProfileApiClient;
 import com.gofield.infrastructure.external.api.naver.dto.req.NaverTokenRequest;
 import com.gofield.infrastructure.external.api.naver.dto.res.NaverProfileResponse;
 import com.gofield.infrastructure.external.api.naver.dto.res.NaverTokenResponse;
+import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
+import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
+import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -58,15 +67,35 @@ public class ThirdPartyService {
     @Value("${secret.auth.front_service_redirect_url}")
     private String AUTH_FRONT_SERVICE_REDIRECT_URL;
 
-    @Value("${secret.payment.front_service_redirect_url}")
-    private String AUTH_FRONT_PAYMENT_SERVICE_REDIRECT_URL;
+    @Value("${secret.payment.success.front_service_redirect_url}")
+    private String AUTH_FRONT_PAYMENT_SERVICE_SUCCESS_REDIRECT_URL;
 
-    private final OrderService orderService;
+    @Value("${secret.payment.success.front_service_redirect_url}")
+    private String AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL;
+
+    @Value("${secret.payment.fail.front_service_redirect_url}")
+    private String AUTH_FRONT_PAYMENT_SERVICE_FAIL_REDIRECT_URL;
+
+    @Value("${secret.payment.fail.front_local_redirect_url}")
+    private String AUTH_FRONT_PAYMENT_LOCAL_FAIL_REDIRECT_URL;
+
+    @Value("${secret.toss.success-url}")
+    private String PAYMENT_CALLBACK_SUCCESS_URL;
+
+    @Value("${secret.toss.fail-url}")
+    private String PAYMENT_CALLBACK_FAIL_URL;
+
+    @Value("${secret.toss.secret-key}")
+    private String TOSS_PAYMENT_CLIENT_SECRET;
+
+    private final OrderWaitRepository orderWaitRepository;
+    private final TossPaymentApiClient tossPaymentApiClient;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
     private final KaKaoProfileApiClient kaKaoProfileApiClient;
     private final NaverAuthApiClient naverAuthApiClient;
     private final NaverProfileApiClient naverProfileApiClient;
     private final StateLogRepository stateLogRepository;
+    private final PurchaseRepository purchaseRepository;
 
     @Transactional(readOnly = true)
     public String callbackAuth(String code, String state){
@@ -83,10 +112,21 @@ public class ThirdPartyService {
         return redirectUrl;
     }
 
+    public TossPaymentResponse getPaymentReadyInfo(TossPaymentRequest.Payment request){
+        return tossPaymentApiClient.createPayment(TOSS_PAYMENT_CLIENT_SECRET, request);
+    }
+
+    public String getTossPaymentSuccessUrl(){
+        return PAYMENT_CALLBACK_SUCCESS_URL;
+    }
+
+    public String getTossPaymentFailUrl(){
+        return PAYMENT_CALLBACK_FAIL_URL;
+    }
+
     @Transactional
     public String callbackPayment(String oid){
-
-        return AUTH_FRONT_PAYMENT_SERVICE_REDIRECT_URL;
+        return null;
     }
     @Transactional
     public String redirect(ESocialFlag social, EEnvironmentFlag environment){
@@ -94,6 +134,30 @@ public class ThirdPartyService {
         StateLog stateLog = StateLog.newInstance(state, social, environment);
         stateLogRepository.save(stateLog);
         return makeUrl(state, social);
+    }
+
+    @Transactional
+    public String callbackSuccessPayment(String orderId, String paymentKey, int amount){
+        OrderWait orderWait = orderWaitRepository.findByOid(orderId);
+        Purchase purchase = Purchase.newSuccessInstance(orderId, paymentKey, amount);
+        purchaseRepository.save(purchase);
+        if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
+            return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
+        } else {
+            return AUTH_FRONT_PAYMENT_SERVICE_SUCCESS_REDIRECT_URL + orderId;
+        }
+    }
+
+    @Transactional
+    public String callbackFailPayment(String orderId, String code, String message){
+        OrderWait orderWait = orderWaitRepository.findByOid(orderId);
+        Purchase purchase = Purchase.newFailInstance(orderId, code, message);
+        purchaseRepository.save(purchase);
+        if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
+            return AUTH_FRONT_PAYMENT_LOCAL_FAIL_REDIRECT_URL + orderId;
+        } else {
+            return AUTH_FRONT_PAYMENT_SERVICE_FAIL_REDIRECT_URL + orderId;
+        }
     }
 
     public SocialAuthentication getSocialAuthentication(String state, String code, ESocialFlag social){
@@ -126,4 +190,6 @@ public class ThirdPartyService {
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 소셜 로그인입니다.");
         }
     }
+
+
 }

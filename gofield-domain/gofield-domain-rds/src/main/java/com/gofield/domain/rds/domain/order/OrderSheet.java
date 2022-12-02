@@ -33,19 +33,24 @@ public class OrderSheet {
     private String sheet;
 
     @Column
+    private int totalPrice;
+
+    @Column
     private LocalDateTime createDate;
 
     @Builder
-    private OrderSheet(Long userId, String sheet, String uuid){
+    private OrderSheet(Long userId, String sheet, int totalPrice, String uuid){
         this.userId = userId;
         this.sheet = sheet;
+        this.totalPrice = totalPrice;
         this.uuid = uuid;
     }
 
-    public static OrderSheet newInstance(Long userId, String sheet){
+    public static OrderSheet newInstance(Long userId, String sheet, int totalPrice){
         return OrderSheet.builder()
                 .userId(userId)
                 .sheet(sheet)
+                .totalPrice(totalPrice)
                 .uuid(UUID.randomUUID().toString())
                 .build();
     }

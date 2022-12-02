@@ -8,5 +8,7 @@ import lombok.Getter;
 public enum ECodeGroup {
     BANK,
     SHIPPING_COMMENT,
+    PAYMENT_CARD,
+    PAYMENT_BANK
     ;
 }

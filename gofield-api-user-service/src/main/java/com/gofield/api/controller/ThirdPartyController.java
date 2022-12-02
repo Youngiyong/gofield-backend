@@ -40,4 +40,22 @@ public class ThirdPartyController {
                                 HttpServletResponse response) throws IOException {
         response.sendRedirect(thirdPartyService.callbackPayment(code));
     }
+
+
+    @ApiOperation(value = "결제 - 성공 콜백")
+    @GetMapping("/v1/payment/callback/success")
+    public void callbackSuccessPayment(@RequestParam String orderId,
+                                       @RequestParam String paymentKey,
+                                       @RequestParam int amount,
+                                       HttpServletResponse response) throws IOException {
+        response.sendRedirect(thirdPartyService.callbackSuccessPayment(orderId, paymentKey, amount));
+    }
+    @ApiOperation(value = "결제 - 실패 콜백")
+    @GetMapping("/v1/payment/callback/fail")
+    public void callbackFailPayment(@RequestParam String orderId,
+                                    @RequestParam String code,
+                                    @RequestParam String message,
+                                    HttpServletResponse response) throws IOException {
+        response.sendRedirect(thirdPartyService.callbackFailPayment(orderId, code, message));
+    }
 }

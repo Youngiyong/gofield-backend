@@ -1,32 +1,23 @@
 package com.gofield.api.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.api.dto.req.CartRequest;
 import com.gofield.api.dto.res.*;
-import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.cart.Cart;
 import com.gofield.domain.rds.domain.cart.CartRepository;
-import com.gofield.domain.rds.domain.order.OrderSheet;
 import com.gofield.domain.rds.domain.order.OrderSheetRepository;
 import com.gofield.domain.rds.domain.cart.projection.CartProjection;
-import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.user.User;
-import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service

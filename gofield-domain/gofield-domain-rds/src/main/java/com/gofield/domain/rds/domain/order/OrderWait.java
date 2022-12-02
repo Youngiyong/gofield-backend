@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.order;
 
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
+import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,29 +30,32 @@ public class OrderWait {
     @Column
     private Long userId;
 
-
     @Column
     private String oid;
 
     @Column
     private String content;
 
+    @Column(name = "environment_flag")
+    private EEnvironmentFlag environment;
+
     @Column
     private LocalDateTime createDate;
 
     @Builder
-    private OrderWait(Long userId, String oid, String content){
+    private OrderWait(Long userId, String oid, String content, EEnvironmentFlag environment){
         this.userId = userId;
         this.oid = oid;
         this.content = content;
+        this.environment = environment;
     }
 
-    public static OrderWait newInstance(Long userId, String oid, String content){
+    public static OrderWait newInstance(Long userId, String oid, String content, EEnvironmentFlag environment){
         return OrderWait.builder()
                 .userId(userId)
                 .oid(oid)
                 .content(content)
+                .environment(environment)
                 .build();
     }
-
 }
