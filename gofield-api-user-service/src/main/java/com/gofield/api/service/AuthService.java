@@ -168,6 +168,9 @@ public class AuthService {
     public void logout(String Authorization){
         String accessToken = tokenUtil.resolveToken(Authorization);
         UserToken userToken = userWebTokenRepository.findByAccessToken(accessToken);
+        if(userToken==null){
+            return;
+        }
         userWebTokenRepository.delete(userToken);
     }
 

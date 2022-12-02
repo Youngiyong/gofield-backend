@@ -1,0 +1,66 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title></title>
+    <meta http-equiv="Content-Language" content="ko" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, target-densitydpi=medium-dpi" />
+    <link th:href="@{/css/style.css}" type="text/css" rel="stylesheet"  media="screen" />
+    <script th:src="@{/js/jquery-1.8.3.min.js}"></script>
+</head>
+<body onload="callNative02()">
+<script>
+    function callNative02() {
+        console.log("실행")
+
+        var currentOS = "";
+        var userAgent = navigator.userAgent.toLowerCase();
+        var data = document.getElementById("code").value;
+        var platform = document.getElementById("platform").value;
+        console.log(data, platform)
+
+        if (userAgent.search("android") > -1){
+            console.log(userAgent)
+            currentOS = "android";
+        }
+        else if ((userAgent.search("iphone") > -1) || (userAgent.search("ipod") > -1)
+            || (userAgent.search("ipad") > -1)){
+            console.log(userAgent)
+            currentOS = "ios";
+        }
+        else {
+            if(platform=="I"){
+                currentOS = "ios";
+            } else if(platform=="A"){
+                currentOS = "android";
+            } else {
+                currentOS = "else";
+            }
+        }
+
+        //data는 무조건 클라이언트에서 문자열로만 받음.
+
+        try {
+            switch (currentOS){
+                case "ios":
+                    console.log("IOS 케이스 실행")
+                    window.webkit.messageHandlers.callbackHandler.postMessage({ "code": data, "vendor": "DANAL" });
+                    break;
+                case "android":
+                    console.log("안드로이드 케이스 실행")
+                    window.AndroidApp.sendMessage( data, "TSID" );
+                    break;
+                default :
+                    console.log("디폴트 케이스 실행")
+                    break;
+            }
+        } catch(error){
+            alert(error)
+        }
+
+    }
+</script>
+<input type ="hidden" id="code" name="code" th:value="${data.code}" />
+<input type ="hidden" id="platform" name="platform" th:value="${data.platform}" />
+</body>
+</html>

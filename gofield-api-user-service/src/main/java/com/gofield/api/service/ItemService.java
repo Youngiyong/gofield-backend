@@ -34,10 +34,10 @@ public class ItemService {
     private final ItemOptionGroupRepository itemOptionGroupRepository;
 
     @Transactional
-    public void userLikeItem(Long itemId, Boolean isLike){
+    public void userLikeItem(Long itemId, ItemRequest.ItemLike request){
         User user = userService.getUser();
         UserLikeItem userLikeItem = userLikeItemRepository.findByUserIdAndItemId(user.getId(), itemId);
-        if(isLike){
+        if(request.getIsLike()){
             if(userLikeItem==null){
                 Item item = itemRepository.findByItemId(itemId);
                 if(item==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 상품 아이디입니다.", itemId));

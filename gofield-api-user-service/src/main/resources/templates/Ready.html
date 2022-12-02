@@ -1,0 +1,20 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html>
+<head>
+    <title>다날 본인인증</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=euc-kr">
+</head>
+<body>
+<form name="Ready" action="https://wauth.teledit.com/Danal/WebAuth/Web/Start.php" method="post">
+    <input type ="hidden" name="TID" th:value="${data.TID}" />
+    <input type ="hidden" name="BgColor" th:value="${data.BGCOLOR}" />
+    <input type ="hidden" name="BackURL" th:value="${data.BACKURL}" />
+    <input type ="hidden" name="IsCharSet" th:value="${data.CHARSET}" />
+    <input type ="hidden" name="ByBuffer" th:value="${data.BYBUFFER}" />
+    <input type ="hidden" name="ByAnyName" th:value="${data.BYANYNAME}" />
+</form>
+<script Language="JavaScript">
+    document.Ready.submit();
+</script>
+</body>
+</html>

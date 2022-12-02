@@ -25,8 +25,8 @@ public class ItemController {
     @ApiOperation(value = "상품 좋아요/해제")
     @PostMapping("/v1/like/{itemId}")
     public ApiResponse userLikeItem (@PathVariable Long itemId,
-                                     @RequestParam Boolean isLike){
-        itemService.userLikeItem(itemId, isLike);
+                                     @Valid @RequestBody ItemRequest.ItemLike request){
+        itemService.userLikeItem(itemId, request);
         return ApiResponse.SUCCESS;
     }
 

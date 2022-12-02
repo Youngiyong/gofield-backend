@@ -19,5 +19,9 @@ public class ItemRequest {
         private Boolean isVisible;
     }
 
+    @Getter
+    public static class ItemLike {
+        private Boolean isLike;
+    }
 
 }
