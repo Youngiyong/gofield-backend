@@ -37,7 +37,7 @@ public class Order extends BaseTimeEntity {
     private String pg;
 
     @Column
-    private String impUid;
+    private String paymentKey;
 
     @Column
     private int totalItem;
@@ -53,6 +53,9 @@ public class Order extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderShipping> orderShippings = new ArrayList<>();
+
+    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<OrderItem> orderItems = new ArrayList<>();
 
     @Column
     private LocalDateTime cancelDate;

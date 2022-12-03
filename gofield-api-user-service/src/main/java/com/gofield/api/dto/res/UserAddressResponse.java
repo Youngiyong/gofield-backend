@@ -20,7 +20,6 @@ public class UserAddressResponse {
     private String addressExtra;
     private Boolean isMain;
 
-
     @Builder
     private UserAddressResponse(Long id, String tel, String name, String zipCode, String address, String addressExtra, Boolean isMain){
         this.id = id;
