@@ -51,8 +51,7 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderSheetResponse getOrderSheet(String uuid) {
-        User user = userService.getUser();
-        userService.validateNonMember(user);
+        User user = userService.getUserNotNonUser();
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(user.getId(), uuid);
         if (orderSheet == null) {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "장바구니 임시 정보가 존재하지 않습니다.");
@@ -69,7 +68,7 @@ public class OrderService {
 
     @Transactional
     public CommonCodeResponse createOrderSheet(OrderRequest.OrderSheet request){
-        User user = userService.getUser();
+        User user = userService.getUserNotNonUser();
         int totalPrice = 0;
         int totalDelivery = 0;
         List<ItemOrderSheetResponse> result = new ArrayList<>();
@@ -112,7 +111,7 @@ public class OrderService {
 
     @Transactional
     public OrderWaitResponse createOrderWait(OrderRequest.Order request){
-        User user = userService.getUser();
+        User user = userService.getUserNotNonUser();
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(user.getId(), request.getUuid());
         if(orderSheet==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "주문시트가 존재하지 않습니다.");

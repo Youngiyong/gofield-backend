@@ -6,6 +6,7 @@ import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.seller.Seller;
 import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -34,9 +35,6 @@ public class Order extends BaseTimeEntity {
     private String orderNumber;
 
     @Column
-    private String pg;
-
-    @Column
     private String paymentKey;
 
     @Column
@@ -46,7 +44,7 @@ public class Order extends BaseTimeEntity {
     private int totalDelivery;
 
     @Column
-    private int totalPurchase;
+    private int totalPrice;
 
     @Column(nullable = false)
     private EOrderStatusFlag status;
@@ -71,4 +69,38 @@ public class Order extends BaseTimeEntity {
 
     @Column
     private LocalDateTime finishDate;
+
+    @Builder
+    private Order(Long userId, Long sellerId, String orderNumber,  String paymentKey, int totalItem, int totalDelivery, int totalPrice, EOrderStatusFlag status){
+        this.userId = userId;
+        this.sellerId = sellerId;
+        this.orderNumber = orderNumber;
+        this.paymentKey = paymentKey;
+        this.totalItem = totalItem;
+        this.totalDelivery = totalDelivery;
+        this.totalPrice = totalPrice;
+        this.status = status;
+    }
+
+    public static Order newInstance(Long userId, Long sellerId, String orderNumber,  String paymentKey,
+                                    int totalItem, int totalDelivery, int totalPrice, EOrderStatusFlag status){
+        return Order.builder()
+                .userId(userId)
+                .sellerId(sellerId)
+                .orderNumber(orderNumber)
+                .paymentKey(paymentKey)
+                .totalItem(totalItem)
+                .totalDelivery(totalDelivery)
+                .totalPrice(totalPrice)
+                .status(status)
+                .build();
+    }
+
+    public void addOrderShipping(OrderShipping orderShipping){
+        this.orderShippings.add(orderShipping);
+    }
+
+    public void addOrderItem(OrderItem orderItem){
+        this.orderItems.add(orderItem);
+    }
 }

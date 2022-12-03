@@ -1,5 +1,7 @@
 package com.gofield.domain.rds.domain.item.repository;
 
+import com.gofield.common.exception.ForbiddenException;
+import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
@@ -183,7 +185,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     @Override
     public List<ItemClassificationProjectionResponse> findAllUserLikeItemList(Long userId, Pageable pageable) {
-        if(userId==null) return new ArrayList<>();
+        if(userId==null) throw new ForbiddenException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "비회원은 불가합니다.");
 
         List<ItemClassificationProjection> projection = jpaQueryFactory
                 .select(new QItemClassificationProjection(
@@ -527,8 +529,6 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .innerJoin(itemDetail)
                     .on(item.detail.id.eq(itemDetail.id))
-                    .leftJoin(userLikeItem)
-                    .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
                     .fetchOne();
 
             if(projection==null){

@@ -35,7 +35,7 @@ public class OrderShippingLog  {
     @Column
     private EGofieldService service;
 
-    @Column
+    @Column(name = "status_flag")
     private EOrderShippingStatusFlag status;
 
     @Column

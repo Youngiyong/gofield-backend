@@ -93,6 +93,15 @@ public class UserService {
         return user;
     }
 
+    @Transactional(readOnly = true)
+    public User getUserNotNonUser(){
+        String uuid = getUserDecryptUuid();
+        if(uuid.equals("nonMember")){
+            throw new ForbiddenException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, "비회원은 접근이 제한됩니다.");
+        }
+        return userRepository.findByUuidAndStatusActive(getUserDecryptUuid());
+    }
+
     @Transactional
     public void sendSms(UserRequest.UserAccountTel request){
         User user = getUser();

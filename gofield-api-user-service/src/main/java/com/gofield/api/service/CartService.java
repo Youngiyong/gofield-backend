@@ -36,8 +36,7 @@ public class CartService {
 
     @Transactional
     public void deleteCart(Long cartId){
-        User user = userService.getUser();
-        userService.validateNonMember(user);
+        User user = userService.getUserNotNonUser();
         Cart cart = cartRepository.findByCartIdAndUserId(cartId, user.getId());
         if(cart==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 상품 카트 번호입니다.", cartId));
@@ -47,14 +46,13 @@ public class CartService {
 
     @Transactional(readOnly = true)
     public CountResponse getCartCount(){
-        User user = userService.getUser();
-        userService.validateNonMember(user);
+        User user = userService.getUserNotNonUser();
         return CountResponse.of(cartRepository.getCartCount(user.getId()));
     }
 
     @Transactional
     public void createCart(CartRequest.Cart request){
-        User user = userService.getUser();
+        User user = userService.getUserNotNonUser();
         ItemStock itemStock = itemStockRepository.findByItemNumber(request.getItemNumber());
         if(itemStock==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 상품 번호입니다.", request.getItemNumber()));
@@ -74,7 +72,7 @@ public class CartService {
 
     @Transactional
     public void updateCart(CartRequest.CartQty request){
-        User user = userService.getUser();
+        User user = userService.getUserNotNonUser();
         ItemStock itemStock = itemStockRepository.findByItemNumber(request.getItemNumber());
         if(itemStock==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 상품 번호입니다.", request.getItemNumber()));
@@ -94,7 +92,7 @@ public class CartService {
 
     @Transactional
     public List<CartResponse> getCartList(){
-        User user = userService.getUser();
+        User user = userService.getUserNotNonUser();
         userService.validateNonMember(user);
         List<CartProjection> result = cartRepository.findAllByUserId(user.getId());
         return CartResponse.of(result);

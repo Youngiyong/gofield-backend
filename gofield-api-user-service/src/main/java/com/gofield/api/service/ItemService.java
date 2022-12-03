@@ -2,6 +2,7 @@ package com.gofield.api.service;
 
 import com.gofield.api.dto.req.ItemRequest;
 import com.gofield.api.dto.res.*;
+import com.gofield.common.exception.ForbiddenException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.enums.ErrorAction;
@@ -36,6 +37,9 @@ public class ItemService {
     @Transactional
     public void userLikeItem(Long itemId, ItemRequest.ItemLike request){
         User user = userService.getUser();
+        if(user.getId()==null){
+            throw new ForbiddenException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, "비회원은 좋아요가 불가합니다.");
+        }
         UserLikeItem userLikeItem = userLikeItemRepository.findByUserIdAndItemId(user.getId(), itemId);
         if(request.getIsLike()){
             if(userLikeItem==null){

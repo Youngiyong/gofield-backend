@@ -142,36 +142,66 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .where(itemBundleImage.bundle.id.eq(bundleId))
                 .fetch();
 
-        List<ItemClassificationProjection> items = jpaQueryFactory
-                .select(new QItemClassificationProjection(
-                        item.id,
-                        item.itemNumber,
-                        item.name,
-                        brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL),
-                        item.price,
-                        userLikeItem.id.as("likeId"),
-                        item.classification,
-                        itemDetail.gender,
-                        item.tags))
-                .from(item)
-                .innerJoin(itemStock)
-                .on(item.itemNumber.eq(itemStock.itemNumber))
-                .innerJoin(category)
-                .on(item.category.id.eq(category.id))
-                .innerJoin(itemDetail)
-                .on(item.detail.id.eq(itemDetail.id))
-                .innerJoin(brand)
-                .on(item.brand.id.eq(brand.id))
-                .leftJoin(userLikeItem)
-                .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                .where(item.bundle.id.eq(bundle.getId()))
-                .orderBy(itemStock.createDate.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
-                .fetch();
+        if(userId!=null){
+            List<ItemClassificationProjection> items = jpaQueryFactory
+                    .select(new QItemClassificationProjection(
+                            item.id,
+                            item.itemNumber,
+                            item.name,
+                            brand.name.as("brandName"),
+                            item.thumbnail.prepend(Constants.CDN_URL),
+                            item.price,
+                            userLikeItem.id.as("likeId"),
+                            item.classification,
+                            itemDetail.gender,
+                            item.tags))
+                    .from(item)
+                    .innerJoin(itemStock)
+                    .on(item.itemNumber.eq(itemStock.itemNumber))
+                    .innerJoin(category)
+                    .on(item.category.id.eq(category.id))
+                    .innerJoin(itemDetail)
+                    .on(item.detail.id.eq(itemDetail.id))
+                    .innerJoin(brand)
+                    .on(item.brand.id.eq(brand.id))
+                    .leftJoin(userLikeItem)
+                    .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
+                    .where(item.bundle.id.eq(bundle.getId()))
+                    .orderBy(itemStock.createDate.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
 
-        return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.of(items));
+            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.of(items));
+
+        } else {
+            List<ItemNonMemberClassificationProjection> items = jpaQueryFactory
+                    .select(new QItemNonMemberClassificationProjection(
+                            item.id,
+                            item.itemNumber,
+                            item.name,
+                            brand.name.as("brandName"),
+                            item.thumbnail.prepend(Constants.CDN_URL),
+                            item.price,
+                            item.classification,
+                            itemDetail.gender,
+                            item.tags))
+                    .from(item)
+                    .innerJoin(itemStock)
+                    .on(item.itemNumber.eq(itemStock.itemNumber))
+                    .innerJoin(category)
+                    .on(item.category.id.eq(category.id))
+                    .innerJoin(itemDetail)
+                    .on(item.detail.id.eq(itemDetail.id))
+                    .innerJoin(brand)
+                    .on(item.brand.id.eq(brand.id))
+                    .where(item.bundle.id.eq(bundle.getId()))
+                    .orderBy(itemStock.createDate.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.ofNon(items));
+        }
     }
-
 }
