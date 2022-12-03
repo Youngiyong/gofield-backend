@@ -38,5 +38,4 @@ public class OrderController {
     public ApiResponse<OrderWaitResponse> redirectPayment(@Valid @RequestBody OrderRequest.Order request){
         return ApiResponse.success(orderService.createOrderWait(request));
     }
-
 }
