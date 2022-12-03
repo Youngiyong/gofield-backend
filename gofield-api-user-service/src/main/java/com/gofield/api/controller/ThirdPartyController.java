@@ -52,9 +52,9 @@ public class ThirdPartyController {
     }
     @ApiOperation(value = "결제 - 실패 콜백")
     @GetMapping("/v1/payment/callback/fail")
-    public void callbackFailPayment(@RequestParam String orderId,
-                                    @RequestParam String code,
-                                    @RequestParam String message,
+    public void callbackFailPayment(@RequestParam(required = false) String orderId,
+                                    @RequestParam(required = false) String code,
+                                    @RequestParam(required = false) String message,
                                     HttpServletResponse response) throws IOException {
         response.sendRedirect(thirdPartyService.callbackFailPayment(orderId, code, message));
     }
