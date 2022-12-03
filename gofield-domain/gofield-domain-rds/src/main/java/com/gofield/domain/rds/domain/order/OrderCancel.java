@@ -29,33 +29,18 @@ public class OrderCancel extends BaseTimeEntity {
     @Column
     private String itemNumber;
 
-    @Column
+    @Column(name = "code_flag")
     private EOrderCancelCodeFlag code;
 
-    @Column
-    private String name;
+    @Column(name = "reason_flag")
+    private EOrderCancelReasonFlag reason_flag;
 
     @Column
-    private int qty;
-
-    @Column
-    private int cancelQty;
-
-    @Column
-    private int price;
-
-    @Column
-    private int amount;
-
-    @Column
-    private int totalItem;
+    private int totalPrice;
 
     @Column
     private int totalDelivery;
 
-    @Column
-    private EOrderCancelReasonFlag reason;
-
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String content;
 }

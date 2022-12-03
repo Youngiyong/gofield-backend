@@ -44,9 +44,6 @@ public class OrderItem extends BaseTimeEntity {
     private int qty;
 
     @Column
-    private int cancelQty;
-
-    @Column
     private int price;
 
     @Column

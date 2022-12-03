@@ -22,8 +22,8 @@ public class OrderCancelItem extends BaseTimeEntity {
     @Column
     private Long cancelId;
 
-    @Column
-    private EOrderCancelItemFlag item;
+    @Column(name = "type_flag")
+    private EOrderCancelItemFlag type;
 
     @Column
     private Long refId;
@@ -34,6 +34,6 @@ public class OrderCancelItem extends BaseTimeEntity {
     @Column
     private int price;
 
-    @Column
+    @Column(name = "reason_flag")
     private EOrderCancelReasonFlag reason;
 }
