@@ -70,7 +70,6 @@ public class ItemController {
         return ApiResponse.success(itemService.getCategoryItemBundleList(categoryId, subCategoryId, pageable));
     }
 
-
     @ApiOperation(value = "묶음 상품 - 상품 조회")
     @GetMapping("/v1/bundle/{bundleId}")
     public ApiResponse<ItemBundleResponse> getBundleItemList(@PathVariable Long bundleId,

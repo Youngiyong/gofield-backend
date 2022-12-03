@@ -4,11 +4,7 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
-import com.gofield.domain.rds.domain.item.Brand;
-import com.gofield.domain.rds.domain.item.Category;
-import com.gofield.domain.rds.domain.item.Item;
-import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
-import com.gofield.domain.rds.domain.item.EItemStatusFlag;
+import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.gofield.domain.rds.domain.seller.ShippingTemplate;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -25,6 +21,7 @@ import static com.gofield.domain.rds.domain.item.QCategory.category;
 import static com.gofield.domain.rds.domain.item.QItem.item;
 import static com.gofield.domain.rds.domain.item.QItemDetail.itemDetail;
 import static com.gofield.domain.rds.domain.item.QItemImage.itemImage;
+import static com.gofield.domain.rds.domain.item.QItemOption.itemOption;
 import static com.gofield.domain.rds.domain.item.QItemStock.itemStock;
 import static com.gofield.domain.rds.domain.user.QUserLikeItem.userLikeItem;
 
@@ -607,6 +604,41 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(),  projection.getPrice(), projection.getQty(), projection.getStatus(),
                 projection.getLikeId(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                 projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
+    }
+
+    @Override
+    public ItemOrderSheetProjection findItemOrderSheetByItemNumber(String itemNumber) {
+        return jpaQueryFactory
+                .select(new QItemOrderSheetProjection(
+                        item.id,
+                        item.brand.name,
+                        item.name,
+                        itemOption.name,
+                        itemStock.sellerId,
+                        item.bundle.id,
+                        item.thumbnail.prepend(Constants.CDN_URL),
+                        itemStock.itemNumber,
+                        item.price,
+                        itemOption.price,
+                        itemStock.qty,
+                        item.isOption,
+                        itemStock.status,
+                        shippingTemplate.isCondition,
+                        shippingTemplate.condition,
+                        shippingTemplate.chargeType,
+                        shippingTemplate.charge,
+                        shippingTemplate.feeJeju,
+                        shippingTemplate.feeJejuBesides))
+                .from(itemStock)
+                .innerJoin(item)
+                .on(itemStock.item.id.eq(item.id), itemStock.itemNumber.eq(itemNumber))
+                .innerJoin(brand)
+                .on(item.brand.id.eq(brand.id))
+                .innerJoin(shippingTemplate)
+                .on(itemStock.sellerId.eq(shippingTemplate.seller.id))
+                .leftJoin(itemOption)
+                .on(itemStock.itemNumber.eq(itemOption.itemNumber))
+                .fetchOne();
     }
 
 

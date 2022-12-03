@@ -16,6 +16,7 @@ import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.cart.CartRepository;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.item.*;
+import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
 import com.gofield.domain.rds.domain.order.OrderSheet;
 import com.gofield.domain.rds.domain.order.OrderSheetRepository;
 import com.gofield.domain.rds.domain.order.OrderWait;
@@ -29,6 +30,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -39,7 +41,8 @@ import java.util.stream.Collectors;
 public class OrderService {
 
     private final UserService userService;
-    private final CommonService commonService;
+
+    private final ItemRepository itemRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final ItemStockRepository itemStockRepository;
     private final OrderWaitRepository orderWaitRepository;
@@ -55,10 +58,9 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "장바구니 임시 정보가 존재하지 않습니다.");
         }
         try {
-            OrderRequest.OrderSheet result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderRequest.OrderSheet>() {});
+            ItemOrderSheetListResponse result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<ItemOrderSheetListResponse>() {});
             UserAddressResponse userAddressResponse = UserAddressResponse.of(userService.getUserMainAddress(user.getId()));
-            List<CodeResponse> codeResponseList = commonService.getCodeList(ECodeGroup.SHIPPING_COMMENT);
-            return OrderSheetResponse.of(result, userAddressResponse, codeResponseList);
+            return OrderSheetResponse.of(result, userAddressResponse);
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
         }
@@ -69,11 +71,14 @@ public class OrderService {
     public CommonCodeResponse createOrderSheet(OrderRequest.OrderSheet request){
         User user = userService.getUser();
         int totalPrice = 0;
+        int totalDelivery = 0;
+        List<ItemOrderSheetResponse> result = new ArrayList<>();
         /*
         ToDo: 배송비 정책 정해지면 배송비 반영해서 가격 계산
          */
         for(OrderRequest.OrderSheet.OrderSheetItem sheetItem: request.getItems()){
-            ItemStock itemStock = itemStockRepository.findByItemNumber(sheetItem.getItemNumber());
+            ItemOrderSheetProjection itemStock = itemRepository.findItemOrderSheetByItemNumber(sheetItem.getItemNumber());
+
             if(itemStock==null){
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", sheetItem.getItemNumber()));
             }
@@ -83,12 +88,17 @@ public class OrderService {
             if(sheetItem.getQty()>itemStock.getQty()){
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 판매 상품 갯수가 초가된 상품입니다.", sheetItem.getItemNumber()));
             }
-            Item item = itemStock.getItem();
-            ItemOption itemOption = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOptionRepository.findByItemNumber(sheetItem.getItemNumber()) : null;
-            int price = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOption.getPrice() : item.getPrice();
+            int price = itemStock.getIsOption() ? itemStock.getOptionPrice() : itemStock.getPrice();
+            int deliveryPrice = itemStock.getCharge();
+            if(itemStock.getCondition()<=price*itemStock.getQty()){
+                deliveryPrice = 0;
+            }
             totalPrice += price*sheetItem.getQty();
+            totalDelivery += deliveryPrice;
+            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), itemStock.getQty(), deliveryPrice);
+            result.add(orderSheet);
         }
-        OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new Gson().toJson(request), totalPrice);
+        OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new Gson().toJson(ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result)), totalPrice);
         orderSheetRepository.save(orderSheet);
         return CommonCodeResponse.of(orderSheet.getUuid());
     }

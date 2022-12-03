@@ -64,6 +64,9 @@ public class Item extends BaseTimeEntity {
     @Column
     private String tags;
 
+    @Column
+    private Boolean isOption;
+
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemImage> images = new ArrayList<>();
 
