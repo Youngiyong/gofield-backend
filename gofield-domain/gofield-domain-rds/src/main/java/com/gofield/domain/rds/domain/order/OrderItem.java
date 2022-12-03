@@ -48,4 +48,7 @@ public class OrderItem extends BaseTimeEntity {
 
     @Column
     private int price;
+
+    @Column
+    private EOrderItemStatusFlag status;
 }

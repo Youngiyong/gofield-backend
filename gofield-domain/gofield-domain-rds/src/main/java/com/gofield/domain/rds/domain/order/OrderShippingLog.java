@@ -12,6 +12,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -19,19 +20,24 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "order_shipping_log")
-public class OrderShippingLog extends BaseTimeEntity {
+public class OrderShippingLog  {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_shipping_id")
-    private OrderShipping shipping;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column
+    private Long orderShippingId;
+
+    @Column
+    private Long userId;
 
     @Column
     private EGofieldService service;
 
     @Column
     private EOrderShippingStatusFlag status;
+
+    @Column
+    private LocalDateTime createDate;
 }

@@ -95,7 +95,7 @@ public class OrderService {
             }
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
-            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), itemStock.getQty(), deliveryPrice);
+            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), sheetItem.getQty(), deliveryPrice);
             result.add(orderSheet);
         }
         OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new Gson().toJson(ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result)), totalPrice);

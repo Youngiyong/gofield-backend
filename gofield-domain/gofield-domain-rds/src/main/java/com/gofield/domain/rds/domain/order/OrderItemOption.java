@@ -21,7 +21,7 @@ import javax.persistence.*;
 @Table(	name = "order_shipping_item")
 public class OrderItemOption extends BaseTimeEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_option_id")
     private OrderItem orderItem;
 
