@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 @Controller
 @RequiredArgsConstructor
@@ -35,6 +34,8 @@ public class ThirdPartyController {
          response.sendRedirect(thirdPartyService.callbackAuth(code, state));
     }
 
+
+
     @ApiOperation(value = "결제 - 성공 콜백")
     @GetMapping("/v1/payment/callback/success")
     public void callbackSuccessPayment(@RequestParam String orderId,
@@ -46,8 +47,9 @@ public class ThirdPartyController {
     @ApiOperation(value = "결제 - 실패 콜백")
     @GetMapping("/v1/payment/callback/fail")
     public void callbackFailPayment(@RequestParam(required = false) String orderId,
-                                    @RequestParam(required = false) Map<String, String> params,
+                                    @RequestParam(required = false) String code,
+                                    @RequestParam(required = false) String message,
                                     HttpServletResponse response) throws IOException {
-        response.sendRedirect(thirdPartyService.callbackFailPayment(orderId, params));
+        response.sendRedirect(thirdPartyService.callbackFailPayment(orderId, code, message));
     }
 }
