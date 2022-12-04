@@ -38,6 +38,9 @@ public class Order extends BaseTimeEntity {
     @Column
     private int totalDiscount;
 
+    @Column
+    private String paymentCompany;
+
     @Column(nullable = false, name = "status_flag")
     private EOrderStatusFlag status;
 
@@ -66,17 +69,19 @@ public class Order extends BaseTimeEntity {
     private LocalDateTime finishDate;
 
     @Builder
-    private Order(Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  EOrderStatusFlag status){
+    private Order(Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, EOrderStatusFlag status){
         this.userId = userId;
         this.orderNumber = orderNumber;
         this.paymentKey = paymentKey;
         this.totalDelivery = totalDelivery;
         this.totalPrice = totalPrice;
+        this.totalDiscount = totalDiscount;
+        this.paymentCompany = paymentCompany;
         this.status = status;
     }
 
     public static Order newInstance(Long userId,  String orderNumber,  String paymentKey,
-                                    int totalDelivery, int totalPrice, int totalDiscount){
+                                    int totalDelivery, int totalPrice, int totalDiscount, String paymentCompany){
         return Order.builder()
                 .userId(userId)
                 .orderNumber(orderNumber)
@@ -84,6 +89,7 @@ public class Order extends BaseTimeEntity {
                 .totalDelivery(totalDelivery)
                 .totalPrice(totalPrice)
                 .totalDiscount(totalDiscount)
+                .paymentCompany(paymentCompany)
                 .status(EOrderStatusFlag.ORDER_CREATE)
                 .build();
     }

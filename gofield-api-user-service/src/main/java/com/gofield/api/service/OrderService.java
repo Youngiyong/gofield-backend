@@ -132,22 +132,11 @@ public class OrderService {
         String easyPay = request.getPaymentType().equals(PaymentType.EASYPAY) ? request.getCompanyCode() : null;
         TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), makeOrderName(orderSheet.getSheet()), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
         TossPaymentResponse response = thirdPartyService.getPaymentReadyInfo(externalRequest);
-        OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(),  new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()),request.getEnvironment());
+        OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(),  new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()), request.getPaymentType(), request.getEnvironment());
         orderWaitRepository.save(orderWait);
         return OrderWaitResponse.of(response.getCheckout().getUrl());
     }
 
-
-    @Transactional
-    public String createOrder(String oid){
-        OrderWait orderWait = orderWaitRepository.findByOid(oid);
-        if(orderWait==null){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 주문 번호입니다.", oid));
-        }
-
-
-        return null;
-    }
 
 
 }

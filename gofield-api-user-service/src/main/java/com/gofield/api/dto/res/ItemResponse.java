@@ -27,7 +27,6 @@ public class ItemResponse {
     private String brandName;
     private String thumbnail;
     private String itemNumber;
-
     private Long bundleId;
     private int price;
     private int qty;

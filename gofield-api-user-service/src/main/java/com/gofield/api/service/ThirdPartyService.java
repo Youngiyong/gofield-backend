@@ -14,6 +14,8 @@ import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.HttpUtils;
 import com.gofield.common.utils.RandomUtils;
+import com.gofield.domain.rds.domain.code.Code;
+import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.common.EGofieldService;
 import com.gofield.domain.rds.domain.order.*;
@@ -32,6 +34,7 @@ import com.gofield.infrastructure.external.api.naver.dto.res.NaverProfileRespons
 import com.gofield.infrastructure.external.api.naver.dto.res.NaverTokenResponse;
 import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
+import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentApproveResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,6 +108,9 @@ public class ThirdPartyService {
     private final NaverProfileApiClient naverProfileApiClient;
     private final StateLogRepository stateLogRepository;
     private final PurchaseRepository purchaseRepository;
+    private final PurchaseFailRepository purchaseFailRepository;
+
+    private final CodeRepository codeRepository;
     private final OrderRepository orderRepository;
     private final OrderSheetRepository orderSheetRepository;
     private final OrderItemRepository orderItemRepository;
@@ -152,20 +158,28 @@ public class ThirdPartyService {
     public String callbackSuccessPayment(String orderId, String paymentKey, int amount){
         OrderWait orderWait = orderWaitRepository.findByOid(orderId);
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
-        Purchase purchase = Purchase.newSuccessInstance(orderId, paymentKey, amount);
-        purchaseRepository.save(purchase);
+        TossPaymentApproveResponse response = tossPaymentApiClient.approvePayment(TOSS_PAYMENT_CLIENT_SECRET, TossPaymentRequest.PaymentApprove.of(amount, orderId, paymentKey));
+        String paymentCompany = null;
+        if (orderWait.getPaymentType().equals(EPaymentType.EASYPAY)) {
+            paymentCompany = response.getEasyPay().getProvider();
+        } else if (orderWait.getPaymentType().equals(EPaymentType.CARD)){
+            Code code = codeRepository.findByCode(response.getCard().getIssuerCode());
+            paymentCompany = code!=null ? code.getName() : "..";
+        }
 
         /*
         ToDo: 할인금액 totalDiscount 처리
          */
         try {
-            ItemOrderSheetListResponse response =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<ItemOrderSheetListResponse>(){});
+            Purchase purchase = Purchase.newInstance(orderId, paymentKey, amount, new ObjectMapper().writeValueAsString(response));
+            purchaseRepository.save(purchase);
+            ItemOrderSheetListResponse orderSheetList =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<ItemOrderSheetListResponse>(){});
             UserRequest.ShippingAddress shippingAddress = new ObjectMapper().readValue(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>(){});
-            Order order = Order.newInstance(orderWait.getUserId(),  orderId, paymentKey, response.getTotalDelivery(), amount, 0);
+            Order order = Order.newInstance(orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), amount, 0,  paymentCompany);
             orderRepository.save(order);
             OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(order, orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
             orderShippingAddressRepository.save(orderShippingAddress);
-            for(ItemOrderSheetResponse result: response.getOrderSheetList()){
+            for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
                 OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
                 orderShippingRepository.save(orderShipping);
                 OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
@@ -181,6 +195,10 @@ public class ThirdPartyService {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
         }
 
+
+
+
+
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
         } else {
@@ -191,12 +209,12 @@ public class ThirdPartyService {
     @Transactional
     public String callbackFailPayment(String orderId, String code, String message){
         OrderWait orderWait = orderWaitRepository.findByOid(orderId);
-        Purchase purchase = Purchase.newFailInstance(orderId, code, message);
-        purchaseRepository.save(purchase);
+        PurchaseFail purchase = PurchaseFail.newInstance(orderId, code, message);
+        purchaseFailRepository.save(purchase);
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
-            return AUTH_FRONT_PAYMENT_LOCAL_FAIL_REDIRECT_URL + orderId;
+            return AUTH_FRONT_PAYMENT_LOCAL_FAIL_REDIRECT_URL + orderId + "?" + message;
         } else {
-            return AUTH_FRONT_PAYMENT_SERVICE_FAIL_REDIRECT_URL + orderId;
+            return AUTH_FRONT_PAYMENT_SERVICE_FAIL_REDIRECT_URL + orderId + "?" + message;
         }
     }
 

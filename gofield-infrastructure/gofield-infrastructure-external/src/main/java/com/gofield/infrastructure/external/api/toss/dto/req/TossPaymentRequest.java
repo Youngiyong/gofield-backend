@@ -32,5 +32,21 @@ public class TossPaymentRequest {
         }
     }
 
+    @Builder
+    @Getter
+    public static class PaymentApprove {
+        private int amount;
+        private String orderId;
+        private String paymentKey;
+
+        public static PaymentApprove of(int amount, String orderId, String paymentKey){
+            return PaymentApprove.builder()
+                    .amount(amount)
+                    .orderId(orderId)
+                    .paymentKey(paymentKey)
+                    .build();
+        }
+    }
+
 
 }

@@ -16,8 +16,9 @@ import java.util.List;
 @Table(	name = "category")
 public class Category extends BaseTimeEntity {
 
-    @Column(name = "type_flag", nullable = false, length = 15)
+    @Column(name = "type_flag", nullable = false, length = 20)
     private ECategoryFlag type;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "parent_id")
     private Category parent;

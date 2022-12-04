@@ -15,42 +15,37 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "purchase")
-public class Purchase {
+@Table(	name = "purchase_fail")
+public class PurchaseFail {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
+    private String code;
+
+    @Column
+    private String message;
+
+    @Column
     private String orderNumber;
-
-    @Column
-    private String paymentKey;
-
-    @Column
-    private int amount;
-
-    @Column(columnDefinition = "TEXT")
-    private String response;
 
     @Column
     private LocalDateTime createDate;
 
     @Builder
-    private Purchase(String orderNumber, String paymentKey, int amount, String response){
+    private PurchaseFail(String orderNumber, String code, String message){
         this.orderNumber = orderNumber;
-        this.paymentKey = paymentKey;
-        this.amount = amount;
-        this.response = response;
+        this.code = code;
+        this.message = message;
     }
 
-    public static Purchase newInstance(String orderNumber, String paymentKey, int amount, String response){
-        return Purchase.builder()
+    public static PurchaseFail newInstance(String orderNumber, String code, String message){
+        return PurchaseFail.builder()
                 .orderNumber(orderNumber)
-                .paymentKey(paymentKey)
-                .amount(amount)
-                .response(response)
+                .code(code)
+                .message(message)
                 .build();
     }
 

@@ -24,4 +24,12 @@ public class CodeRepositoryCustomImpl implements CodeRepositoryCustom {
                 .orderBy(code1.sort.asc())
                 .fetch();
     }
+
+    @Override
+    public Code findByCode(String code) {
+        return jpaQueryFactory
+                .selectFrom(code1)
+                .where(code1.code.eq(code))
+                .fetchFirst();
+    }
 }

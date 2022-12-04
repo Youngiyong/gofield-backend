@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface CodeRepositoryCustom {
     List<Code> findByGroup(ECodeGroup group);
+    Code findByCode(String code);
 }

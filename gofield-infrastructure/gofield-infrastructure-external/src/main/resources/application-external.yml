@@ -33,7 +33,6 @@ external:
     toss:
       payment:
         base-url: https://api.tosspayments.com
-        url: /v1/payments
-
-
+        create-url: /v1/payments
+        approve-url: /v1/payments/confirm
 
