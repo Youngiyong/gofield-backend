@@ -13,8 +13,6 @@ import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.RandomUtils;
-import com.gofield.domain.rds.domain.cart.CartRepository;
-import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
 import com.gofield.domain.rds.domain.order.OrderSheet;
@@ -31,9 +29,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -48,6 +46,11 @@ public class OrderService {
     private final OrderWaitRepository orderWaitRepository;
     private final OrderSheetRepository orderSheetRepository;
     private final ThirdPartyService thirdPartyService;
+
+    public String makeOrderNumber(){
+        return String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis());
+    }
+
 
     @Transactional(readOnly = true)
     public OrderSheetResponse getOrderSheet(String uuid) {
@@ -65,6 +68,11 @@ public class OrderService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public void getOrderDetail(String orderNumber){
+
+        return;
+    }
 
     @Transactional
     public CommonCodeResponse createOrderSheet(OrderRequest.OrderSheet request){
@@ -77,7 +85,6 @@ public class OrderService {
          */
         for(OrderRequest.OrderSheet.OrderSheetItem sheetItem: request.getItems()){
             ItemOrderSheetProjection itemStock = itemRepository.findItemOrderSheetByItemNumber(sheetItem.getItemNumber());
-
             if(itemStock==null){
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", sheetItem.getItemNumber()));
             }
@@ -94,12 +101,17 @@ public class OrderService {
             }
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
-            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), sheetItem.getQty(), deliveryPrice);
+            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
         }
-        OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new Gson().toJson(ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result)), totalPrice);
-        orderSheetRepository.save(orderSheet);
-        return CommonCodeResponse.of(orderSheet.getUuid());
+        ItemOrderSheetListResponse list = ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result);
+        try {
+            OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new ObjectMapper().writeValueAsString(list), totalPrice);
+            orderSheetRepository.save(orderSheet);
+            return CommonCodeResponse.of(orderSheet.getUuid());
+        } catch (JsonProcessingException e) {
+            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
+        }
     }
 
     /*
@@ -118,9 +130,9 @@ public class OrderService {
         }
         String cardCompany = request.getPaymentType().equals(PaymentType.CARD) ? request.getCompanyCode() : null;
         String easyPay = request.getPaymentType().equals(PaymentType.EASYPAY) ? request.getCompanyCode() : null;
-        TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, RandomUtils.makeRandomCode(32), makeOrderName(orderSheet.getSheet()), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
+        TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), makeOrderName(orderSheet.getSheet()), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
         TossPaymentResponse response = thirdPartyService.getPaymentReadyInfo(externalRequest);
-        OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), new Gson().toJson(response), request.getEnvironment());
+        OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(),  new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()),request.getEnvironment());
         orderWaitRepository.save(orderWait);
         return OrderWaitResponse.of(response.getCheckout().getUrl());
     }

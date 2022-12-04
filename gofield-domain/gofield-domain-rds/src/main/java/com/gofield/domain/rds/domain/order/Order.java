@@ -1,10 +1,6 @@
-
 package com.gofield.domain.rds.domain.order;
 
-
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import com.gofield.domain.rds.domain.seller.Seller;
-import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,14 +18,10 @@ import java.util.List;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "order")
+@Table(	name = "orders")
 public class Order extends BaseTimeEntity {
-
     @Column
     private Long userId;
-
-    @Column
-    private Long sellerId;
 
     @Column(length = 64, nullable = false)
     private String orderNumber;
@@ -38,15 +30,15 @@ public class Order extends BaseTimeEntity {
     private String paymentKey;
 
     @Column
-    private int totalItem;
-
-    @Column
     private int totalDelivery;
 
     @Column
     private int totalPrice;
 
-    @Column(nullable = false)
+    @Column
+    private int totalDiscount;
+
+    @Column(nullable = false, name = "status_flag")
     private EOrderStatusFlag status;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -54,6 +46,9 @@ public class Order extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderItem> orderItems = new ArrayList<>();
+
+    @Column
+    private LocalDateTime deleteDate;
 
     @Column
     private LocalDateTime cancelDate;
@@ -71,28 +66,25 @@ public class Order extends BaseTimeEntity {
     private LocalDateTime finishDate;
 
     @Builder
-    private Order(Long userId, Long sellerId, String orderNumber,  String paymentKey, int totalItem, int totalDelivery, int totalPrice, EOrderStatusFlag status){
+    private Order(Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  EOrderStatusFlag status){
         this.userId = userId;
-        this.sellerId = sellerId;
         this.orderNumber = orderNumber;
         this.paymentKey = paymentKey;
-        this.totalItem = totalItem;
         this.totalDelivery = totalDelivery;
         this.totalPrice = totalPrice;
         this.status = status;
     }
 
-    public static Order newInstance(Long userId, Long sellerId, String orderNumber,  String paymentKey,
-                                    int totalItem, int totalDelivery, int totalPrice, EOrderStatusFlag status){
+    public static Order newInstance(Long userId,  String orderNumber,  String paymentKey,
+                                    int totalDelivery, int totalPrice, int totalDiscount){
         return Order.builder()
                 .userId(userId)
-                .sellerId(sellerId)
                 .orderNumber(orderNumber)
                 .paymentKey(paymentKey)
-                .totalItem(totalItem)
                 .totalDelivery(totalDelivery)
                 .totalPrice(totalPrice)
-                .status(status)
+                .totalDiscount(totalDiscount)
+                .status(EOrderStatusFlag.ORDER_CREATE)
                 .build();
     }
 
@@ -100,7 +92,4 @@ public class Order extends BaseTimeEntity {
         this.orderShippings.add(orderShipping);
     }
 
-    public void addOrderItem(OrderItem orderItem){
-        this.orderItems.add(orderItem);
-    }
 }

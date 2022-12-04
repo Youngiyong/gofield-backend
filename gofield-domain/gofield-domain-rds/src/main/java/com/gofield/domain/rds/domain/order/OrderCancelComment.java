@@ -1,8 +1,8 @@
-
 package com.gofield.domain.rds.domain.order;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -30,4 +30,20 @@ public class OrderCancelComment extends BaseTimeEntity {
 
     @Column
     private LocalDateTime deleteDate;
+
+    @Builder
+    private OrderCancelComment(Long cancelId, Long userId, String content){
+        this.cancelId = cancelId;
+        this.userId = userId;
+        this.content = content;
+    }
+
+    public static OrderCancelComment newInstance(Long cancelId, Long userId, String content){
+        return OrderCancelComment.builder()
+                .cancelId(cancelId)
+                .userId(userId)
+                .content(content)
+                .build();
+    }
+
 }

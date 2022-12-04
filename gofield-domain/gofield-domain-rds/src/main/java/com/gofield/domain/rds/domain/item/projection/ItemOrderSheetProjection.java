@@ -15,10 +15,12 @@ public class ItemOrderSheetProjection {
     private final String optionName;
     private final Long sellerId;
     private final Long bundleId;
+    private final Long optionId;
     private final String thumbnail;
     private final String itemNumber;
     private final int price;
     private final int optionPrice;
+    private final EItemOptionTypeFlag optionType;
     private final int qty;
     private final Boolean isOption;
     private final EItemStatusFlag status;
@@ -30,17 +32,19 @@ public class ItemOrderSheetProjection {
     private final int feeJejuBesides;
 
     @QueryProjection
-    public ItemOrderSheetProjection(Long id, String brandName, String name, String optionName, Long sellerId, Long bundleId, String thumbnail, String itemNumber, int price, int optionPrice, int qty, Boolean isOption, EItemStatusFlag status, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides) {
+    public ItemOrderSheetProjection(Long id, String brandName, String name, String optionName, Long sellerId, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemOptionTypeFlag optionType, int qty, Boolean isOption, EItemStatusFlag status, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides) {
         this.id = id;
         this.brandName = brandName;
         this.name = name;
         this.optionName = optionName;
         this.sellerId = sellerId;
         this.bundleId = bundleId;
+        this.optionId = optionId;
         this.thumbnail = thumbnail;
         this.itemNumber = itemNumber;
         this.price = price;
         this.optionPrice = optionPrice;
+        this.optionType = optionType;
         this.qty = qty;
         this.isOption = isOption;
         this.status = status;

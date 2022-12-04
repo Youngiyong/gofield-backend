@@ -34,7 +34,13 @@ public class OrderWait {
     private String oid;
 
     @Column
+    private String uuid;
+
+    @Column(columnDefinition = "TEXT")
     private String content;
+
+    @Column(columnDefinition = "TEXT")
+    private String shippingAddress;
 
     @Column(name = "environment_flag")
     private EEnvironmentFlag environment;
@@ -43,18 +49,22 @@ public class OrderWait {
     private LocalDateTime createDate;
 
     @Builder
-    private OrderWait(Long userId, String oid, String content, EEnvironmentFlag environment){
+    private OrderWait(Long userId, String oid, String uuid, String content, String shippingAddress,  EEnvironmentFlag environment){
         this.userId = userId;
         this.oid = oid;
+        this.uuid = uuid;
+        this.shippingAddress = shippingAddress;
         this.content = content;
         this.environment = environment;
     }
 
-    public static OrderWait newInstance(Long userId, String oid, String content, EEnvironmentFlag environment){
+    public static OrderWait newInstance(Long userId, String oid, String uuid, String content, String shippingAddress, EEnvironmentFlag environment){
         return OrderWait.builder()
                 .userId(userId)
                 .oid(oid)
+                .uuid(uuid)
                 .content(content)
+                .shippingAddress(shippingAddress)
                 .environment(environment)
                 .build();
     }

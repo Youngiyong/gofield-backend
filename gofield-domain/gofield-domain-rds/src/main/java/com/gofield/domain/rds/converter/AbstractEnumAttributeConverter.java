@@ -27,7 +27,8 @@ public class AbstractEnumAttributeConverter<E extends Enum<E> & CodeEnum> implem
     @Override
     public E convertToEntityAttribute(String dbData){
         if (!nullable && StringUtils.isEmpty(dbData))
-            throw new ConvertException(String.format("%s 가 DB에 NULL 혹은 empty(%s)로 저장 되어 있습니다.", enumName,dbData));
+            return null;
+//            throw new ConvertException(String.format("%s 가 DB에 NULL 혹은 empty(%s)로 저장 되어 있습니다.", enumName,dbData));
 
         return EnumValuesConverter.ofDBCode(targetEnumClass,dbData);
     }

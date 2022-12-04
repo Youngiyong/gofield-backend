@@ -26,6 +26,10 @@ public class OrderItem extends BaseTimeEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_shipping_id")
+    private OrderShipping  orderShipping;
+
     @Column
     private Long sellerId;
 
@@ -47,35 +51,36 @@ public class OrderItem extends BaseTimeEntity {
     @Column
     private int price;
 
-    @Column
+    @Column(name = "status_flag")
     private EOrderItemStatusFlag status;
 
     @Builder
-    private OrderItem(Order order, Long sellerId, Long itemId, String orderNumber,
-                      String itemNumber, String name, int qty, int price, EOrderItemStatusFlag status){
+    private OrderItem(Order order, Long sellerId, Long itemId, OrderShipping orderShipping, String orderNumber,
+                      String itemNumber, String name, int qty, int price){
         this.order = order;
         this.sellerId = sellerId;
         this.itemId = itemId;
+        this.orderShipping = orderShipping;
         this.orderNumber = orderNumber;
         this.itemNumber = itemNumber;
         this.name = name;
         this.qty = qty;
         this.price = price;
-        this.status = status;
+        this.status = EOrderItemStatusFlag.ORDER_ITEM_RECEIPT;
     }
 
-    public static OrderItem newInstance(Order order, Long sellerId, Long itemId, String orderNumber,
-                                        String itemNumber, String name, int qty, int price, EOrderItemStatusFlag status){
+    public static OrderItem newInstance(Order order, Long sellerId, Long itemId, OrderShipping orderShipping, String orderNumber,
+                                        String itemNumber, String name, int qty, int price){
         return OrderItem.builder()
                 .order(order)
                 .sellerId(sellerId)
                 .itemId(itemId)
+                .orderShipping(orderShipping)
                 .orderNumber(orderNumber)
                 .itemNumber(itemNumber)
                 .name(name)
                 .qty(qty)
                 .price(price)
-                .status(status)
                 .build();
     }
 }

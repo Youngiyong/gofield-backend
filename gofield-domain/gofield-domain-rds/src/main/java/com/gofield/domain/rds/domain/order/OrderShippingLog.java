@@ -6,6 +6,7 @@ import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.user.User;
 import com.gofield.domain.rds.domain.common.EGofieldService;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -40,4 +41,21 @@ public class OrderShippingLog  {
 
     @Column
     private LocalDateTime createDate;
+
+    @Builder
+    private OrderShippingLog(Long orderShippingId, Long userId, EGofieldService service, EOrderShippingStatusFlag status){
+        this.orderShippingId = orderShippingId;
+        this.userId = userId;
+        this.service = service;
+        this.status = status;
+    }
+
+    public static OrderShippingLog newInstance(Long orderShippingId, Long userId, EGofieldService service, EOrderShippingStatusFlag status){
+        return OrderShippingLog.builder()
+                .orderShippingId(orderShippingId)
+                .userId(userId)
+                .service(service)
+                .status(status)
+                .build();
+    }
 }

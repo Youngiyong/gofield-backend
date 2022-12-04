@@ -1,16 +1,22 @@
 package com.gofield.api.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.api.dto.SocialAuthentication;
+import com.gofield.api.dto.req.OrderRequest;
+import com.gofield.api.dto.req.UserRequest;
+import com.gofield.api.dto.res.ItemOrderSheetListResponse;
+import com.gofield.api.dto.res.ItemOrderSheetResponse;
+import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.HttpUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
-import com.gofield.domain.rds.domain.order.OrderWait;
-import com.gofield.domain.rds.domain.order.OrderWaitRepository;
-import com.gofield.domain.rds.domain.order.Purchase;
-import com.gofield.domain.rds.domain.order.PurchaseRepository;
+import com.gofield.domain.rds.domain.common.EGofieldService;
+import com.gofield.domain.rds.domain.order.*;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
 import com.gofield.domain.rds.domain.user.StateLog;
 import com.gofield.domain.rds.domain.user.StateLogRepository;
@@ -33,6 +39,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 @Slf4j
@@ -96,6 +105,13 @@ public class ThirdPartyService {
     private final NaverProfileApiClient naverProfileApiClient;
     private final StateLogRepository stateLogRepository;
     private final PurchaseRepository purchaseRepository;
+    private final OrderRepository orderRepository;
+    private final OrderSheetRepository orderSheetRepository;
+    private final OrderItemRepository orderItemRepository;
+    private final OrderItemOptionRepository orderItemOptionRepository;
+    private final OrderShippingRepository orderShippingRepository;
+    private final OrderShippingLogRepository orderShippingLogRepository;
+    private final OrderShippingAddressRepository orderShippingAddressRepository;
 
     @Transactional(readOnly = true)
     public String callbackAuth(String code, String state){
@@ -125,10 +141,6 @@ public class ThirdPartyService {
     }
 
     @Transactional
-    public String callbackPayment(String oid){
-        return null;
-    }
-    @Transactional
     public String redirect(ESocialFlag social, EEnvironmentFlag environment){
         String state = RandomUtils.makeRandomCode(32);
         StateLog stateLog = StateLog.newInstance(state, social, environment);
@@ -139,8 +151,36 @@ public class ThirdPartyService {
     @Transactional
     public String callbackSuccessPayment(String orderId, String paymentKey, int amount){
         OrderWait orderWait = orderWaitRepository.findByOid(orderId);
+        OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
         Purchase purchase = Purchase.newSuccessInstance(orderId, paymentKey, amount);
         purchaseRepository.save(purchase);
+
+        /*
+        ToDo: 할인금액 totalDiscount 처리
+         */
+        try {
+            ItemOrderSheetListResponse response =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<ItemOrderSheetListResponse>(){});
+            UserRequest.ShippingAddress shippingAddress = new ObjectMapper().readValue(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>(){});
+            Order order = Order.newInstance(orderWait.getUserId(),  orderId, paymentKey, response.getTotalDelivery(), amount, 0);
+            orderRepository.save(order);
+            OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(order, orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
+            orderShippingAddressRepository.save(orderShippingAddress);
+            for(ItemOrderSheetResponse result: response.getOrderSheetList()){
+                OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
+                orderShippingRepository.save(orderShipping);
+                OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
+                orderShippingLogRepository.save(orderShippingLog);
+                OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), result.getId(), orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+                orderItemRepository.save(orderItem);
+                if(result.getIsOption()){
+                    OrderItemOption orderItemOption = OrderItemOption.newInstance(orderItem.getId(), result.getOptionId(), result.getOptionType(), new ObjectMapper().writeValueAsString(result.getOptionName()), result.getQty(), result.getPrice());
+                    orderItemOptionRepository.save(orderItemOption);
+                }
+            }
+        } catch (JsonProcessingException e) {
+            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
+        }
+
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
         } else {

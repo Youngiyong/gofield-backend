@@ -1,11 +1,9 @@
-
 package com.gofield.domain.rds.domain.order;
 
-
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import com.gofield.domain.rds.domain.seller.Seller;
 import com.gofield.domain.rds.domain.item.EItemChargeFlag;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -13,6 +11,8 @@ import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @DynamicInsert
@@ -22,26 +22,23 @@ import java.time.LocalDateTime;
 @Table(	name = "order_shipping")
 public class OrderShipping extends BaseTimeEntity {
 
-    @Column
+    @Column(name = "seller_id")
     private Long sellerId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Column
+    @Column(length = 32, nullable = false)
     private String orderNumber;
 
-    @Column
-    private String comment;
-
-    @Column
-    private String commentExtra;
-
-    @Column
+    @Column(name = "shipping_number")
     private String shippingNumber;
 
-    @Column
+    @Column(name = "shipping_comment")
+    private String comment;
+
+    @Column(name = "status_flag")
     private EOrderShippingStatusFlag status;
 
     @Column
@@ -50,13 +47,13 @@ public class OrderShipping extends BaseTimeEntity {
     @Column
     private EItemChargeFlag chargeType;
 
-    @Column
+    @Column(name = "charge")
     private int charge;
 
-    @Column
-    private int totalDelivery;
+    @Column(name = "total_delivery")
+    private int deliveryPrice;
 
-    @Column
+    @Column(name = "condition_price")
     private int condition;
 
     @Column
@@ -79,4 +76,48 @@ public class OrderShipping extends BaseTimeEntity {
 
     @Column
     private LocalDateTime finishedDate;
+
+    @OneToMany(mappedBy = "orderShipping", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<OrderItem> orderItems = new ArrayList<>();
+
+    @Builder
+    private OrderShipping(Long sellerId, Order order, String orderNumber, String shippingNumber, String comment,
+                          EItemChargeFlag chargeType, int charge, int deliveryPrice, int condition,
+                          int feeJeju, int feeJejuBesides){
+        this.sellerId = sellerId;
+        this.order = order;
+        this.orderNumber = orderNumber;
+        this.shippingNumber = shippingNumber;
+        this.comment = comment;
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK;
+        this.chargeType = chargeType;
+        this.charge = charge;
+        this.deliveryPrice = deliveryPrice;
+        this.condition = condition;
+        this.feeJeju = feeJeju;
+        this.feeJejuBesides = feeJejuBesides;
+    }
+
+    public static OrderShipping newInstance(Long sellerId, Order order, String orderNumber, String shippingNumber, String comment,
+                                            EItemChargeFlag chargeType, int charge, int deliveryPrice, int condition,
+                                            int feeJeju, int feeJejuBesides){
+        return OrderShipping.builder()
+                .sellerId(sellerId)
+                .order(order)
+                .orderNumber(orderNumber)
+                .shippingNumber(shippingNumber)
+                .comment(comment)
+                .chargeType(chargeType)
+                .charge(charge)
+                .deliveryPrice(deliveryPrice)
+                .condition(condition)
+                .feeJeju(feeJeju)
+                .feeJejuBesides(feeJejuBesides)
+                .build();
+    }
+
+    public void addOrderItem(OrderItem orderItem){
+        this.orderItems.add(orderItem);
+    }
+
 }
