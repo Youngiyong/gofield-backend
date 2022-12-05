@@ -1,6 +1,4 @@
-
 package com.gofield.domain.rds.domain.order;
-
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.item.ItemOption;
@@ -25,13 +23,14 @@ public class OrderItemOption extends BaseTimeEntity {
     @Column
     private Long orderItemId;
 
-    @Column
-    private Long itemOptionId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "item_option_id")
+    private ItemOption itemOption;
 
     @Column(name = "type_flag")
     private EItemOptionTypeFlag optionType;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String name;
 
     @Column
@@ -44,19 +43,19 @@ public class OrderItemOption extends BaseTimeEntity {
     private int price;
 
     @Builder
-    private OrderItemOption(Long orderItemId, Long itemOptionId, EItemOptionTypeFlag optionType, String name, int qty,  int price){
+    private OrderItemOption(Long orderItemId, ItemOption itemOption, EItemOptionTypeFlag optionType, String name, int qty,  int price){
         this.orderItemId = orderItemId;
-        this.itemOptionId = itemOptionId;
+        this.itemOption = itemOption;
         this.optionType = optionType;
         this.name = name;
         this.qty = qty;
         this.price = price;
     }
 
-    public static OrderItemOption newInstance(Long orderItemId, Long itemOptionId, EItemOptionTypeFlag optionType, String name, int qty, int price){
+    public static OrderItemOption newInstance(Long orderItemId, ItemOption itemOption, EItemOptionTypeFlag optionType, String name, int qty, int price){
         return OrderItemOption.builder()
                 .orderItemId(orderItemId)
-                .itemOptionId(itemOptionId)
+                .itemOption(itemOption)
                 .optionType(optionType)
                 .name(name)
                 .qty(qty)

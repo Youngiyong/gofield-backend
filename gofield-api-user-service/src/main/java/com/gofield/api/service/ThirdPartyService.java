@@ -18,6 +18,10 @@ import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.common.EGofieldService;
+import com.gofield.domain.rds.domain.item.Item;
+import com.gofield.domain.rds.domain.item.ItemOption;
+import com.gofield.domain.rds.domain.item.ItemOptionRepository;
+import com.gofield.domain.rds.domain.item.ItemRepository;
 import com.gofield.domain.rds.domain.order.*;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
 import com.gofield.domain.rds.domain.user.StateLog;
@@ -110,6 +114,8 @@ public class ThirdPartyService {
     private final PurchaseRepository purchaseRepository;
     private final PurchaseFailRepository purchaseFailRepository;
 
+    private final ItemRepository itemRepository;
+    private final ItemOptionRepository itemOptionRepository;
     private final CodeRepository codeRepository;
     private final OrderRepository orderRepository;
     private final OrderSheetRepository orderSheetRepository;
@@ -175,19 +181,21 @@ public class ThirdPartyService {
             purchaseRepository.save(purchase);
             ItemOrderSheetListResponse orderSheetList =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<ItemOrderSheetListResponse>(){});
             UserRequest.ShippingAddress shippingAddress = new ObjectMapper().readValue(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>(){});
-            Order order = Order.newInstance(orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), amount, 0,  paymentCompany);
-            orderRepository.save(order);
-            OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(order, orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
+            OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
             orderShippingAddressRepository.save(orderShippingAddress);
+            Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), amount, 0,  paymentCompany);
+            orderRepository.save(order);
             for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
                 OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
                 orderShippingRepository.save(orderShipping);
                 OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
                 orderShippingLogRepository.save(orderShippingLog);
-                OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), result.getId(), orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+                Item item = itemRepository.findByItemId(result.getId());
+                OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), item, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
                 orderItemRepository.save(orderItem);
                 if(result.getIsOption()){
-                    OrderItemOption orderItemOption = OrderItemOption.newInstance(orderItem.getId(), result.getOptionId(), result.getOptionType(), new ObjectMapper().writeValueAsString(result.getOptionName()), result.getQty(), result.getPrice());
+                    ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
+                    OrderItemOption orderItemOption = OrderItemOption.newInstance(orderItem.getId(), itemOption, result.getOptionType(), new ObjectMapper().writeValueAsString(result.getOptionName()), result.getQty(), result.getPrice());
                     orderItemOptionRepository.save(orderItemOption);
                 }
             }

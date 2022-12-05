@@ -9,4 +9,5 @@ import java.util.List;
 public interface ItemOptionRepositoryCustom {
     List<ItemOptionProjection> findAllItemOptionByItemId(Long itemId);
     ItemOption findByItemNumber(String itemNumber);
+    ItemOption findByOptionId(Long id);
 }

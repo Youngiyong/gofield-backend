@@ -20,6 +20,11 @@ import java.util.List;
 @Entity
 @Table(	name = "orders")
 public class Order extends BaseTimeEntity {
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_address_id")
+    private OrderShippingAddress shippingAddress;
+
     @Column
     private Long userId;
 
@@ -47,8 +52,6 @@ public class Order extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderShipping> orderShippings = new ArrayList<>();
 
-    @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<OrderItem> orderItems = new ArrayList<>();
 
     @Column
     private LocalDateTime deleteDate;
@@ -69,7 +72,8 @@ public class Order extends BaseTimeEntity {
     private LocalDateTime finishDate;
 
     @Builder
-    private Order(Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, EOrderStatusFlag status){
+    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, EOrderStatusFlag status){
+        this.shippingAddress = shippingAddress;
         this.userId = userId;
         this.orderNumber = orderNumber;
         this.paymentKey = paymentKey;
@@ -80,9 +84,10 @@ public class Order extends BaseTimeEntity {
         this.status = status;
     }
 
-    public static Order newInstance(Long userId,  String orderNumber,  String paymentKey,
+    public static Order newInstance(OrderShippingAddress shippingAddress, Long userId,  String orderNumber,  String paymentKey,
                                     int totalDelivery, int totalPrice, int totalDiscount, String paymentCompany){
         return Order.builder()
+                .shippingAddress(shippingAddress)
                 .userId(userId)
                 .orderNumber(orderNumber)
                 .paymentKey(paymentKey)

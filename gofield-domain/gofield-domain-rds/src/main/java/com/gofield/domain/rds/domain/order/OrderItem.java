@@ -1,10 +1,7 @@
-
 package com.gofield.domain.rds.domain.order;
-
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.item.Item;
-import com.gofield.domain.rds.domain.seller.Seller;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,9 +19,8 @@ import javax.persistence.*;
 @Table(	name = "order_item")
 public class OrderItem extends BaseTimeEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
+    @Column
+    private Long orderId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_shipping_id")
@@ -33,8 +29,9 @@ public class OrderItem extends BaseTimeEntity {
     @Column
     private Long sellerId;
 
-    @Column
-    private Long itemId;
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "item_id")
+    private Item item;
 
     @Column
     private String orderNumber;
@@ -55,11 +52,11 @@ public class OrderItem extends BaseTimeEntity {
     private EOrderItemStatusFlag status;
 
     @Builder
-    private OrderItem(Order order, Long sellerId, Long itemId, OrderShipping orderShipping, String orderNumber,
+    private OrderItem(Long orderId, Long sellerId, Item item, OrderShipping orderShipping, String orderNumber,
                       String itemNumber, String name, int qty, int price){
-        this.order = order;
+        this.orderId = orderId;
         this.sellerId = sellerId;
-        this.itemId = itemId;
+        this.item = item;
         this.orderShipping = orderShipping;
         this.orderNumber = orderNumber;
         this.itemNumber = itemNumber;
@@ -69,12 +66,12 @@ public class OrderItem extends BaseTimeEntity {
         this.status = EOrderItemStatusFlag.ORDER_ITEM_RECEIPT;
     }
 
-    public static OrderItem newInstance(Order order, Long sellerId, Long itemId, OrderShipping orderShipping, String orderNumber,
+    public static OrderItem newInstance(Long orderId, Long sellerId, Item item, OrderShipping orderShipping, String orderNumber,
                                         String itemNumber, String name, int qty, int price){
         return OrderItem.builder()
-                .order(order)
+                .orderId(orderId)
                 .sellerId(sellerId)
-                .itemId(itemId)
+                .item(item)
                 .orderShipping(orderShipping)
                 .orderNumber(orderNumber)
                 .itemNumber(itemNumber)

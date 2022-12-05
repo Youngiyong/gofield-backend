@@ -46,4 +46,12 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
                 .where(itemOption.itemNumber.eq(itemNumber))
                 .fetchFirst();
     }
+
+    @Override
+    public ItemOption findByOptionId(Long id) {
+        return jpaQueryFactory
+                .select(itemOption)
+                .where(itemOption.id.eq(id))
+                .fetchFirst();
+    }
 }

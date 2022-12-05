@@ -1,18 +1,16 @@
 package com.gofield.api.dto.req;
 
-import com.gofield.api.dto.enums.PaymentType;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.order.EPaymentType;
 import lombok.Getter;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
-import java.util.Map;
 
 public class OrderRequest {
 
     @Getter
-    public static class Order {
+    public static class OrderPay {
         @NotNull(message = "companyCode는 필수값입니다.")
         private String companyCode;
         @NotNull(message = "paymentType은 필수값입니다.")

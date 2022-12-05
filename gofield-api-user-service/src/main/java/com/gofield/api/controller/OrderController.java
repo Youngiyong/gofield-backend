@@ -7,6 +7,7 @@ import com.gofield.api.dto.res.OrderSheetResponse;
 import com.gofield.api.dto.res.OrderWaitResponse;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.domain.rds.domain.order.Order;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +35,13 @@ public class OrderController {
 
     @ApiOperation(value = "주문하기 - 결제")
     @PostMapping("/v1/payment")
-    public ApiResponse<OrderWaitResponse> redirectPayment(@Valid @RequestBody OrderRequest.Order request){
+    public ApiResponse<OrderWaitResponse> redirectPayment(@Valid @RequestBody OrderRequest.OrderPay request){
         return ApiResponse.success(orderService.createOrderWait(request));
+    }
+
+    @ApiOperation(value = "주문상세")
+    @GetMapping("/v1/order/{orderNumber}")
+    public ApiResponse<Order> getOrderDetail(@PathVariable String orderNumber){
+        return ApiResponse.success(orderService.getOrderDetail(orderNumber));
     }
 }

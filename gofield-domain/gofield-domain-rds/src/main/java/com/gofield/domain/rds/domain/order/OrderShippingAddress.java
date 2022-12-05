@@ -20,11 +20,7 @@ import javax.persistence.*;
 @Table(	name = "order_shipping_address")
 public class OrderShippingAddress extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "order_id")
-    private Order order;
-
-    @Column(length = 32, nullable = false)
+    @Column(length = 64, nullable = false)
     private String orderNumber;
 
     @Column
@@ -46,8 +42,7 @@ public class OrderShippingAddress extends BaseTimeEntity {
     private String comment;
 
     @Builder
-    private OrderShippingAddress(Order order, String orderNumber, String name, String tel, String zipCode, String address, String addressExtra, String comment){
-        this.order = order;
+    private OrderShippingAddress(String orderNumber, String name, String tel, String zipCode, String address, String addressExtra, String comment){
         this.orderNumber = orderNumber;
         this.name = name;
         this.tel = tel;
@@ -57,9 +52,8 @@ public class OrderShippingAddress extends BaseTimeEntity {
         this.comment = comment;
     }
 
-    public static OrderShippingAddress newInstance(Order order, String orderNumber, String name, String tel, String zipCode, String address, String addressExtra, String comment){
+    public static OrderShippingAddress newInstance(String orderNumber, String name, String tel, String zipCode, String address, String addressExtra, String comment){
         return OrderShippingAddress.builder()
-                .order(order)
                 .orderNumber(orderNumber)
                 .name(name)
                 .tel(tel)

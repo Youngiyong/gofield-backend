@@ -15,10 +15,7 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
-import com.gofield.domain.rds.domain.order.OrderSheet;
-import com.gofield.domain.rds.domain.order.OrderSheetRepository;
-import com.gofield.domain.rds.domain.order.OrderWait;
-import com.gofield.domain.rds.domain.order.OrderWaitRepository;
+import com.gofield.domain.rds.domain.order.*;
 import com.gofield.domain.rds.domain.user.User;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
@@ -44,7 +41,11 @@ public class OrderService {
     private final ItemOptionRepository itemOptionRepository;
     private final ItemStockRepository itemStockRepository;
     private final OrderWaitRepository orderWaitRepository;
+
+    private final OrderRepository orderRepository;
+    private final OrderItemRepository orderItemRepository;
     private final OrderSheetRepository orderSheetRepository;
+    private final OrderShippingAddressRepository orderShippingAddressRepository;
     private final ThirdPartyService thirdPartyService;
 
     public String makeOrderNumber(){
@@ -69,9 +70,10 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public void getOrderDetail(String orderNumber){
-
-        return;
+    public Order getOrderDetail(String orderNumber){
+        Order order = orderRepository.findByOrderNumber(orderNumber);
+        System.out.println("test");
+        return null;
     }
 
     @Transactional
@@ -122,7 +124,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderWaitResponse createOrderWait(OrderRequest.Order request){
+    public OrderWaitResponse createOrderWait(OrderRequest.OrderPay request){
         User user = userService.getUserNotNonUser();
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(user.getId(), request.getUuid());
         if(orderSheet==null){
