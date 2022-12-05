@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public enum ECodeGroup {
     BANK,
+    CARRIER,
     SHIPPING_COMMENT,
     PAYMENT_CARD,
     PAYMENT_EASYPAY,

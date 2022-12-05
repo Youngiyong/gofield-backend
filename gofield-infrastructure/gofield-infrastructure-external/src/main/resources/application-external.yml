@@ -36,4 +36,6 @@ external:
         base-url: https://api.tosspayments.com
         create-url: /v1/payments
         approve-url: /v1/payments/confirm
-
+    tracker:
+      delivery:
+        base-url: https://apis.tracker.delivery/carriers

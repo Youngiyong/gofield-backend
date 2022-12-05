@@ -1,8 +1,8 @@
 package com.gofield.api.service;
 
+import com.gofield.api.util.SlackUtil;
 import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.infrastructure.external.api.slack.SlackWebhookApiClient;
-import com.gofield.infrastructure.external.util.SlackUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.json.simple.JSONObject;

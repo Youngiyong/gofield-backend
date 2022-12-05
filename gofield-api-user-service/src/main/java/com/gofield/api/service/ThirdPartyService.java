@@ -42,6 +42,8 @@ import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentApproveResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
+import com.gofield.infrastructure.external.api.tracker.TrackerApiClient;
+import com.gofield.infrastructure.external.api.tracker.res.CarrierTrackResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -106,9 +108,7 @@ public class ThirdPartyService {
     @Value("${secret.toss.secret-key}")
     private String TOSS_PAYMENT_CLIENT_SECRET;
 
-    private final CartRepository cartRepository;
-
-    private final OrderWaitRepository orderWaitRepository;
+    private final TrackerApiClient trackerApiClient;
     private final TossPaymentApiClient tossPaymentApiClient;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
     private final KaKaoProfileApiClient kaKaoProfileApiClient;
@@ -118,6 +118,8 @@ public class ThirdPartyService {
     private final PurchaseRepository purchaseRepository;
     private final PurchaseFailRepository purchaseFailRepository;
     private final ItemRepository itemRepository;
+    private final CartRepository cartRepository;
+    private final OrderWaitRepository orderWaitRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final CodeRepository codeRepository;
     private final OrderRepository orderRepository;
@@ -127,6 +129,10 @@ public class ThirdPartyService {
     private final OrderShippingRepository orderShippingRepository;
     private final OrderShippingLogRepository orderShippingLogRepository;
     private final OrderShippingAddressRepository orderShippingAddressRepository;
+
+    public CarrierTrackResponse getCarrierTrackInfo(String carrierId, String trackId){
+        return trackerApiClient.getCarrierTrackInfo(carrierId, trackId);
+    }
 
     @Transactional(readOnly = true)
     public String callbackAuth(String code, String state){
@@ -169,12 +175,13 @@ public class ThirdPartyService {
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
         TossPaymentApproveResponse response = tossPaymentApiClient.approvePayment(TOSS_PAYMENT_CLIENT_SECRET, TossPaymentRequest.PaymentApprove.of(amount, orderId, paymentKey));
         String paymentCompany = null;
-        if (orderWait.getPaymentType().equals(EPaymentType.EASYPAY)) {
+        if(response.getEasyPay()!=null){
             paymentCompany = response.getEasyPay().getProvider();
-        } else if (orderWait.getPaymentType().equals(EPaymentType.CARD)){
+        } else {
             Code code = codeRepository.findByCode(response.getCard().getIssuerCode());
             paymentCompany = code!=null ? code.getName() : "..";
         }
+
         /*
         ToDo: 할인금액 totalDiscount 처리
          */
@@ -205,8 +212,10 @@ public class ThirdPartyService {
                 orderItemRepository.save(orderItem);
             }
             List<Long> cartIdList = orderSheetContent.getCartIdList();
-            if(!cartIdList.isEmpty()){
-                cartRepository.deleteByCartIdList(cartIdList);
+            if(cartIdList!=null){
+                if(!cartIdList.isEmpty()){
+                    cartRepository.deleteByCartIdList(cartIdList);
+                }
             }
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());

@@ -5,7 +5,6 @@ import com.gofield.api.dto.req.OrderRequest;
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
-import com.gofield.domain.rds.domain.order.OrderShipping;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -56,8 +55,8 @@ public class OrderController {
 
     @ApiOperation(value = "배송사 추적")
     @GetMapping("/v1/{carrierId}/{trackId}")
-    public ApiResponse<NextUrlResponse> getOrderTrackerDeliveryUrl(@PathVariable String carrierId,
-                                                                   @PathVariable String trackId){
+    public ApiResponse<DeliveryTrackResponse> getOrderTrackerDeliveryUrl(@PathVariable String carrierId,
+                                                                         @PathVariable String trackId){
         return ApiResponse.success(orderService.getOrderTrackerDeliveryUrl(carrierId, trackId));
     }
 

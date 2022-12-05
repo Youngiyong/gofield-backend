@@ -13,7 +13,6 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
-import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.item.*;
@@ -60,12 +59,11 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public NextUrlResponse getOrderTrackerDeliveryUrl(String carrierId, String trackId){
+    public DeliveryTrackResponse getOrderTrackerDeliveryUrl(String carrierId, String trackId){
         Code code = codeRepository.findByCode(carrierId);
         if(code==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> carrierId는 존재하지 않는 코드입니다.", carrierId));
-        return NextUrlResponse.of(makeCarrierUrl(carrierId, trackId));
+        return DeliveryTrackResponse.of(thirdPartyService.getCarrierTrackInfo(carrierId, trackId));
     }
-
 
     @Transactional(readOnly = true)
     public OrderSheetResponse getOrderSheet(String uuid) {

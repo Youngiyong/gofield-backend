@@ -1,4 +1,4 @@
-package com.gofield.infrastructure.external.util;
+package com.gofield.api.util;
 
 import org.json.simple.JSONObject;
 
