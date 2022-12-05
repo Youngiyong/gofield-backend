@@ -14,6 +14,8 @@ import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.RandomUtils;
+import com.gofield.domain.rds.domain.code.Code;
+import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
 import com.gofield.domain.rds.domain.order.*;
@@ -37,21 +39,30 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class OrderService {
 
-    private final UserService userService;
 
+    private final CodeRepository codeRepository;
     private final ItemRepository itemRepository;
-    private final ItemOptionRepository itemOptionRepository;
-    private final ItemStockRepository itemStockRepository;
     private final OrderWaitRepository orderWaitRepository;
-
     private final OrderRepository orderRepository;
-    private final OrderItemRepository orderItemRepository;
     private final OrderSheetRepository orderSheetRepository;
+
+    private final OrderShippingRepository orderShippingRepository;
     private final OrderShippingAddressRepository orderShippingAddressRepository;
+    private final UserService userService;
     private final ThirdPartyService thirdPartyService;
 
     public String makeOrderNumber(){
         return String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis());
+    }
+    public String makeCarrierUrl(String carrierId, String trackId){
+        return String.format(Constants.TRACKER_DELIVERY_URL, carrierId, trackId);
+    }
+
+    @Transactional(readOnly = true)
+    public NextUrlResponse getOrderTrackerDeliveryUrl(String carrierId, String trackId){
+        Code code = codeRepository.findByCode(carrierId);
+        if(code==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> carrierId는 존재하지 않는 코드입니다.", carrierId));
+        return NextUrlResponse.of(makeCarrierUrl(carrierId, trackId));
     }
 
 
@@ -80,6 +91,14 @@ public class OrderService {
         }
         return OrderDetailResponse.of(order, OrderShippingResponse.of(order.getOrderShippings()));
     }
+
+    @Transactional(readOnly = true)
+    public OrderShippingDetailResponse getOrderShipping(String orderNumber, String shippingNumber){
+        User user = userService.getUserNotNonUser();
+        OrderShippingAddress orderShippingAddress = orderShippingAddressRepository.findByOrderNumber(orderNumber);
+        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
+        return OrderShippingDetailResponse.of(orderShipping, orderShippingAddress);
+      }
 
     @Transactional(readOnly = true)
     public List<OrderResponse> getOrderList(Pageable pageable){

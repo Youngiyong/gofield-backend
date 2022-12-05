@@ -19,9 +19,7 @@ public class OrderResponse {
     private EOrderStatusFlag status;
     private LocalDateTime createDate;
     private LocalDateTime cancelDate;
-
     private LocalDateTime confirmDate;
-
     private LocalDateTime finishDate;
     private List<OrderShippingResponse> orderShippingList;
 
