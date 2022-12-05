@@ -138,13 +138,13 @@ public class OrderService {
             result.add(orderSheet);
         }
         if(request.getTotalPrice()!=totalPrice){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 금액 맞지 않습니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 금액이 맞지 않습니다.");
         }else if(request.getTotalDelivery()!=totalDelivery){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 배달 금액이 맞지 않습니다.");
         }
         ItemOrderSheetListResponse list = ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result);
         try {
-            OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new ObjectMapper().writeValueAsString(list), totalPrice);
+            OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new ObjectMapper().writeValueAsString(list), totalPrice+totalDelivery);
             orderSheetRepository.save(orderSheet);
             return CommonCodeResponse.of(orderSheet.getUuid());
         } catch (JsonProcessingException e) {
