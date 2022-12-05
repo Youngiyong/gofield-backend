@@ -22,7 +22,7 @@ public class OrderShippingDetailResponse {
     private String trackingNumber;
     private EItemChargeFlag chargeType;
     private int deliveryPrice;
-    private String companyCode;
+    private String carrier;
     private LocalDateTime createDate;
     private LocalDateTime cancelDate;
     private LocalDateTime deliveryDate;
@@ -38,7 +38,7 @@ public class OrderShippingDetailResponse {
 
     @Builder
     private OrderShippingDetailResponse(Long id, String shippingNumber, EOrderShippingStatusFlag status,
-                                        String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String companyCode,
+                                        String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
                                         LocalDateTime createDate, LocalDateTime cancelDate, LocalDateTime deliveryDate, LocalDateTime deliveredDate,
                                         String tel, String name, String zipCode, String address, String addressExtra, String shippingComment,
                                         List<OrderItemResponse> orderItems){
@@ -48,7 +48,7 @@ public class OrderShippingDetailResponse {
         this.trackingNumber = trackingNumber;
         this.chargeType = chargeType;
         this.deliveryPrice = deliveryPrice;
-        this.companyCode = companyCode;
+        this.carrier = carrier;
         this.createDate = createDate;
         this.cancelDate = cancelDate;
         this.deliveryDate = deliveryDate;
@@ -70,7 +70,7 @@ public class OrderShippingDetailResponse {
                 .trackingNumber(orderShipping.getTrackingNumber())
                 .chargeType(orderShipping.getChargeType())
                 .deliveryPrice(orderShipping.getDeliveryPrice())
-                .companyCode(orderShipping.getCompanyCode())
+                .carrier(orderShipping.getCarrier())
                 .createDate(orderShipping.getCreateDate())
                 .cancelDate(orderShipping.getCancelDate())
                 .deliveryDate(orderShipping.getDeliveryDate())
@@ -86,7 +86,7 @@ public class OrderShippingDetailResponse {
     }
 
     public static OrderShippingDetailResponse of(Long id, String shippingNumber, EOrderShippingStatusFlag status,
-                                                 String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String companyCode,
+                                                 String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
                                                  LocalDateTime createDate, LocalDateTime cancelDate, LocalDateTime deliveryDate, LocalDateTime deliveredDate,
                                                  String tel, String name, String zipCode, String address, String addressExtra, String shippingComment,
                                                  List<OrderItem> orderItems){
@@ -97,7 +97,7 @@ public class OrderShippingDetailResponse {
                 .trackingNumber(trackingNumber)
                 .chargeType(chargeType)
                 .deliveryPrice(deliveryPrice)
-                .companyCode(companyCode)
+                .carrier(carrier)
                 .createDate(createDate)
                 .cancelDate(cancelDate)
                 .deliveryDate(deliveryDate)

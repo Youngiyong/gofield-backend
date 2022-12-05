@@ -54,7 +54,7 @@ public class OrderController {
     }
 
     @ApiOperation(value = "배송사 추적")
-    @GetMapping("/v1/{carrierId}/{trackId}")
+    @GetMapping("/v1/carrier/{carrierId}/track/{trackId}")
     public ApiResponse<DeliveryTrackResponse> getOrderTrackerDeliveryUrl(@PathVariable String carrierId,
                                                                          @PathVariable String trackId){
         return ApiResponse.success(orderService.getOrderTrackerDeliveryUrl(carrierId, trackId));
@@ -62,7 +62,7 @@ public class OrderController {
 
     @ApiOperation(value = "주문목록")
     @GetMapping("/v1")
-    public ApiResponse<List<OrderResponse>> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+    public ApiResponse<OrderListResponse> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(orderService.getOrderList(pageable));
     }
 }

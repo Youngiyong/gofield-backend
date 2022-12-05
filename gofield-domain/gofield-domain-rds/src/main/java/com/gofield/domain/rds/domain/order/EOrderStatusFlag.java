@@ -10,7 +10,6 @@ import lombok.Getter;
 public enum EOrderStatusFlag implements CodeEnum {
     ORDER_CREATE("주문 생성", "200"),
     ORDER_CANCEL("주문 취소", "201"),
-    ORDER_APPROVAL_READY("주문 승인 대기", "202"),
     ORDER_APPROVAL("주문 승인", "203"),
     ORDER_COMPLETE("주문 완료","210"),
     ORDER_DELETE("주문 삭제", "299"),

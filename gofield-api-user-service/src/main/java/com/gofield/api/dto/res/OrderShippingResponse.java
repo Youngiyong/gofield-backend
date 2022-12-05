@@ -21,7 +21,7 @@ public class OrderShippingResponse {
     private String trackingNumber;
     private EItemChargeFlag chargeType;
     private int deliveryPrice;
-    private String companyCode;
+    private String carrier;
     private LocalDateTime createDate;
     private LocalDateTime cancelDate;
     private LocalDateTime deliveryDate;
@@ -30,7 +30,7 @@ public class OrderShippingResponse {
 
     @Builder
     private OrderShippingResponse(Long id, String shippingNumber, EOrderShippingStatusFlag status,
-                                  String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String companyCode,
+                                  String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
                                   LocalDateTime createDate, LocalDateTime cancelDate,  LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItemResponse> orderItems){
         this.id = id;
         this.shippingNumber = shippingNumber;
@@ -38,7 +38,7 @@ public class OrderShippingResponse {
         this.trackingNumber = trackingNumber;
         this.chargeType = chargeType;
         this.deliveryPrice = deliveryPrice;
-        this.companyCode = companyCode;
+        this.carrier = carrier;
         this.createDate = createDate;
         this.cancelDate = cancelDate;
         this.deliveryDate = deliveryDate;
@@ -47,7 +47,7 @@ public class OrderShippingResponse {
     }
 
     public static OrderShippingResponse of(Long id, String shippingNumber, EOrderShippingStatusFlag status,
-                                           String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String companyCode,
+                                           String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
                                            LocalDateTime createDate, LocalDateTime cancelDate, LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItem> orderItems){
         return OrderShippingResponse.builder()
                 .id(id)
@@ -56,7 +56,7 @@ public class OrderShippingResponse {
                 .trackingNumber(trackingNumber)
                 .chargeType(chargeType)
                 .deliveryPrice(deliveryPrice)
-                .companyCode(companyCode)
+                .carrier(carrier)
                 .createDate(createDate)
                 .cancelDate(cancelDate)
                 .deliveryDate(deliveryDate)
@@ -70,7 +70,7 @@ public class OrderShippingResponse {
                 .stream()
                 .map(p -> {
                     return OrderShippingResponse.of(p.getId(), p.getShippingNumber(), p.getStatus(),
-                            p.getTrackingNumber(), p.getChargeType(), p.getDeliveryPrice(), p.getCompanyCode(), p.getCreateDate(), p.getCancelDate(),
+                            p.getTrackingNumber(), p.getChargeType(), p.getDeliveryPrice(), p.getCarrier(), p.getCreateDate(), p.getCancelDate(),
                             p.getDeliveryDate(), p.getDeliveredDate(), p.getOrderItems()); })
                 .collect(Collectors.toList());
     }

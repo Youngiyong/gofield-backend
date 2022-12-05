@@ -63,7 +63,7 @@ public class OrderShipping extends BaseTimeEntity {
     private int feeJejuBesides;
 
     @Column
-    private String companyCode;
+    private String carrier;
 
     @Column
     private LocalDateTime deliveryDate;
