@@ -1,6 +1,7 @@
 package com.gofield.common.utils;
 
 import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 public class LocalDateTimeUtils {
     private static final ZoneId ZONE_ID = ZoneId.of("Asia/Seoul");
@@ -23,4 +24,8 @@ public class LocalDateTimeUtils {
     }
 
     public static LocalDateTime tomorrowMinTime() { return LocalDateTime.now().plusDays(1).with(LocalTime.MIN); }
+
+    public static String LocalDateTimeToString(){
+        return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }

@@ -29,7 +29,8 @@ external:
         url: /oauth2.0/token
     slack:
       webhook:
-        base-url: https://hooks.slack.com/services
+        base-url: https://hooks.slack.com/services/
+        url: ${secret.slack.token}
     toss:
       payment:
         base-url: https://api.tosspayments.com

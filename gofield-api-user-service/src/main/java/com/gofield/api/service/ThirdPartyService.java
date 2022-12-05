@@ -199,7 +199,6 @@ public class ThirdPartyService {
 
                 OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), item, orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
                 orderItemRepository.save(orderItem);
-
             }
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
