@@ -129,13 +129,18 @@ public class OrderService {
             }
             int price = itemStock.getIsOption() ? itemStock.getOptionPrice() : itemStock.getPrice();
             int deliveryPrice = itemStock.getCharge();
-            if(itemStock.getCondition()<=price*itemStock.getQty()){
+            if(itemStock.getCondition()<=price*sheetItem.getQty()){
                 deliveryPrice = 0;
             }
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
             ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
+        }
+        if(request.getTotalPrice()!=totalPrice){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 금액 맞지 않습니다.");
+        }else if(request.getTotalDelivery()!=totalDelivery){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 배달 금액이 맞지 않습니다.");
         }
         ItemOrderSheetListResponse list = ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result);
         try {
