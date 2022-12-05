@@ -34,4 +34,16 @@ public class ItemStock extends BaseTimeEntity {
 
     @Column
     private int qty;
+
+    public void updateOrderApprove(int qty){
+        this.qty -= qty;
+        if(this.qty<0){
+            this.qty = 0;
+        }
+    }
+
+    public void updateOrderCancel(int qty){
+        this.qty += qty;
+    }
+
 }

@@ -20,10 +20,7 @@ import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.common.EGofieldService;
-import com.gofield.domain.rds.domain.item.Item;
-import com.gofield.domain.rds.domain.item.ItemOption;
-import com.gofield.domain.rds.domain.item.ItemOptionRepository;
-import com.gofield.domain.rds.domain.item.ItemRepository;
+import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.order.*;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
 import com.gofield.domain.rds.domain.user.StateLog;
@@ -117,7 +114,7 @@ public class ThirdPartyService {
     private final StateLogRepository stateLogRepository;
     private final PurchaseRepository purchaseRepository;
     private final PurchaseFailRepository purchaseFailRepository;
-    private final ItemRepository itemRepository;
+    private final ItemStockRepository itemStockRepository;
     private final CartRepository cartRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final ItemOptionRepository itemOptionRepository;
@@ -200,15 +197,15 @@ public class ThirdPartyService {
                 orderShippingRepository.save(orderShipping);
                 OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
                 orderShippingLogRepository.save(orderShippingLog);
-                Item item = itemRepository.findByItemId(result.getId());
+                ItemStock itemStock = itemStockRepository.findByItemNumber(result.getItemNumber());
+                itemStock.updateOrderApprove(result.getQty());
                 OrderItemOption orderItemOption = null;
                 if(result.getIsOption()){
                     ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
                     orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), new ObjectMapper().writeValueAsString(result.getOptionName()), result.getQty(), result.getPrice());
                     orderItemOptionRepository.save(orderItemOption);
                 }
-
-                OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), item, orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+                OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
                 orderItemRepository.save(orderItem);
             }
             List<Long> cartIdList = orderSheetContent.getCartIdList();
@@ -221,6 +218,7 @@ public class ThirdPartyService {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
         }
 
+        orderWaitRepository.delete(orderWait);
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
         } else {
