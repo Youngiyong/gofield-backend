@@ -64,7 +64,7 @@ public class CartService {
         }
         Item item = itemStock.getItem();
         ItemOption itemOption = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOptionRepository.findByItemNumber(request.getItemNumber()) : null;
-        int price = itemStock.getType().equals(EItemStockFlag.OPTION) ? itemOption.getPrice() : item.getPrice();
+        int price = itemStock.getItem().getIsOption() ? itemOption.getPrice() : item.getPrice();
         Boolean isOrder = itemStock.getStatus().equals(EItemStatusFlag.SALE) && itemStock.getQty()>=1 ? true : false;
         cart = Cart.newInstance(user.getId(), request.getItemNumber(), price, 1, isOrder, request.getIsNow());
         cartRepository.save(cart);

@@ -102,4 +102,12 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                 .where(cart.id.in(cartIdList), cart.userId.eq(userId))
                 .fetch();
     }
+
+    @Override
+    public void deleteByCartIdList(List<Long> cartIdList) {
+        jpaQueryFactory
+                .delete(cart)
+                .where(cart.id.in(cartIdList))
+                .execute();
+    }
 }

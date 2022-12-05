@@ -12,4 +12,5 @@ public interface CartRepositoryCustom {
     Cart findByCartIdAndUserId(Long cartId, Long userId);
     List<CartProjection> findAllByUserId(Long userId);
     List<Long> findAllInCartIdList(List<Long> cartIdList, Long userId);
+    void deleteByCartIdList(List<Long> cartIdList);
 }

@@ -33,6 +33,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -74,9 +75,9 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "장바구니 임시 정보가 존재하지 않습니다.");
         }
         try {
-            ItemOrderSheetListResponse result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<ItemOrderSheetListResponse>() {});
+            OrderSheetContentResponse result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>() {});
             UserAddressResponse userAddressResponse = UserAddressResponse.of(userService.getUserMainAddress(user.getId()));
-            return OrderSheetResponse.of(result, userAddressResponse);
+            return OrderSheetResponse.of(result.getOrderSheetList(), userAddressResponse);
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
         }
@@ -137,14 +138,18 @@ public class OrderService {
             ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
         }
+        System.out.println("totalPrice: " + totalPrice);
+        System.out.println("totalDelivery: " + totalDelivery);
         if(request.getTotalPrice()!=totalPrice){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 금액이 맞지 않습니다.");
         }else if(request.getTotalDelivery()!=totalDelivery){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 배달 금액이 맞지 않습니다.");
         }
         ItemOrderSheetListResponse list = ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result);
+        List<Long> cartIdList = request.getIsCart() ? request.getItems().stream().map(p -> p.getCartId()).collect(Collectors.toList()) : null;
+        OrderSheetContentResponse contentResponse = OrderSheetContentResponse.of(makeOrderName(result), list, cartIdList);
         try {
-            OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new ObjectMapper().writeValueAsString(list), totalPrice+totalDelivery);
+            OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new ObjectMapper().writeValueAsString(contentResponse), totalPrice+totalDelivery);
             orderSheetRepository.save(orderSheet);
             return CommonCodeResponse.of(orderSheet.getUuid());
         } catch (JsonProcessingException e) {
@@ -153,10 +158,13 @@ public class OrderService {
     }
 
     /*
-        ToDo: 주문명 수정
      */
-    private String makeOrderName(String sheet){
-        return "임시 주문 이름: " + RandomUtils.makeRandomNumberCode(6);
+    private String makeOrderName(List<ItemOrderSheetResponse> list){
+        if(list.size()>1){
+           return String.format("%s 외 %s건", list.get(0).getName(), list.size());
+        } else {
+            return list.get(0).getName();
+        }
     }
 
     @Transactional
@@ -166,9 +174,16 @@ public class OrderService {
         if(orderSheet==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "주문시트가 존재하지 않습니다.");
         }
+
+        OrderSheetContentResponse orderSheetContent = null;
+        try {
+            orderSheetContent =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
+        } catch (JsonProcessingException e) {
+            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
+        }
         String cardCompany = request.getPaymentType().equals(PaymentType.CARD) ? request.getCompanyCode() : null;
         String easyPay = request.getPaymentType().equals(PaymentType.EASYPAY) ? request.getCompanyCode() : null;
-        TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), makeOrderName(orderSheet.getSheet()), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
+        TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), orderSheetContent.getOrderName(), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
         TossPaymentResponse response = thirdPartyService.getPaymentReadyInfo(externalRequest);
         OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(),  new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()), request.getPaymentType(), request.getEnvironment());
         orderWaitRepository.save(orderWait);

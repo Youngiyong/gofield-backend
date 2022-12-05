@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
+import static com.gofield.domain.rds.domain.item.QItem.item;
 import static com.gofield.domain.rds.domain.item.QItemStock.itemStock;
 
 @RequiredArgsConstructor
@@ -19,7 +20,18 @@ public class ItemStockRepositoryCustomImpl implements ItemStockRepositoryCustom 
     @Override
     public ItemStock findByItemNumber(String itemNumber) {
         return jpaQueryFactory
-                .selectFrom(itemStock)
+                .select(itemStock)
+                .from(itemStock)
+                .where(itemStock.itemNumber.eq(itemNumber))
+                .fetchFirst();
+    }
+
+    @Override
+    public ItemStock findItemByItemNumber(String itemNumber) {
+        return jpaQueryFactory
+                .select(itemStock)
+                .from(itemStock)
+                .innerJoin(itemStock.item, item).fetchJoin()
                 .where(itemStock.itemNumber.eq(itemNumber))
                 .fetchFirst();
     }

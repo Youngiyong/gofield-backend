@@ -8,12 +8,14 @@ import com.gofield.api.dto.req.OrderRequest;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.ItemOrderSheetListResponse;
 import com.gofield.api.dto.res.ItemOrderSheetResponse;
+import com.gofield.api.dto.res.OrderSheetContentResponse;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.HttpUtils;
 import com.gofield.common.utils.RandomUtils;
+import com.gofield.domain.rds.domain.cart.CartRepository;
 import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
@@ -104,6 +106,8 @@ public class ThirdPartyService {
     @Value("${secret.toss.secret-key}")
     private String TOSS_PAYMENT_CLIENT_SECRET;
 
+    private final CartRepository cartRepository;
+
     private final OrderWaitRepository orderWaitRepository;
     private final TossPaymentApiClient tossPaymentApiClient;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
@@ -171,14 +175,14 @@ public class ThirdPartyService {
             Code code = codeRepository.findByCode(response.getCard().getIssuerCode());
             paymentCompany = code!=null ? code.getName() : "..";
         }
-
         /*
         ToDo: 할인금액 totalDiscount 처리
          */
         try {
             Purchase purchase = Purchase.newInstance(orderId, paymentKey, amount, new ObjectMapper().writeValueAsString(response));
             purchaseRepository.save(purchase);
-            ItemOrderSheetListResponse orderSheetList =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<ItemOrderSheetListResponse>(){});
+            OrderSheetContentResponse orderSheetContent =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
+            ItemOrderSheetListResponse orderSheetList = orderSheetContent.getOrderSheetList();
             UserRequest.ShippingAddress shippingAddress = new ObjectMapper().readValue(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>(){});
             OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
             orderShippingAddressRepository.save(orderShippingAddress);
@@ -200,13 +204,13 @@ public class ThirdPartyService {
                 OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), item, orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
                 orderItemRepository.save(orderItem);
             }
+            List<Long> cartIdList = orderSheetContent.getCartIdList();
+            if(!cartIdList.isEmpty()){
+                cartRepository.deleteByCartIdList(cartIdList);
+            }
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
         }
-
-
-
-
 
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
