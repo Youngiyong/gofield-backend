@@ -50,7 +50,7 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
     @Override
     public ItemOption findByOptionId(Long id) {
         return jpaQueryFactory
-                .select(itemOption)
+                .selectFrom(itemOption)
                 .where(itemOption.id.eq(id))
                 .fetchFirst();
     }
