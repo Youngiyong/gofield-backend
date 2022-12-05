@@ -1,7 +1,6 @@
 package com.gofield.domain.rds.domain.order;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import com.gofield.domain.rds.domain.item.ItemOption;
 import com.gofield.domain.rds.domain.item.EItemOptionTypeFlag;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -21,11 +20,7 @@ import javax.persistence.*;
 public class OrderItemOption extends BaseTimeEntity {
 
     @Column
-    private Long orderItemId;
-
-    @OneToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "item_option_id")
-    private ItemOption itemOption;
+    private Long itemOptionId;
 
     @Column(name = "type_flag")
     private EItemOptionTypeFlag optionType;
@@ -43,19 +38,17 @@ public class OrderItemOption extends BaseTimeEntity {
     private int price;
 
     @Builder
-    private OrderItemOption(Long orderItemId, ItemOption itemOption, EItemOptionTypeFlag optionType, String name, int qty,  int price){
-        this.orderItemId = orderItemId;
-        this.itemOption = itemOption;
+    private OrderItemOption(Long itemOptionId, EItemOptionTypeFlag optionType, String name, int qty,  int price){
+        this.itemOptionId = itemOptionId;
         this.optionType = optionType;
         this.name = name;
         this.qty = qty;
         this.price = price;
     }
 
-    public static OrderItemOption newInstance(Long orderItemId, ItemOption itemOption, EItemOptionTypeFlag optionType, String name, int qty, int price){
+    public static OrderItemOption newInstance(Long itemOptionId, EItemOptionTypeFlag optionType, String name, int qty, int price){
         return OrderItemOption.builder()
-                .orderItemId(orderItemId)
-                .itemOption(itemOption)
+                .itemOptionId(itemOptionId)
                 .optionType(optionType)
                 .name(name)
                 .qty(qty)

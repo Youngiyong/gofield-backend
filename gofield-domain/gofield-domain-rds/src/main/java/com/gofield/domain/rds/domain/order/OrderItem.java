@@ -33,6 +33,10 @@ public class OrderItem extends BaseTimeEntity {
     @JoinColumn(name = "item_id")
     private Item item;
 
+    @OneToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "order_item_option_id")
+    private OrderItemOption orderItemOption;
+
     @Column
     private String orderNumber;
 
@@ -52,11 +56,12 @@ public class OrderItem extends BaseTimeEntity {
     private EOrderItemStatusFlag status;
 
     @Builder
-    private OrderItem(Long orderId, Long sellerId, Item item, OrderShipping orderShipping, String orderNumber,
+    private OrderItem(Long orderId, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
                       String itemNumber, String name, int qty, int price){
         this.orderId = orderId;
         this.sellerId = sellerId;
         this.item = item;
+        this.orderItemOption = orderItemOption;
         this.orderShipping = orderShipping;
         this.orderNumber = orderNumber;
         this.itemNumber = itemNumber;
@@ -66,12 +71,13 @@ public class OrderItem extends BaseTimeEntity {
         this.status = EOrderItemStatusFlag.ORDER_ITEM_RECEIPT;
     }
 
-    public static OrderItem newInstance(Long orderId, Long sellerId, Item item, OrderShipping orderShipping, String orderNumber,
+    public static OrderItem newInstance(Long orderId, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
                                         String itemNumber, String name, int qty, int price){
         return OrderItem.builder()
                 .orderId(orderId)
                 .sellerId(sellerId)
                 .item(item)
+                .orderItemOption(orderItemOption)
                 .orderShipping(orderShipping)
                 .orderNumber(orderNumber)
                 .itemNumber(itemNumber)

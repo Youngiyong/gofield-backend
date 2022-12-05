@@ -2,17 +2,18 @@ package com.gofield.api.controller;
 
 
 import com.gofield.api.dto.req.OrderRequest;
-import com.gofield.api.dto.res.CommonCodeResponse;
-import com.gofield.api.dto.res.OrderSheetResponse;
-import com.gofield.api.dto.res.OrderWaitResponse;
+import com.gofield.api.dto.res.*;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
-import com.gofield.domain.rds.domain.order.Order;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/order")
 @RestController
@@ -40,8 +41,14 @@ public class OrderController {
     }
 
     @ApiOperation(value = "주문상세")
-    @GetMapping("/v1/order/{orderNumber}")
-    public ApiResponse<Order> getOrderDetail(@PathVariable String orderNumber){
+    @GetMapping("/v1/{orderNumber}")
+    public ApiResponse<OrderDetailResponse> getOrderDetail(@PathVariable String orderNumber){
         return ApiResponse.success(orderService.getOrderDetail(orderNumber));
+    }
+
+    @ApiOperation(value = "주문목록")
+    @GetMapping("/v1")
+    public ApiResponse<List<OrderResponse>> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(orderService.getOrderList(pageable));
     }
 }

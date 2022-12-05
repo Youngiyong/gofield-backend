@@ -113,7 +113,6 @@ public class ThirdPartyService {
     private final StateLogRepository stateLogRepository;
     private final PurchaseRepository purchaseRepository;
     private final PurchaseFailRepository purchaseFailRepository;
-
     private final ItemRepository itemRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final CodeRepository codeRepository;
@@ -191,13 +190,16 @@ public class ThirdPartyService {
                 OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
                 orderShippingLogRepository.save(orderShippingLog);
                 Item item = itemRepository.findByItemId(result.getId());
-                OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), item, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
-                orderItemRepository.save(orderItem);
+                OrderItemOption orderItemOption = null;
                 if(result.getIsOption()){
                     ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
-                    OrderItemOption orderItemOption = OrderItemOption.newInstance(orderItem.getId(), itemOption, result.getOptionType(), new ObjectMapper().writeValueAsString(result.getOptionName()), result.getQty(), result.getPrice());
+                    orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), new ObjectMapper().writeValueAsString(result.getOptionName()), result.getQty(), result.getPrice());
                     orderItemOptionRepository.save(orderItemOption);
                 }
+
+                OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), item, orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+                orderItemRepository.save(orderItem);
+
             }
         } catch (JsonProcessingException e) {
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());

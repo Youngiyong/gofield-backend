@@ -52,7 +52,6 @@ public class Order extends BaseTimeEntity {
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderShipping> orderShippings = new ArrayList<>();
 
-
     @Column
     private LocalDateTime deleteDate;
 

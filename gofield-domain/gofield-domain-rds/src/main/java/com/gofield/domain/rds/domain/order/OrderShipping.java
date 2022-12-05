@@ -72,6 +72,9 @@ public class OrderShipping extends BaseTimeEntity {
     private LocalDateTime deliveredDate;
 
     @Column
+    private LocalDateTime cancelDate;
+
+    @Column
     private LocalDateTime finishDate;
 
     @Column

@@ -13,6 +13,7 @@ public enum EOrderStatusFlag implements CodeEnum {
     ORDER_APPROVAL_READY("주문 승인 대기", "202"),
     ORDER_APPROVAL("주문 승인", "203"),
     ORDER_COMPLETE("주문 완료","210"),
+    ORDER_DELETE("주문 삭제", "299"),
     ;
 
     private String description;

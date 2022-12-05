@@ -9,6 +9,7 @@ import com.gofield.api.dto.req.OrderRequest;
 import com.gofield.api.dto.res.*;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.InvalidException;
+import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -22,6 +23,7 @@ import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -70,10 +72,20 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public Order getOrderDetail(String orderNumber){
-        Order order = orderRepository.findByOrderNumber(orderNumber);
-        System.out.println("test");
-        return null;
+    public OrderDetailResponse getOrderDetail(String orderNumber){
+        User user = userService.getUserNotNonUser();
+        Order order = orderRepository.findByOrderNumberAndUserIdAndNotStatusDelete(user.getId(), orderNumber);
+        if(order==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 주문번호입니다.", orderNumber));
+        }
+        return OrderDetailResponse.of(order, OrderShippingResponse.of(order.getOrderShippings()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<OrderResponse> getOrderList(Pageable pageable){
+        User user = userService.getUserNotNonUser();
+        List<Order> orderList = orderRepository.findAllByUserIdAndNotStatusDelete(user.getId(), pageable);
+        return OrderResponse.of(orderList);
     }
 
     @Transactional
@@ -120,7 +132,7 @@ public class OrderService {
         ToDo: 주문명 수정
      */
     private String makeOrderName(String sheet){
-        return "임시 주문 코드 " + RandomUtils.makeRandomCode(6);
+        return "임시 주문 이름: " + RandomUtils.makeRandomNumberCode(6);
     }
 
     @Transactional
