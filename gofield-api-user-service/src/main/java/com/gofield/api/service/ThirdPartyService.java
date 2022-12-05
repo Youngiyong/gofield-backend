@@ -182,7 +182,7 @@ public class ThirdPartyService {
             UserRequest.ShippingAddress shippingAddress = new ObjectMapper().readValue(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>(){});
             OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
             orderShippingAddressRepository.save(orderShippingAddress);
-            Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), amount, 0,  paymentCompany);
+            Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), orderSheetList.getTotalPrice(), 0,  paymentCompany);
             orderRepository.save(order);
             for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
                 OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
