@@ -109,8 +109,10 @@ public class OrderService {
     @Transactional
     public CommonCodeResponse createOrderSheet(OrderRequest.OrderSheet request){
         User user = userService.getUserNotNonUser();
+
         int totalPrice = 0;
         int totalDelivery = 0;
+
         List<ItemOrderSheetResponse> result = new ArrayList<>();
         /*
         ToDo: 배송비 정책 정해지면 배송비 반영해서 가격 계산
@@ -153,8 +155,7 @@ public class OrderService {
         }
     }
 
-    /*
-     */
+
     private String makeOrderName(List<ItemOrderSheetResponse> list){
         if(list.size()>1){
            return String.format("%s 외 %s건", list.get(0).getName(), list.size()-1);
@@ -185,7 +186,5 @@ public class OrderService {
         orderWaitRepository.save(orderWait);
         return OrderWaitResponse.of(response.getCheckout().getUrl());
     }
-
-
 
 }

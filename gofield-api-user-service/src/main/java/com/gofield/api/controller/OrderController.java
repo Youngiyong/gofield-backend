@@ -13,7 +13,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RequestMapping("/api/order")
 @RestController
@@ -58,6 +57,13 @@ public class OrderController {
     public ApiResponse<DeliveryTrackResponse> getOrderTrackerDeliveryUrl(@PathVariable String carrierId,
                                                                          @PathVariable String trackId){
         return ApiResponse.success(orderService.getOrderTrackerDeliveryUrl(carrierId, trackId));
+    }
+
+    @ApiOperation(value = "주문 배송 취소")
+    @GetMapping("/v1/{orderNumber}/shipping/{shippingNumber}/cancel")
+    public ApiResponse cancelOrderShipping(@PathVariable String orderNumber,
+                                                                        @PathVariable String shippingNumber){
+        return ApiResponse.SUCCESS;
     }
 
     @ApiOperation(value = "주문목록")

@@ -23,14 +23,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CartService {
-
     private final UserService userService;
-
-    private final CommonService commonService;
-
     private final CartRepository cartRepository;
-    private final OrderSheetRepository orderSheetRepository;
-
     private final ItemStockRepository itemStockRepository;
     private final ItemOptionRepository itemOptionRepository;
 
@@ -97,6 +91,5 @@ public class CartService {
         List<CartProjection> result = cartRepository.findAllByUserId(user.getId());
         return CartResponse.of(result);
     }
-
 
 }

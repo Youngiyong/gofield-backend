@@ -46,6 +46,19 @@ public class Order extends BaseTimeEntity {
     @Column
     private String paymentCompany;
 
+    @Column
+    @Enumerated
+    private EPaymentType paymentType;
+
+    @Column
+    private String cardNumber;
+
+    @Column
+    private String cardType;
+
+    @Column
+    private int installmentPlanMonth;
+
     @Column(nullable = false, name = "status_flag")
     private EOrderStatusFlag status;
 
@@ -71,7 +84,7 @@ public class Order extends BaseTimeEntity {
     private LocalDateTime finishDate;
 
     @Builder
-    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, EOrderStatusFlag status){
+    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, EPaymentType paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderStatusFlag status){
         this.shippingAddress = shippingAddress;
         this.userId = userId;
         this.orderNumber = orderNumber;
@@ -80,11 +93,15 @@ public class Order extends BaseTimeEntity {
         this.totalPrice = totalPrice;
         this.totalDiscount = totalDiscount;
         this.paymentCompany = paymentCompany;
+        this.paymentType = paymentType;
+        this.cardNumber = cardNumber;
+        this.cardType = cardType;
+        this.installmentPlanMonth = installmentPlanMonth;
         this.status = status;
     }
 
     public static Order newInstance(OrderShippingAddress shippingAddress, Long userId,  String orderNumber,  String paymentKey,
-                                    int totalDelivery, int totalPrice, int totalDiscount, String paymentCompany){
+                                    int totalDelivery, int totalPrice, int totalDiscount, String paymentCompany, EPaymentType paymentType, String cardNumber, String cardType, int installmentPlanMonth){
         return Order.builder()
                 .shippingAddress(shippingAddress)
                 .userId(userId)
@@ -94,6 +111,10 @@ public class Order extends BaseTimeEntity {
                 .totalPrice(totalPrice)
                 .totalDiscount(totalDiscount)
                 .paymentCompany(paymentCompany)
+                .paymentType(paymentType)
+                .cardNumber(cardNumber)
+                .cardType(cardType)
+                .installmentPlanMonth(installmentPlanMonth)
                 .status(EOrderStatusFlag.ORDER_CREATE)
                 .build();
     }

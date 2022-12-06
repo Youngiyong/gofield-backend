@@ -173,12 +173,22 @@ public class ThirdPartyService {
         OrderWait orderWait = orderWaitRepository.findByOid(orderId);
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
         TossPaymentApproveResponse response = tossPaymentApiClient.approvePayment(TOSS_PAYMENT_CLIENT_SECRET, TossPaymentRequest.PaymentApprove.of(amount, orderId, paymentKey));
+
         String paymentCompany = null;
+        String cardNumber = null;
+        String cardType = null;
+        EPaymentType paymentType = null;
+        int installmentPlanMonth = 0;
+
         if(response.getEasyPay()!=null){
             paymentCompany = response.getEasyPay().getProvider();
+            paymentType = EPaymentType.EASYPAY;
         } else {
             Code code = codeRepository.findByCode(response.getCard().getIssuerCode());
             paymentCompany = code!=null ? code.getName() : "..";
+            paymentType = EPaymentType.CARD;
+            cardNumber = response.getCard().getNumber();
+            installmentPlanMonth = response.getCard().getInstallmentPlanMonths();
         }
 
         /*
@@ -192,7 +202,7 @@ public class ThirdPartyService {
             UserRequest.ShippingAddress shippingAddress = new ObjectMapper().readValue(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>(){});
             OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
             orderShippingAddressRepository.save(orderShippingAddress);
-            Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), orderSheetList.getTotalPrice(), 0,  paymentCompany);
+            Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), orderSheetList.getTotalPrice(), 0,  paymentCompany, paymentType, cardNumber, cardType, installmentPlanMonth);
             orderRepository.save(order);
             for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
                 OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());

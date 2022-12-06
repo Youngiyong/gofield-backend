@@ -22,7 +22,7 @@ public class ItemProjectionResponse {
     private int price;
     private int qty;
     private Long likeId;
-
+    private Boolean isOption;
     private EItemStatusFlag status;
     private EItemClassificationFlag classification;
     private EItemSpecFlag spec;
@@ -36,7 +36,7 @@ public class ItemProjectionResponse {
     private ShippingTemplate shippingTemplate;
 
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -48,6 +48,7 @@ public class ItemProjectionResponse {
         this.qty = qty;
         this.status = status;
         this.likeId = likeId;
+        this.isOption = isOption;
         this.classification = classification;
         this.spec = spec;
         this.delivery = delivery;
@@ -58,7 +59,7 @@ public class ItemProjectionResponse {
         this.shippingTemplate = shippingTemplate;
     }
 
-    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
+    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
         return ItemProjectionResponse.builder()
                 .id(id)
                 .name(name)
@@ -71,6 +72,7 @@ public class ItemProjectionResponse {
                 .status(status)
                 .qty(qty)
                 .likeId(likeId)
+                .isOption(isOption)
                 .classification(classification)
                 .spec(spec)
                 .delivery(delivery)

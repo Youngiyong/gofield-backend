@@ -515,6 +515,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.itemNumber,
                             item.price,
                             itemStock.qty,
+                            item.isOption,
                             itemStock.status,
                             item.classification,
                             itemDetail.spec,
@@ -549,7 +550,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
             return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
                     projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(), projection.getPrice(), projection.getQty(), projection.getStatus(),
-                    null, projection.getClassification(), projection.getSpec(), projection.getDelivery(),
+                    null, projection.getIsOption(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                     projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
         }
 
@@ -567,6 +568,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemStock.qty,
                         itemStock.status,
                         userLikeItem.id.as("likeId"),
+                        item.isOption,
                         item.classification,
                         itemDetail.spec,
                         item.delivery,
@@ -602,7 +604,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
         return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
                 projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(),  projection.getPrice(), projection.getQty(), projection.getStatus(),
-                projection.getLikeId(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
+                projection.getLikeId(), projection.getIsOption(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                 projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
     }
 
