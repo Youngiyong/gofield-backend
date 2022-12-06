@@ -643,6 +643,19 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetchOne();
     }
 
+    @Override
+    public Item findLowestItemByBundleIdAndClassification(Long bundleId, EItemClassificationFlag classification) {
+        return jpaQueryFactory
+                .select(item)
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .where(item.bundle.id.eq(bundleId), item.classification.eq(classification),
+                        itemStock.status.eq(EItemStatusFlag.SALE))
+                .orderBy(item.price.asc())
+                .fetchFirst();
+    }
+
 
     @Override
     public Item findByItemId(Long itemId) {

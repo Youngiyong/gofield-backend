@@ -4,6 +4,7 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -166,7 +167,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.brand.id.eq(brand.id))
                     .leftJoin(userLikeItem)
                     .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                    .where(item.bundle.id.eq(bundle.getId()))
+                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -195,7 +196,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(item.bundle.id.eq(bundle.getId()))
+                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())

@@ -133,11 +133,9 @@ public class OrderService {
             }
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
-            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
+            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), itemStock.getPrice(), sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
         }
-        System.out.println("totalPrice: " + totalPrice);
-        System.out.println("totalDelivery: " + totalDelivery);
         if(request.getTotalPrice()!=totalPrice){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 금액이 맞지 않습니다.");
         }else if(request.getTotalDelivery()!=totalDelivery){
@@ -159,7 +157,7 @@ public class OrderService {
      */
     private String makeOrderName(List<ItemOrderSheetResponse> list){
         if(list.size()>1){
-           return String.format("%s 외 %s건", list.get(0).getName(), list.size());
+           return String.format("%s 외 %s건", list.get(0).getName(), list.size()-1);
         } else {
             return list.get(0).getName();
         }

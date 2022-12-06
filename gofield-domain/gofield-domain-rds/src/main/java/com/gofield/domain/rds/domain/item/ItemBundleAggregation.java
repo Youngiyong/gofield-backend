@@ -33,4 +33,12 @@ public class ItemBundleAggregation extends BaseTimeEntity {
 
     @Column
     private int usedLowestPrice;
+
+    public void updateAggregationPrice(EItemClassificationFlag classification, int price){
+        if(classification.equals(EItemClassificationFlag.USED)){
+            this.usedLowestPrice = price;
+        } else if(classification.equals(EItemClassificationFlag.NEW)){
+            this.newLowestPrice = price;
+        }
+    }
 }

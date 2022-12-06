@@ -37,8 +37,9 @@ public class ItemStock extends BaseTimeEntity {
 
     public void updateOrderApprove(int qty){
         this.qty -= qty;
-        if(this.qty<0){
+        if(this.qty<0 || this.qty==0){
             this.qty = 0;
+            this.status = EItemStatusFlag.SOLD_OUT;
         }
     }
 

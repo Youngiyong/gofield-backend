@@ -104,7 +104,6 @@ public class ThirdPartyService {
 
     @Value("${secret.toss.secret-key}")
     private String TOSS_PAYMENT_CLIENT_SECRET;
-
     private final TrackerApiClient trackerApiClient;
     private final TossPaymentApiClient tossPaymentApiClient;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
@@ -115,6 +114,9 @@ public class ThirdPartyService {
     private final PurchaseRepository purchaseRepository;
     private final PurchaseFailRepository purchaseFailRepository;
     private final ItemStockRepository itemStockRepository;
+
+    private final ItemRepository itemRepository;
+    private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final CartRepository cartRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final ItemOptionRepository itemOptionRepository;
@@ -207,6 +209,12 @@ public class ThirdPartyService {
                 }
                 OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
                 orderItemRepository.save(orderItem);
+                if(result.getBundleId()!=null){
+                    ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(result.getBundleId());
+                    Item item = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
+                    int updatePrice = item == null ? 0 : item.getPrice();
+                    itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice);
+                }
             }
             List<Long> cartIdList = orderSheetContent.getCartIdList();
             if(cartIdList!=null){

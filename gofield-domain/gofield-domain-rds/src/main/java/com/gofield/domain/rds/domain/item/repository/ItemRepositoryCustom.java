@@ -24,5 +24,6 @@ public interface ItemRepositoryCustom {
     ItemProjectionResponse findByItemNumberAndUserId(String itemNumber, Long userId);
 
     ItemOrderSheetProjection findItemOrderSheetByItemNumber(String itemNumber);
+    Item findLowestItemByBundleIdAndClassification(Long bundleId, EItemClassificationFlag classification);
 }
 

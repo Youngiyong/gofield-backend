@@ -20,6 +20,7 @@ public class ItemOrderSheetResponse {
 
     private Long id;
     private Long sellerId;
+    private Long bundleId;
     private String brandName;
     private String name;
     private List<String> optionName;
@@ -39,10 +40,11 @@ public class ItemOrderSheetResponse {
 
 
     @Builder
-    private ItemOrderSheetResponse(Long id, Long sellerId, String brandName, String name, List<String> optionName, String thumbnail,
+    private ItemOrderSheetResponse(Long id, Long sellerId, Long bundleId, String brandName, String name, List<String> optionName, String thumbnail,
                                    String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType, EItemChargeFlag chargeType, int charge, int condition, int feeJeju, int feeJejuBesides){
         this.id = id;
         this.sellerId = sellerId;
+        this.bundleId = bundleId;
         this.brandName = brandName;
         this.name = name;
         this.optionName = optionName;
@@ -64,12 +66,13 @@ public class ItemOrderSheetResponse {
     /*
     ToDo: 배송비는 우션 0원처리
      */
-    public static ItemOrderSheetResponse of(Long id, Long sellerId, String brandName, String name, String optionName, String thumbnail,
+    public static ItemOrderSheetResponse of(Long id, Long sellerId, Long bundleId, String brandName, String name, String optionName, String thumbnail,
                                             String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType,  EItemChargeFlag chargeType,  int charge, int condition, int feeJeju, int feeJejuBesides){
         try {
             return ItemOrderSheetResponse.builder()
                     .id(id)
                     .sellerId(sellerId)
+                    .bundleId(bundleId)
                     .brandName(brandName)
                     .name(name)
                     .optionName(optionName==null ? null : new ObjectMapper().readValue(optionName, new TypeReference<List<String>>(){}))
