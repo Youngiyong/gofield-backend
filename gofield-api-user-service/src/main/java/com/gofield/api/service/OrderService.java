@@ -19,7 +19,9 @@ import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
 import com.gofield.domain.rds.domain.order.*;
 import com.gofield.domain.rds.domain.user.User;
+import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
+import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentCancelResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -38,18 +42,17 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-
-
     private final CodeRepository codeRepository;
     private final ItemRepository itemRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final OrderRepository orderRepository;
     private final OrderSheetRepository orderSheetRepository;
-
     private final OrderShippingRepository orderShippingRepository;
     private final OrderShippingAddressRepository orderShippingAddressRepository;
     private final UserService userService;
     private final ThirdPartyService thirdPartyService;
+
+    private final TossPaymentApiClient tossPaymentApiClient;
 
     public String makeOrderNumber(){
         return String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis());
@@ -187,4 +190,19 @@ public class OrderService {
         return OrderWaitResponse.of(response.getCheckout().getUrl());
     }
 
+    @Transactional
+    public void cancelOrderShipping(String orderNumber, String shippingNumber, OrderRequest.OrderCancel request){
+
+    }
+
+    public void cancelPayment(String orderNumber)  {
+        Order order = orderRepository.findByOrderNumber(orderNumber);
+        TossPaymentRequest.PaymentCancel request = TossPaymentRequest.PaymentCancel.builder()
+                .cancelAmount(order.getTotalPrice()+order.getTotalDelivery())
+                .cancelReason("취소 사유입니다.")
+                .build();
+
+        TossPaymentCancelResponse response = thirdPartyService.cancelPayment(order.getPaymentKey(), request);
+        System.out.println("..");
+    }
 }

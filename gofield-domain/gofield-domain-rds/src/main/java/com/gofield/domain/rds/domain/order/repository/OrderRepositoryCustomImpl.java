@@ -30,6 +30,15 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
     }
 
     @Override
+    public Order findByOrderNumber(String orderNumber) {
+        return jpaQueryFactory
+                .select(order)
+                .from(order)
+                .where(order.orderNumber.eq(orderNumber))
+                .fetchFirst();
+    }
+
+    @Override
     public List<Order> findAllByUserIdAndNotStatusDelete(Long userId, Pageable pageable) {
         return jpaQueryFactory
                 .select(order)

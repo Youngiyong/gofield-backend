@@ -8,7 +8,6 @@ import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.cart.Cart;
 import com.gofield.domain.rds.domain.cart.CartRepository;
-import com.gofield.domain.rds.domain.order.OrderSheetRepository;
 import com.gofield.domain.rds.domain.cart.projection.CartProjection;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.user.User;

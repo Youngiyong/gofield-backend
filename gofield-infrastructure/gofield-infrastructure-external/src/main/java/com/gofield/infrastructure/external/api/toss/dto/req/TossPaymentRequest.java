@@ -3,6 +3,8 @@ package com.gofield.infrastructure.external.api.toss.dto.req;
 import lombok.Builder;
 import lombok.Getter;
 
+import javax.validation.constraints.NotNull;
+
 
 public class TossPaymentRequest {
 
@@ -48,5 +50,15 @@ public class TossPaymentRequest {
         }
     }
 
+    @Builder
+    @Getter
+    public static class PaymentCancel {
+        @NotNull(message = "취소사유는 필수값입니다.")
+        private String cancelReason;
+        private Integer cancelAmount;
+        /*
+        ToDo: 가상계좌 추가시 추가 https://docs.tosspayments.com/reference#%EA%B2%B0%EC%A0%9C-%EC%B7%A8%EC%86%8C
+         */
+    }
 
 }

@@ -22,13 +22,7 @@ public class OrderCancel extends BaseTimeEntity {
     private Long orderId;
 
     @Column
-    private Long itemId;
-
-    @Column
     private String orderNumber;
-
-    @Column
-    private String itemNumber;
 
     @Column(name = "code_flag")
     private EOrderCancelCodeFlag code;
@@ -42,15 +36,44 @@ public class OrderCancel extends BaseTimeEntity {
     @Column
     private int totalDelivery;
 
+    @Column
+    private int totalDiscount;
+
+    @Column
+    private int totalPg;
+
+    @Column
+    private String paymentCompany;
+
+    @Column
+    @Enumerated
+    private EPaymentType paymentType;
+
+    @Column
+    private String cardNumber;
+
+    @Column
+    private String cardType;
+
+    @Column
+    private int installmentPlanMonth;
+
+    @Column
+    private String refundName;
+
+    @Column
+    private String refundCode;
+
+    @Column
+    private String refundBank;
+
     @Column(columnDefinition = "TEXT")
     private String content;
 
     @Builder
     private OrderCancel(Long orderId, Long itemId, String orderNumber, String itemNumber, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalPrice, int totalDelivery, String content) {
         this.orderId = orderId;
-        this.itemId = itemId;
         this.orderNumber = orderNumber;
-        this.itemNumber = itemNumber;
         this.code = code;
         this.reason = reason;
         this.totalPrice = totalPrice;

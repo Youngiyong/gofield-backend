@@ -38,6 +38,7 @@ import com.gofield.infrastructure.external.api.naver.dto.res.NaverTokenResponse;
 import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentApproveResponse;
+import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentCancelResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
 import com.gofield.infrastructure.external.api.tracker.TrackerApiClient;
 import com.gofield.infrastructure.external.api.tracker.res.CarrierTrackResponse;
@@ -131,6 +132,10 @@ public class ThirdPartyService {
 
     public CarrierTrackResponse getCarrierTrackInfo(String carrierId, String trackId){
         return trackerApiClient.getCarrierTrackInfo(carrierId, trackId);
+    }
+
+    public TossPaymentCancelResponse cancelPayment(String paymentKey, TossPaymentRequest.PaymentCancel request){
+        return tossPaymentApiClient.cancelPayment(TOSS_PAYMENT_CLIENT_SECRET, paymentKey, request);
     }
 
     @Transactional(readOnly = true)

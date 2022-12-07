@@ -60,9 +60,11 @@ public class OrderController {
     }
 
     @ApiOperation(value = "주문 배송 취소")
-    @GetMapping("/v1/{orderNumber}/shipping/{shippingNumber}/cancel")
+    @PostMapping("/v1/{orderNumber}/shipping/{shippingNumber}/cancel")
     public ApiResponse cancelOrderShipping(@PathVariable String orderNumber,
-                                                                        @PathVariable String shippingNumber){
+                                           @PathVariable String shippingNumber,
+                                           @Valid @RequestBody OrderRequest.OrderCancel request){
+
         return ApiResponse.SUCCESS;
     }
 
@@ -71,4 +73,5 @@ public class OrderController {
     public ApiResponse<OrderListResponse> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(orderService.getOrderList(pageable));
     }
+
 }

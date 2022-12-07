@@ -36,4 +36,13 @@ public class OrderRequest {
             private int qty;
         }
     }
+
+    @Getter
+    public static class OrderCancel {
+        @NotNull(message = "주문 상품 아이디는 필수값입니다.")
+        private Long orderItemId;
+        @NotNull(message = "배송 취소 코드는 필수값입니다.")
+        private String cancelCode;
+        private String cancelComment;
+    }
 }

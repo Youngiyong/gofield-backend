@@ -14,7 +14,5 @@ dependencies {
     api project(':gofield-common')
     implementation 'com.googlecode.json-simple:json-simple:1.1.1'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
-    implementation 'org.springframework.boot:spring-boot-starter-webflux'
-    implementation 'io.netty:netty-resolver-dns-native-macos:4.1.68.Final:osx-aarch_64'
     implementation 'org.springframework.cloud:spring-cloud-starter-openfeign'
 }
