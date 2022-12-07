@@ -68,10 +68,10 @@ public class OrderShippingResponse {
     public static List<OrderShippingResponse> of(List<OrderShipping> list){
         return list
                 .stream()
-                .map(p -> {
-                    return OrderShippingResponse.of(p.getId(), p.getShippingNumber(), p.getStatus(),
-                            p.getTrackingNumber(), p.getChargeType(), p.getDeliveryPrice(), p.getCarrier(), p.getCreateDate(), p.getCancelDate(),
-                            p.getDeliveryDate(), p.getDeliveredDate(), p.getOrderItems()); })
+                .map(p ->
+                            OrderShippingResponse.of(p.getId(), p.getShippingNumber(), p.getStatus(),
+                                    p.getTrackingNumber(), p.getChargeType(), p.getDeliveryPrice(), p.getCarrier(), p.getCreateDate(), p.getCancelDate(),
+                                    p.getDeliveryDate(), p.getDeliveredDate(), p.getOrderItems()))
                 .collect(Collectors.toList());
     }
 }

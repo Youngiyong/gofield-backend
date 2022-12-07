@@ -123,4 +123,9 @@ public class Order extends BaseTimeEntity {
         this.orderShippings.add(orderShipping);
     }
 
+
+    public void updateDelete(){
+        this.status = EOrderStatusFlag.ORDER_DELETE;
+        this.deleteDate = LocalDateTime.now();
+    }
 }

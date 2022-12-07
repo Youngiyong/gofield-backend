@@ -190,7 +190,7 @@ public class ThirdPartyService {
             paymentType = EPaymentType.EASYPAY;
         } else {
             Code code = codeRepository.findByCode(response.getCard().getIssuerCode());
-            paymentCompany = code!=null ? code.getName() : "..";
+            paymentCompany = code!=null ? code.getName() : "없음";
             paymentType = EPaymentType.CARD;
             cardNumber = response.getCard().getNumber();
             installmentPlanMonth = response.getCard().getInstallmentPlanMonths();

@@ -1,5 +1,6 @@
 package com.gofield.domain.rds.domain.order.repository;
 
+import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderStatusFlag;
 import com.gofield.domain.rds.domain.order.Order;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,7 +26,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .innerJoin(orderShippingAddress)
                 .on(order.shippingAddress.id.eq(orderShippingAddress.id))
                 .innerJoin(order.orderShippings, orderShipping).fetchJoin()
-                .where(order.orderNumber.eq(orderNumber), order.userId.eq(userId), order.status.ne(EOrderStatusFlag.ORDER_DELETE))
+                .where(order.orderNumber.eq(orderNumber), order.userId.eq(userId), order.status.ne(EOrderStatusFlag.ORDER_DELETE), orderShipping.status.ne(EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE))
                 .fetchOne();
     }
 
@@ -46,7 +47,7 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .innerJoin(orderShippingAddress)
                 .on(order.shippingAddress.id.eq(orderShippingAddress.id))
                 .innerJoin(order.orderShippings, orderShipping).fetchJoin()
-                .where(order.userId.eq(userId), order.status.ne(EOrderStatusFlag.ORDER_DELETE))
+                .where(order.userId.eq(userId), orderShipping.status.ne(EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(order.id.desc())

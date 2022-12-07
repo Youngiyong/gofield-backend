@@ -16,6 +16,7 @@ public enum EOrderShippingStatusFlag implements CodeEnum {
     ORDER_SHIPPING_DELIVERY("배송중", "340"),
     ORDER_SHIPPING_DELIVERY_COMPLETE("인계완료", "350"),
     ORDER_SHIPPING_COMPLETE("구매 확정","360"),
+    ORDER_SHIPPING_DELETE("주문내역 삭제", "390"),
     ;
 
     private String description;

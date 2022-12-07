@@ -30,8 +30,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -52,7 +50,6 @@ public class OrderService {
     private final UserService userService;
     private final ThirdPartyService thirdPartyService;
 
-    private final TossPaymentApiClient tossPaymentApiClient;
 
     public String makeOrderNumber(){
         return String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis());
@@ -129,7 +126,7 @@ public class OrderService {
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST,  String.format("<%s>는 판매중이지 않는 상품번호입니다.", sheetItem.getItemNumber()));
             }
             if(sheetItem.getQty()>itemStock.getQty()){
-                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 판매 상품 갯수가 초가된 상품입니다.", sheetItem.getItemNumber()));
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 판매 상품 갯수가 초과된 상품입니다.", sheetItem.getItemNumber()));
             }
             int price = itemStock.getIsOption() ? itemStock.getOptionPrice() : itemStock.getPrice();
             int deliveryPrice = itemStock.getCharge();
@@ -144,7 +141,7 @@ public class OrderService {
         if(request.getTotalPrice()!=totalPrice){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 금액이 맞지 않습니다.");
         }else if(request.getTotalDelivery()!=totalDelivery){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 배달 금액이 맞지 않습니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 배 금액이 맞지 않습니다.");
         }
         ItemOrderSheetListResponse list = ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result);
         List<Long> cartIdList = request.getIsCart() ? request.getItems().stream().map(p -> p.getCartId()).collect(Collectors.toList()) : null;
@@ -204,5 +201,39 @@ public class OrderService {
 
         TossPaymentCancelResponse response = thirdPartyService.cancelPayment(order.getPaymentKey(), request);
         System.out.println("..");
+    }
+
+
+    @Transactional
+    public void deleteOrderShipping(String orderNumber, String shippingNumber){
+        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
+        if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 상품 확인중이거나 완료된 배송은 구매 내역 삭제가 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 준비중인 배송은 구매 내역 삭제가 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 아직 배송중이어서 삭제가 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 이미 삭제처리가 되어 있는 배송 번호입니다.", shippingNumber));
+        }
+
+        orderShipping.updateDelete();
+    }
+
+    @Transactional
+    public void completeOrderShipping(String orderNumber, String shippingNumber){
+        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
+
+        if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 상품 확인중이거나 완료된 배송은 구매 확정이 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 취소 처리된 배송은 구매 확정이 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 준비중인 배송은 구매 확정이 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 삭제 처리된 배송은 구매 확정이 불가합니다.", shippingNumber));
+        }
+
+        orderShipping.updateComplete();
     }
 }

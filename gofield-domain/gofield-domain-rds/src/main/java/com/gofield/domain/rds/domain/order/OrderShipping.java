@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -80,6 +81,9 @@ public class OrderShipping extends BaseTimeEntity {
     @Column
     private LocalDateTime finishedDate;
 
+    @Column
+    private LocalDateTime deleteDate;
+
     @OneToMany(mappedBy = "orderShipping", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderItem> orderItems = new ArrayList<>();
 
@@ -123,4 +127,13 @@ public class OrderShipping extends BaseTimeEntity {
         this.orderItems.add(orderItem);
     }
 
+    public void updateComplete(){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE;
+        this.finishedDate = LocalDateTime.now();
+    }
+
+    public void updateDelete(){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE;
+        this.deleteDate = LocalDateTime.now();
+    }
 }

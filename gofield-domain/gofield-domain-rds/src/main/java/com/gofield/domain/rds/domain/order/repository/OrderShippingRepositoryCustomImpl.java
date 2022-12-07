@@ -20,7 +20,7 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
         return jpaQueryFactory
                 .select(orderShipping)
                 .from(orderShipping)
-                .innerJoin(orderShipping.orderItems, orderItem)
+                .innerJoin(orderShipping.orderItems, orderItem).fetchJoin()
                 .where(orderShipping.shippingNumber.eq(shippingNumber),
                         orderShipping.orderNumber.eq(orderNumber))
                 .fetchFirst();

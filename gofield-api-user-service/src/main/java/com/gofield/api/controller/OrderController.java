@@ -74,4 +74,22 @@ public class OrderController {
         return ApiResponse.success(orderService.getOrderList(pageable));
     }
 
+    @ApiOperation(value = "구매확정")
+    @PostMapping("/v1/{orderNumber}/shipping/{shippingNumber}/complete")
+    public ApiResponse completeOrderShipping(@PathVariable String orderNumber,
+                                             @PathVariable String shippingNumber){
+        orderService.completeOrderShipping(orderNumber, shippingNumber);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "구매내역삭제")
+    @DeleteMapping("/v1/{orderNumber}/shipping/{shippingNumber}")
+    public ApiResponse deleteOrderShipping(@PathVariable String orderNumber,
+                                           @PathVariable String shippingNumber){
+
+        orderService.deleteOrderShipping(orderNumber, shippingNumber);
+        return ApiResponse.SUCCESS;
+    }
+
+
 }
