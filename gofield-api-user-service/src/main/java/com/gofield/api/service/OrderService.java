@@ -274,15 +274,11 @@ public class OrderService {
         if(order==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 주문정보입니다.");
         }
-        Boolean isShipping = false;
-        if(orderItem.getOrderShipping().getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE) || orderItem.getOrderShipping().getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE)){
-            isShipping = true;
-        }
-        if(!isShipping){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "인계 완료된 상품이 아니거나 구매 확정된 상품이 아닙니다.");
-        }
         if(orderItem.getIsReview()){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 등록된 상품 리뷰가 있습니다.");
+        }
+        if(orderItem.getOrderShipping().isShippingReview()){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "인계 완료된 상품이 아니거나 구매 확정된 상품이 아닙니다.");
         }
         List<String> imageList = new ArrayList<>();
         if(files!=null){

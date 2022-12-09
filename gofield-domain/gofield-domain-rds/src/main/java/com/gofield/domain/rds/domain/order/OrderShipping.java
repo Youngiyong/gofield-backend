@@ -136,4 +136,13 @@ public class OrderShipping extends BaseTimeEntity {
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE;
         this.deleteDate = LocalDateTime.now();
     }
+
+    public Boolean isShippingReview(){
+        if(this.status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE) ||
+                this.status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE)){
+            return true;
+        } else {
+            return false;
+        }
+    }
 }

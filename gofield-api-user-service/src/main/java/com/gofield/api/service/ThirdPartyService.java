@@ -209,6 +209,7 @@ public class ThirdPartyService {
             orderShippingAddressRepository.save(orderShippingAddress);
             Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), orderSheetList.getTotalPrice(), 0,  paymentCompany, paymentType.name(), cardNumber, cardType, installmentPlanMonth);
             orderRepository.save(order);
+
             for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
                 OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
                 orderShippingRepository.save(orderShipping);
