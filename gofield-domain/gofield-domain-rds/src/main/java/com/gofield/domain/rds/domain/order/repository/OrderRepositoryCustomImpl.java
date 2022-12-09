@@ -53,4 +53,13 @@ public class OrderRepositoryCustomImpl implements OrderRepositoryCustom {
                 .orderBy(order.id.desc())
                 .fetch();
     }
+
+    @Override
+    public Order findByOrderNumberAndUserId(String orderNumber, Long userId) {
+        return jpaQueryFactory
+                .selectFrom(order)
+                .where(order.orderNumber.eq(orderNumber),
+                        order.userId.eq(userId))
+                .fetchFirst();
+    }
 }

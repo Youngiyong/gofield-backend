@@ -41,4 +41,9 @@ public class ItemBundleAggregation extends BaseTimeEntity {
             this.newLowestPrice = price;
         }
     }
+
+    public void updateReviewScore(int reviewCount, Double reviewScore){
+        this.reviewCount = reviewCount;
+        this.reviewScore = reviewScore;
+    }
 }

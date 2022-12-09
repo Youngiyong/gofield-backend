@@ -30,12 +30,14 @@ public class OrderItemResponse {
     private String thumbnail;
     private EOrderItemStatusFlag status;
 
+    private Boolean isReview;
+
     private int price;
     private int qty;
 
     @Builder
     private OrderItemResponse(Long id, Long itemId, Long itemOptionId, String itemNumber,
-                              String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status,
+                              String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status, Boolean isReview,
                               int price, int qty){
         this.id = id;
         this.itemId = itemId;
@@ -46,12 +48,13 @@ public class OrderItemResponse {
         this.classification = classification;
         this.thumbnail = thumbnail;
         this.status = status;
+        this.isReview = isReview;
         this.price = price;
         this.qty = qty;
     }
 
     public static OrderItemResponse of(Long id, Long itemId, Long itemOptionId, String itemNumber,
-                                       String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status,
+                                       String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status, Boolean isReview,
                                        int price, int qty){
         return OrderItemResponse.builder()
                 .id(id)
@@ -63,6 +66,7 @@ public class OrderItemResponse {
                 .classification(classification)
                 .thumbnail(Constants.CDN_URL.concat(thumbnail))
                 .status(status)
+                .isReview(isReview)
                 .price(price)
                 .qty(qty)
                 .build();
@@ -76,7 +80,7 @@ public class OrderItemResponse {
 
                         return OrderItemResponse.of(p.getId(), p.getItem().getId(), p.getOrderItemOption()==null ? null : p.getOrderItemOption().getItemOptionId(),
                                 p.getItemNumber(), p.getName(), p.getOrderItemOption()==null ? null : new ObjectMapper().readValue(p.getOrderItemOption().getName(), new TypeReference<List<String>>(){}),
-                    p.getItem().getClassification(), p.getItem().getThumbnail(), p.getStatus(), p.getPrice(), p.getOrderItemOption()==null ? p.getQty() : p.getOrderItemOption().getQty());
+                    p.getItem().getClassification(), p.getItem().getThumbnail(), p.getStatus(), p.getIsReview(), p.getOrderItemOption()==null ? p.getPrice() :  p.getOrderItemOption().getPrice(), p.getOrderItemOption()==null ? p.getQty() : p.getOrderItemOption().getQty());
                     } catch (JsonProcessingException e) {
                         throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
                     }

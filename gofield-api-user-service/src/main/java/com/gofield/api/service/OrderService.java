@@ -7,28 +7,30 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.api.dto.enums.PaymentType;
 import com.gofield.api.dto.req.OrderRequest;
 import com.gofield.api.dto.res.*;
-import com.gofield.common.exception.InternalServerException;
-import com.gofield.common.exception.InvalidException;
-import com.gofield.common.exception.NotFoundException;
+import com.gofield.common.exception.*;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.item.*;
+import com.gofield.domain.rds.domain.item.projection.ItemBundleReviewScoreProjection;
 import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
 import com.gofield.domain.rds.domain.order.*;
+import com.gofield.domain.rds.domain.order.projection.OrderItemProjection;
 import com.gofield.domain.rds.domain.user.User;
-import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentCancelResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
+import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
+import com.gofield.infrastructure.s3.model.enums.FileType;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -45,10 +47,16 @@ public class OrderService {
     private final OrderWaitRepository orderWaitRepository;
     private final OrderRepository orderRepository;
     private final OrderSheetRepository orderSheetRepository;
+
+    private final OrderItemRepository orderItemRepository;
     private final OrderShippingRepository orderShippingRepository;
     private final OrderShippingAddressRepository orderShippingAddressRepository;
+    private final ItemBundleReviewRepository itemBundleReviewRepository;
+
+    private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final UserService userService;
     private final ThirdPartyService thirdPartyService;
+    private final S3FileStorageClient s3FileStorageClient;
 
 
     public String makeOrderNumber(){
@@ -59,10 +67,16 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public DeliveryTrackResponse getOrderTrackerDeliveryUrl(String carrierId, String trackId){
+    public Order getOrder(String orderNumber){
+        User user = userService.getUserNotNonUser();
+        return orderRepository.findByOrderNumberAndUserId(orderNumber, user.getId());
+    }
+
+    @Transactional(readOnly = true)
+    public NextUrlResponse getOrderTrackerDeliveryUrl(String carrierId, String trackId){
         Code code = codeRepository.findByCode(carrierId);
         if(code==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> carrierId는 존재하지 않는 코드입니다.", carrierId));
-        return DeliveryTrackResponse.of(thirdPartyService.getCarrierTrackInfo(carrierId, trackId));
+        return NextUrlResponse.of(makeCarrierUrl(carrierId, trackId));
     }
 
     @Transactional(readOnly = true)
@@ -235,5 +249,72 @@ public class OrderService {
         }
 
         orderShipping.updateComplete();
+    }
+
+
+    @Transactional(readOnly = true)
+    public OrderItemReviewListResponse getOrderItemList(Boolean isReview, Pageable pageable){
+        User user = userService.getUserNotNonUser();
+        List<OrderItemProjection> result = orderItemRepository.findAllByUserId(user.getId(), isReview, pageable);
+        List<OrderItemReviewResponse> response = OrderItemReviewResponse.of(result);
+        return OrderItemReviewListResponse.of(response);
+    }
+
+    @Transactional
+    public void reviewOrderShippingItem(Long orderItemId, OrderRequest.OrderReview request, List<MultipartFile> files){
+       /*
+       ToDo: 주문에 해당하는 사용자 검증필요 api 전부
+        */
+        User user = userService.getUserNotNonUser();
+        OrderItem orderItem = orderItemRepository.findByOrderItemId(orderItemId);
+        if(orderItem==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("%s 존재하지 않는 주문 상품 아이디입니다.", orderItemId));
+        }
+        Order order = orderRepository.findByOrderNumberAndUserId(orderItem.getOrderNumber(), user.getId());
+        if(order==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 주문정보입니다.");
+        }
+        Boolean isShipping = false;
+        if(orderItem.getOrderShipping().getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE) || orderItem.getOrderShipping().getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE)){
+            isShipping = true;
+        }
+        if(!isShipping){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "인계 완료된 상품이 아니거나 구매 확정된 상품이 아닙니다.");
+        }
+        if(orderItem.getIsReview()){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 등록된 상품 리뷰가 있습니다.");
+        }
+        List<String> imageList = new ArrayList<>();
+        if(files!=null){
+            for(MultipartFile file: files){
+                String image = s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE);
+                imageList.add(image);
+            }
+        }
+        String optionName = null;
+        if(orderItem.getOrderItemOption()!=null){
+            try {
+                List<String> optionList = new ObjectMapper().readValue(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){});
+                optionName = optionList.stream().collect(Collectors.joining(" "));
+                optionName += " 구매";
+            } catch (JsonProcessingException e) {
+                throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
+            }
+        }
+        ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), orderItem.getName(), user.getNickName(),
+                optionName, request.getWeight(), request.getHeight(), request.getReviewScore(), request.getContent());
+        for(String image: imageList){
+            ItemBundleReviewImage itemBundleReviewImage = ItemBundleReviewImage.newInstance(itemBundleReview, image);
+            itemBundleReview.addImage(itemBundleReviewImage);
+        }
+        itemBundleReviewRepository.save(itemBundleReview);
+        List<ItemBundleReviewScoreProjection> reviewList = itemBundleReviewRepository.findAllByBundleId(orderItem.getItem().getBundle().getId());
+        if(!reviewList.isEmpty() && reviewList.size()>0){
+            ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(orderItem.getItem().getBundle().getId());
+            int reviewCount = reviewList.size();
+            Double reviewScore = reviewList.stream().mapToDouble(i -> i.getReviewScore()).sum();
+            itemBundleAggregation.updateReviewScore(reviewCount, reviewScore/reviewCount);
+        }
+        orderItem.updateReview();
     }
 }

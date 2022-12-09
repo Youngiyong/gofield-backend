@@ -2,6 +2,7 @@ package com.gofield.api.controller;
 
 
 import com.gofield.api.dto.req.OrderRequest;
+import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -11,8 +12,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RequestMapping("/api/order")
 @RestController
@@ -54,8 +57,8 @@ public class OrderController {
 
     @ApiOperation(value = "배송사 추적")
     @GetMapping("/v1/carrier/{carrierId}/track/{trackId}")
-    public ApiResponse<DeliveryTrackResponse> getOrderTrackerDeliveryUrl(@PathVariable String carrierId,
-                                                                         @PathVariable String trackId){
+    public ApiResponse<NextUrlResponse> getOrderTrackerDeliveryUrl(@PathVariable String carrierId,
+                                                                   @PathVariable String trackId){
         return ApiResponse.success(orderService.getOrderTrackerDeliveryUrl(carrierId, trackId));
     }
 
@@ -91,5 +94,26 @@ public class OrderController {
         return ApiResponse.SUCCESS;
     }
 
+    @ApiOperation(value = "주문 상품 리스트")
+    @GetMapping("/v1/item")
+    public ApiResponse<OrderItemReviewListResponse> getOrderItemList(@RequestParam(required = false) Boolean isReview,
+                                                                     @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(orderService.getOrderItemList(isReview, Pageable.ofSize(30)));
+    }
+
+    @ApiOperation(value = "리뷰 등록")
+    @PostMapping("/v1/review/{orderItemId}")
+    public ApiResponse reviewOrderItem(@PathVariable Long orderItemId,
+                                       @RequestPart(value = "review") OrderRequest.OrderReview request,
+                                       @RequestPart(value = "images", required = false) List<MultipartFile> images){
+        orderService.reviewOrderShippingItem(orderItemId, request, images);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "리뷰 내역")
+    @PostMapping("/v1/review")
+    public ApiResponse getOrderItemReviewList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.SUCCESS;
+    }
 
 }

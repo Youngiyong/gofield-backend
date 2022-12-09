@@ -1,12 +1,73 @@
 package com.gofield.domain.rds.domain.order.repository;
 
+import com.gofield.common.model.Constants;
+import com.gofield.domain.rds.domain.order.OrderItem;
+import com.gofield.domain.rds.domain.order.projection.OrderItemProjection;
+import com.gofield.domain.rds.domain.order.projection.QOrderItemProjection;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+
+import java.util.List;
+
+import static com.gofield.domain.rds.domain.item.QItem.item;
+import static com.gofield.domain.rds.domain.order.QOrder.order;
+import static com.gofield.domain.rds.domain.order.QOrderItem.orderItem;
+import static com.gofield.domain.rds.domain.order.QOrderItemOption.orderItemOption;
+import static com.gofield.domain.rds.domain.order.QOrderShipping.orderShipping;
 
 @RequiredArgsConstructor
 public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom {
-
     private final JPAQueryFactory jpaQueryFactory;
 
+    private BooleanExpression eqIsReview(Boolean isReview){
+        if(isReview == null){
+            return null;
+        }
+        return orderItem.isReview.eq(isReview);
+    }
 
+    @Override
+    public OrderItem findByOrderItemId(Long id) {
+        return jpaQueryFactory
+                .select(orderItem)
+                .from(orderItem)
+                .innerJoin(orderItem.orderShipping, orderShipping).fetchJoin()
+                .where(orderItem.id.eq(id))
+                .fetchFirst();
+    }
+
+    @Override
+    public List<OrderItemProjection> findAllByUserId(Long userId, Boolean isReview, Pageable pageable) {
+        return jpaQueryFactory
+                .select(new QOrderItemProjection(
+                        orderItem.id,
+                        orderItem.name,
+                        orderItemOption.name,
+                        orderItem.sellerId,
+                        item.bundle.id,
+                        orderItemOption.itemOptionId,
+                        item.thumbnail.prepend(Constants.CDN_URL),
+                        orderItem.itemNumber,
+                        orderItem.price,
+                        orderItemOption.price,
+                        item.classification,
+                        orderItemOption.optionType,
+                        orderItem.qty,
+                        orderItemOption.qty,
+                        orderItem.isReview))
+                .from(order)
+                .innerJoin(orderItem)
+                .on(order.id.eq(orderItem.orderId))
+                .innerJoin(item)
+                .on(orderItem.item.id.eq(item.id))
+                .leftJoin(orderItemOption)
+                .on(orderItem.orderItemOption.id.eq(orderItemOption.id))
+                .where(order.userId.eq(userId), eqIsReview(isReview))
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(orderItem.createDate.desc())
+                .fetch();
+    }
 }

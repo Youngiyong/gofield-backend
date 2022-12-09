@@ -47,8 +47,7 @@ public class Order extends BaseTimeEntity {
     private String paymentCompany;
 
     @Column
-    @Enumerated
-    private EPaymentType paymentType;
+    private String paymentType;
 
     @Column
     private String cardNumber;
@@ -84,7 +83,7 @@ public class Order extends BaseTimeEntity {
     private LocalDateTime finishDate;
 
     @Builder
-    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, EPaymentType paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderStatusFlag status){
+    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber,  String paymentKey, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderStatusFlag status){
         this.shippingAddress = shippingAddress;
         this.userId = userId;
         this.orderNumber = orderNumber;
@@ -101,7 +100,7 @@ public class Order extends BaseTimeEntity {
     }
 
     public static Order newInstance(OrderShippingAddress shippingAddress, Long userId,  String orderNumber,  String paymentKey,
-                                    int totalDelivery, int totalPrice, int totalDiscount, String paymentCompany, EPaymentType paymentType, String cardNumber, String cardType, int installmentPlanMonth){
+                                    int totalDelivery, int totalPrice, int totalDiscount, String paymentCompany, String paymentType, String cardNumber, String cardType, int installmentPlanMonth){
         return Order.builder()
                 .shippingAddress(shippingAddress)
                 .userId(userId)

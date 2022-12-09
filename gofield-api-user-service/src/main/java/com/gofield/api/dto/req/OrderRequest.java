@@ -3,6 +3,7 @@ package com.gofield.api.dto.req;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.order.EPaymentType;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
@@ -44,5 +45,17 @@ public class OrderRequest {
         @NotNull(message = "배송 취소 코드는 필수값입니다.")
         private String cancelCode;
         private String cancelComment;
+    }
+
+    @Getter
+    public static class OrderReview {
+        @NotNull(message = "몸무게는 필수값입니다.")
+        private Integer weight;
+        @NotNull(message = "키는 필수값입니다.")
+        private Integer height;
+        @NotNull(message = "평점은 필수값입니다.")
+        private Double reviewScore;
+        @NotNull(message = "리뷰 내용은 필수값입니다.")
+        private String content;
     }
 }

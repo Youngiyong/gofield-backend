@@ -10,6 +10,8 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -52,8 +54,14 @@ public class OrderItem extends BaseTimeEntity {
     @Column
     private int price;
 
+    @Column
+    private Boolean isReview;
+
     @Column(name = "status_flag")
     private EOrderItemStatusFlag status;
+
+    @Column
+    private LocalDateTime reviewDate;
 
     @Builder
     private OrderItem(Long orderId, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
@@ -85,5 +93,10 @@ public class OrderItem extends BaseTimeEntity {
                 .qty(qty)
                 .price(price)
                 .build();
+    }
+
+    public void updateReview(){
+        this.isReview = true;
+        this.reviewDate = LocalDateTime.now();
     }
 }

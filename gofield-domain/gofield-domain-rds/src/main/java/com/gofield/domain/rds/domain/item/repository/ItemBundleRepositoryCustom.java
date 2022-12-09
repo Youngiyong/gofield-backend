@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.domain.item.repository;
 
 
+import com.gofield.domain.rds.domain.item.ItemBundle;
 import com.gofield.domain.rds.domain.item.projection.ItemBundlePopularProjection;
 import com.gofield.domain.rds.domain.item.projection.ItemBundleRecommendProjection;
 import com.gofield.domain.rds.domain.item.projection.ItemBundleImageProjectionResponse;
@@ -13,4 +14,5 @@ public interface ItemBundleRepositoryCustom {
     List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, Pageable pageable);
     List<ItemBundleRecommendProjection> findAllRecommendBundleItemList(Pageable pageable);
     ItemBundleImageProjectionResponse findByBundleId(Long userId, Long bundleId, Pageable pageable);
+    ItemBundle findByBundleId(Long bundleId);
 }

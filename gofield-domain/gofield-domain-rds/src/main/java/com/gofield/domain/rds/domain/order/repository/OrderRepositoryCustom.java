@@ -10,4 +10,5 @@ public interface OrderRepositoryCustom {
     Order findByOrderNumberAndUserIdAndNotStatusDelete(Long userId, String orderNumber);
     Order findByOrderNumber(String orderNumber);
     List<Order> findAllByUserIdAndNotStatusDelete(Long userId, Pageable pageable);
+    Order findByOrderNumberAndUserId(String orderNumber, Long userId);
 }

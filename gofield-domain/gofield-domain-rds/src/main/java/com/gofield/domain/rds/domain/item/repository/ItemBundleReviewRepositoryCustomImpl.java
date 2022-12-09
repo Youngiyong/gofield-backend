@@ -1,6 +1,8 @@
 package com.gofield.domain.rds.domain.item.repository;
 
 import com.gofield.domain.rds.domain.item.ItemBundleReview;
+import com.gofield.domain.rds.domain.item.projection.ItemBundleReviewScoreProjection;
+import com.gofield.domain.rds.domain.item.projection.QItemBundleReviewScoreProjection;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -27,6 +29,18 @@ public class ItemBundleReviewRepositoryCustomImpl implements ItemBundleReviewRep
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(itemBundleReview.createDate.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<ItemBundleReviewScoreProjection> findAllByBundleId(Long bundleId) {
+        return jpaQueryFactory
+                .select(new QItemBundleReviewScoreProjection(
+                        itemBundleReview.id,
+                        itemBundleReview.nickName,
+                        itemBundleReview.reviewScore))
+                .from(itemBundleReview)
+                .where(itemBundleReview.bundle.id.eq(bundleId))
                 .fetch();
     }
 }

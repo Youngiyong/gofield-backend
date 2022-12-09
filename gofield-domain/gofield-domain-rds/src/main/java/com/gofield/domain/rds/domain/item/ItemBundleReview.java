@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -29,9 +30,8 @@ public class ItemBundleReview  {
     @JoinColumn(name = "bundle_id")
     private ItemBundle bundle;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @Column
+    private Long userId;
 
     @Column
     private String name;
@@ -39,7 +39,7 @@ public class ItemBundleReview  {
     @Column
     private String nickName;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String optionName;
 
     @Column
@@ -59,6 +59,34 @@ public class ItemBundleReview  {
 
     @Column
     private LocalDateTime createDate;
+
+
+    @Builder
+    private ItemBundleReview(ItemBundle bundle, Long userId, String name, String nickName, String optionName, Integer weight, Integer height, Double reviewScore, String description){
+        this.bundle = bundle;
+        this.userId = userId;
+        this.name = name;
+        this.nickName = nickName;
+        this.optionName = optionName;
+        this.weight = weight;
+        this.height = height;
+        this.reviewScore = reviewScore;
+        this.description = description;
+    }
+
+    public static ItemBundleReview newInstance(ItemBundle bundle, Long userId, String name, String nickName, String optionName, Integer weight, Integer height, Double reviewScore, String description){
+        return ItemBundleReview.builder()
+                .bundle(bundle)
+                .userId(userId)
+                .name(name)
+                .nickName(nickName)
+                .optionName(optionName)
+                .weight(weight)
+                .height(height)
+                .reviewScore(reviewScore)
+                .description(description)
+                .build();
+    }
 
     public void addImage(ItemBundleReviewImage image){
         this.images.add(image);

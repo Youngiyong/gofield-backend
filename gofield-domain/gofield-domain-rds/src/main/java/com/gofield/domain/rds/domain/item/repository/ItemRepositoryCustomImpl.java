@@ -658,6 +658,33 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetchFirst();
     }
 
+    @Override
+    public ItemBundleOptionProjection findItemBundleOption(String itemNumber) {
+        return jpaQueryFactory
+                .select(new QItemBundleOptionProjection(
+                    item.id,
+                    item.name,
+                    itemOption.name,
+                    itemStock.sellerId,
+                    item.bundle.id,
+                    itemOption.id,
+                    item.thumbnail.prepend(Constants.CDN_URL),
+                    itemStock.itemNumber,
+                    item.price,
+                    itemOption.price,
+                    itemOption.optionType,
+                    itemStock.qty,
+                    item.isOption,
+                    itemStock.status))
+                .from(itemStock)
+                .innerJoin(item)
+                .on(itemStock.itemNumber.eq(item.itemNumber))
+                .leftJoin(itemOption)
+                .on(itemStock.itemNumber.eq(itemOption.itemNumber))
+                .where(itemStock.itemNumber.eq(itemNumber))
+                .fetchOne();
+    }
+
 
     @Override
     public Item findByItemId(Long itemId) {
@@ -672,7 +699,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     public Item findByItemNumber(String itemNumber) {
         return jpaQueryFactory
                 .selectFrom(item)
-                .where(item.itemNumber.eq(itemNumber))
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .where(itemStock.itemNumber.eq(itemNumber))
                 .fetchOne();
     }
 

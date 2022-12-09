@@ -5,6 +5,7 @@ import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
+import com.gofield.domain.rds.domain.item.ItemBundle;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -204,5 +205,13 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
 
             return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.ofNon(items));
         }
+    }
+
+    @Override
+    public ItemBundle findByBundleId(Long bundleId) {
+        return jpaQueryFactory
+                .selectFrom(itemBundle)
+                .where(itemBundle.id.eq(bundleId))
+                .fetchFirst();
     }
 }
