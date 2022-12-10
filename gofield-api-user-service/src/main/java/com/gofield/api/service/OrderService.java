@@ -199,7 +199,6 @@ public class OrderService {
                 .build();
 
         TossPaymentCancelResponse response = thirdPartyService.cancelPayment(order.getPaymentKey(), request);
-        System.out.println("..");
     }
 
 

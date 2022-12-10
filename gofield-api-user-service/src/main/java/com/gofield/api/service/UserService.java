@@ -56,15 +56,14 @@ public class UserService {
     @Value("${secret.gofield.token_key}")
     private String TOKEN_DECRYPT_KEY;
 
-    private final TermRepository termRepository;
-    private final TermGroupRepository termGroupRepository;
-    private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
-    private final UserAddressRepository userAddressRepository;
     private final UserTermRepository userTermRepository;
+    private final UserAddressRepository userAddressRepository;
     private final UserAccountRepository userAccountRepository;
     private final UserAccountSmsHistoryRepository userAccountSmsHistoryRepository;
+    private final TermRepository termRepository;
+    private final TermGroupRepository termGroupRepository;
     private final SNSService snsService;
     private final S3FileStorageClient s3FileStorageClient;
 
@@ -77,7 +76,6 @@ public class UserService {
             throw new ForbiddenException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, "비회원은 접근이 불가합니다.");
         }
     }
-
 
     @Transactional(readOnly = true)
     public User getUser(){

@@ -115,31 +115,21 @@ public class AuthService {
         if(account==null){
             account = UserAccount.newInstance(user);
             userAccountRepository.save(account);
-
-            if(request.getAgreeList()!=null){
-                if(!request.getAgreeList().isEmpty()){
-                    userService.insertUserHasTerm(request.getAgreeList(), user);
-                }
+            if(request.getAgreeList()!=null && !request.getAgreeList().isEmpty()){
+                userService.insertUserHasTerm(request.getAgreeList(), user);
             } else {
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "필수 약관은 선택해 주셔야 됩니다.");
             }
-
-            if(request.getCategoryList()!=null){
-                if(!request.getCategoryList().isEmpty()){
-                    List<Category> categoryList = categoryRepository.findAllByInId(request.getCategoryList());
-                    for(Category category: categoryList){
-                        UserCategory userCategory = UserCategory.newInstance(user, category);
-                        userCategoryRepository.save(userCategory);
-                    }
+            if(request.getCategoryList()!=null && !request.getCategoryList().isEmpty()){
+                List<Category> categoryList = categoryRepository.findAllByInId(request.getCategoryList());
+                for(Category category: categoryList){
+                    UserCategory userCategory = UserCategory.newInstance(user, category);
+                    userCategoryRepository.save(userCategory);
                 }
             }
-
-
-            if(request.getSelectionList()!=null){
-                if(!request.getSelectionList().isEmpty()){
-                    for(TermSelectionType type: request.getSelectionList()){
-                        userService.insertUserHasTerm(type, user);
-                    }
+            if(request.getSelectionList()!=null && !request.getSelectionList().isEmpty()){
+                for(TermSelectionType type: request.getSelectionList()){
+                    userService.insertUserHasTerm(type, user);
                 }
             }
             user.updateSign();

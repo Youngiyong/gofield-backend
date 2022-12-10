@@ -103,6 +103,7 @@ public class ThirdPartyService {
 
     @Value("${secret.toss.secret-key}")
     private String TOSS_PAYMENT_CLIENT_SECRET;
+
     private final TrackerApiClient trackerApiClient;
     private final TossPaymentApiClient tossPaymentApiClient;
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
@@ -113,7 +114,6 @@ public class ThirdPartyService {
     private final PurchaseRepository purchaseRepository;
     private final PurchaseFailRepository purchaseFailRepository;
     private final ItemStockRepository itemStockRepository;
-
     private final ItemRepository itemRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final CartRepository cartRepository;
@@ -231,12 +231,9 @@ public class ThirdPartyService {
             }
         }
         List<Long> cartIdList = orderSheetContent.getCartIdList();
-        if(cartIdList!=null){
-            if(!cartIdList.isEmpty()){
-                cartRepository.deleteByCartIdList(cartIdList);
-            }
+        if(cartIdList!=null && !cartIdList.isEmpty()){
+            cartRepository.deleteByCartIdList(cartIdList);
         }
-
 
         orderWaitRepository.delete(orderWait);
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
