@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -56,11 +57,7 @@ public class ItemOptionGroupResponse {
         return list
                 .stream()
                 .map(p -> {
-                    try {
-                        return ItemOptionGroupResponse.of(p.getId(), p.getGroupTitle(), p.getOptionType(), p.getOptionGroup()==null ? null : new ObjectMapper().readValue(p.getOptionGroup(), new TypeReference<List<Map<String, Object>>>(){}), p.getPriceGroup()==null ? null : new ObjectMapper().readValue(p.getPriceGroup(), new TypeReference<List<Integer>>(){}),  p.getIsEssential(),  p.getCreateDate());
-                    } catch (JsonProcessingException e) {
-                        throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-                    }
+                        return ItemOptionGroupResponse.of(p.getId(), p.getGroupTitle(), p.getOptionType(), p.getOptionGroup()==null ? null : ApiUtil.strToObject(p.getOptionGroup(), new TypeReference<List<Map<String, Object>>>(){}), p.getPriceGroup()==null ? null :  ApiUtil.strToObject(p.getPriceGroup(), new TypeReference<List<Integer>>(){}),  p.getIsEssential(),  p.getCreateDate());
                 })
                 .collect(Collectors.toList());
     }

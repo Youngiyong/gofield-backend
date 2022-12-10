@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -98,14 +99,11 @@ public class CartResponse {
         return list
                 .stream()
                 .map(p -> {
-                    try {
-                        return CartResponse.of(p.getId(), p.getItemName(), p.getItemNumber(), p.getSellerId(),
-                                p.getSellerName(), p.getOptionName()==null ? null : new ObjectMapper().readValue(p.getOptionName(), new TypeReference<List<String>>(){}),
-                                p.getThumbnail(), p.getPrice(), p.getQty(), p.getIsOrder(), p.getClassification(), p.getSpec(),
-                                p.getGender(), p.getIsCondition(), p.getCondition(), p.getChargeType(), p.getCharge(), p.getFeeJeju(), p.getFeeJejuBesides());
-                    } catch (JsonProcessingException e) {
-                        throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-                    }
+                    return CartResponse.of(p.getId(), p.getItemName(), p.getItemNumber(), p.getSellerId(),
+                            p.getSellerName(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
+                            p.getThumbnail(), p.getPrice(), p.getQty(), p.getIsOrder(), p.getClassification(), p.getSpec(),
+                            p.getGender(), p.getIsCondition(), p.getCondition(), p.getChargeType(), p.getCharge(), p.getFeeJeju(), p.getFeeJejuBesides());
+
                 })
                 .collect(Collectors.toList());
     }

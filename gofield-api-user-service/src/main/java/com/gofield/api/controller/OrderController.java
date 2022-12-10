@@ -2,7 +2,6 @@ package com.gofield.api.controller;
 
 
 import com.gofield.api.dto.req.OrderRequest;
-import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -94,13 +93,6 @@ public class OrderController {
         return ApiResponse.SUCCESS;
     }
 
-    @ApiOperation(value = "주문 상품 리스트")
-    @GetMapping("/v1/item")
-    public ApiResponse<OrderItemReviewListResponse> getOrderItemList(@RequestParam(required = false) Boolean isReview,
-                                                                     @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return ApiResponse.success(orderService.getOrderItemList(isReview, Pageable.ofSize(30)));
-    }
-
     @ApiOperation(value = "리뷰 등록")
     @PostMapping("/v1/review/{orderItemId}")
     public ApiResponse reviewOrderItem(@PathVariable Long orderItemId,
@@ -111,9 +103,10 @@ public class OrderController {
     }
 
     @ApiOperation(value = "리뷰 내역")
-    @PostMapping("/v1/review")
-    public ApiResponse getOrderItemReviewList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return ApiResponse.SUCCESS;
+    @GetMapping("/v1/review")
+    public ApiResponse getOrderItemReviewList(@RequestParam(required = false) Boolean isReview,
+                                              @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(orderService.getOrderItemReviewList(isReview, pageable));
     }
 
 }

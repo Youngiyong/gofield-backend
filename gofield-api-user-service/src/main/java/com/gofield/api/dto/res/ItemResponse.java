@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -67,30 +68,26 @@ public class ItemResponse {
     }
 
     public static ItemResponse of(ItemProjectionResponse projection){
-        try {
-            return ItemResponse.builder()
-                    .id(projection.getId())
-                    .name(projection.getName())
-                    .brandName(projection.getBrandName())
-                    .thumbnail(projection.getThumbnail())
-                    .itemNumber(projection.getItemNumber())
-                    .bundleId(projection.getBundleId())
-                    .price(projection.getPrice())
-                    .qty(projection.getQty())
-                    .likeId(projection.getLikeId())
-                    .isOption(projection.getIsOption())
-                    .classification(projection.getClassification())
-                    .spec(projection.getSpec())
-                    .delivery(projection.getDelivery())
-                    .gender(projection.getGender())
-                    .images(projection.getImages())
-                    .option(projection.getOption()==null ? null : new ObjectMapper().readValue(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
-                    .tags(projection.getTags()==null ? null : new ObjectMapper().readValue(projection.getTags(), new TypeReference<List<String>>(){}))
-                    .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))
-                    .build();
-        } catch (JsonProcessingException e) {
-            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-        }
+        return ItemResponse.builder()
+                .id(projection.getId())
+                .name(projection.getName())
+                .brandName(projection.getBrandName())
+                .thumbnail(projection.getThumbnail())
+                .itemNumber(projection.getItemNumber())
+                .bundleId(projection.getBundleId())
+                .price(projection.getPrice())
+                .qty(projection.getQty())
+                .likeId(projection.getLikeId())
+                .isOption(projection.getIsOption())
+                .classification(projection.getClassification())
+                .spec(projection.getSpec())
+                .delivery(projection.getDelivery())
+                .gender(projection.getGender())
+                .images(projection.getImages())
+                .option(projection.getOption()==null ? null : ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
+                .tags(projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){}))
+                .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))
+                .build();
     }
 
 }

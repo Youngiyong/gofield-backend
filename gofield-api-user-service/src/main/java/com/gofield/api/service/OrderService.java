@@ -1,12 +1,11 @@
 package com.gofield.api.service;
 
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.api.dto.enums.PaymentType;
 import com.gofield.api.dto.req.OrderRequest;
 import com.gofield.api.dto.res.*;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.*;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
@@ -25,6 +24,7 @@ import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
 import com.google.gson.Gson;
+import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -86,13 +86,9 @@ public class OrderService {
         if (orderSheet == null) {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "장바구니 임시 정보가 존재하지 않습니다.");
         }
-        try {
-            OrderSheetContentResponse result = new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>() {});
-            UserAddressResponse userAddressResponse = UserAddressResponse.of(userService.getUserMainAddress(user.getId()));
-            return OrderSheetResponse.of(result.getOrderSheetList(), userAddressResponse);
-        } catch (JsonProcessingException e) {
-            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-        }
+        OrderSheetContentResponse result = ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>() {});
+        UserAddressResponse userAddressResponse = UserAddressResponse.of(userService.getUserMainAddress(user.getId()));
+        return OrderSheetResponse.of(result.getOrderSheetList(), userAddressResponse);
     }
 
     @Transactional(readOnly = true)
@@ -160,13 +156,9 @@ public class OrderService {
         ItemOrderSheetListResponse list = ItemOrderSheetListResponse.of(totalPrice, totalDelivery, result);
         List<Long> cartIdList = request.getIsCart() ? request.getItems().stream().map(p -> p.getCartId()).collect(Collectors.toList()) : null;
         OrderSheetContentResponse contentResponse = OrderSheetContentResponse.of(makeOrderName(result), list, cartIdList);
-        try {
-            OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), new ObjectMapper().writeValueAsString(contentResponse), totalPrice+totalDelivery);
-            orderSheetRepository.save(orderSheet);
-            return CommonCodeResponse.of(orderSheet.getUuid());
-        } catch (JsonProcessingException e) {
-            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-        }
+        OrderSheet orderSheet = OrderSheet.newInstance(user.getId(), ApiUtil.toJsonStr(contentResponse), totalPrice+totalDelivery);
+        orderSheetRepository.save(orderSheet);
+        return CommonCodeResponse.of(orderSheet.getUuid());
     }
 
 
@@ -187,11 +179,7 @@ public class OrderService {
         }
 
         OrderSheetContentResponse orderSheetContent = null;
-        try {
-            orderSheetContent =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
-        } catch (JsonProcessingException e) {
-            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-        }
+        orderSheetContent =  ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
         String cardCompany = request.getPaymentType().equals(PaymentType.CARD) ? request.getCompanyCode() : null;
         String easyPay = request.getPaymentType().equals(PaymentType.EASYPAY) ? request.getCompanyCode() : null;
         TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), orderSheetContent.getOrderName(), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
@@ -253,7 +241,7 @@ public class OrderService {
 
 
     @Transactional(readOnly = true)
-    public OrderItemReviewListResponse getOrderItemList(Boolean isReview, Pageable pageable){
+    public OrderItemReviewListResponse getOrderItemReviewList(Boolean isReview, Pageable pageable){
         User user = userService.getUserNotNonUser();
         List<OrderItemProjection> result = orderItemRepository.findAllByUserId(user.getId(), isReview, pageable);
         List<OrderItemReviewResponse> response = OrderItemReviewResponse.of(result);
@@ -277,7 +265,7 @@ public class OrderService {
         if(orderItem.getIsReview()){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 등록된 상품 리뷰가 있습니다.");
         }
-        if(orderItem.getOrderShipping().isShippingReview()){
+        if(!orderItem.getOrderShipping().isShippingReview()){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "인계 완료된 상품이 아니거나 구매 확정된 상품이 아닙니다.");
         }
         List<String> imageList = new ArrayList<>();
@@ -289,16 +277,10 @@ public class OrderService {
         }
         String optionName = null;
         if(orderItem.getOrderItemOption()!=null){
-            try {
-                List<String> optionList = new ObjectMapper().readValue(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){});
-                optionName = optionList.stream().collect(Collectors.joining(" "));
-                optionName += " 구매";
-            } catch (JsonProcessingException e) {
-                throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-            }
+            List<String> optionList = ApiUtil.toObject(orderItem.getOrderItemOption().getName(), List.class);
+            optionName = optionList.stream().collect(Collectors.joining(" ")) + " 구매";
         }
-        ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), orderItem.getName(), user.getNickName(),
-                optionName, request.getWeight(), request.getHeight(), request.getReviewScore(), request.getContent());
+        ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), orderItem.getName(), user.getNickName(), optionName, request.getWeight(), request.getHeight(), request.getReviewScore(), request.getContent());
         for(String image: imageList){
             ItemBundleReviewImage itemBundleReviewImage = ItemBundleReviewImage.newInstance(itemBundleReview, image);
             itemBundleReview.addImage(itemBundleReviewImage);

@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.enums.ErrorAction;
@@ -27,6 +28,7 @@ public class OrderItemReviewResponse {
     private String name;
     private List<String> optionName;
     private Long sellerId;
+    private String sellerName;
     private Long bundleId;
     private Long optionId;
     private String thumbnail;
@@ -40,11 +42,12 @@ public class OrderItemReviewResponse {
     private Boolean isReview;
 
     @Builder
-    private OrderItemReviewResponse(Long orderItemId, String name, List<String> optionName, Long sellerId, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, Boolean isReview){
+    private OrderItemReviewResponse(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, Boolean isReview){
         this.orderItemId = orderItemId;
         this.name = name;
         this.optionName = optionName;
         this.sellerId = sellerId;
+        this.sellerName = sellerName;
         this.bundleId = bundleId;
         this.optionId = optionId;
         this.thumbnail = thumbnail;
@@ -58,12 +61,13 @@ public class OrderItemReviewResponse {
         this.isReview = isReview;
     }
 
-    public static OrderItemReviewResponse of(Long orderItemId, String name, List<String> optionName, Long sellerId, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, Boolean isReview){
+    public static OrderItemReviewResponse of(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, Boolean isReview){
         return OrderItemReviewResponse.builder()
                 .orderItemId(orderItemId)
                 .name(name)
                 .optionName(optionName)
                 .sellerId(sellerId)
+                .sellerName(sellerName)
                 .bundleId(bundleId)
                 .optionId(optionId)
                 .thumbnail(thumbnail)
@@ -82,13 +86,9 @@ public class OrderItemReviewResponse {
         return list
                 .stream()
                 .map(p -> {
-                    try {
-                        return OrderItemReviewResponse.of(p.getOrderItemId(), p.getName(), p.getOptionName()==null ? null : new ObjectMapper().readValue(p.getOptionName(), new TypeReference<List<String>>(){}),
-                                p.getSellerId(), p.getBundleId(), p.getOptionId(), p.getThumbnail(), p.getItemNumber(),
+                        return OrderItemReviewResponse.of(p.getOrderItemId(), p.getName(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
+                                p.getSellerId(), p.getSellerName(), p.getBundleId(), p.getOptionId(), p.getThumbnail(), p.getItemNumber(),
                                 p.getPrice(), p.getOptionPrice(), p.getClassification(), p.getOptionType(), p.getQty(), p.getOptionQty(), p.getIsReview());
-                    } catch (JsonProcessingException e) {
-                        throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-                    }
                 })
                 .collect(Collectors.toList());
     }

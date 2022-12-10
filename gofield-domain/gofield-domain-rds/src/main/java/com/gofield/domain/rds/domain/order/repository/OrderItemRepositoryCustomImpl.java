@@ -16,6 +16,7 @@ import static com.gofield.domain.rds.domain.order.QOrder.order;
 import static com.gofield.domain.rds.domain.order.QOrderItem.orderItem;
 import static com.gofield.domain.rds.domain.order.QOrderItemOption.orderItemOption;
 import static com.gofield.domain.rds.domain.order.QOrderShipping.orderShipping;
+import static com.gofield.domain.rds.domain.seller.QSeller.seller;
 
 @RequiredArgsConstructor
 public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom {
@@ -46,6 +47,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                         orderItem.name,
                         orderItemOption.name,
                         orderItem.sellerId,
+                        seller.name,
                         item.bundle.id,
                         orderItemOption.itemOptionId,
                         item.thumbnail.prepend(Constants.CDN_URL),
@@ -62,6 +64,8 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                 .on(order.id.eq(orderItem.orderId))
                 .innerJoin(item)
                 .on(orderItem.item.id.eq(item.id))
+                .leftJoin(seller)
+                .on(orderItem.sellerId.eq(seller.id))
                 .leftJoin(orderItemOption)
                 .on(orderItem.orderItemOption.id.eq(orderItemOption.id))
                 .where(order.userId.eq(userId), eqIsReview(isReview))

@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -69,11 +70,7 @@ public class ItemOptionResponse {
         return list
                 .stream()
                 .map(p -> {
-                    try {
-                        return ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : new ObjectMapper().readValue(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getOptionPrice(), p.getQty(), p.getIsUse(), p.getCreateDate());
-                    } catch (JsonProcessingException e) {
-                        throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-                    }
+                        return ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : ApiUtil.strToObject(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getOptionPrice(), p.getQty(), p.getIsUse(), p.getCreateDate());
                 })
                 .collect(Collectors.toList());
     }

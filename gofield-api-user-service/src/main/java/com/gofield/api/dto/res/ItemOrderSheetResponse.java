@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.enums.ErrorAction;
 import com.gofield.common.model.enums.ErrorCode;
@@ -68,31 +69,27 @@ public class ItemOrderSheetResponse {
      */
     public static ItemOrderSheetResponse of(Long id, Long sellerId, Long bundleId, String brandName, String name, String optionName, String thumbnail,
                                             String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType,  EItemChargeFlag chargeType,  int charge, int condition, int feeJeju, int feeJejuBesides){
-        try {
-            return ItemOrderSheetResponse.builder()
-                    .id(id)
-                    .sellerId(sellerId)
-                    .bundleId(bundleId)
-                    .brandName(brandName)
-                    .name(name)
-                    .optionName(optionName==null ? null : new ObjectMapper().readValue(optionName, new TypeReference<List<String>>(){}))
-                    .thumbnail(thumbnail)
-                    .itemNumber(itemNumber)
-                    .price(price)
-                    .qty(qty)
-                    .deliveryPrice(deliveryPrice)
-                    .optionId(optionId)
-                    .isOption(isOption)
-                    .optionType(optionType)
-                    .chargeType(chargeType)
-                    .charge(charge)
-                    .condition(condition)
-                    .feeJeju(feeJeju)
-                    .feeJejuBesides(feeJejuBesides)
-                    .build();
-        } catch (JsonProcessingException e) {
-            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
-        }
+        return ItemOrderSheetResponse.builder()
+                .id(id)
+                .sellerId(sellerId)
+                .bundleId(bundleId)
+                .brandName(brandName)
+                .name(name)
+                .optionName(optionName==null ? null : ApiUtil.strToObject(optionName, new TypeReference<List<String>>(){}))
+                .thumbnail(thumbnail)
+                .itemNumber(itemNumber)
+                .price(price)
+                .qty(qty)
+                .deliveryPrice(deliveryPrice)
+                .optionId(optionId)
+                .isOption(isOption)
+                .optionType(optionType)
+                .chargeType(chargeType)
+                .charge(charge)
+                .condition(condition)
+                .feeJeju(feeJeju)
+                .feeJejuBesides(feeJejuBesides)
+                .build();
     }
 
 

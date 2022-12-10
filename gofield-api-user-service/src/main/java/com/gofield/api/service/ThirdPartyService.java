@@ -9,6 +9,7 @@ import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.ItemOrderSheetListResponse;
 import com.gofield.api.dto.res.ItemOrderSheetResponse;
 import com.gofield.api.dto.res.OrderSheetContentResponse;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.enums.ErrorAction;
@@ -48,10 +49,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
-import java.util.Map;
 
 @Slf4j
 @Service
@@ -199,48 +197,46 @@ public class ThirdPartyService {
         /*
         ToDo: 할인금액 totalDiscount 처리
          */
-        try {
-            Purchase purchase = Purchase.newInstance(orderId, paymentKey, amount, new ObjectMapper().writeValueAsString(response));
-            purchaseRepository.save(purchase);
-            OrderSheetContentResponse orderSheetContent =  new ObjectMapper().readValue(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
-            ItemOrderSheetListResponse orderSheetList = orderSheetContent.getOrderSheetList();
-            UserRequest.ShippingAddress shippingAddress = new ObjectMapper().readValue(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>(){});
-            OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
-            orderShippingAddressRepository.save(orderShippingAddress);
-            Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), orderSheetList.getTotalPrice(), 0,  paymentCompany, paymentType.name(), cardNumber, cardType, installmentPlanMonth);
-            orderRepository.save(order);
+        Purchase purchase = Purchase.newInstance(orderId, paymentKey, amount, ApiUtil.toJsonStr(response));
+        purchaseRepository.save(purchase);
+        OrderSheetContentResponse orderSheetContent =  ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
+        ItemOrderSheetListResponse orderSheetList = orderSheetContent.getOrderSheetList();
+        UserRequest.ShippingAddress shippingAddress = ApiUtil.strToObject(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>() {
+        });
+        OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
+        orderShippingAddressRepository.save(orderShippingAddress);
+        Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), orderSheetList.getTotalPrice(), 0,  paymentCompany, paymentType.name(), cardNumber, cardType, installmentPlanMonth);
+        orderRepository.save(order);
 
-            for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
-                OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
-                orderShippingRepository.save(orderShipping);
-                OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
-                orderShippingLogRepository.save(orderShippingLog);
-                ItemStock itemStock = itemStockRepository.findByItemNumber(result.getItemNumber());
-                itemStock.updateOrderApprove(result.getQty());
-                OrderItemOption orderItemOption = null;
-                if(result.getIsOption()){
-                    ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
-                    orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), new ObjectMapper().writeValueAsString(result.getOptionName()), result.getQty(), result.getPrice());
-                    orderItemOptionRepository.save(orderItemOption);
-                }
-                OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
-                orderItemRepository.save(orderItem);
-                if(result.getBundleId()!=null){
-                    ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(result.getBundleId());
-                    Item item = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
-                    int updatePrice = item == null ? 0 : item.getPrice();
-                    itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice);
-                }
+        for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
+            OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
+            orderShippingRepository.save(orderShipping);
+            OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
+            orderShippingLogRepository.save(orderShippingLog);
+            ItemStock itemStock = itemStockRepository.findByItemNumber(result.getItemNumber());
+            itemStock.updateOrderApprove(result.getQty());
+            OrderItemOption orderItemOption = null;
+            if(result.getIsOption()){
+                ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
+                orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ApiUtil.toJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
+                orderItemOptionRepository.save(orderItemOption);
             }
-            List<Long> cartIdList = orderSheetContent.getCartIdList();
-            if(cartIdList!=null){
-                if(!cartIdList.isEmpty()){
-                    cartRepository.deleteByCartIdList(cartIdList);
-                }
+            OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+            orderItemRepository.save(orderItem);
+            if(result.getBundleId()!=null){
+                ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(result.getBundleId());
+                Item item = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
+                int updatePrice = item == null ? 0 : item.getPrice();
+                itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice);
             }
-        } catch (JsonProcessingException e) {
-            throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, e.getMessage());
         }
+        List<Long> cartIdList = orderSheetContent.getCartIdList();
+        if(cartIdList!=null){
+            if(!cartIdList.isEmpty()){
+                cartRepository.deleteByCartIdList(cartIdList);
+            }
+        }
+
 
         orderWaitRepository.delete(orderWait);
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){

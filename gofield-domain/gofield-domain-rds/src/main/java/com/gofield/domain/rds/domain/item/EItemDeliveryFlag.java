@@ -9,6 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemDeliveryFlag implements CodeEnum {
     FREE("무료배송", "F"),
+    CONDITION("조건부배송","C"),
     PAY( "유료배송", "P");
 
     private String description;

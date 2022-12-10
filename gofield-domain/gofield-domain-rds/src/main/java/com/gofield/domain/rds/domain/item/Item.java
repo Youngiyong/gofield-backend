@@ -59,6 +59,9 @@ public class Item extends BaseTimeEntity {
     private EItemClassificationFlag classification;
 
     @Column
+    private EItemChargeFlag charge;
+
+    @Column
     private String thumbnail;
 
     @Column
