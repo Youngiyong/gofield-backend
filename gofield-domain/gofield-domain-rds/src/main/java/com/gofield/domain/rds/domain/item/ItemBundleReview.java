@@ -1,7 +1,5 @@
-
 package com.gofield.domain.rds.domain.item;
 
-import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,6 +32,12 @@ public class ItemBundleReview  {
     private Long userId;
 
     @Column
+    private Long orderId;
+
+    @Column
+    private String itemNumber;
+
+    @Column
     private String name;
 
     @Column
@@ -43,6 +47,9 @@ public class ItemBundleReview  {
     private String optionName;
 
     @Column
+    private String thumbnail;
+
+    @Column
     private Integer weight;
 
     @Column
@@ -50,6 +57,9 @@ public class ItemBundleReview  {
 
     @Column
     private Double reviewScore;
+
+    @Column
+    private Integer qty;
 
     @Column
     private String description;
@@ -62,28 +72,36 @@ public class ItemBundleReview  {
 
 
     @Builder
-    private ItemBundleReview(ItemBundle bundle, Long userId, String name, String nickName, String optionName, Integer weight, Integer height, Double reviewScore, String description){
+    private ItemBundleReview(ItemBundle bundle, Long userId, Long orderId, String itemNumber, String name, String nickName, String optionName, String thumbnail, Integer weight, Integer height, Double reviewScore, int qty, String description){
         this.bundle = bundle;
         this.userId = userId;
+        this.orderId = orderId;
+        this.itemNumber = itemNumber;
         this.name = name;
         this.nickName = nickName;
         this.optionName = optionName;
+        this.thumbnail = thumbnail;
         this.weight = weight;
         this.height = height;
         this.reviewScore = reviewScore;
+        this.qty = qty;
         this.description = description;
     }
 
-    public static ItemBundleReview newInstance(ItemBundle bundle, Long userId, String name, String nickName, String optionName, Integer weight, Integer height, Double reviewScore, String description){
+    public static ItemBundleReview newInstance(ItemBundle bundle, Long userId, Long orderId, String itemNumber, String name, String nickName, String optionName, String thumbnail, Integer weight, Integer height, Double reviewScore, Integer qty, String description){
         return ItemBundleReview.builder()
                 .bundle(bundle)
                 .userId(userId)
+                .orderId(orderId)
+                .itemNumber(itemNumber)
                 .name(name)
                 .nickName(nickName)
                 .optionName(optionName)
+                .thumbnail(thumbnail)
                 .weight(weight)
                 .height(height)
                 .reviewScore(reviewScore)
+                .qty(qty)
                 .description(description)
                 .build();
     }

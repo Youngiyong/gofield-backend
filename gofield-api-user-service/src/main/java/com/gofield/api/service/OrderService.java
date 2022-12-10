@@ -24,7 +24,6 @@ import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
 import com.google.gson.Gson;
-import io.swagger.annotations.Api;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -177,9 +176,7 @@ public class OrderService {
         if(orderSheet==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "주문시트가 존재하지 않습니다.");
         }
-
-        OrderSheetContentResponse orderSheetContent = null;
-        orderSheetContent =  ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
+        OrderSheetContentResponse orderSheetContent = ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
         String cardCompany = request.getPaymentType().equals(PaymentType.CARD) ? request.getCompanyCode() : null;
         String easyPay = request.getPaymentType().equals(PaymentType.EASYPAY) ? request.getCompanyCode() : null;
         TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), orderSheetContent.getOrderName(), cardCompany, easyPay, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
@@ -239,13 +236,20 @@ public class OrderService {
         orderShipping.updateComplete();
     }
 
-
     @Transactional(readOnly = true)
-    public OrderItemReviewListResponse getOrderItemReviewList(Boolean isReview, Pageable pageable){
+    public OrderItemReviewListResponse getOrderItemReviewList(Pageable pageable){
         User user = userService.getUserNotNonUser();
-        List<OrderItemProjection> result = orderItemRepository.findAllByUserId(user.getId(), isReview, pageable);
+        List<OrderItemProjection> result = orderItemRepository.findAllByUserIdAndShippingStatusShippingComplete(user.getId(), pageable);
         List<OrderItemReviewResponse> response = OrderItemReviewResponse.of(result);
         return OrderItemReviewListResponse.of(response);
+    }
+
+    @Transactional
+    public OrderItemReviewDetailListResponse getOrderItemReviewDetailList(Pageable pageable){
+        User user = userService.getUserNotNonUser();
+        List<ItemBundleReview> result = itemBundleReviewRepository.findAllByUserId(user.getId(), pageable);
+        List<OrderItemReviewDetailResponse> response = OrderItemReviewDetailResponse.of(result);
+        return OrderItemReviewDetailListResponse.of(response);
     }
 
     @Transactional
@@ -275,12 +279,8 @@ public class OrderService {
                 imageList.add(image);
             }
         }
-        String optionName = null;
-        if(orderItem.getOrderItemOption()!=null){
-            List<String> optionList = ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){});
-            optionName = optionList.stream().collect(Collectors.joining(" ")) + " 구매";
-        }
-        ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), orderItem.getName(), user.getNickName(), optionName, request.getWeight(), request.getHeight(), request.getReviewScore(), request.getContent());
+        int qty = orderItem.getOrderItemOption()!=null ? orderItem.getOrderItemOption().getQty() : orderItem.getQty();
+        ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), order.getId(), orderItem.getItemNumber(), orderItem.getName(), user.getNickName(), orderItem.getOrderItemOption()==null ? null : orderItem.getOrderItemOption().getName(), orderItem.getItem().getThumbnail(), request.getWeight(), request.getHeight(), request.getReviewScore(), qty, request.getContent());
         for(String image: imageList){
             ItemBundleReviewImage itemBundleReviewImage = ItemBundleReviewImage.newInstance(itemBundleReview, image);
             itemBundleReview.addImage(itemBundleReviewImage);

@@ -56,9 +56,7 @@ public class ItemOptionGroupResponse {
     public static List<ItemOptionGroupResponse> of(List<ItemOptionGroup> list){
         return list
                 .stream()
-                .map(p -> {
-                        return ItemOptionGroupResponse.of(p.getId(), p.getGroupTitle(), p.getOptionType(), p.getOptionGroup()==null ? null : ApiUtil.strToObject(p.getOptionGroup(), new TypeReference<List<Map<String, Object>>>(){}), p.getPriceGroup()==null ? null :  ApiUtil.strToObject(p.getPriceGroup(), new TypeReference<List<Integer>>(){}),  p.getIsEssential(),  p.getCreateDate());
-                })
+                .map(p -> ItemOptionGroupResponse.of(p.getId(), p.getGroupTitle(), p.getOptionType(), p.getOptionGroup()==null ? null : ApiUtil.strToObject(p.getOptionGroup(), new TypeReference<List<Map<String, Object>>>(){}), p.getPriceGroup()==null ? null :  ApiUtil.strToObject(p.getPriceGroup(), new TypeReference<List<Integer>>(){}),  p.getIsEssential(),  p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 }

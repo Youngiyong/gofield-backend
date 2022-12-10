@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.domain.order.repository;
 
 import com.gofield.common.model.Constants;
+import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
 import com.gofield.domain.rds.domain.order.OrderItem;
 import com.gofield.domain.rds.domain.order.projection.OrderItemProjection;
 import com.gofield.domain.rds.domain.order.projection.QOrderItemProjection;
@@ -22,13 +23,6 @@ import static com.gofield.domain.rds.domain.seller.QSeller.seller;
 public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
-    private BooleanExpression eqIsReview(Boolean isReview){
-        if(isReview == null){
-            return null;
-        }
-        return orderItem.isReview.eq(isReview);
-    }
-
     @Override
     public OrderItem findByOrderItemId(Long id) {
         return jpaQueryFactory
@@ -40,7 +34,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
     }
 
     @Override
-    public List<OrderItemProjection> findAllByUserId(Long userId, Boolean isReview, Pageable pageable) {
+    public List<OrderItemProjection> findAllByUserIdAndShippingStatusShippingComplete(Long userId, Pageable pageable) {
         return jpaQueryFactory
                 .select(new QOrderItemProjection(
                         orderItem.id,
@@ -58,17 +52,19 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                         orderItemOption.optionType,
                         orderItem.qty,
                         orderItemOption.qty,
-                        orderItem.isReview))
+                        orderShipping.status))
                 .from(order)
                 .innerJoin(orderItem)
                 .on(order.id.eq(orderItem.orderId))
+                .innerJoin(orderShipping)
+                .on(orderItem.orderShipping.id.eq(orderShipping.id))
                 .innerJoin(item)
                 .on(orderItem.item.id.eq(item.id))
                 .leftJoin(seller)
                 .on(orderItem.sellerId.eq(seller.id))
                 .leftJoin(orderItemOption)
                 .on(orderItem.orderItemOption.id.eq(orderItemOption.id))
-                .where(order.userId.eq(userId), eqIsReview(isReview))
+                .where(order.userId.eq(userId), orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(orderItem.createDate.desc())

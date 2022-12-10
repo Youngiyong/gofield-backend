@@ -93,7 +93,7 @@ public class OrderController {
         return ApiResponse.SUCCESS;
     }
 
-    @ApiOperation(value = "리뷰 등록")
+    @ApiOperation(value = "리뷰 작성")
     @PostMapping("/v1/review/{orderItemId}")
     public ApiResponse reviewOrderItem(@PathVariable Long orderItemId,
                                        @RequestPart(value = "review") OrderRequest.OrderReview request,
@@ -102,11 +102,16 @@ public class OrderController {
         return ApiResponse.SUCCESS;
     }
 
+    @ApiOperation(value = "리뷰 관리 - 리뷰 작성 가능 내역")
+    @GetMapping("/v1/review/item")
+    public ApiResponse<OrderItemReviewListResponse> getOrderItemReviewList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(orderService.getOrderItemReviewList(pageable));
+    }
+
     @ApiOperation(value = "리뷰 내역")
     @GetMapping("/v1/review")
-    public ApiResponse getOrderItemReviewList(@RequestParam(required = false) Boolean isReview,
-                                              @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return ApiResponse.success(orderService.getOrderItemReviewList(isReview, pageable));
+    public ApiResponse<OrderItemReviewDetailListResponse> gerOrderItemReviewHistoryList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(orderService.getOrderItemReviewDetailList(pageable));
     }
 
 }

@@ -43,4 +43,17 @@ public class ItemBundleReviewRepositoryCustomImpl implements ItemBundleReviewRep
                 .where(itemBundleReview.bundle.id.eq(bundleId))
                 .fetch();
     }
+
+    @Override
+    public List<ItemBundleReview> findAllByUserId(Long userId, Pageable pageable) {
+        return jpaQueryFactory
+                .select(itemBundleReview)
+                .from(itemBundleReview)
+                .leftJoin(itemBundleReview.images, itemBundleReviewImage).fetchJoin()
+                .where(itemBundleReview.userId.eq(userId))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .orderBy(itemBundleReview.createDate.desc())
+                .fetch();
+    }
 }

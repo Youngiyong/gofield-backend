@@ -76,12 +76,9 @@ public class OrderItemResponse {
     public static List<OrderItemResponse> of(List<OrderItem> list){
         return list
                 .stream()
-                .map(p -> {
-
-                        return OrderItemResponse.of(p.getId(), p.getItem().getId(), p.getOrderItemOption()==null ? null : p.getOrderItemOption().getItemOptionId(),
+                .map(p -> OrderItemResponse.of(p.getId(), p.getItem().getId(), p.getOrderItemOption()==null ? null : p.getOrderItemOption().getItemOptionId(),
                                 p.getItemNumber(), p.getName(), p.getOrderItemOption()==null ? null : ApiUtil.strToObject(p.getOrderItemOption().getName(), new TypeReference<List<String>>(){}),
-                    p.getItem().getClassification(), p.getItem().getThumbnail(), p.getStatus(), p.getIsReview(), p.getOrderItemOption()==null ? p.getPrice() :  p.getOrderItemOption().getPrice(), p.getOrderItemOption()==null ? p.getQty() : p.getOrderItemOption().getQty());
-                })
+                    p.getItem().getClassification(), p.getItem().getThumbnail(), p.getStatus(), p.getIsReview(), p.getOrderItemOption()==null ? p.getPrice() :  p.getOrderItemOption().getPrice(), p.getOrderItemOption()==null ? p.getQty() : p.getOrderItemOption().getQty()))
                 .collect(Collectors.toList());
     }
 }

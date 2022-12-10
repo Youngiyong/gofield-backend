@@ -65,10 +65,8 @@ public class ItemClassificationResponse {
     public static  List<ItemClassificationResponse> of(List<ItemClassificationProjectionResponse> list) {
         return list
                 .stream()
-                .map(p -> {
-                        return ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
-                               p.getTags()==null ? null : ApiUtil.strToObject(p.getTags(), new TypeReference<List<String>>(){}));
-                })
+                .map(p -> ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(),
+                               p.getTags()==null ? null : ApiUtil.strToObject(p.getTags(), new TypeReference<List<String>>(){})))
                 .collect(Collectors.toList());
     }
 }

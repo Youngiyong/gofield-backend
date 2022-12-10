@@ -98,13 +98,10 @@ public class CartResponse {
     public static List<CartResponse> of(List<CartProjection> list){
         return list
                 .stream()
-                .map(p -> {
-                    return CartResponse.of(p.getId(), p.getItemName(), p.getItemNumber(), p.getSellerId(),
+                .map(p -> CartResponse.of(p.getId(), p.getItemName(), p.getItemNumber(), p.getSellerId(),
                             p.getSellerName(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
                             p.getThumbnail(), p.getPrice(), p.getQty(), p.getIsOrder(), p.getClassification(), p.getSpec(),
-                            p.getGender(), p.getIsCondition(), p.getCondition(), p.getChargeType(), p.getCharge(), p.getFeeJeju(), p.getFeeJejuBesides());
-
-                })
+                            p.getGender(), p.getIsCondition(), p.getCondition(), p.getChargeType(), p.getCharge(), p.getFeeJeju(), p.getFeeJejuBesides()))
                 .collect(Collectors.toList());
     }
 }

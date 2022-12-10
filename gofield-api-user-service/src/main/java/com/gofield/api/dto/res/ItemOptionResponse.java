@@ -69,9 +69,7 @@ public class ItemOptionResponse {
     public static List<ItemOptionResponse> of(List<ItemOptionProjection> list){
         return list
                 .stream()
-                .map(p -> {
-                        return ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : ApiUtil.strToObject(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getOptionPrice(), p.getQty(), p.getIsUse(), p.getCreateDate());
-                })
+                .map(p -> ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : ApiUtil.strToObject(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getOptionPrice(), p.getQty(), p.getIsUse(), p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 

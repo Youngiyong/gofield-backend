@@ -11,6 +11,7 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemOptionTypeFlag;
 import com.gofield.domain.rds.domain.order.EOrderItemStatusFlag;
+import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
 import com.gofield.domain.rds.domain.order.OrderItem;
 import com.gofield.domain.rds.domain.order.projection.OrderItemProjection;
 import lombok.Builder;
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class OrderItemReviewResponse {
     private Long orderItemId;
-
     private String name;
     private List<String> optionName;
     private Long sellerId;
@@ -39,10 +39,10 @@ public class OrderItemReviewResponse {
     private EItemOptionTypeFlag optionType;
     private int qty;
     private int optionQty;
-    private Boolean isReview;
+    private EOrderShippingStatusFlag status;
 
     @Builder
-    private OrderItemReviewResponse(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, Boolean isReview){
+    private OrderItemReviewResponse(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, EOrderShippingStatusFlag status){
         this.orderItemId = orderItemId;
         this.name = name;
         this.optionName = optionName;
@@ -58,10 +58,10 @@ public class OrderItemReviewResponse {
         this.optionType = optionType;
         this.qty = qty;
         this.optionQty = optionQty;
-        this.isReview = isReview;
+        this.status = status;
     }
 
-    public static OrderItemReviewResponse of(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, Boolean isReview){
+    public static OrderItemReviewResponse of(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, EOrderShippingStatusFlag status){
         return OrderItemReviewResponse.builder()
                 .orderItemId(orderItemId)
                 .name(name)
@@ -78,18 +78,16 @@ public class OrderItemReviewResponse {
                 .optionType(optionType)
                 .qty(qty)
                 .optionQty(optionQty)
-                .isReview(isReview)
+                .status(status)
                 .build();
     }
 
     public static List<OrderItemReviewResponse> of(List<OrderItemProjection> list){
         return list
                 .stream()
-                .map(p -> {
-                        return OrderItemReviewResponse.of(p.getOrderItemId(), p.getName(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
+                .map(p -> OrderItemReviewResponse.of(p.getOrderItemId(), p.getName(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
                                 p.getSellerId(), p.getSellerName(), p.getBundleId(), p.getOptionId(), p.getThumbnail(), p.getItemNumber(),
-                                p.getPrice(), p.getOptionPrice(), p.getClassification(), p.getOptionType(), p.getQty(), p.getOptionQty(), p.getIsReview());
-                })
+                                p.getPrice(), p.getOptionPrice(), p.getClassification(), p.getOptionType(), p.getQty(), p.getOptionQty(), p.getStatus()))
                 .collect(Collectors.toList());
     }
 }
