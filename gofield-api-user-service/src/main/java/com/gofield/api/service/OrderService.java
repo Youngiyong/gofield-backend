@@ -277,7 +277,7 @@ public class OrderService {
         }
         String optionName = null;
         if(orderItem.getOrderItemOption()!=null){
-            List<String> optionList = ApiUtil.toObject(orderItem.getOrderItemOption().getName(), List.class);
+            List<String> optionList = ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){});
             optionName = optionList.stream().collect(Collectors.joining(" ")) + " 구매";
         }
         ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), orderItem.getName(), user.getNickName(), optionName, request.getWeight(), request.getHeight(), request.getReviewScore(), request.getContent());
