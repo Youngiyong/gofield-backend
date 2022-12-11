@@ -257,6 +257,7 @@ public class ThirdPartyService {
         }
     }
 
+
     public SocialAuthentication getSocialAuthentication(String state, String code, ESocialFlag social){
         if(social.equals(ESocialFlag.KAKAO)){
             KaKaoTokenRequest request = KaKaoTokenRequest.of(KAKAO_CLIENT_ID, AUTH_CALLBACK_URL, code, KAKAO_CLIENT_SECRET);
