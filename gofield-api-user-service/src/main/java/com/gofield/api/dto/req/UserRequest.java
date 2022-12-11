@@ -70,6 +70,7 @@ public class UserRequest {
         private String code;
     }
 
+
     @Getter
     public static class UserAccountInfo {
         @NotNull(message = "은행코드는 필수값입니다.")
