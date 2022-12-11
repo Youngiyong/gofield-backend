@@ -64,7 +64,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                         itemStock.sellerId,
                         seller.name,
                         itemOption.name,
-                        item.thumbnail.prepend(Constants.CDN_URL),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         cart.price,
                         cart.qty,
                         cart.isOrder,

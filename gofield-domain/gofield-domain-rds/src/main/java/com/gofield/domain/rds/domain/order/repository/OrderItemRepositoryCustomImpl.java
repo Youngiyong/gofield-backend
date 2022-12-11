@@ -44,7 +44,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                         seller.name,
                         item.bundle.id,
                         orderItemOption.itemOptionId,
-                        item.thumbnail.prepend(Constants.CDN_URL),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         orderItem.itemNumber,
                         orderItem.price,
                         orderItemOption.price,

@@ -65,7 +65,7 @@ public class OrderItemResponse {
                 .name(name)
                 .optionName(optionName)
                 .classification(classification)
-                .thumbnail(Constants.CDN_URL.concat(thumbnail))
+                .thumbnail(Constants.CDN_URL.concat(thumbnail).concat(Constants.RESIZE_150x150))
                 .status(status)
                 .isReview(isReview)
                 .price(price)

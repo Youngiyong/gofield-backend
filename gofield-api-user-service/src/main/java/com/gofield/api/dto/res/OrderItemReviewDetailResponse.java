@@ -53,7 +53,7 @@ public class OrderItemReviewDetailResponse {
         return list
                 .stream()
                 .map(p -> OrderItemReviewDetailResponse.of(p.getId(), p.getName(), p.getItemNumber(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
-                            p.getThumbnail()==null ? null : Constants.CDN_URL.concat(p.getThumbnail()), p.getQty(), p.getReviewScore(), p.getDescription()))
+                            p.getThumbnail()==null ? null : Constants.CDN_URL.concat(p.getThumbnail()).concat(Constants.RESIZE_150x150), p.getQty(), p.getReviewScore(), p.getDescription()))
                 .collect(Collectors.toList());
     }
 

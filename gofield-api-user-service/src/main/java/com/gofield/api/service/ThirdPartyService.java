@@ -86,7 +86,7 @@ public class ThirdPartyService {
     @Value("${secret.payment.success.front_service_redirect_url}")
     private String AUTH_FRONT_PAYMENT_SERVICE_SUCCESS_REDIRECT_URL;
 
-    @Value("${secret.payment.success.front_service_redirect_url}")
+    @Value("${secret.payment.success.front_local_redirect_url}")
     private String AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL;
 
     @Value("${secret.payment.fail.front_service_redirect_url}")

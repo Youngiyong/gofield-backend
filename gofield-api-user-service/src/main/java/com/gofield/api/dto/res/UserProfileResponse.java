@@ -1,5 +1,6 @@
 package com.gofield.api.dto.res;
 
+import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class UserProfileResponse {
         return UserProfileResponse.builder()
                 .name(user.getName())
                 .nickName(user.getNickName())
-                .thumbnail(user.getThumbnail()==null ? null : CDN_URL.concat(user.getThumbnail()))
+                .thumbnail(user.getThumbnail()==null ? null : CDN_URL.concat(user.getThumbnail()).concat(Constants.RESIZE_150x150))
                 .weight(user.getWeight())
                 .height(user.getHeight())
                 .build();

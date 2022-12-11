@@ -37,7 +37,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.id,
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
-                        itemBundle.thumbnail.prepend(Constants.CDN_URL),
+                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
@@ -59,7 +59,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemBundle.id,
                             itemBundle.name,
                             itemBundle.brand.name.as("brandName"),
-                            itemBundle.thumbnail.prepend(Constants.CDN_URL),
+                            itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             itemBundleAggregation.reviewCount,
                             itemBundleAggregation.reviewScore,
                             itemBundleAggregation.newLowestPrice,
@@ -79,7 +79,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemBundle.id,
                             itemBundle.name,
                             itemBundle.brand.name.as("brandName"),
-                            itemBundle.thumbnail.prepend(Constants.CDN_URL),
+                            itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             itemBundleAggregation.reviewCount,
                             itemBundleAggregation.reviewScore,
                             itemBundleAggregation.newLowestPrice,
@@ -103,7 +103,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.id,
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
-                        itemBundle.thumbnail.prepend(Constants.CDN_URL),
+                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
@@ -125,7 +125,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.id,
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
-                        itemBundle.thumbnail.prepend(Constants.CDN_URL),
+                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
@@ -139,7 +139,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         if(bundle==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("존재하지 않는 <%s> bundleId 입니다.", bundleId) );
 
         List<String> bundleImages = jpaQueryFactory
-                .select(itemBundleImage.image.prepend(Constants.CDN_URL))
+                .select(itemBundleImage.image.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150))
                 .from(itemBundleImage)
                 .where(itemBundleImage.bundle.id.eq(bundleId))
                 .fetch();
@@ -151,7 +151,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.itemNumber,
                             item.name,
                             brand.name.as("brandName"),
-                            item.thumbnail.prepend(Constants.CDN_URL),
+                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             item.price,
                             userLikeItem.id.as("likeId"),
                             item.classification,
@@ -183,7 +183,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.itemNumber,
                             item.name,
                             brand.name.as("brandName"),
-                            item.thumbnail.prepend(Constants.CDN_URL),
+                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             item.price,
                             item.classification,
                             itemDetail.gender,
