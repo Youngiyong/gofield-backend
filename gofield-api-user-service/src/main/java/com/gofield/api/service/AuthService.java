@@ -153,7 +153,6 @@ public class AuthService {
         }
         return tokenUtil.generateToken(authentication,9947483647000L , 9947483647000L, false, ESocialFlag.APPLE.getKey());
     }
-
     @Transactional
     public void logout(String Authorization){
         String accessToken = tokenUtil.resolveToken(Authorization);

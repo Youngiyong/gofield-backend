@@ -14,7 +14,7 @@ public enum FileType {
     STORE_IMAGE("매장 이미지", "store/", FileContentType.IMAGE),
     ITEM_IMAGE("상품 이미지", "item/", FileContentType.IMAGE),
     BRAND_IMAGE("브랜드 이미지", "brand/", FileContentType.IMAGE),
-    ITEM_BUNDLE_IMAGE("묶음 상품 리뷰 이미지", "bundle/", FileContentType.IMAGE),
+    ITEM_BUNDLE_IMAGE("리뷰 이미지", "review/", FileContentType.IMAGE),
     ;
     private final String description;
     private final String directory;
