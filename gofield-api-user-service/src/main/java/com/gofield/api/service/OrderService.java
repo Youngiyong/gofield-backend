@@ -61,6 +61,7 @@ public class OrderService {
     public String makeOrderNumber(){
         return String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis());
     }
+
     public String makeCarrierUrl(String carrierId, String trackId){
         return String.format(Constants.TRACKER_DELIVERY_URL, carrierId, trackId);
     }
@@ -194,7 +195,7 @@ public class OrderService {
     public void cancelPayment(String orderNumber)  {
         Order order = orderRepository.findByOrderNumber(orderNumber);
         TossPaymentRequest.PaymentCancel request = TossPaymentRequest.PaymentCancel.builder()
-                .cancelAmount(order.getTotalPrice()+order.getTotalDelivery())
+                .cancelAmount(order.getTotalAmount()+order.getTotalDelivery())
                 .cancelReason("취소 사유입니다.")
                 .build();
 

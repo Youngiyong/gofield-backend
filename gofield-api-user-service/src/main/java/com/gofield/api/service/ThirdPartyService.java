@@ -191,6 +191,7 @@ public class ThirdPartyService {
             paymentCompany = code!=null ? code.getName() : "없음";
             paymentType = EPaymentType.CARD;
             cardNumber = response.getCard().getNumber();
+            cardType = response.getCard().getCardType();
             installmentPlanMonth = response.getCard().getInstallmentPlanMonths();
         }
 
@@ -205,7 +206,8 @@ public class ThirdPartyService {
         });
         OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
         orderShippingAddressRepository.save(orderShippingAddress);
-        Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey, orderSheetList.getTotalDelivery(), orderSheetList.getTotalPrice(), 0,  paymentCompany, paymentType.name(), cardNumber, cardType, installmentPlanMonth);
+
+        Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey,  orderSheetList.getTotalPrice(), orderSheetList.getTotalPrice()+orderSheetList.getTotalDelivery(), orderSheetList.getTotalDelivery(),0,  paymentCompany, paymentType.name(), cardNumber, cardType, installmentPlanMonth);
         orderRepository.save(order);
 
         for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){

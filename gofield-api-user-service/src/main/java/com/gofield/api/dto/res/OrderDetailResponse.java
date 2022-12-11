@@ -1,6 +1,5 @@
 package com.gofield.api.dto.res;
 
-
 import com.gofield.domain.rds.domain.order.EOrderStatusFlag;
 import com.gofield.domain.rds.domain.order.Order;
 import lombok.Builder;
@@ -15,7 +14,8 @@ import java.util.List;
 public class OrderDetailResponse {
     private Long id;
     private String orderNumber;
-    private int totalPrice;
+    private int totalItem;
+    private int totalAmount;
     private int totalDiscount;
     private int totalDelivery;
     private String paymentCompany;
@@ -33,13 +33,14 @@ public class OrderDetailResponse {
     private List<OrderShippingResponse> orderShippingList;
 
     @Builder
-    private OrderDetailResponse(Long id, String orderNumber, int totalPrice, int totalDiscount , int totalDelivery,
+    private OrderDetailResponse(Long id, String orderNumber, int totalItem, int totalAmount, int totalDiscount , int totalDelivery,
                                 String paymentCompany, EOrderStatusFlag status, LocalDateTime createDate, LocalDateTime cancelDate,
                                 LocalDateTime confirmDate, LocalDateTime finishDate, String tel, String name,
                                 String zipCode, String address, String addressExtra, String shippingComment, List<OrderShippingResponse> orderShippingList){
         this.id = id;
         this.orderNumber = orderNumber;
-        this.totalPrice = totalPrice;
+        this.totalItem = totalItem;
+        this.totalAmount = totalAmount;
         this.totalDiscount = totalDiscount;
         this.totalDelivery = totalDelivery;
         this.paymentCompany = paymentCompany;
@@ -61,7 +62,8 @@ public class OrderDetailResponse {
         return OrderDetailResponse.builder()
                 .id(order.getId())
                 .orderNumber(order.getOrderNumber())
-                .totalPrice(order.getTotalPrice())
+                .totalItem(order.getTotalItem())
+                .totalAmount(order.getTotalAmount())
                 .totalDiscount(order.getTotalDiscount())
                 .totalDelivery(order.getTotalDelivery())
                 .paymentCompany(order.getPaymentCompany())
