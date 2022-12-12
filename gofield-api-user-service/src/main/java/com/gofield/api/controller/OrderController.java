@@ -120,5 +120,4 @@ public class OrderController {
     public ApiResponse<OrderItemReviewDetailListResponse> gerOrderItemReviewHistoryList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(orderService.getOrderItemReviewDetailList(pageable));
     }
-
 }
