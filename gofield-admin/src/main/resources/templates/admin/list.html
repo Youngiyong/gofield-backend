@@ -62,9 +62,7 @@
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-<!--                            <a class="btn btn-primary float-right" role="button">관리자 추가</a>-->
-                            <table class="table table-bordered">
-                                <thead>
+                            <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
                                 <tr>
                                     <th>id</th>
                                     <th>아이디</th>
@@ -82,8 +80,16 @@
                                     <td th:text="${data.role}"></td>
                                     <td th:text="${data.createDate}"></td>
                                     <td>
-                                        <a class="btn btn-primary" role="button"  th:href="${'/admin/edit/'+data.id}"><span>수정</span></a>
-                                        <a class="btn btn-danger" role="button"  th:href="${'/admin/delete/'+data.id}"><span>삭제</span></a>
+                                        <a class="btn btn-info btn-sm" th:href="${'/admin/edit/'+data.id}">
+                                            <i class="fas fa-pencil-alt">
+                                            </i>
+                                            수정
+                                        </a>
+                                        <a class="btn btn-danger btn-sm" th:href="${'/admin/delete/'+data.id}">
+                                            <i class="fas fa-trash">
+                                            </i>
+                                            삭제
+                                        </a>
                                     </td>
                                 </tr>
                                 </tbody>
