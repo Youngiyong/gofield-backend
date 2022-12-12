@@ -31,7 +31,7 @@ public class Admin extends BaseTimeEntity {
     @Column(length = 64)
     private String email;
 
-    @Column(length = 64)
+    @Column(length = 20)
     private String tel;
 
     @Column(nullable = false, length = 36)
@@ -47,22 +47,22 @@ public class Admin extends BaseTimeEntity {
     @JoinColumn(name = "role_id")
     private AdminRole adminRole;
 
-    public static Admin newInstance(String name, String username, String password, String tel, AdminRole adminRole) {
+    public static Admin newInstance(String name, String username, String password, AdminRole adminRole) {
         return Admin.builder()
                 .name(name)
                 .username(username)
                 .password(password)
-                .tel(tel)
                 .adminRole(adminRole)
                 .status(EStatusFlag.ACTIVE)
                 .uuid(RandomUtils.makeRandomUuid())
                 .build();
     }
 
-    public void update(String password, String name, String tel){
+    public void update(String username, String password, String name, EAdminRole role){
+        this.username =  username != null ? username: this.username;
         this.password =  password != null ? password: this.password;
         this.name =  name != null ? name : this.name;
-        this.tel =  tel != null ? tel : this.tel;
+        this.adminRole.update(role);
     }
 
 }

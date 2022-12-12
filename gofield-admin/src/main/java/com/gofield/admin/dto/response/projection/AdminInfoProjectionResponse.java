@@ -16,11 +16,11 @@ public class AdminInfoProjectionResponse {
     private String name;
     private String username;
     private String role;
-    private LocalDateTime createDate;
+    private String createDate;
 
 
     @Builder
-    private AdminInfoProjectionResponse(Long id, String name, String username, String role, LocalDateTime createDate){
+    private AdminInfoProjectionResponse(Long id, String name, String username, String role, String createDate){
         this.id = id;
         this.name = name;
         this.username = username;
@@ -34,7 +34,7 @@ public class AdminInfoProjectionResponse {
                 .name(name)
                 .username(username)
                 .role(role)
-                .createDate(createDate)
+                .createDate(createDate.toLocalDate().toString())
                 .build();
     }
 

@@ -30,4 +30,7 @@ public class AdminRole {
     @OneToMany(mappedBy = "menu")
     private List<AdminRoleHasMenu> menu;
 
+    public void update(EAdminRole role){
+        this.role =  role != null ? role : this.role;
+    }
 }

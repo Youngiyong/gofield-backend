@@ -92,6 +92,14 @@ public class OrderController {
         return ApiResponse.SUCCESS;
     }
 
+    @ApiOperation(value = "주문상품 조회")
+    @GetMapping("/v1/{orderNumber}/item/{orderItemId}")
+    public ApiResponse<OrderItemResponse> getOrderItem(@PathVariable String orderNumber,
+                                                       @PathVariable Long orderItemId){
+
+        return ApiResponse.success(orderService.getOrderItem(orderNumber, orderItemId));
+    }
+
     @ApiOperation(value = "리뷰 작성")
     @PostMapping("/v1/review/{orderItemId}")
     public ApiResponse reviewOrderItem(@PathVariable Long orderItemId,

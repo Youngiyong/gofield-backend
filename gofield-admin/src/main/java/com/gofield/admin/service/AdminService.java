@@ -1,8 +1,12 @@
 package com.gofield.admin.service;
 
 import com.gofield.admin.dto.request.AdminRequest;
-import com.gofield.admin.dto.response.AdminInfoResponse;
+import com.gofield.admin.dto.AdminListDto;
+import com.gofield.admin.dto.AdminDto;
 import com.gofield.admin.dto.response.projection.AdminInfoProjectionResponse;
+import com.gofield.common.exception.InvalidException;
+import com.gofield.common.model.enums.ErrorAction;
+import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.common.utils.EncryptUtils;
 import com.gofield.domain.rds.domain.admin.Admin;
 import com.gofield.domain.rds.domain.admin.AdminRepository;
@@ -14,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,36 +30,37 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AdminService {
 
+    private final PasswordEncoder passwordEncoder;
     private final AdminRepository adminRepository;
     private final AdminRoleRepository adminRoleRepository;
 
     @Transactional(readOnly = true)
-    public AdminInfoResponse findAdminList(Pageable pageable) {
-        Page<AdminInfoProjection> page = adminRepository.findAllAdminInfoList(pageable);
+    public AdminListDto findAllAdminList(String name, Pageable pageable) {
+        Page<AdminInfoProjection> page = adminRepository.findAllAdminInfoList(name, pageable);
         List<AdminInfoProjectionResponse> projectionResponse = AdminInfoProjectionResponse.ofList(page.getContent());
-        return AdminInfoResponse.of(projectionResponse, page.getNumberOfElements());
-//        List<AdminInfoProjectionResponse> projectionResponse = AdminInfoProjectionResponse.ofList(page.getContent());
-//        return AdminInfoResponse.of(projectionResponse, paginationResponse);
+        return AdminListDto.of(projectionResponse, page);
     }
 
-//    @Transactional
-//    public AdminInfoResponse findAdminById(Long id){
-//        AdminInfoProjection adminInfoProjection = adminRepository.findAdminInfoProjectionById(id);
-//        return AdminInfoResponse.of(adminInfoProjection);
-//    }
+    @Transactional
+    public void updateAdmin(AdminDto adminDto){
+        Admin admin = adminRepository.findByAdminId(adminDto.getId());
+        admin.update(adminDto.getUsername(), adminDto.getPassword()==null ? null : passwordEncoder.encode(adminDto.getPassword()), adminDto.getName(), adminDto.getRole());
+    }
 
+    @Transactional(readOnly = true)
+    public AdminDto findAdminById(Long id){
+        return AdminDto.of(adminRepository.findByAdminId(id));
+    }
 
     @Transactional
-    public void save(AdminRequest.Create request){
-        Admin admin = null;
-        if(request.getId()==null){
-            AdminRole adminRole = adminRoleRepository.findByRole(EAdminRole.ROLE_ADMIN);
-            admin = Admin.newInstance(request.getName(), request.getUsername(), EncryptUtils.sha256Encrypt(request.getPassword()), request.getTel(), adminRole);
-            adminRepository.save(admin);
-        } else {
-            admin = adminRepository.findByAdminId(request.getId());
-            admin.update(EncryptUtils.sha256Encrypt(request.getPassword()), request.getName(), request.getTel());
+    public void save(AdminDto adminDto){
+        AdminRole adminRole = adminRoleRepository.findByRole(adminDto.getRole());
+        Admin admin = adminRepository.findByUsername(adminDto.getUsername());
+        if(admin!=null){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 가입되어 있는 관리자입니다.");
         }
+        admin = Admin.newInstance(adminDto.getName(), adminDto.getUsername(), passwordEncoder.encode(adminDto.getPassword()), adminRole);
+        adminRepository.save(admin);
     }
 
     @Transactional

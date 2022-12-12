@@ -14,7 +14,6 @@ public class AdminInfoProjection {
     private final Long id;
     private final String name;
     private final String username;
-
     private final String password;
     private final String tel;
     private final EAdminRole role;

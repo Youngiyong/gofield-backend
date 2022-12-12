@@ -170,6 +170,12 @@ public class OrderService {
         }
     }
 
+    public OrderItemResponse getOrderItem(String orderNumber, Long orderItemId){
+        User user = userService.getUserNotNonUser();
+        OrderItem orderItem = orderItemRepository.findByOrderItemIdAndUserId(orderItemId, user.getId());
+        return OrderItemResponse.of(orderItem);
+    }
+
     @Transactional
     public OrderWaitResponse createOrderWait(OrderRequest.OrderPay request){
         User user = userService.getUserNotNonUser();

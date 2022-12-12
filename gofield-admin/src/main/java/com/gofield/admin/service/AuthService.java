@@ -1,6 +1,6 @@
 package com.gofield.admin.service;
 
-import com.gofield.admin.dto.AdminDto;
+import com.gofield.admin.dto.AdminInfo;
 import com.gofield.admin.dto.Constants;
 import com.gofield.admin.dto.request.LoginRequest;
 import com.gofield.common.exception.InvalidException;
@@ -36,8 +36,8 @@ public class AuthService {
             if(admin==null || (!EncryptUtils.sha256Encrypt(request.getPassword()).equals(admin.getPassword()))) {
                 redirectUri = new URI(context + Constants.LOGIN_ERROR_PAGE);
             } else {
-                AdminDto adminDto = AdminDto.of(admin.getId(), admin.getName(), admin.getUuid());
-                servletRequest.getSession().setAttribute("sAdmin", adminDto);
+                AdminInfo adminInfo = AdminInfo.of(admin.getId(), admin.getName(), admin.getUuid());
+                servletRequest.getSession().setAttribute("sAdmin", adminInfo);
                 redirectUri = new URI(context + Constants.LOGIN_AFTER_PAGE);
             }
         } catch (URISyntaxException e) {

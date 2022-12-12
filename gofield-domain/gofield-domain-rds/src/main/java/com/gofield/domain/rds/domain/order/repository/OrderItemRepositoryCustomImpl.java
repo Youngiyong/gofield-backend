@@ -34,6 +34,17 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
     }
 
     @Override
+    public OrderItem findByOrderItemIdAndUserId(Long id, Long userId) {
+        return jpaQueryFactory
+                .select(orderItem)
+                .from(orderItem)
+                .innerJoin(orderItem.orderShipping, orderShipping).fetchJoin()
+                .innerJoin(order).on(orderItem.orderId.eq(order.id))
+                .where(order.userId.eq(userId), orderItem.id.eq(id))
+                .fetchFirst();
+    }
+
+    @Override
     public List<OrderItemProjection> findAllByUserIdAndShippingStatusShippingComplete(Long userId, Pageable pageable) {
         return jpaQueryFactory
                 .select(new QOrderItemProjection(

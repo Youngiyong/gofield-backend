@@ -1,27 +1,43 @@
 package com.gofield.admin.dto;
 
-import lombok.*;
+import com.gofield.domain.rds.domain.admin.Admin;
+import com.gofield.domain.rds.domain.admin.EAdminRole;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
-@ToString
 @Getter
-@NoArgsConstructor(access = AccessLevel.PRIVATE)
+@Setter
+@NoArgsConstructor
 public class AdminDto {
-    private Long adminId;
+    private Long id;
     private String name;
-    private String uuid;
+    private String username;
+
+    private String password;
+    private EAdminRole role;
+    private String createDate;
 
     @Builder
-    private AdminDto(Long adminId, String name, String uuid){
-        this.adminId = adminId;
+    private AdminDto(Long id, String name, String username,String password, EAdminRole role, String createDate){
+        this.id = id;
         this.name = name;
-        this.uuid = uuid;
+        this.username = username;
+        this.password = password;
+        this.role = role;
+        this.createDate = createDate;
     }
 
-    public static AdminDto of(Long adminId, String name, String uuid){
+    public static AdminDto of(Admin admin){
         return AdminDto.builder()
-                .adminId(adminId)
-                .name(name)
-                .uuid(uuid)
+                .id(admin.getId())
+                .name(admin.getName())
+                .username(admin.getUsername())
+                .role(admin.getAdminRole().getRole())
+                .createDate(admin.getCreateDate().toLocalDate().toString())
                 .build();
     }
+
+
 }

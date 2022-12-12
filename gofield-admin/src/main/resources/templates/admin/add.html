@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 수정</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>관리자 추가</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">관리자 정보</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form role="form" method="post" th:action="@{/admin/add}" th:object="${admin}">
+                            <input th:field="*{id}" type="hidden"/>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="username">아이디</label>
+                                    <input class="form-control" id="username" placeholder="아이디"
+                                           type="text" th:field="*{username}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">패스워드</label>
+                                    <input class="form-control" id="password" placeholder="비밀번호"
+                                           type="password" th:field="*{password}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">이름</label>
+                                    <input class="form-control" id="name" placeholder="이름"
+                                           type="text" th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <label>권한</label>
+                                    <select th:field="*{role}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                            <option th:value="'ROLE_ADMIN'" th:text="관리자"></option>
+                                            <option th:value="'ROLE_OPERATOR'" th:text="운영자"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button class="btn btn-primary" type="submit">추가</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        console.log("Add User");
+    </script>
+</th:block>
+
+</body>
+</html>

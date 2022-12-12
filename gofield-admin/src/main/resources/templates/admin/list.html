@@ -16,12 +16,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Simple Tables</h1>
+                    <h1>관리자 관리</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Simple Tables</li>
+                        <li class="breadcrumb-item active">관리자 리스트</li>
                     </ol>
                 </div>
             </div>
@@ -35,10 +35,34 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Bordered Table</h3>
+<!--                            <h3 class="card-title">Bordered Table></h3>-->
+                            <div class="row">
+                                <div class="col-md-8 offset-md-2">
+                                    <form th:action="@{/admin}" id="searchForm">
+                                        <div class="input-group">
+                                            <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-lg btn-default">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <a class="btn btn-app float-right"  href="/admin/add">
+                                    <i class="fas fa-edit"></i> 관리자 추가
+                                </a>
+                            </div>
+<!--                            <form th:action="@{/tutorials}" id="searchForm">-->
+<!--                                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"-->
+<!--                                       placeholder="Enter keyword">-->
+
+
+<!--                            </form>-->
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+<!--                            <a class="btn btn-primary float-right" role="button">관리자 추가</a>-->
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
@@ -47,86 +71,60 @@
                                     <th>이름</th>
                                     <th>등급</th>
                                     <th>등록 날짜</th>
+                                    <th>작업</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr th:each="data : ${page.content}">
+                                <tr th:each="data : ${list}">
                                     <td th:text="${data.id}"></td>
                                     <td th:text="${data.username}"></td>
                                     <td th:text="${data.name}"></td>
                                     <td th:text="${data.role}"></td>
                                     <td th:text="${data.createDate}"></td>
                                     <td>
-                                        <a class="btn btn-primary" role="button" th:href="${'/edit/'+data.id}"><span>수정</span></a>
-                                        <a class="btn btn-danger" role="button" th:href="${'/delete/'+data.id}"><span>삭제</span></a>
+                                        <a class="btn btn-primary" role="button"  th:href="${'/admin/edit/'+data.id}"><span>수정</span></a>
+                                        <a class="btn btn-danger" role="button"  th:href="${'/admin/delete/'+data.id}"><span>삭제</span></a>
                                     </td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
-
-<!--                        <div th:if="${page.totalPages> 0}" class="pagination"-->
-<!--                             th:each="pageNumber : ${pageNumbers}">-->
-<!--                            <a th:href="@{/admin/list(size=${page.content.size}, page=${pageNumber})}"-->
-<!--                               th:text="${pageNumber}"-->
-<!--                               th:class="${pageNumber==page.number + 1} ? active"></a>-->
-<!--                        </div>-->
-
-                        <nav aria-label="Page navigation example ">
-                            <ul class="pagination">
-                                <li class="page-item">
-                                    <a class="page-link" th:href="@{/?page=1}" aria-label="Previous">
-                                        <span aria-hidden="true">처음</span>
-                                    </a>
+                        <div th:unless="${list.size() > 0}">
+                            <p class="text-center">조회되는 데이터가 없습니다.</p>
+                        </div>
+                        <nav aria-label="Pagination" th:if="${totalPages > 0}">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a th:replace="fragments/paging :: paging(1, '<<', 'First Page')"></a>
                                 </li>
-                                <li class="page-item">
-                                    <a class="page-link" th:href="@{/?page={page} (page = ${pagination.prevBlock})}" aria-label="Previous">
-                                        <span aria-hidden="true">이전</span>
-                                    </a>
+                                <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a th:replace="fragments/paging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
                                 </li>
-                                <th:block  th:with="start = ${pagination.startPage}, end = ${pagination.endPage}">
-                                    <li class="page-item"
-                                        th:with="start = ${pagination.startPage}, end = ${pagination.endPage}"
-                                        th:each="pageButton : ${#numbers.sequence(start, end)}">
-                                        <a class="page-link" th:href="@{/?page={page} (page = ${pageButton})}" th:text=${pageButton}></a>
-                                    </li>
-                                </th:block>
-                                <li class="page-item">
-                                    <a class="page-link" th:href="@{?page={page} (page = ${pagination.nextBlock})}" aria-label="Next">
-                                        <span aria-hidden="true">다음</span>
-                                    </a>
+                                <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                                    <a class="page-link" href="#">...</a>
                                 </li>
-                                <li class="page-item">
-                                    <a class="page-link" th:href="@{?page={page} (page = ${pagination.totalPageCnt})}" aria-label="Previous">
-                                        <span aria-hidden="true">끝</span>
-                                    </a>
+                                <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                                    th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                                    <a th:replace="fragments/paging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                                </li>
+                                <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                                    <a class="page-link" href="#">...</a>
+                                </li>
+                                <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a th:replace="fragments/paging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a th:replace="fragments/paging :: paging(${totalPages}, '>>', 'Last Page')"></a>
                                 </li>
                             </ul>
-<!--                        <div class="card-footer clearfix">-->
-<!--&lt;!&ndash;                             th:if="${page.totalPages> 0}" class="pagination"&ndash;&gt;-->
-<!--&lt;!&ndash;                             th:each="pageNumber : ${pageNumbers}">&ndash;&gt;-->
-<!--                            <ul class="pagination pagination-sm m-0 float-right">-->
-<!--                                <li><a href="/admin/list">First</a></li>-->
-<!--&lt;!&ndash;                                <li th:each="p : ${#numbers.sequence(1, data.page.getEndPage/data.page.getStartPage)}" th:class="${p == data.page.getCurrentPage} ? 'active' : ''">&ndash;&gt;-->
-<!--                                    <li th:if="${page.totalPages> 0}" class="pagination"-->
-<!--                                         th:each="pageNumber : ${pageNumbers}">-->
-<!--                                    <a class = "page-link"-->
-<!--                                       th:href="@{/admin/list(size=${page.content.size}, page=${pageNumber})}"-->
-<!--                                       th:text="${pageNumber}"-->
-<!--                                       th:class="${pageNumber==page.number + 1} ? active"></a>-->
-
-<!--&lt;!&ndash;                                    <a class="page-link" th:href="${'/admin/list?page=' + p}" th:text="${p}"></a>&ndash;&gt;-->
-<!--                                </li>-->
-<!--                                <li class="page-item"><a th:href="${'/admin/list?page=' + data.page.getEndPage}">Last</a></li>-->
-<!--                            </ul>-->
-<!--                        </div>-->
+                        </nav>
                     </div>
+
                     <!-- /.card -->
                 </div>
             </div>
         </div>
-
     </section>
     <!-- Main content -->
 
@@ -139,50 +137,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script>
-        console.log("List User");
-        var user = {};
-
         $(document).ready(function () {
-
-            /** TODO: Function OnClick **/
-
-
-            /** TODO: Function **/
-
-
-            /** TODO: OnLoad **/
-            user.findAll = function () {
-
-                $.ajax({
-                    url: "http://localhost:1111/api/v1/user",
-                    type: "GET",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Accept", "application/json");
-                        xhr.setRequestHeader("Content-Type", "application/json");
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        var event_data = '';
-                        $.each(data.user, function (index, value) {
-                            /*console.log(value);*/
-                            event_data += '<tr>';
-                            event_data += '<td>' + value.name + '</td>';
-                            event_data += '<td>' + value.id + '</td>';
-                            event_data += '</tr>';
-                        });
-                        $("#list_table_json").append(event_data);
-
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        var responseText = jQuery.parseJSON(jqXHR.responseText);
-                        console.log(responseText);
-                        console.log('Error: ' + textStatus + ' - ' + errorThrown);
-                    }
-                });
-
-            };
-
-            user.findAll();
 
 
         });

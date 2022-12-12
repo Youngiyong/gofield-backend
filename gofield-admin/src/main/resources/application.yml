@@ -9,6 +9,12 @@ server:
   name: gofield-admin
   monitoring: 고필드 관리자
 
+spring.data:
+  web:
+    pageable:
+      default-page-size: 20
+      one-indexed-parameters: true
+
 spring:
   thymeleaf:
     cache: false

@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface OrderItemRepositoryCustom {
     OrderItem findByOrderItemId(Long id);
+    OrderItem findByOrderItemIdAndUserId(Long id, Long userId);
+
     List<OrderItemProjection> findAllByUserIdAndShippingStatusShippingComplete(Long userId, Pageable pageable);
 }

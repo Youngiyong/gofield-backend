@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.admin.repository;
 import com.gofield.domain.rds.domain.admin.Admin;
 import com.gofield.domain.rds.domain.admin.projection.AdminInfoProjection;
 import com.gofield.domain.rds.domain.admin.projection.QAdminInfoProjection;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,6 +19,13 @@ import static com.gofield.domain.rds.domain.admin.QAdminRole.adminRole;
 public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    private BooleanExpression containName(String name){
+        if(name == null){
+            return null;
+        }
+        return admin.name.contains(name);
+    }
 
     @Override
     public Admin findByUsername(String username) {
@@ -36,7 +44,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
-    public Page<AdminInfoProjection> findAllAdminInfoList(Pageable pageable) {
+    public Page<AdminInfoProjection> findAllAdminInfoList(String name,  Pageable pageable) {
         List<AdminInfoProjection> content = jpaQueryFactory
                 .select(new QAdminInfoProjection(
                         admin.id,
@@ -51,6 +59,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 .on(admin.adminRole.id.eq(adminRole.id))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
+                .where(containName((name)))
                 .orderBy(admin.id.desc())
                 .fetch();
 
@@ -58,6 +67,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 .select(admin.id)
                 .from(admin)
                 .innerJoin(adminRole)
+                .where(containName((name)))
                 .on(admin.adminRole.id.eq(adminRole.id))
                 .fetch();
 

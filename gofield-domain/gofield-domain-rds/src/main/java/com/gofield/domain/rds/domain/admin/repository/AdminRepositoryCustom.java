@@ -11,7 +11,7 @@ public interface AdminRepositoryCustom {
 
     Admin findByUsername(String username);
     Admin findByAdminId(Long adminId);
-    Page<AdminInfoProjection> findAllAdminInfoList(Pageable pageable);
+    Page<AdminInfoProjection> findAllAdminInfoList(String name, Pageable pageable);
     AdminInfoProjection findAdminInfoProjectionById(Long id);
     List<Admin> findAllList(Pageable pageable);
 }

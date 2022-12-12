@@ -54,6 +54,23 @@ public class OrderItemResponse {
         this.qty = qty;
     }
 
+    public static OrderItemResponse of(OrderItem orderItem){
+        return OrderItemResponse.builder()
+                .id(orderItem.getId())
+                .itemId(orderItem.getOrderId())
+                .itemOptionId(orderItem.getOrderItemOption()==null ? null : orderItem.getOrderItemOption().getItemOptionId())
+                .itemNumber(orderItem.getItemNumber())
+                .name(orderItem.getName())
+                .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
+                .classification(orderItem.getItem().getClassification())
+                .status(orderItem.getStatus())
+                .isReview(orderItem.getIsReview())
+                .price(orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice())
+                .qty(orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty())
+                .thumbnail(Constants.CDN_URL.concat(orderItem.getItem().getThumbnail()).concat(Constants.RESIZE_150x150))
+                .build();
+    }
+
     public static OrderItemResponse of(Long id, Long itemId, Long itemOptionId, String itemNumber,
                                        String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status, Boolean isReview,
                                        int price, int qty){
