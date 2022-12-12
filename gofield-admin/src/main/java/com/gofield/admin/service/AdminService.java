@@ -35,7 +35,7 @@ public class AdminService {
     private final AdminRoleRepository adminRoleRepository;
 
     @Transactional(readOnly = true)
-    public AdminListDto findAllAdminList(String name, Pageable pageable) {
+    public AdminListDto getAdminList(String name, Pageable pageable) {
         Page<AdminInfoProjection> page = adminRepository.findAllAdminInfoList(name, pageable);
         List<AdminInfoProjectionResponse> projectionResponse = AdminInfoProjectionResponse.ofList(page.getContent());
         return AdminListDto.of(projectionResponse, page);
@@ -48,7 +48,7 @@ public class AdminService {
     }
 
     @Transactional(readOnly = true)
-    public AdminDto findAdminById(Long id){
+    public AdminDto getAdmin(Long id){
         return AdminDto.of(adminRepository.findByAdminId(id));
     }
 

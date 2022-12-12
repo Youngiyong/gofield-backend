@@ -16,12 +16,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>Simple Tables</h1>
+                    <h1>사용자 관리</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">Simple Tables</li>
+                        <li class="breadcrumb-item active">사용자 리스트</li>
                     </ol>
                 </div>
             </div>
@@ -35,79 +35,94 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title">Bordered Table</h3>
+<!--                            <h3 class="card-title">Bordered Table></h3>-->
+                            <div class="row">
+                                <div class="col-md-8 offset-md-2">
+                                    <form th:action="@{/user}" id="searchForm">
+                                        <div class="input-group">
+                                            <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-lg btn-default">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+<!--                                <a class="btn btn-app float-right"  href="/admin/add">-->
+<!--                                    <i class="fas fa-edit"></i> 관리자 추가-->
+<!--                                </a>-->
+                            </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+<!--                            <a class="btn btn-primary float-right" role="button">관리자 추가</a>-->
                             <table class="table table-bordered">
                                 <thead>
                                 <tr>
-                                    <th style="width: 10px">#</th>
-                                    <th>Task</th>
-                                    <th>Progress</th>
-                                    <th style="width: 40px">Label</th>
+                                    <th>id</th>
+                                    <th>닉네임</th>
+                                    <th>이름</th>
+                                    <th>이메일</th>
+                                    <th>상태</th>
+                                    <th>등록 날짜</th>
+                                    <th>누적 구매 금액</th>
+                                    <th>작업</th>
                                 </tr>
                                 </thead>
                                 <tbody>
-                                <tr>
-                                    <td>1.</td>
-                                    <td>Update software</td>
+                                <tr th:each="data : ${list}">
+                                    <td th:text="${data.id}"></td>
+                                    <td th:text="${data.name}"></td>
+                                    <td th:text="${data.nickname}"></td>
+                                    <td th:text="${data.email}"></td>
+                                    <td th:text="${data.status.getDescription()}"></td>
+                                    <td th:text="${data.createDate}"></td>
+                                    <td th:text="${data.totalPurchaseAmount}"></td>
                                     <td>
-                                        <div class="progress progress-xs">
-                                            <div class="progress-bar progress-bar-danger" style="width: 55%"></div>
-                                        </div>
+                                        <a class="btn btn-primary" role="button"  th:href="${'/user/edit/'+data.id}"><span>수정</span></a>
+                                        <a class="btn btn-danger" role="button"  th:href="${'/user/delete/'+data.id}"><span>삭제</span></a>
                                     </td>
-                                    <td><span class="badge bg-danger">55%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>2.</td>
-                                    <td>Clean database</td>
-                                    <td>
-                                        <div class="progress progress-xs">
-                                            <div class="progress-bar bg-warning" style="width: 70%"></div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-warning">70%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>3.</td>
-                                    <td>Cron job running</td>
-                                    <td>
-                                        <div class="progress progress-xs progress-striped active">
-                                            <div class="progress-bar bg-primary" style="width: 30%"></div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-primary">30%</span></td>
-                                </tr>
-                                <tr>
-                                    <td>4.</td>
-                                    <td>Fix and squish bugs</td>
-                                    <td>
-                                        <div class="progress progress-xs progress-striped active">
-                                            <div class="progress-bar bg-success" style="width: 90%"></div>
-                                        </div>
-                                    </td>
-                                    <td><span class="badge bg-success">90%</span></td>
                                 </tr>
                                 </tbody>
                             </table>
                         </div>
                         <!-- /.card-body -->
-                        <div class="card-footer clearfix">
-                            <ul class="pagination pagination-sm m-0 float-right">
-                                <li class="page-item"><a class="page-link" href="#">&laquo;</a></li>
-                                <li class="page-item"><a class="page-link" href="#">1</a></li>
-                                <li class="page-item"><a class="page-link" href="#">2</a></li>
-                                <li class="page-item"><a class="page-link" href="#">3</a></li>
-                                <li class="page-item"><a class="page-link" href="#">&raquo;</a></li>
-                            </ul>
+                        <div th:unless="${list.size() > 0}">
+                            <p class="text-center">조회되는 데이터가 없습니다.</p>
                         </div>
+                        <nav aria-label="Pagination" th:if="${totalPages > 0}">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a th:replace="fragments/userPaging :: paging(1, '<<', 'First Page')"></a>
+                                </li>
+                                <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a th:replace="fragments/userPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                                </li>
+                                <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                                    <a class="page-link" href="#">...</a>
+                                </li>
+                                <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                                    th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                                    <a th:replace="fragments/userPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                                </li>
+                                <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                                    <a class="page-link" href="#">...</a>
+                                </li>
+                                <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a th:replace="fragments/userPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a th:replace="fragments/userPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                                </li>
+                            </ul>
+                        </nav>
                     </div>
+
                     <!-- /.card -->
                 </div>
             </div>
         </div>
-
     </section>
     <!-- Main content -->
 
@@ -120,50 +135,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
     <script>
-        console.log("List User");
-        var user = {};
-
         $(document).ready(function () {
-
-            /** TODO: Function OnClick **/
-
-
-            /** TODO: Function **/
-
-
-            /** TODO: OnLoad **/
-            user.findAll = function () {
-
-                $.ajax({
-                    url: "http://localhost:1111/api/v1/user",
-                    type: "GET",
-                    beforeSend: function (xhr) {
-                        xhr.setRequestHeader("Accept", "application/json");
-                        xhr.setRequestHeader("Content-Type", "application/json");
-                    },
-                    success: function (data) {
-                        console.log(data);
-                        var event_data = '';
-                        $.each(data.user, function (index, value) {
-                            /*console.log(value);*/
-                            event_data += '<tr>';
-                            event_data += '<td>' + value.name + '</td>';
-                            event_data += '<td>' + value.id + '</td>';
-                            event_data += '</tr>';
-                        });
-                        $("#list_table_json").append(event_data);
-
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        var responseText = jQuery.parseJSON(jqXHR.responseText);
-                        console.log(responseText);
-                        console.log('Error: ' + textStatus + ' - ' + errorThrown);
-                    }
-                });
-
-            };
-
-            user.findAll();
 
 
         });

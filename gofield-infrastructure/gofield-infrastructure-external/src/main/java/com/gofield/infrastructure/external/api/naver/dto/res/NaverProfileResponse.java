@@ -18,6 +18,9 @@ public class NaverProfileResponse {
     @AllArgsConstructor
     public static class NaverProfileInfo {
         private String id;
+        private String email;
+        private String name;
+        private String nickname;
     }
 
 }

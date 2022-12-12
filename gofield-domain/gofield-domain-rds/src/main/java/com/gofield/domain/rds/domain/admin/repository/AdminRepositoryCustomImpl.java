@@ -20,11 +20,11 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private BooleanExpression containName(String name){
+    private BooleanExpression containNameAndUsername(String name){
         if(name == null){
             return null;
         }
-        return admin.name.contains(name);
+        return admin.name.contains(name).or(admin.username.eq(name));
     }
 
     @Override
@@ -59,7 +59,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 .on(admin.adminRole.id.eq(adminRole.id))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
-                .where(containName((name)))
+                .where(containNameAndUsername((name)))
                 .orderBy(admin.id.desc())
                 .fetch();
 
@@ -67,7 +67,7 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
                 .select(admin.id)
                 .from(admin)
                 .innerJoin(adminRole)
-                .where(containName((name)))
+                .where(containNameAndUsername((name)))
                 .on(admin.adminRole.id.eq(adminRole.id))
                 .fetch();
 

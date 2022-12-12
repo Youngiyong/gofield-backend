@@ -21,16 +21,12 @@ import java.security.Principal;
 @RequiredArgsConstructor
 public class AdminController {
 
-    private static final Integer POSTS_PER_PAGE = 10;
-    private static final Integer PAGES_PER_BLOCK = 5;
-
     private final AdminService adminService;
-
 
     @GetMapping("/admin")
     public String getAdminListPage(@RequestParam(required = false) String keyword,
                                    @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable, Model model, HttpSession session, Principal principal) {
-        AdminListDto result =  adminService.findAllAdminList(keyword, pageable);
+        AdminListDto result =  adminService.getAdminList(keyword, pageable);
         session.setAttribute("username", principal.getName());
         model.addAttribute("list", result.getList());
         model.addAttribute("currentPage", result.getPage().getNumber() + 1);
@@ -41,8 +37,8 @@ public class AdminController {
     }
 
     @GetMapping("/admin/edit/{id}")
-    public String getEditAdminPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
-        AdminDto admin = adminService.findAdminById(id);
+    public String getAdminEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
+        AdminDto admin = adminService.getAdmin(id);
         session.setAttribute("username", principal.getName());
         model.addAttribute("admin", admin);
         return "admin/edit";

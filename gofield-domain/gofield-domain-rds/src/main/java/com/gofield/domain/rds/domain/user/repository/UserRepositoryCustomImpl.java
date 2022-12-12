@@ -2,8 +2,12 @@ package com.gofield.domain.rds.domain.user.repository;
 
 import com.gofield.domain.rds.domain.user.User;
 import com.gofield.domain.rds.domain.common.EStatusFlag;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -13,6 +17,13 @@ import static com.gofield.domain.rds.domain.user.QUser.user;
 public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    private BooleanExpression containNameAndUsername(String name) {
+        if (name == null) {
+            return null;
+        }
+        return user.name.contains(name).or(user.nickName.contains(name));
+    }
 
     @Override
     public User findByIdAndStatusActive(Long userId) {
@@ -28,6 +39,14 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .selectFrom(user)
                 .where(user.uuid.eq(uuid)
                         .and(user.status.eq(status)))
+                .fetchOne();
+    }
+
+    @Override
+    public User findByUserId(Long userId) {
+        return jpaQueryFactory
+                .selectFrom(user)
+                .where(user.id.eq(userId))
                 .fetchOne();
     }
 
@@ -53,6 +72,14 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .select(user.id)
                 .from(user)
                 .where(user.uuid.eq(uuid))
+                .fetchOne();
+    }
+
+    @Override
+    public User findByUserIdAndNotDeleteUser(Long userId) {
+        return jpaQueryFactory
+                .selectFrom(user)
+                .where(user.id.eq(userId), user.status.ne(EStatusFlag.DELETE))
                 .fetchOne();
     }
 
@@ -86,6 +113,26 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
                 .fetch();
 
         return userList.size();
+    }
+
+    @Override
+    public Page<User> findAllByKeyword(String keyword, Pageable pageable) {
+        List<User> content = jpaQueryFactory
+                .select(user)
+                .from(user)
+                .where(user.status.ne(EStatusFlag.DELETE), containNameAndUsername((keyword)))
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .orderBy(user.id.desc())
+                .fetch();
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(user.id)
+                .from(user)
+                .where(user.status.ne(EStatusFlag.DELETE), containNameAndUsername((keyword)))
+                .fetch();
+
+        return new PageImpl<>(content, pageable, totalCount.size());
     }
 
 }

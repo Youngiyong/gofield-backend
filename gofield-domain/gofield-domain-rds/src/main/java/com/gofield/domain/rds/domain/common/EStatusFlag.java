@@ -11,7 +11,7 @@ public enum EStatusFlag implements CodeEnum {
     ACTIVE("활성", "A"),
     DELETE("탈퇴", "D"),
     WAIT("대기","W"),
-    PENDING("보류", "H"),
+    BLACK("블랙", "B"),
     PAUSE( "중지", "P");
 
     private String description;
