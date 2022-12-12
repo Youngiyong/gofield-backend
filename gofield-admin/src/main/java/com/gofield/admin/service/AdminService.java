@@ -37,7 +37,7 @@ public class AdminService {
     @Transactional(readOnly = true)
     public AdminListDto getAdminList(String name, Pageable pageable) {
         Page<AdminInfoProjection> page = adminRepository.findAllAdminInfoList(name, pageable);
-        List<AdminInfoProjectionResponse> projectionResponse = AdminInfoProjectionResponse.ofList(page.getContent());
+        List<AdminInfoProjectionResponse> projectionResponse = AdminInfoProjectionResponse.of(page.getContent());
         return AdminListDto.of(projectionResponse, page);
     }
 

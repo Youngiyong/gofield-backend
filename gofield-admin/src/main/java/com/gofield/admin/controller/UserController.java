@@ -1,14 +1,9 @@
 package com.gofield.admin.controller;
 
-import com.gofield.admin.dto.AdminDto;
-import com.gofield.admin.dto.AdminListDto;
-import com.gofield.admin.dto.response.UserDto;
-import com.gofield.admin.dto.response.UserListDto;
+import com.gofield.admin.dto.UserDto;
+import com.gofield.admin.dto.UserListDto;
 import com.gofield.admin.service.UserService;
-import com.gofield.domain.rds.domain.admin.Admin;
-import com.gofield.domain.rds.domain.admin.AdminRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;

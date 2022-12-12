@@ -1,7 +1,7 @@
 package com.gofield.admin.service;
 
-import com.gofield.admin.dto.response.UserDto;
-import com.gofield.admin.dto.response.UserListDto;
+import com.gofield.admin.dto.UserDto;
+import com.gofield.admin.dto.UserListDto;
 import com.gofield.admin.dto.response.projection.UserInfoProjectionResponse;
 import com.gofield.domain.rds.domain.user.User;
 import com.gofield.domain.rds.domain.user.UserRepository;

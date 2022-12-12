@@ -1,5 +1,5 @@
 
-package com.gofield.admin.dto.response;
+package com.gofield.admin.dto;
 
 import com.gofield.domain.rds.domain.common.EStatusFlag;
 import com.gofield.domain.rds.domain.user.User;
@@ -7,9 +7,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Getter
 @Setter

@@ -38,7 +38,7 @@ public class AdminInfoProjectionResponse {
                 .build();
     }
 
-    public static List<AdminInfoProjectionResponse> ofList(List<AdminInfoProjection> list){
+    public static List<AdminInfoProjectionResponse> of(List<AdminInfoProjection> list){
         return list.stream()
                 .map(p -> AdminInfoProjectionResponse.of(p.getId(), p.getName(), p.getUsername(), p.getRole().getDescription(), p.getCreateDate()))
                 .collect(Collectors.toList());

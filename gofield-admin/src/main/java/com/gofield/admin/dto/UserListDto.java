@@ -1,8 +1,6 @@
-package com.gofield.admin.dto.response;
+package com.gofield.admin.dto;
 
-import com.gofield.admin.dto.response.projection.AdminInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.UserInfoProjectionResponse;
-import com.gofield.domain.rds.domain.admin.projection.AdminInfoProjection;
 import com.gofield.domain.rds.domain.user.User;
 import lombok.Builder;
 import lombok.Getter;

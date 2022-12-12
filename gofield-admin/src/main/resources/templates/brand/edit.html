@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 수정</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>브랜드 수정</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">관리자 정보</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form role="form" method="post" th:action="@{/brand/edit}" th:object="${brand}">
+                            <input th:field="*{id}" type="hidden"/>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="name">브랜드명</label>
+                                    <input class="form-control" id="name" placeholder="브랜드명"
+                                           type="text" th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">브랜드사진</label>
+                                    <img alt="Brand Image" class="img-size-50 mr-3 img-circle" th:src="*{thumbnail}">
+                                </div>
+                                <div class="form-group">
+                                    <label>활성 여부</label>
+                                    <select th:field="*{isVisible}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'true'" th:text="활성"></option>
+                                        <option th:value="'false'" th:text="숨김"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputFile">File input</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input class="custom-file-input" id="exampleInputFile" type="file">
+                                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="">Upload</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button class="btn btn-primary" type="submit">수정</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+</div>
+
+<th:block layout:fragment="script">
+    <script>
+        console.log("Add User");
+    </script>
+</th:block>
+
+</body>
+</html>
