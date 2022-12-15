@@ -43,7 +43,6 @@ public class ItemBundleService {
 //        if(categoryDto.getParentId()!=null){
 //            parent = categoryRepository.findByCategoryId(categoryDto.getParentId());
 //        }
-//        category.update(parent, categoryDto.getName(), categoryDto.getIsActive(), categoryDto.getIsAttention());
     }
 
     @Transactional(readOnly = true)
