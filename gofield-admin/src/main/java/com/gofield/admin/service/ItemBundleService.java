@@ -38,7 +38,6 @@ public class ItemBundleService {
 
     @Transactional
     public void updateItemBundle(ItemBundleDto itemBundleDto){
-
     }
 
     @Transactional(readOnly = true)
