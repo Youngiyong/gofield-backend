@@ -281,7 +281,7 @@ public class OrderService {
         List<String> imageList = new ArrayList<>();
         if(files!=null){
             for(MultipartFile file: files){
-                String image = s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE);
+                String image = s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_REVIEW_IMAGE);
                 imageList.add(image);
             }
         }

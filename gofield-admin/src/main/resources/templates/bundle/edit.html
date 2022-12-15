@@ -14,7 +14,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>관리자 추가</h1>
+                    <h1>브랜드 수정</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -39,29 +39,42 @@
                         </div>
                         <!-- /.card-header -->
                         <!-- form start -->
-                        <form role="form" method="post" th:action="@{/admin/add}" th:object="${admin}">
+                        <form role="form" method="post" th:action="@{/brand/edit}" th:object="${brand}">
                             <input th:field="*{id}" type="hidden"/>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <label for="username">아이디</label>
-                                    <input class="form-control" id="username" placeholder="아이디"
-                                           type="text" th:field="*{username}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="password">패스워드</label>
-                                    <input class="form-control" id="password" placeholder="비밀번호"
-                                           type="password" th:field="*{password}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="name">이름</label>
-                                    <input class="form-control" id="name" placeholder="이름"
+                                    <label for="name">브랜드명</label>
+                                    <input class="form-control" id="name" placeholder="브랜드명"
                                            type="text" th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">브랜드사진</label>
+                                    <img alt="Brand Image" class="img-size-50 mr-3 img-circle" th:src="*{thumbnail}">
+                                </div>
+                                <div class="form-group">
+                                    <label>활성 여부</label>
+                                    <select th:field="*{isVisible}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'true'" th:text="활성"></option>
+                                        <option th:value="'false'" th:text="숨김"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="exampleInputFile">File input</label>
+                                    <div class="input-group">
+                                        <div class="custom-file">
+                                            <input class="custom-file-input" id="exampleInputFile" type="file">
+                                            <label class="custom-file-label" for="exampleInputFile">Choose file</label>
+                                        </div>
+                                        <div class="input-group-append">
+                                            <span class="input-group-text" id="">Upload</span>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <button class="btn btn-primary" type="submit">추가</button>
+                                <button class="btn btn-primary" type="submit">수정</button>
                             </div>
                         </form>
                     </div>

@@ -41,4 +41,10 @@ public class BrandDto {
                 .build();
     }
 
+    public static List<BrandDto> of(List<Brand> list){
+        return list.stream()
+                .map(p -> BrandDto.of(p))
+                .collect(Collectors.toList());
+    }
+
 }

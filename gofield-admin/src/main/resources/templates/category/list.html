@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>List User</title>
+</head>
+<body>
+
+<style>
+
+    .hidden {
+
+        display:none;
+
+    }
+
+</style>
+
+<div layout:fragment="content">
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>카테고리 관리</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">카테고리 리스트</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-8 offset-md-2">
+                                    <form th:action="@{/category}" id="searchForm">
+                                        <div class="input-group">
+                                            <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-lg btn-default">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <a class="btn btn-app float-right"  href="/category/add">
+                                    <i class="fas fa-edit"></i> 카테고리 추가
+                                </a>
+                            </div>
+
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body p-0">
+                            <table class="table table-hover">
+                                <tbody th:each="data : ${list}">
+                               <tr th:if="${data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">
+                                    <td th:text="${data.name}" class="border-0"></td>
+                                   <td style="text-align: right">
+                                       <a th:href="${'/category/edit/'+data.id}">
+                                           수정
+                                       </a>
+                                       &nbsp;
+                                       <a style="color: red" th:href="${'/category/delete/'+data.id}">
+                                           삭제
+                                       </a>
+                                   </td>
+                                </tr>
+
+                               <tr th:if="${!data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">
+                                   <td th:text="${data.name}">
+                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                   </td>
+                                   <td style="text-align: right">
+                                        <a th:href="${'/category/edit/'+data.id}">
+                                           수정
+                                       </a>
+                                       &nbsp;
+                                       <a style="color: red" th:href="${'/category/delete/'+data.id}">
+                                         삭제
+                                       </a>
+                                   </td>
+                               </tr>
+                               <tr th:if="${!data.children.isEmpty()}" class="expandable-body">
+                                   <td>
+                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+                                           <table class="table table-hover">
+                                               <tbody th:each="children : ${data.children}">
+                                               <tr data-widget="expandable-table" aria-expanded="false">
+                                                   <td th:text="${children.name}" >
+                                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                   </td>
+                                                   <td style="text-align: right">
+                                                       <a th:href="${'/category/edit/'+children.id}">
+                                                           수정
+                                                       </a>
+                                                       &nbsp;
+                                                       <a style="color: red" th:href="${'/category/delete/'+children.id}">
+                                                           삭제
+                                                       </a>
+                                                   </td>
+                                               </tr>
+                                               <tr th:if="${!children.children.isEmpty()}" class="expandable-body">
+                                                   <td>
+                                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+                                                           <table class="table table-hover">
+                                                               <tbody th:each="subChildren : ${children.children}">
+                                                               <tr data-widget="expandable-table" aria-expanded="false">
+                                                                   <td th:text="${subChildren.name}" >
+                                                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                   </td>
+                                                                   <td style="text-align: right">
+                                                                       <a th:href="${'/category/edit/'+subChildren.id}">
+                                                                           수정
+                                                                       </a>
+                                                                       &nbsp;
+                                                                       <a style="color: red" th:href="${'/category/delete/'+subChildren.id}">
+                                                                            삭제
+                                                                       </a>
+                                                                   </td>
+                                                               </tr>
+                                                               <tbody/>
+                                                           </table>
+                                                       </div>
+                                                   </td>
+                                               </tr>
+                                             <tbody/>
+                                           </table>
+                                       </div>
+                                    </td>
+                               </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Main content -->
+
+
+</div>
+
+
+<th:block layout:fragment="script">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

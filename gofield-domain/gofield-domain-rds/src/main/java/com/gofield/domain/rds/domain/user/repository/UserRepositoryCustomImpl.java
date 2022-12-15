@@ -18,11 +18,11 @@ public class UserRepositoryCustomImpl implements UserRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private BooleanExpression containNameAndUsername(String name) {
-        if (name == null) {
+    private BooleanExpression containNameAndUsername(String keyword) {
+        if (keyword == null) {
             return null;
         }
-        return user.name.contains(name).or(user.nickName.contains(name));
+        return user.name.contains(keyword).or(user.nickName.contains(keyword));
     }
 
     @Override

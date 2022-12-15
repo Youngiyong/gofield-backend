@@ -15,12 +15,9 @@ public class UserDto {
     private Long id;
     private String name;
     private String nickname;
-
     private String email;
-
     private EStatusFlag status;
     private String createDate;
-
     private int totalPurchaseAmount;
 
     @Builder

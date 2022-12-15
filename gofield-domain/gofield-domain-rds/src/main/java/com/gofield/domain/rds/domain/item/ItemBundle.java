@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -56,5 +57,26 @@ public class ItemBundle extends BaseTimeEntity {
 
     public void addBundleReview(ItemBundleReview bundleReview){
         this.reviews.add(bundleReview);
+    }
+
+    @Builder
+    private ItemBundle(String name, Category category, Brand brand, Boolean isActive, Boolean isRecommend, String thumbnail){
+        this.name = name;
+        this.category = category;
+        this.brand = brand;
+        this.isActive = isActive;
+        this.isRecommend = isRecommend;
+        this.thumbnail = thumbnail;
+    }
+
+    public static ItemBundle newInstance(String name, Category category, Brand brand, Boolean isActive, Boolean isRecommend, String thumbnail){
+        return ItemBundle.builder()
+                .name(name)
+                .category(category)
+                .brand(brand)
+                .isActive(isActive)
+                .isRecommend(isRecommend)
+                .thumbnail(thumbnail)
+                .build();
     }
 }

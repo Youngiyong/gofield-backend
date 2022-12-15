@@ -18,7 +18,6 @@ public class UserInfoProjectionResponse {
     private Long id;
     private String name;
     private String nickname;
-
     private String email;
     private EStatusFlag status;
     private String createDate;

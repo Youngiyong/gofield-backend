@@ -16,7 +16,7 @@ spring:
         default_batch_fetch_size: 1000
         query.in_clause_parameter_padding: true
         check_nullability: true
-    open-in-view: false
+    open-in-view: true
 logging:
   level:
     org:

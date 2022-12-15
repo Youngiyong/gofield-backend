@@ -19,18 +19,18 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-    private BooleanExpression containName(String name) {
-        if (name == null) {
+    private BooleanExpression containKeyword(String keyword) {
+        if (keyword == null) {
             return null;
         }
-        return brand.name.contains(name);
+        return brand.name.contains(keyword);
     }
 
     @Override
     public Page<Brand> findAllByKeyword(String keyword, Pageable pageable) {
         List<Brand> content = jpaQueryFactory
                 .selectFrom(brand)
-                .where(brand.status.ne(EStatusFlag.DELETE), containName(keyword))
+                .where(brand.status.ne(EStatusFlag.DELETE), containKeyword(keyword))
                 .orderBy(brand.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
@@ -39,10 +39,19 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
         List<Long> totalCount = jpaQueryFactory
                 .select(brand.id)
                 .from(brand)
-                .where(brand.status.ne(EStatusFlag.DELETE), containName(keyword))
+                .where(brand.status.ne(EStatusFlag.DELETE), containKeyword(keyword))
                 .fetch();
 
         return new PageImpl<>(content, pageable, totalCount.size());
+    }
+
+    @Override
+    public List<Brand> findAllByActiveOrderBySort() {
+        return jpaQueryFactory
+                .selectFrom(brand)
+                .where(brand.status.eq(EStatusFlag.ACTIVE))
+                .orderBy(brand.sort.desc())
+                .fetch();
     }
 
     @Override

@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -33,6 +34,23 @@ public class ItemBundleAggregation extends BaseTimeEntity {
 
     @Column
     private int usedLowestPrice;
+
+    @Builder
+    private ItemBundleAggregation(ItemBundle itemBundle){
+        this.bundle = itemBundle;
+        this.reviewScore = 0.0;
+        this.reviewCount = 0;
+        this.newLowestPrice = 0;
+        this.usedLowestPrice = 0;
+    }
+
+    public static ItemBundleAggregation newInstance(ItemBundle itemBundle){
+        return ItemBundleAggregation.builder()
+                .itemBundle(itemBundle)
+                .build();
+    }
+
+
 
     public void updateAggregationPrice(EItemClassificationFlag classification, int price){
         if(classification.equals(EItemClassificationFlag.USED)){

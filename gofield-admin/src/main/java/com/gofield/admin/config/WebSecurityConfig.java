@@ -48,9 +48,12 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/assets/**")
                 .antMatchers("/css/**")
                 .antMatchers("/img/**")
-                .antMatchers("/js/**")
+                .antMatchers("/js**")
                 .antMatchers("/webjars/**")
-                .antMatchers("/configuration/ui")
+                .antMatchers("/vue/**")
+                .antMatchers("/dist/**")
+                .antMatchers("/bootstrap/**")
+                .antMatchers("/plugins/**")
                 .antMatchers("/templates/**");
     }
 

@@ -3,6 +3,7 @@
 package com.gofield.domain.rds.domain.item;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -30,5 +31,18 @@ public class ItemBundleImage {
 
     @Column
     private LocalDateTime createDate;
+
+    @Builder
+    private ItemBundleImage(ItemBundle bundle, String image){
+        this.bundle = bundle;
+        this.image = image;
+    }
+
+    public static ItemBundleImage newInstance(ItemBundle bundle, String image){
+        return ItemBundleImage.builder()
+                .bundle(bundle)
+                .image(image)
+                .build();
+    }
 
 }

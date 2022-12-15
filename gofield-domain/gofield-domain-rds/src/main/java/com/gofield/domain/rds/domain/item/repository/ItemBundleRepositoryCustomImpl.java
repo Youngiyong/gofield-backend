@@ -7,8 +7,11 @@ import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import com.gofield.domain.rds.domain.item.projection.*;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -29,6 +32,13 @@ import static com.gofield.domain.rds.domain.user.QUserLikeItem.userLikeItem;
 public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
+
+    private BooleanExpression containName(String keyword){
+        if (keyword == null || keyword.equals("")) {
+            return null;
+        }
+        return itemBundle.name.contains(keyword).or(itemBundle.category.name.contains(keyword).or(itemBundle.brand.name.contains(keyword)));
+    }
 
     @Override
     public List<ItemBundlePopularProjection> findAllPopularBundleItemList(Pageable pageable) {
@@ -213,5 +223,30 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .selectFrom(itemBundle)
                 .where(itemBundle.id.eq(bundleId))
                 .fetchFirst();
+    }
+
+    @Override
+    public Page<ItemBundle> findAllByKeyword(String keyword, Pageable pageable) {
+        List<ItemBundle> content =  jpaQueryFactory
+                .selectFrom(itemBundle)
+                .innerJoin(itemBundle.category, category).fetchJoin()
+                .innerJoin(itemBundle.brand, brand).fetchJoin()
+                .where(containName(keyword))
+                .orderBy(itemBundle.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        if(content.isEmpty()){
+            return new PageImpl<>(content, pageable, 0);
+        }
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(itemBundle.id)
+                .from(itemBundle)
+                .where(containName(keyword))
+                .fetch();
+
+        return new PageImpl<>(content, pageable, totalCount.size());
     }
 }

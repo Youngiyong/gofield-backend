@@ -40,4 +40,30 @@ public class Category extends BaseTimeEntity {
 
     @Column
     private Boolean isAttention;
+
+    @Builder
+    private Category(ECategoryFlag type, Category parent, String name, Boolean isActive, Boolean isAttention){
+        this.type = type;
+        this.parent = parent;
+        this.name = name;
+        this.isActive = isActive;
+        this.isAttention = isAttention;
+    }
+
+    public static Category newInstance(ECategoryFlag type, Category parent, String name, Boolean isActive, Boolean isAttention){
+        return Category.builder()
+                .type(type)
+                .parent(parent)
+                .name(name)
+                .isActive(isActive)
+                .isAttention(isAttention)
+                .build();
+    }
+
+    public void update(Category parent, String name, Boolean isActive, Boolean isAttention){
+        this.parent = parent;
+        this.name = name != null ? name : this.name;
+        this.isActive =  isActive;
+        this.isAttention = isAttention;
+    }
 }
