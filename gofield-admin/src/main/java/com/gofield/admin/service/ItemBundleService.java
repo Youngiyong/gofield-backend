@@ -38,11 +38,7 @@ public class ItemBundleService {
 
     @Transactional
     public void updateItemBundle(ItemBundleDto itemBundleDto){
-//        Category category = categoryRepository.findByCategoryId(categoryDto.getId());
-//        Category parent = null;
-//        if(categoryDto.getParentId()!=null){
-//            parent = categoryRepository.findByCategoryId(categoryDto.getParentId());
-//        }
+
     }
 
     @Transactional(readOnly = true)
