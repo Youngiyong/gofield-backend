@@ -3,6 +3,7 @@ package com.gofield.admin.service;
 
 import com.gofield.admin.dto.*;
 import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
+import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -38,16 +38,20 @@ public class ItemBundleService {
     }
 
     @Transactional
-    public void updateItemBundle(MultipartFile image, List<MultipartFile> images, ItemBundleEditDto itemBundleDto){
+    public void updateItemBundle(MultipartFile image, List<MultipartFile> images, ItemBundleDto itemBundleDto){
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
         ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemBundleDto.getId());
-        String thumbnail = image == null && image.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
-
-        itemBundle.update(brand, category, itemBundle.getName(), itemBundle.getIsRecommend(), thumbnail);
+        String thumbnail = itemBundleDto.getThumbnail()==null ? null : itemBundleDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_150x150, "");
+        if(!image.isEmpty() && image.getOriginalFilename().equals("")){
+            thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
+        }
+        itemBundle.update(brand, category, itemBundleDto.getName(), itemBundleDto.getIsRecommend(), thumbnail);
         if(images!=null && !images.isEmpty()){
             for(MultipartFile file: images){
-                itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
+                if(!file.getOriginalFilename().equals("")){
+                    itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
+                }
             }
         }
     }
@@ -67,11 +71,12 @@ public class ItemBundleService {
         List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllIsActiveOrderBySort());
         List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
         ItemBundle itemBundle = itemBundleRepository.findByBundleIdFetchJoin(id);
-        return ItemBundleEditDto.of(itemBundle, categoryDtoList, brandDtoList);
+        List<ItemBundleImageDto> itemBundleImages = ItemBundleImageDto.of(itemBundle.getImages());
+        ItemBundleDto itemBundleDto = ItemBundleDto.of(categoryDtoList, brandDtoList, itemBundle);
+        return ItemBundleEditDto.of(itemBundleDto, itemBundleImages);
     }
     @Transactional
     public void save(MultipartFile image, List<MultipartFile> images, ItemBundleDto itemBundleDto){
-
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
         String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);

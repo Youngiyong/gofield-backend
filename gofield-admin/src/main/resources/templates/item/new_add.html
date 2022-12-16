@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>묶음상품 수정</title>
+    <title>관리자 수정</title>
 </head>
 <body>
 
@@ -14,7 +14,7 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>묶음상품 수정</h1>
+                    <h1>묶음상품 추가</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -25,7 +25,6 @@
             </div>
         </div><!-- /.container-fluid -->
     </section>
-
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -38,10 +37,12 @@
                             <h3 class="card-title">묶음상품 정보</h3>
                         </div>
                         <!-- /.card-header -->
+                        <a class="nav-link" data-toggle="row" id="tab-pages-mailbox-compose-html" href="#panel-pages-mailbox-compose-html" role="tab" aria-controls="panel-pages-mailbox-compose-html" aria-selected="true">판매중</a>
+                        <a class="nav-link" data-toggle="row" id="tab-pages-mailbox-compose-html2" href="#panel-pages-mailbox-compose-html" role="tab" aria-controls="panel-pages-mailbox-compose-html" aria-selected="true">품절</a>
+                        <a class="nav-link" data-toggle="row" id="tab-pages-mailbox-compose-html3" href="#panel-pages-mailbox-compose-html" role="tab" aria-controls="panel-pages-mailbox-compose-html" aria-selected="true">숨김</a>
                         <!-- form start -->
-                        <form role="form" method="post" th:action="@{/bundle/edit}" th:object="${bundle}" enctype="multipart/form-data">
+                        <form role="form" method="post" th:action="@{/item/add/new}" th:object="${item}" enctype="multipart/form-data">
                             <input th:field="*{id}" type="hidden"/>
-                            <input th:field="*{thumbnail}" type="hidden"/>
                             <div class="card-body">
                                 <div class="form-group">
                                     <label for="name">묶음상품명</label>
@@ -51,13 +52,17 @@
                                 <div class="form-group">
                                     <label>브랜드</label>
                                     <select th:field="*{brandId}"  class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                            <option th:each="data : ${bundle.brandList}" th:value="${data.id}" th:text="${data.name}"></option>
+                                        <div th:each="data : ${bundle.brandList}" >
+                                            <option th:value="${data.id}" th:text="${data.name}"></option>
+                                        </div>
                                     </select>
                                 </div>
                                 <div class="form-group">
                                     <label>카테고리</label>
                                     <select th:field="*{categoryId}" class="form-control select2bs4 select2-hidden-accessible" style="width: 100%;" data-select2-id="17" tabindex="-1" aria-hidden="true">
-                                        <option th:each="data : ${bundle.categoryList}" th:value="${data.id}" th:text="${data.name}"></option>
+                                        <div th:each="data : ${bundle.categoryList}">
+                                            <option th:value="${data.id}" th:text="${data.name}"></option>
+                                        </div>
                                     </select>
                                 </div>
                                 <div class="form-group">
@@ -70,29 +75,10 @@
                                 <div class="form-group">
                                     <label>대표이미지</label>
                                     <br>
-                                    <img id="imgId" th:src="${bundle.thumbnail}" alt="대표이미지" th:if="${bundle.thumbnail != null}" />
-                                </div>
-
-                                <div class="form-group">
-                                    <label>묶음 상품 이미지</label>
-                                    <br>
-                                    <div th:each="data : ${images}">
-                                        <img th:src="${data.image}" alt="묶음상품 이미지" th:if="${data.image != null}" />
-                                        <a class="btn btn-danger btn-sm" th:href="${'/bundle/'+ bundle.id +'/image/delete/'+data.id}">
-                                            <i class="fas fa-trash">
-                                            </i>
-                                            삭제
-                                        </a>
-                                    </div>
-                                </div>
-
-                                <div class="form-group">
-                                    <label>대표이미지 업로드</label>
-                                    <br>
                                     <input type="file" name="image" />
                                 </div>
                                 <div class="form-group">
-                                    <label>묶음 상품 이미지 업로드(다중 선택 가능)</label>
+                                    <label>이미지</label>
                                     <br>
                                     <input type="file" name="images" multiple/>
                                 </div>
@@ -101,7 +87,7 @@
                             <!-- /.card-body -->
 
                             <div class="card-footer">
-                                <button class="btn btn-primary" type="submit">수정</button>
+                                <button class="btn btn-primary" type="submit">추가</button>
                             </div>
                         </form>
                     </div>

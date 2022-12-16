@@ -9,6 +9,7 @@
 <body>
 
 
+
 <div layout:fragment="content">
 
     <!-- Content Header (Page header) -->
@@ -16,12 +17,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>묶음 상품 관리</h1>
+                    <h1>상품 관리</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">묶음 상품 리스트</li>
+                        <li class="breadcrumb-item active">상품 리스트</li>
                     </ol>
                 </div>
             </div>
@@ -32,13 +33,16 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
+                <a href="/item" class="nav-link">전체</a>
+                <a href="/item?status=SALE" class="nav-link">판매중</a>
+                <a href="/item?status=SOLD_OUT" class="nav-link">품절</a>
+                <a href="/item?status=HIDE" class="nav-link">숨김</a>
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
-<!--                            <h3 class="card-title">Bordered Table></h3>-->
                             <div class="row">
                                 <div class="col-md-8 offset-md-2">
-                                    <form th:action="@{/bundle}" id="searchForm">
+                                    <form th:action="@{/item}" id="searchForm">
                                         <div class="input-group">
                                             <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
                                             <div class="input-group-append">
@@ -49,36 +53,42 @@
                                         </div>
                                     </form>
                                 </div>
-                                <a class="btn btn-app float-right"  href="/bundle/add">
-                                    <i class="fas fa-edit"></i> 묶음 상품 추가
+                                <a class="btn btn-app float-right"  href="/item/add/new">
+                                    <i class="fas fa-edit"></i> 새상품 추가
+                                </a>
+                                <a class="btn btn-app float-right"  href="/item/add/used">
+                                    <i class="fas fa-edit"></i> 중고 상품 추가
                                 </a>
                             </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
+                            <h5 class="float-md-none" style="color: lightskyblue" th:text="${totalItems} +'개 검색됨' "></h5>
                             <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
                                 <tr>
                                     <th>id</th>
-                                    <th>묶음상품명</th>
-                                    <th>브랜드명</th>
-                                    <th>카테고리명</th>
-                                    <th>생성날짜</th>
+                                    <th>상품분류</th>
+                                    <th>상품명</th>
+                                    <th>판매가</th>
+                                    <th>카테고리</th>
+                                    <th>싱테</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="data : ${list}">
                                     <td th:text="${data.id}"></td>
+                                    <td th:text="${data.classification}"></td>
                                     <td th:text="${data.name}"></td>
-                                    <td th:text="${data.brandName}"></td>
+                                    <td th:text="${data.price}"></td>
                                     <td th:text="${data.categoryName}"></td>
-                                    <td th:text="${data.createDate}"></td>
+                                    <td th:text="${data.status}"></td>
                                     <td>
-                                        <a class="btn btn-info btn-sm" th:href="${'/bundle/edit/'+data.id}">
+                                        <a class="btn btn-info btn-sm" th:href="${'/item/edit/'+data.id}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             수정
                                         </a>
-                                        <a class="btn btn-danger btn-sm" th:href="${'/bundle/delete/'+data.id}">
+                                        <a class="btn btn-danger btn-sm" th:href="${'/item/delete/'+data.id}">
                                             <i class="fas fa-trash">
                                             </i>
                                             삭제
@@ -95,26 +105,26 @@
                         <nav aria-label="Pagination" th:if="${totalPages > 0}">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                                    <a th:replace="fragments/bundlePaging :: paging(1, '<<', 'First Page')"></a>
+                                    <a th:replace="fragments/itemPaging :: paging(1, '<<', 'First Page')"></a>
                                 </li>
                                 <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
-                                    <a th:replace="fragments/bundlePaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                                    <a th:replace="fragments/itemPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
                                 </li>
                                 <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
                                     <a class="page-link" href="#">...</a>
                                 </li>
                                 <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
                                     th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
-                                    <a th:replace="fragments/bundlePaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                                    <a th:replace="fragments/itemPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
                                 </li>
                                 <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
                                     <a class="page-link" href="#">...</a>
                                 </li>
                                 <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                                    <a th:replace="fragments/bundlePaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                                    <a th:replace="fragments/itemPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
                                 </li>
                                 <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                                    <a th:replace="fragments/bundlePaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                                    <a th:replace="fragments/itemPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
                                 </li>
                             </ul>
                         </nav>

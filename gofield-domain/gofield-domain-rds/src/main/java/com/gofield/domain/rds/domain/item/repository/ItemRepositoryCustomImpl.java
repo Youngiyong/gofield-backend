@@ -12,12 +12,15 @@ import com.gofield.domain.rds.domain.seller.ShippingTemplate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
+import static com.gofield.domain.rds.domain.item.QItemBundle.itemBundle;
 import static com.gofield.domain.rds.domain.seller.QShippingTemplate.shippingTemplate;
 import static com.gofield.domain.rds.domain.item.QCategory.category;
 import static com.gofield.domain.rds.domain.item.QItem.item;
@@ -40,11 +43,25 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return item.classification.eq(classification);
     }
 
+    private BooleanExpression eqStatus(EItemStatusFlag status){
+        if(status == null){
+            return null;
+        }
+        return itemStock.status.eq(status);
+    }
+
     private BooleanExpression eqCategoryParentId(Long categoryId){
         if(categoryId == null){
             return null;
         }
         return category.parent.id.eq(categoryId);
+    }
+
+    private BooleanExpression containName(String keyword){
+        if (keyword == null || keyword.equals("")) {
+            return null;
+        }
+        return item.name.contains(keyword).or(item.category.name.contains(keyword).or(item.itemNumber.contains(keyword)));
     }
 
     @Override
@@ -683,6 +700,44 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(itemStock.itemNumber.eq(itemOption.itemNumber))
                 .where(itemStock.itemNumber.eq(itemNumber))
                 .fetchOne();
+    }
+
+    @Override
+    public Page<ItemInfoProjection> findAllByKeyword(String keyword, EItemStatusFlag status, Pageable pageable) {
+        List<ItemInfoProjection> content =  jpaQueryFactory
+                .select(new QItemInfoProjection(
+                        item.id,
+                        item.name,
+                        item.classification,
+                        item.price,
+                        item.category.name,
+                        itemStock.status,
+                        item.createDate))
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .innerJoin(category)
+                .on(item.category.id.eq(category.id))
+                .where(containName(keyword), eqStatus(status))
+                .orderBy(item.id.desc())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .fetch();
+
+        if(content.isEmpty()){
+            return new PageImpl<>(content, pageable, 0);
+        }
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(item.id)
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .innerJoin(category)
+                .on(item.category.id.eq(category.id))
+                .fetch();
+
+        return new PageImpl<>(content, pageable, totalCount.size());
     }
 
 

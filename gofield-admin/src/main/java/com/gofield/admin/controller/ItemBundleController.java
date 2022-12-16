@@ -41,7 +41,10 @@ public class ItemBundleController {
     @GetMapping("/bundle/edit/{id}")
     public String getItemBundleEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
         session.setAttribute("username", principal.getName());
-        model.addAttribute("bundle", itemBundleService.getItemBundleImage(id));
+        ItemBundleEditDto itemBundleEditDto = itemBundleService.getItemBundleImage(id);
+        model.addAttribute("bundle", itemBundleEditDto.getItemBundleDto());
+        model.addAttribute("images", itemBundleEditDto.getImages());
+
         return "bundle/edit";
     }
 
@@ -60,7 +63,7 @@ public class ItemBundleController {
 
 
     @PostMapping("/bundle/edit")
-    public String updateEditItemBundle(ItemBundleEditDto itemBundleDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+    public String updateEditItemBundle(ItemBundleDto itemBundleDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
         itemBundleService.updateItemBundle(image, images, itemBundleDto);
         return "redirect:/bundle";
     }

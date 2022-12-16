@@ -85,7 +85,7 @@ public class ItemBundle extends BaseTimeEntity {
         this.category = category;
         this.name = name;
         this.isRecommend = isRecommend;
-        this.thumbnail =  thumbnail != null ? thumbnail : this.thumbnail;
+        this.thumbnail = thumbnail;
     }
     public void updateInActive(){
         this.isActive = false;

@@ -1,20 +1,18 @@
 package com.gofield.admin.dto;
 
 import com.gofield.common.model.Constants;
-import com.gofield.domain.rds.domain.item.Category;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemBundleDto {
+public class ItemDto {
     private Long id;
     private String name;
     private List<CategoryDto> categoryList;
@@ -28,7 +26,7 @@ public class ItemBundleDto {
     private String createDate;
 
     @Builder
-    private ItemBundleDto(Long id, String name, List<CategoryDto> categoryList, List<BrandDto> brandList, Long categoryId, String categoryName, Long brandId, String brandName, String thumbnail,  Boolean isRecommend, String createDate){
+    private ItemDto(Long id, String name, List<CategoryDto> categoryList, List<BrandDto> brandList, Long categoryId, String categoryName, Long brandId, String brandName, String thumbnail, Boolean isRecommend, String createDate){
         this.id = id;
         this.name = name;
         this.categoryList = categoryList;
@@ -42,15 +40,15 @@ public class ItemBundleDto {
         this.createDate = createDate;
     }
 
-    public static ItemBundleDto of(List<CategoryDto> categoryList, List<BrandDto> brandList){
-        return ItemBundleDto.builder()
+    public static ItemDto of(List<CategoryDto> categoryList, List<BrandDto> brandList){
+        return ItemDto.builder()
                 .categoryList(categoryList)
                 .brandList(brandList)
                 .build();
     }
 
-    public static ItemBundleDto of(List<CategoryDto> categoryList, List<BrandDto> brandList, ItemBundle itemBundle){
-        return ItemBundleDto.builder()
+    public static ItemDto of(List<CategoryDto> categoryList, List<BrandDto> brandList, ItemBundle itemBundle){
+        return ItemDto.builder()
                 .id(itemBundle.getId())
                 .name(itemBundle.getName())
                 .categoryList(categoryList)
