@@ -55,6 +55,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
+                .where(itemBundle.isActive.isTrue())
                 .orderBy(itemBundleAggregation.reviewCount.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -77,7 +78,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.id.eq(subCategoryId))
+                    .where(itemBundle.category.id.eq(subCategoryId), itemBundle.isActive.isTrue())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(itemBundleAggregation.reviewCount.desc())
@@ -97,7 +98,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.parent.id.eq(categoryId))
+                    .where(itemBundle.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(itemBundleAggregation.reviewCount.desc())
@@ -121,7 +122,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                .where(itemBundle.isRecommend.isTrue())
+                .where(itemBundle.isRecommend.isTrue(), itemBundle.isActive.isTrue())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(itemBundleAggregation.reviewCount.desc())
@@ -218,6 +219,17 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     @Override
+    public ItemBundle findByBundleIdFetchJoin(Long bundleId){
+        return jpaQueryFactory
+                .select(itemBundle)
+                .from(itemBundle)
+                .innerJoin(itemBundle.category, category).fetchJoin()
+                .innerJoin(itemBundle.brand, brand).fetchJoin()
+                .where(itemBundle.id.eq(bundleId))
+                .fetchOne();
+    }
+
+    @Override
     public ItemBundle findByBundleId(Long bundleId) {
         return jpaQueryFactory
                 .selectFrom(itemBundle)
@@ -231,7 +243,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .selectFrom(itemBundle)
                 .innerJoin(itemBundle.category, category).fetchJoin()
                 .innerJoin(itemBundle.brand, brand).fetchJoin()
-                .where(containName(keyword))
+                .where(containName(keyword), itemBundle.isActive.isTrue())
                 .orderBy(itemBundle.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -244,7 +256,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         List<Long> totalCount = jpaQueryFactory
                 .select(itemBundle.id)
                 .from(itemBundle)
-                .where(containName(keyword))
+                .where(containName(keyword), itemBundle.isActive.isTrue())
                 .fetch();
 
         return new PageImpl<>(content, pageable, totalCount.size());

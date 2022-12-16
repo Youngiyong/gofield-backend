@@ -1,9 +1,6 @@
 package com.gofield.admin.controller;
 
-import com.gofield.admin.dto.CategoryDto;
-import com.gofield.admin.dto.CategoryListDto;
-import com.gofield.admin.dto.ItemBundleDto;
-import com.gofield.admin.dto.ItemBundleListDto;
+import com.gofield.admin.dto.*;
 import com.gofield.admin.service.CategoryService;
 import com.gofield.admin.service.ItemBundleService;
 import lombok.RequiredArgsConstructor;
@@ -44,7 +41,7 @@ public class ItemBundleController {
     @GetMapping("/bundle/edit/{id}")
     public String getItemBundleEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
         session.setAttribute("username", principal.getName());
-        model.addAttribute("bundle", itemBundleService.getItemBundle(id));
+        model.addAttribute("bundle", itemBundleService.getItemBundleImage(id));
         return "bundle/edit";
     }
 
@@ -54,9 +51,17 @@ public class ItemBundleController {
         return "redirect:/bundle";
     }
 
+    @GetMapping("/bundle/{id}/image/delete/{imageId}")
+    public String deleteItemBundleImage(@PathVariable Long id,
+                                        @PathVariable Long imageId){
+        itemBundleService.deleteImage(id, imageId);
+        return "redirect:/bundle/edit/"+id;
+    }
+
+
     @PostMapping("/bundle/edit")
-    public String updateEditItemBundle(ItemBundleDto itemBundleDto){
-        itemBundleService.updateItemBundle(itemBundleDto);
+    public String updateEditItemBundle(ItemBundleEditDto itemBundleDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+        itemBundleService.updateItemBundle(image, images, itemBundleDto);
         return "redirect:/bundle";
     }
 
@@ -67,7 +72,7 @@ public class ItemBundleController {
     }
 
     @PostMapping("/bundle/add")
-    public String addItemBundle(ItemBundleDto itemBundleDto, @RequestParam("image") MultipartFile image, @RequestParam("images") List<MultipartFile> images){
+    public String addItemBundle(ItemBundleDto itemBundleDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
         itemBundleService.save(image, images, itemBundleDto);
         return "redirect:/bundle";
     }

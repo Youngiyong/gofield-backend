@@ -3,10 +3,7 @@ package com.gofield.admin.dto;
 import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.Brand;
 import com.gofield.domain.rds.domain.item.ItemBundleImage;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -14,6 +11,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
+@Data
 public class ItemBundleImageDto {
     private Long id;
     private String image;
@@ -30,7 +28,7 @@ public class ItemBundleImageDto {
     public static ItemBundleImageDto of(ItemBundleImage itemBundleImage){
         return ItemBundleImageDto.builder()
                 .id(itemBundleImage.getId())
-                .image(itemBundleImage.getImage())
+                .image(Constants.CDN_URL.concat(itemBundleImage.getImage()).concat(Constants.RESIZE_150x150))
                 .createDate(itemBundleImage.getCreateDate().toLocalDate().toString())
                 .build();
     }

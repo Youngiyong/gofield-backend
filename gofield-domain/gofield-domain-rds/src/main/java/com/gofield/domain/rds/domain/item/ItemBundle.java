@@ -79,4 +79,15 @@ public class ItemBundle extends BaseTimeEntity {
                 .thumbnail(thumbnail)
                 .build();
     }
+
+    public void update(Brand brand, Category category, String name, Boolean isRecommend, String thumbnail){
+        this.brand = brand;
+        this.category = category;
+        this.name = name;
+        this.isRecommend = isRecommend;
+        this.thumbnail =  thumbnail != null ? thumbnail : this.thumbnail;
+    }
+    public void updateInActive(){
+        this.isActive = false;
+    }
 }

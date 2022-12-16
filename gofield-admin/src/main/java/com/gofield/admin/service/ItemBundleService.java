@@ -26,6 +26,7 @@ public class ItemBundleService {
     private final CategoryRepository categoryRepository;
     private final ItemBundleRepository itemBundleRepository;
 
+    private final ItemBundleImageRepository itemBundleImageRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final S3FileStorageClient s3FileStorageClient;
 
@@ -37,36 +38,48 @@ public class ItemBundleService {
     }
 
     @Transactional
-    public void updateItemBundle(ItemBundleDto itemBundleDto){
+    public void updateItemBundle(MultipartFile image, List<MultipartFile> images, ItemBundleEditDto itemBundleDto){
+        Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
+        Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
+        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemBundleDto.getId());
+        String thumbnail = image == null && image.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
+
+        itemBundle.update(brand, category, itemBundle.getName(), itemBundle.getIsRecommend(), thumbnail);
+        if(images!=null && !images.isEmpty()){
+            for(MultipartFile file: images){
+                itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
+            }
+        }
     }
 
     @Transactional(readOnly = true)
     public ItemBundleDto getItemBundle(Long id){
-        List<Category> categoryList = categoryRepository.findAllIsActiveOrderBySort();
-        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryList);
-        List<Brand> brandList = brandRepository.findAllByActiveOrderBySort();
-        List<BrandDto> brandDtoList = BrandDto.of(brandList);
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllIsActiveOrderBySort());
+        List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
         if(id==null){
             return ItemBundleDto.of(categoryDtoList, brandDtoList);
         }
         return null;
     }
 
+    @Transactional(readOnly = true)
+    public ItemBundleEditDto getItemBundleImage(Long id){
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllIsActiveOrderBySort());
+        List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
+        ItemBundle itemBundle = itemBundleRepository.findByBundleIdFetchJoin(id);
+        return ItemBundleEditDto.of(itemBundle, categoryDtoList, brandDtoList);
+    }
     @Transactional
     public void save(MultipartFile image, List<MultipartFile> images, ItemBundleDto itemBundleDto){
-        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
-        List<String> imagesUrl = new ArrayList<>();
-        if(!images.isEmpty()){
-            for(MultipartFile file: images){
-                imagesUrl.add(s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE));
-            }
-        }
+
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
-        ItemBundle itemBundle = ItemBundle.newInstance(itemBundleDto.getName(), category, brand, itemBundleDto.getIsActive(), itemBundleDto.getIsRecommend(), thumbnailUrl);
-        for(String imageUrl: imagesUrl){
-            ItemBundleImage itemBundleImage = ItemBundleImage.newInstance(itemBundle, imageUrl);
-            itemBundle.addBundleImage(itemBundleImage);
+        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
+        ItemBundle itemBundle = ItemBundle.newInstance(itemBundleDto.getName(), category, brand, true, itemBundleDto.getIsRecommend(), thumbnailUrl);
+        if(images!=null && !images.isEmpty()){
+            for(MultipartFile file: images){
+                itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
+            }
         }
         ItemBundleAggregation itemBundleAggregation = ItemBundleAggregation.newInstance(itemBundle);
         itemBundleRepository.save(itemBundle);
@@ -75,6 +88,13 @@ public class ItemBundleService {
 
     @Transactional
     public void delete(Long id){
+        ItemBundle itemBundle = itemBundleRepository.findByBundleId(id);
+        itemBundle.updateInActive();
+    }
 
+    @Transactional
+    public void deleteImage(Long id, Long imageId){
+        ItemBundleImage itemBundleImage = itemBundleImageRepository.findItemBundleImageById(imageId);
+        itemBundleImageRepository.delete(itemBundleImage);
     }
 }

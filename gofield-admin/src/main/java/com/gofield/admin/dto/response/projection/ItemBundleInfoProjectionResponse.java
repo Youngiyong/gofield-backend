@@ -15,18 +15,15 @@ public class ItemBundleInfoProjectionResponse {
     private String categoryName;
     private String brandName;
     private String name;
-    private String isActive;
-
     private String createDate;
 
 
     @Builder
-    private ItemBundleInfoProjectionResponse(Long id, String categoryName, String brandName, String name, String isActive, String createDate){
+    private ItemBundleInfoProjectionResponse(Long id, String categoryName, String brandName, String name, String createDate){
         this.id = id;
         this.categoryName = categoryName;
         this.brandName = brandName;
         this.name = name;
-        this.isActive = isActive;
         this.createDate = createDate;
     }
 
@@ -36,7 +33,6 @@ public class ItemBundleInfoProjectionResponse {
                 .categoryName(itemBundle.getCategory().getName())
                 .brandName(itemBundle.getBrand().getName())
                 .name(itemBundle.getName())
-                .isActive(itemBundle.getIsActive() ? "활성" : "비활성")
                 .createDate(itemBundle.getCreateDate().toLocalDate().toString())
                 .build();
     }
