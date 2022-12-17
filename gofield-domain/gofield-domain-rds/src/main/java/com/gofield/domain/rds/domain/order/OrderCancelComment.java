@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.domain.order;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
+import com.gofield.domain.rds.domain.user.User;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -9,7 +10,6 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -19,29 +19,28 @@ import java.time.LocalDateTime;
 @Table(	name = "order_cancel_comment")
 public class OrderCancelComment extends BaseTimeEntity {
 
-    @Column
-    private Long cancelId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "cancel_id")
+    private OrderCancel cancel;
 
-    @Column
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String content;
 
-    @Column
-    private LocalDateTime deleteDate;
-
     @Builder
-    private OrderCancelComment(Long cancelId, Long userId, String content){
-        this.cancelId = cancelId;
-        this.userId = userId;
+    private OrderCancelComment(OrderCancel cancel, User user, String content){
+        this.cancel = cancel;
+        this.user = user;
         this.content = content;
     }
 
-    public static OrderCancelComment newInstance(Long cancelId, Long userId, String content){
+    public static OrderCancelComment newInstance(OrderCancel cancel, User user, String content){
         return OrderCancelComment.builder()
-                .cancelId(cancelId)
-                .userId(userId)
+                .cancel(cancel)
+                .user(user)
                 .content(content)
                 .build();
     }

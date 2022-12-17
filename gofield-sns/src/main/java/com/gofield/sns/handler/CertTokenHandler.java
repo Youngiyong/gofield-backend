@@ -1,8 +1,8 @@
 package com.gofield.sns.handler;
 
 import com.gofield.common.exception.InvalidException;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 

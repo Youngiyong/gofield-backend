@@ -34,5 +34,8 @@ public class Code extends BaseTimeEntity {
     private Boolean isActive;
 
     @Column
+    private Boolean isHide;
+
+    @Column
     private String thumbnail;
 }

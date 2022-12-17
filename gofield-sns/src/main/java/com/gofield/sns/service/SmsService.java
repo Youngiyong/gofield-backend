@@ -1,8 +1,8 @@
 package com.gofield.sns.service;
 
 import com.gofield.common.exception.InternalServerException;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import com.gofield.infrastructure.external.api.naver.NaverSnsApiClient;
 import com.gofield.infrastructure.external.api.naver.dto.req.NaverSmsRequest;
 import com.gofield.sns.model.request.SmsRequest;

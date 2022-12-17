@@ -21,8 +21,9 @@ import java.time.LocalDateTime;
 @Table(	name = "order_item")
 public class OrderItem extends BaseTimeEntity {
 
-    @Column
-    private Long orderId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_shipping_id")
@@ -64,9 +65,9 @@ public class OrderItem extends BaseTimeEntity {
     private LocalDateTime reviewDate;
 
     @Builder
-    private OrderItem(Long orderId, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
+    private OrderItem(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
                       String itemNumber, String name, int qty, int price){
-        this.orderId = orderId;
+        this.order = order;
         this.sellerId = sellerId;
         this.item = item;
         this.orderItemOption = orderItemOption;
@@ -79,10 +80,10 @@ public class OrderItem extends BaseTimeEntity {
         this.status = EOrderItemStatusFlag.ORDER_ITEM_RECEIPT;
     }
 
-    public static OrderItem newInstance(Long orderId, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
+    public static OrderItem newInstance(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
                                         String itemNumber, String name, int qty, int price){
         return OrderItem.builder()
-                .orderId(orderId)
+                .order(order)
                 .sellerId(sellerId)
                 .item(item)
                 .orderItemOption(orderItemOption)

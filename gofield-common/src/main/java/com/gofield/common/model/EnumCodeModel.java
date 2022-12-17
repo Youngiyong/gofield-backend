@@ -1,6 +1,7 @@
-package com.gofield.domain.rds.converter;
+package com.gofield.common.model;
 
-public interface CodeEnum {
+
+public interface EnumCodeModel {
     String getKey();
     String getDescription();
     String getCode();

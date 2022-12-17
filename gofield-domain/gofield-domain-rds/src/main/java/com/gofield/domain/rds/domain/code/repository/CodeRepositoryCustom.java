@@ -7,6 +7,6 @@ import com.gofield.domain.rds.domain.code.ECodeGroup;
 import java.util.List;
 
 public interface CodeRepositoryCustom {
-    List<Code> findByGroup(ECodeGroup group);
+    List<Code> findAllByGroupByIsHide(ECodeGroup group, Boolean isVisible);
     Code findByCode(String code);
 }

@@ -1,18 +1,10 @@
 package com.gofield.api.dto.res;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.api.util.ApiUtil;
-import com.gofield.common.exception.InternalServerException;
-import com.gofield.common.model.Constants;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemOptionTypeFlag;
-import com.gofield.domain.rds.domain.order.EOrderItemStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
-import com.gofield.domain.rds.domain.order.OrderItem;
 import com.gofield.domain.rds.domain.order.projection.OrderItemProjection;
 import lombok.Builder;
 import lombok.Getter;

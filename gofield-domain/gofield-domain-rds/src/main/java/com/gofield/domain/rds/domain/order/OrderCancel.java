@@ -9,6 +9,9 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @DynamicInsert
@@ -18,45 +21,43 @@ import javax.persistence.*;
 @Table(	name = "order_cancel")
 public class OrderCancel extends BaseTimeEntity {
 
-    @Column
-    private Long orderId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private Order order;
 
-    @Column
-    private String orderNumber;
+    @Column(nullable = false)
+    private EOrderCancelTypeFlag type;
 
-    @Column(name = "code_flag")
-    private EOrderCancelCodeFlag code;
+    @Column(name = "code_flag", nullable = false)
+    private EOrderCancelFlagCodeModel code;
 
     @Column(name = "reason_flag")
     private EOrderCancelReasonFlag reason;
 
-    @Column
-    private int totalPrice;
+    @Column(nullable = false)
+    private int totalAmount;
 
-    @Column
+    @Column(nullable = false)
+    private int totalItem;
+
+    @Column(nullable = false)
     private int totalDelivery;
 
-    @Column
+    @Column(nullable = false)
     private int totalDiscount;
 
-    @Column
+    @Column(nullable = false)
     private int totalPg;
-
-    @Column
-    private String paymentCompany;
 
     @Column
     @Enumerated
     private EPaymentType paymentType;
 
     @Column
-    private String cardNumber;
+    private String carrier;
 
     @Column
-    private String cardType;
-
-    @Column
-    private int installmentPlanMonth;
+    private String trackingNumber;
 
     @Column
     private String refundName;
@@ -67,31 +68,59 @@ public class OrderCancel extends BaseTimeEntity {
     @Column
     private String refundBank;
 
-    @Column(columnDefinition = "TEXT")
-    private String content;
+    @Column
+    private LocalDateTime recalledDate;
+
+    @OneToMany(mappedBy = "cancel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<OrderCancelItem> orderCancelItems = new ArrayList<>();
+
+    @OneToMany(mappedBy = "cancel", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<OrderCancelComment> orderCancelComments = new ArrayList<>();
 
     @Builder
-    private OrderCancel(Long orderId, Long itemId, String orderNumber, String itemNumber, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalPrice, int totalDelivery, String content) {
-        this.orderId = orderId;
-        this.orderNumber = orderNumber;
+    private OrderCancel(Order order, EOrderCancelTypeFlag type, EOrderCancelFlagCodeModel code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+                        int totalDelivery, int totalDiscount, int totalPg, EPaymentType paymentType, String refundName, String refundCode, String refundBank) {
+        this.order = order;
+        this.type = type;
         this.code = code;
         this.reason = reason;
-        this.totalPrice = totalPrice;
+        this.totalAmount = totalAmount;
+        this.totalItem = totalItem;
         this.totalDelivery = totalDelivery;
-        this.content = content;
+        this.totalDiscount = totalDiscount;
+        this.totalPg = totalPg;
+        this.paymentType = paymentType;
+        this.refundName = refundName;
+        this.refundCode = refundCode;
+        this.refundBank = refundBank;
     }
 
-    public static OrderCancel newInstance(Long orderId, Long itemId, String orderNumber, String itemNumber, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalPrice, int totalDelivery, String content) {
+    public static OrderCancel newInstance(Order order, EOrderCancelTypeFlag type, EOrderCancelFlagCodeModel code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+                                          int totalDelivery, int totalDiscount, int totalPg, EPaymentType paymentType, String refundName, String refundCode, String refundBank) {
         return OrderCancel.builder()
-                .orderId(orderId)
-                .itemId(itemId)
-                .orderNumber(orderNumber)
-                .itemNumber(itemNumber)
+                .order(order)
+                .type(type)
                 .code(code)
                 .reason(reason)
-                .totalPrice(totalPrice)
+                .totalAmount(totalAmount)
+                .totalItem(totalItem)
                 .totalDelivery(totalDelivery)
-                .content(content)
+                .totalDiscount(totalDiscount)
+                .totalPg(totalPg)
+                .paymentType(paymentType)
+                .refundName(refundName)
+                .refundCode(refundCode)
+                .refundBank(refundBank)
                 .build();
     }
+
+    public void addOrderCancelItem(OrderCancelItem orderCancelItem){
+        this.orderCancelItems.add(orderCancelItem);
+    }
+
+    public void addOrderCancelComment(OrderCancelComment orderCancelComment){
+        this.orderCancelComments.add(orderCancelComment);
+    }
+
+
 }

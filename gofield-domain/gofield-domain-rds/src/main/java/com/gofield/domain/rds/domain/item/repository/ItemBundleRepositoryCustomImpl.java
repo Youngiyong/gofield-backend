@@ -2,8 +2,8 @@ package com.gofield.domain.rds.domain.item.repository;
 
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import com.gofield.domain.rds.domain.item.projection.*;
@@ -122,7 +122,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                .where(itemBundle.isRecommend.isTrue(), itemBundle.isActive.isTrue())
+                .where(itemBundle.isRecommend.isTrue(), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(itemBundleAggregation.reviewCount.desc())

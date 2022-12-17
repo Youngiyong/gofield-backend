@@ -1,13 +1,13 @@
 package com.gofield.domain.rds.domain.order;
 
-import com.gofield.domain.rds.converter.CodeEnum;
+import com.gofield.common.model.EnumCodeModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum EOrderCancelCodeFlag implements CodeEnum {
+public enum EOrderCancelFlagCodeModel implements EnumCodeModel {
     USER("사용자 취소", "101"),
     ADMIN("관리자 취소", "102"),
     SELLER("셀러 취소", "103"),

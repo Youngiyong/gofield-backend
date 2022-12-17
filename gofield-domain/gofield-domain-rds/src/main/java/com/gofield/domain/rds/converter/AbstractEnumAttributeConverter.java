@@ -1,11 +1,12 @@
 package com.gofield.domain.rds.converter;
 
 import com.gofield.common.exception.ConvertException;
+import com.gofield.common.model.EnumCodeModel;
 import org.springframework.util.StringUtils;
 
 import javax.persistence.AttributeConverter;
 
-public class AbstractEnumAttributeConverter<E extends Enum<E> & CodeEnum> implements AttributeConverter<E, String> {
+public class AbstractEnumAttributeConverter<E extends Enum<E> & EnumCodeModel> implements AttributeConverter<E, String> {
     private Class<E> targetEnumClass;
     private boolean nullable;
     private String enumName;

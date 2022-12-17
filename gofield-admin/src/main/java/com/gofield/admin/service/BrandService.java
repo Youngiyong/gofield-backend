@@ -1,26 +1,17 @@
 package com.gofield.admin.service;
 
-import com.gofield.admin.dto.AdminDto;
-import com.gofield.admin.dto.AdminListDto;
 import com.gofield.admin.dto.BrandDto;
 import com.gofield.admin.dto.BrandListDto;
-import com.gofield.admin.dto.response.projection.AdminInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.BrandInfoProjectionResponse;
 import com.gofield.common.exception.InvalidException;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
-import com.gofield.domain.rds.domain.admin.Admin;
-import com.gofield.domain.rds.domain.admin.AdminRepository;
-import com.gofield.domain.rds.domain.admin.AdminRole;
-import com.gofield.domain.rds.domain.admin.AdminRoleRepository;
-import com.gofield.domain.rds.domain.admin.projection.AdminInfoProjection;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.item.Brand;
 import com.gofield.domain.rds.domain.item.BrandRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 

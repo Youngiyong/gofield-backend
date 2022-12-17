@@ -10,5 +10,7 @@ public interface OrderItemRepositoryCustom {
     OrderItem findByOrderItemId(Long id);
     OrderItem findByOrderItemIdAndUserId(Long id, Long userId);
 
+    OrderItem findByOrderItemIdFetch(Long id);
+
     List<OrderItemProjection> findAllByUserIdAndShippingStatusShippingComplete(Long userId, Pageable pageable);
 }

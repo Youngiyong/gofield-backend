@@ -1,19 +1,15 @@
 package com.gofield.api.service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.api.dto.SocialAuthentication;
-import com.gofield.api.dto.req.OrderRequest;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.ItemOrderSheetListResponse;
 import com.gofield.api.dto.res.ItemOrderSheetResponse;
 import com.gofield.api.dto.res.OrderSheetContentResponse;
 import com.gofield.api.util.ApiUtil;
-import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.InvalidException;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import com.gofield.common.utils.HttpUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.cart.CartRepository;
@@ -227,7 +223,7 @@ public class ThirdPartyService {
                 orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ApiUtil.toJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
                 orderItemOptionRepository.save(orderItemOption);
             }
-            OrderItem orderItem = OrderItem.newInstance(order.getId(), result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
             if(result.getBundleId()!=null){
                 ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(result.getBundleId());

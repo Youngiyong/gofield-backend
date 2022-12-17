@@ -18,6 +18,7 @@ import static com.gofield.domain.rds.domain.order.QOrderItem.orderItem;
 import static com.gofield.domain.rds.domain.order.QOrderItemOption.orderItemOption;
 import static com.gofield.domain.rds.domain.order.QOrderShipping.orderShipping;
 import static com.gofield.domain.rds.domain.seller.QSeller.seller;
+import static com.gofield.domain.rds.domain.seller.QShippingTemplate.shippingTemplate;
 
 @RequiredArgsConstructor
 public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom {
@@ -39,9 +40,22 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                 .select(orderItem)
                 .from(orderItem)
                 .innerJoin(orderItem.orderShipping, orderShipping).fetchJoin()
-                .innerJoin(order).on(orderItem.orderId.eq(order.id))
+                .innerJoin(order).on(orderItem.order.id.eq(order.id))
                 .where(order.userId.eq(userId), orderItem.id.eq(id))
                 .fetchFirst();
+    }
+
+    @Override
+    public OrderItem findByOrderItemIdFetch(Long id) {
+        return jpaQueryFactory
+                .select(orderItem)
+                .from(orderItem)
+                .innerJoin(orderItem.order, order).fetchJoin()
+                .innerJoin(orderItem.item, item).fetchJoin()
+                .leftJoin(orderItem.orderItemOption, orderItemOption).fetchJoin()
+                .leftJoin(item.shippingTemplate, shippingTemplate).fetchJoin()
+                .where(orderItem.id.eq(id))
+                .fetchOne();
     }
 
     @Override
@@ -66,7 +80,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                         orderShipping.status))
                 .from(order)
                 .innerJoin(orderItem)
-                .on(order.id.eq(orderItem.orderId))
+                .on(order.id.eq(orderItem.order.id))
                 .innerJoin(orderShipping)
                 .on(orderItem.orderShipping.id.eq(orderShipping.id))
                 .innerJoin(item)

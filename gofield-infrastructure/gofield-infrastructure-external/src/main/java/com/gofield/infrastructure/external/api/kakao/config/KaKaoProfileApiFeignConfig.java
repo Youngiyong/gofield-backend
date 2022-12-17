@@ -2,8 +2,8 @@ package com.gofield.infrastructure.external.api.kakao.config;
 
 import com.gofield.common.exception.BadGatewayException;
 import com.gofield.common.exception.InvalidException;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import feign.FeignException;
 import feign.Logger;
 import feign.Response;

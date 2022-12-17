@@ -1,11 +1,10 @@
 package com.gofield.domain.rds.domain.item.repository;
 
 import com.gofield.common.exception.ForbiddenException;
-import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.gofield.domain.rds.domain.seller.ShippingTemplate;
@@ -16,11 +15,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
-import static com.gofield.domain.rds.domain.item.QItemBundle.itemBundle;
 import static com.gofield.domain.rds.domain.seller.QShippingTemplate.shippingTemplate;
 import static com.gofield.domain.rds.domain.item.QCategory.category;
 import static com.gofield.domain.rds.domain.item.QItem.item;

@@ -1,12 +1,7 @@
 package com.gofield.api.dto.res;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.api.util.ApiUtil;
-import com.gofield.common.exception.InternalServerException;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
 import com.gofield.domain.rds.domain.cart.projection.CartProjection;
 import com.gofield.domain.rds.domain.item.EItemChargeFlag;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;

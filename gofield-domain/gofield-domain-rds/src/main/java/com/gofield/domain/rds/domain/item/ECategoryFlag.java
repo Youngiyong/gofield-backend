@@ -1,13 +1,13 @@
 package com.gofield.domain.rds.domain.item;
 
-import com.gofield.domain.rds.converter.CodeEnum;
+import com.gofield.common.model.EnumCodeModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum ECategoryFlag implements CodeEnum {
+public enum ECategoryFlag implements EnumCodeModel {
     NORMAL("일반", "N"),
     OTHER( "기타", "O");
 

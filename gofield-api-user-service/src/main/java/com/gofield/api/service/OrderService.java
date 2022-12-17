@@ -8,8 +8,8 @@ import com.gofield.api.dto.res.*;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.common.exception.*;
 import com.gofield.common.model.Constants;
-import com.gofield.common.model.enums.ErrorAction;
-import com.gofield.common.model.enums.ErrorCode;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.item.*;
@@ -300,5 +300,11 @@ public class OrderService {
             itemBundleAggregation.updateReviewScore(reviewCount, reviewScore/reviewCount);
         }
         orderItem.updateReview();
+    }
+
+    @Transactional(readOnly = true)
+    public OrderCancelItemTempResponse getOrderItemCancelInfo(Long orderItemId, EOrderCancelReasonFlag reason){
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId);
+        return OrderCancelItemTempResponse.of(orderItem, reason);
     }
 }

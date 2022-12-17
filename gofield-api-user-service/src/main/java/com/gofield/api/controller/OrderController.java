@@ -4,6 +4,8 @@ import com.gofield.api.dto.req.OrderRequest;
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
+import com.gofield.domain.rds.domain.order.OrderItem;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -120,4 +122,11 @@ public class OrderController {
     public ApiResponse<OrderItemReviewDetailListResponse> gerOrderItemReviewHistoryList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(orderService.getOrderItemReviewDetailList(pageable));
     }
+
+    @ApiOperation(value = "주문 취소전 상품 정보")
+    @GetMapping("/v1/item/{orderItemId}")
+    public ApiResponse<OrderCancelItemTempResponse> getOrderItem(@PathVariable Long orderItemId, @RequestPart EOrderCancelReasonFlag reason){
+        return ApiResponse.success(orderService.getOrderItemCancelInfo(orderItemId, reason));
+    }
+
 }

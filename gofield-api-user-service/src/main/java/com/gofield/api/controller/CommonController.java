@@ -5,7 +5,9 @@ import com.gofield.api.dto.res.CategoryResponse;
 import com.gofield.api.dto.res.CodeResponse;
 import com.gofield.api.service.CommonService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.domain.rds.domain.EnumValue;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
+import com.gofield.domain.rds.domain.user.ESocialFlag;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -21,8 +23,9 @@ public class CommonController {
 
     @ApiOperation(value = "코드 조회")
     @GetMapping("/v1/code")
-    public ApiResponse<List<CodeResponse>> getCodeList(@RequestParam ECodeGroup group){
-        return ApiResponse.success(commonService.getCodeList(group));
+    public ApiResponse<List<CodeResponse>> getCodeList(@RequestParam ECodeGroup group,
+                                                       @RequestParam(required = false, defaultValue = "false") Boolean isHide){
+        return ApiResponse.success(commonService.getCodeList(group, isHide));
     }
 
     @ApiOperation(value = "카테고리 조회(카테고리 탭, 사용자 카테고리)")

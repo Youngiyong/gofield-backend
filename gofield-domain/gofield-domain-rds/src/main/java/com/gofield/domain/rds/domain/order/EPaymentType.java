@@ -1,11 +1,23 @@
 package com.gofield.domain.rds.domain.order;
 
+import com.gofield.common.model.EnumCodeModel;
+import com.gofield.common.model.EnumModel;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
+@AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-@NoArgsConstructor
-public enum EPaymentType {
-    CARD, EASYPAY, BANK
-    ;
+public enum EPaymentType implements EnumModel {
+    CARD("카드"), EASYPAY("간편결제"), BANK("은행");
+
+    private String description;
+
+    @Override
+    public String getKey() {
+        return name();
+    }
+
+
+
 }

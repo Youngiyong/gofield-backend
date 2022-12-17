@@ -24,8 +24,8 @@ public class CommonService {
     private final CategoryRepository categoryRepository;
 
     @Transactional(readOnly = true)
-    public List<CodeResponse> getCodeList(ECodeGroup group){
-        List<Code> codeList = codeRepository.findByGroup(group);
+    public List<CodeResponse> getCodeList(ECodeGroup group, Boolean isHide){
+        List<Code> codeList = codeRepository.findAllByGroupByIsHide(group, isHide);
         return CodeResponse.of(codeList);
     }
 

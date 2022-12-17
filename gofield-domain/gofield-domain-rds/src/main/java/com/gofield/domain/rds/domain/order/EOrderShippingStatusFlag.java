@@ -1,13 +1,13 @@
 package com.gofield.domain.rds.domain.order;
 
-import com.gofield.domain.rds.converter.CodeEnum;
+import com.gofield.common.model.EnumCodeModel;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum EOrderShippingStatusFlag implements CodeEnum {
+public enum EOrderShippingStatusFlag implements EnumCodeModel {
 
     ORDER_SHIPPING_CHECK("상품확인중", "300"),
     ORDER_SHIPPING_CANCEL("주문 취소", "301"),

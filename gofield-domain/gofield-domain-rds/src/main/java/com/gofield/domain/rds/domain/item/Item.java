@@ -2,6 +2,7 @@
 package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
+import com.gofield.domain.rds.domain.seller.ShippingTemplate;
 import com.gofield.domain.rds.domain.user.UserLikeItem;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -37,8 +38,9 @@ public class Item extends BaseTimeEntity {
     @JoinColumn(name = "detail_id")
     private ItemDetail detail;
 
-    @Column
-    private Long shippingTemplateId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_template_id")
+    private ShippingTemplate shippingTemplate;
 
     @Column
     private String name;
