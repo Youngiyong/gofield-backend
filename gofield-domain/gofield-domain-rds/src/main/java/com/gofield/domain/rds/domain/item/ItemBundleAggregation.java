@@ -27,6 +27,9 @@ public class ItemBundleAggregation extends BaseTimeEntity {
     private int reviewCount;
 
     @Column
+    private int itemCount;
+
+    @Column
     private Double reviewScore;
 
     @Column
@@ -40,6 +43,7 @@ public class ItemBundleAggregation extends BaseTimeEntity {
         this.bundle = itemBundle;
         this.reviewScore = 0.0;
         this.reviewCount = 0;
+        this.itemCount = 0;
         this.newLowestPrice = 0;
         this.usedLowestPrice = 0;
     }
@@ -63,5 +67,11 @@ public class ItemBundleAggregation extends BaseTimeEntity {
     public void updateReviewScore(int reviewCount, Double reviewScore){
         this.reviewCount = reviewCount;
         this.reviewScore = reviewScore;
+    }
+
+    public void updateItemMinusOne(){
+        if(this.itemCount!=0){
+            this.itemCount--;
+        }
     }
 }

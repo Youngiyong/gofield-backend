@@ -52,6 +52,9 @@ public class Item extends BaseTimeEntity {
     @Column
     private int price;
 
+    @Column
+    private int deliveryPrice;
+
     @Column(name = "delivery_flag", nullable = false)
     private EItemDeliveryFlag delivery;
 

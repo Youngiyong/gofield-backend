@@ -735,6 +735,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.itemNumber.eq(itemStock.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
+                .where(containName(keyword), eqStatus(status))
                 .fetch();
 
         return new PageImpl<>(content, pageable, totalCount.size());

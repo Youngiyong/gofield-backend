@@ -217,6 +217,10 @@ public class ThirdPartyService {
             orderShippingLogRepository.save(orderShippingLog);
             ItemStock itemStock = itemStockRepository.findByItemNumber(result.getItemNumber());
             itemStock.updateOrderApprove(result.getQty());
+            if(itemStock.getStatus().equals(EItemStatusFlag.SOLD_OUT)){
+                ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(itemStock.getItem().getBundle().getId());
+                itemBundleAggregation.updateItemMinusOne();
+            }
             OrderItemOption orderItemOption = null;
             if(result.getIsOption()){
                 ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
