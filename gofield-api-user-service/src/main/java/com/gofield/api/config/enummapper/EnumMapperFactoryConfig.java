@@ -17,7 +17,8 @@ public class EnumMapperFactoryConfig {
         enumMapperFactory.putEnumCodeModel("ORDER_SHIPPING_STATUS", EOrderShippingStatusFlag.class);
         enumMapperFactory.putEnumCodeModel("ORDER_ITEM_STATUS", EOrderItemStatusFlag.class);
         enumMapperFactory.putEnumCodeModel("ORDER_CANCEL_STATUS", EOrderCancelStatusFlag.class);
-        enumMapperFactory.putEnumCodeModel("ORDER_CANCEL_REASON", EOrderCancelReasonFlag.class);
+        enumMapperFactory.putEnumModel("ORDER_CANCEL_REASON", EOrderCancelClientReason.class);
+        enumMapperFactory.putEnumCodeModel("ORDER_CANCEL_ALL_REASON", EOrderCancelReasonFlag.class);
         enumMapperFactory.putEnumCodeModel("ORDER_CHANGE_STATUS", EOrderChangeStatusFlag.class);
         enumMapperFactory.putEnumCodeModel("ORDER_CHANGE_REASON", EOrderChangeReasonFlag.class);
         return enumMapperFactory;

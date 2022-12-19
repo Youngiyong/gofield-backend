@@ -133,7 +133,8 @@ public class OrderController {
 
     @ApiOperation(value = "주문 취소")
     @PostMapping("/v1/cancel/{orderItemId}")
-    public ApiResponse createOrderCancel(@PathVariable Long orderItemId, @RequestBody OrderRequest.OrderCancel request){
+    public ApiResponse createOrderCancel(@PathVariable Long orderItemId,
+                                         @RequestBody OrderRequest.OrderCancel request){
         orderService.createOrderCancel(orderItemId, request);
         return ApiResponse.SUCCESS;
     }
