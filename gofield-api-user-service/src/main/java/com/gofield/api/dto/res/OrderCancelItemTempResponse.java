@@ -15,11 +15,13 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class OrderCancelItemResponse {
+public class OrderCancelItemTempResponse {
     private Long id;
     private Long orderId;
     private Long itemId;
     private Long itemOptionId;
+
+    private Long shippingTemplateId;
     private String itemNumber;
     private String name;
     private List<String> optionName;
@@ -43,15 +45,16 @@ public class OrderCancelItemResponse {
     private String refundBank;
 
     @Builder
-    private OrderCancelItemResponse(Long id, Long orderId, Long itemId, Long itemOptionId, String itemNumber,
-                                    String name, List<String> optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
-                                    int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int refundPrice, String paymentCompany,
-                                    String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderCancelReasonFlag reason,
-                                    String refundName, String refundAccount, String refundBank){
+    private OrderCancelItemTempResponse(Long id, Long orderId, Long itemId, Long itemOptionId, Long shippingTemplateId, String itemNumber,
+                                        String name, List<String> optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
+                                        int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int refundPrice, String paymentCompany,
+                                        String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderCancelReasonFlag reason,
+                                        String refundName, String refundAccount, String refundBank){
         this.id = id;
         this.orderId = orderId;
         this.itemId = itemId;
         this.itemOptionId = itemOptionId;
+        this.shippingTemplateId = shippingTemplateId;
         this.itemNumber = itemNumber;
         this.name = name;
         this.optionName = optionName;
@@ -75,7 +78,7 @@ public class OrderCancelItemResponse {
         this.refundBank = refundBank;
     }
 
-    public static OrderCancelItemResponse of(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
+    public static OrderCancelItemTempResponse of(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
         int qty = orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty();
         int itemPrice = orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
         /*
@@ -93,11 +96,12 @@ public class OrderCancelItemResponse {
         int refundPrice = orderItem.getItem().getShippingTemplate()==null ? 0 : orderItem.getItem().getShippingTemplate().getTakebackCharge();
         int totalAmount = itemPrice * qty - discountPrice - deliveryPrice - refundPrice;
 
-        return OrderCancelItemResponse.builder()
+        return OrderCancelItemTempResponse.builder()
                 .id(orderItem.getId())
                 .orderId(orderItem.getOrder().getId())
-                .itemId(orderItem.getOrder().getId())
+                .itemId(orderItem.getItem().getId())
                 .itemOptionId(orderItem.getOrderItemOption()==null ? null : orderItem.getOrderItemOption().getItemOptionId())
+                .shippingTemplateId(orderItem.getItem().getShippingTemplate()==null ? null : orderItem.getItem().getShippingTemplate().getId())
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))

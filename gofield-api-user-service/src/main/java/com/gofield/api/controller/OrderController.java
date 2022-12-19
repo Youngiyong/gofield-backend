@@ -5,7 +5,6 @@ import com.gofield.api.dto.res.*;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
-import com.gofield.domain.rds.domain.order.OrderItem;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -62,15 +61,6 @@ public class OrderController {
         return ApiResponse.success(orderService.getOrderTrackerDeliveryUrl(carrierId, trackId));
     }
 
-    @ApiOperation(value = "주문 배송 취소")
-    @PostMapping("/v1/{orderNumber}/shipping/{shippingNumber}/cancel")
-    public ApiResponse cancelOrderShipping(@PathVariable String orderNumber,
-                                           @PathVariable String shippingNumber,
-                                           @Valid @RequestBody OrderRequest.OrderCancel request){
-
-        return ApiResponse.SUCCESS;
-    }
-
     @ApiOperation(value = "주문목록")
     @GetMapping("/v1")
     public ApiResponse<OrderListResponse> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
@@ -125,8 +115,42 @@ public class OrderController {
 
     @ApiOperation(value = "주문 취소전 상품 정보")
     @GetMapping("/v1/item/{orderItemId}")
-    public ApiResponse<OrderCancelItemTempResponse> getOrderItem(@PathVariable Long orderItemId, @RequestPart EOrderCancelReasonFlag reason){
-        return ApiResponse.success(orderService.getOrderItemCancelInfo(orderItemId, reason));
+    public ApiResponse<OrderCancelItemTempResponse> getOrderItem(@PathVariable Long orderItemId, @RequestParam EOrderCancelReasonFlag reason){
+        return ApiResponse.success(orderService.getOrderItemCancelTemp(orderItemId, reason));
     }
+
+    @ApiOperation(value = "취소/반품/교환 리스트")
+    @GetMapping("/v1/cancel")
+    public ApiResponse<OrderCancelListResponse> createOrderCancel(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(orderService.getOrderCancelList(pageable));
+    }
+
+    @ApiOperation(value = "주문 취소/반품/교환 상세")
+    @GetMapping("/v1/cancel/{cancelId}")
+    public ApiResponse<OrderCancelDetailResponse> getOrderCancelDetail(@PathVariable Long cancelId){
+        return ApiResponse.success(orderService.getOrderCancel(cancelId));
+    }
+
+    @ApiOperation(value = "주문 취소")
+    @PostMapping("/v1/cancel")
+    public ApiResponse createOrderCancel(@RequestBody OrderRequest.OrderCancel request){
+        orderService.createOrderCancel(request);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "반풍 취소")
+    @PostMapping("/v1/return")
+    public ApiResponse createOrderReturn(@RequestBody OrderRequest.OrderCancel request){
+        orderService.createOrderCancel(request);
+        return ApiResponse.SUCCESS;
+    }
+
+    @ApiOperation(value = "교환 요청")
+    @PostMapping("/v1/change")
+    public ApiResponse createOrderChange(@RequestBody OrderRequest.OrderCancel request){
+        orderService.createOrderCancel(request);
+        return ApiResponse.SUCCESS;
+    }
+
 
 }

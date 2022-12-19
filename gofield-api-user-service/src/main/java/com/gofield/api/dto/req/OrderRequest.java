@@ -1,6 +1,8 @@
 package com.gofield.api.dto.req;
 
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
+import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
+import com.gofield.domain.rds.domain.order.EOrderItemStatusFlag;
 import com.gofield.domain.rds.domain.order.EPaymentType;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
@@ -38,14 +40,6 @@ public class OrderRequest {
         }
     }
 
-    @Getter
-    public static class OrderCancel {
-        @NotNull(message = "주문 상품 아이디는 필수값입니다.")
-        private Long orderItemId;
-        @NotNull(message = "배송 취소 코드는 필수값입니다.")
-        private String cancelCode;
-        private String cancelComment;
-    }
 
     @Getter
     public static class OrderReview {
@@ -57,5 +51,35 @@ public class OrderRequest {
         private Double reviewScore;
         @NotNull(message = "리뷰 내용은 필수값입니다.")
         private String content;
+    }
+
+    @Getter
+    public static class OrderCancel {
+        private Long id;
+        private Long orderId;
+        private Long itemId;
+        private Long itemOptionId;
+        private Long shippingTemplateId;
+        private String itemNumber;
+        private String name;
+        private List<String> optionName;
+        private String thumbnail;
+        private EOrderItemStatusFlag status;
+        private Boolean isOption;
+        private int qty;
+        private int totalAmount;
+        private int itemPrice;
+        private int discountPrice;
+        private int deliveryPrice;
+        private int refundPrice;
+        private String paymentCompany;
+        private String paymentType;
+        private String cardNumber;
+        private String cardType;
+        private int installmentPlanMonth;
+        private EOrderCancelReasonFlag reason;
+        private String refundName;
+        private String refundAccount;
+        private String refundBank;
     }
 }

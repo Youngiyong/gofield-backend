@@ -20,7 +20,7 @@ public class EnumMapper {
                 .collect(Collectors.toList());
     }
 
-    public void put(String key, Class<? extends EnumCodeModel> e) {
+    public void putEnumCodeModel(String key, Class<? extends EnumCodeModel> e) {
         factory.put(key, toEnumValues(e));
     }
 

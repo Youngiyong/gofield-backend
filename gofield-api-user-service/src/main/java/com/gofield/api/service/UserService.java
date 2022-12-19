@@ -99,6 +99,11 @@ public class UserService {
         return userRepository.findByUuidAndStatusActive(getUserDecryptUuid());
     }
 
+    @Transactional(readOnly = true)
+    public UserAccount getUserAccount(Long userId){
+        return userAccountRepository.findByUserId(userId);
+    }
+
     @Transactional
     public void sendSms(UserRequest.UserAccountTel request){
         User user = getUser();

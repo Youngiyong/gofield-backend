@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class ItemController {
-
     private final ItemService itemService;
 
     @ApiOperation(value = "상품 좋아요/해제")

@@ -18,6 +18,7 @@ import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
 import com.gofield.domain.rds.domain.order.*;
 import com.gofield.domain.rds.domain.order.projection.OrderItemProjection;
 import com.gofield.domain.rds.domain.user.User;
+import com.gofield.domain.rds.domain.user.UserAccount;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentCancelResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
@@ -43,15 +44,17 @@ import java.util.stream.Collectors;
 public class OrderService {
     private final CodeRepository codeRepository;
     private final ItemRepository itemRepository;
+    private final ItemOptionRepository itemOptionRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final OrderRepository orderRepository;
     private final OrderSheetRepository orderSheetRepository;
-
+    private final OrderCancelRepository orderCancelRepository;
+    private final ShippingTemplateRepository shippingTemplateRepository;
+    private final OrderCancelCommentRepository orderCancelCommentRepository;
     private final OrderItemRepository orderItemRepository;
     private final OrderShippingRepository orderShippingRepository;
     private final OrderShippingAddressRepository orderShippingAddressRepository;
     private final ItemBundleReviewRepository itemBundleReviewRepository;
-
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final UserService userService;
     private final ThirdPartyService thirdPartyService;
@@ -65,6 +68,8 @@ public class OrderService {
     public String makeCarrierUrl(String carrierId, String trackId){
         return String.format(Constants.TRACKER_DELIVERY_URL, carrierId, trackId);
     }
+
+
 
     @Transactional(readOnly = true)
     public Order getOrder(String orderNumber){
@@ -193,11 +198,6 @@ public class OrderService {
         return OrderWaitResponse.of(response.getCheckout().getUrl());
     }
 
-    @Transactional
-    public void cancelOrderShipping(String orderNumber, String shippingNumber, OrderRequest.OrderCancel request){
-
-    }
-
     public void cancelPayment(String orderNumber)  {
         Order order = orderRepository.findByOrderNumber(orderNumber);
         TossPaymentRequest.PaymentCancel request = TossPaymentRequest.PaymentCancel.builder()
@@ -303,8 +303,81 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderCancelItemTempResponse getOrderItemCancelInfo(Long orderItemId, EOrderCancelReasonFlag reason){
-        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId);
-        return OrderCancelItemTempResponse.of(orderItem, reason);
+    public OrderCancelItemTempResponse getOrderItemCancelTemp(Long orderItemId, EOrderCancelReasonFlag reason){
+        User user = userService.getUserNotNonUser();
+        UserAccount userAccount = null;
+        String refundBank = null;
+        String refundName = null;
+        String refundAccount = null;
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId, user.getId());
+        if(orderItem==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
+        }
+        if(orderItem.getStatus().equals(EOrderItemStatusFlag.ORDER_ITEM_APPROVE_CANCEL) || orderItem.getStatus().equals(EOrderItemStatusFlag.ORDER_ITEM_RECEIPT_CANCEL)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 취소 처리된 상품입니다.");
+        }
+        if(orderItem.getOrder().getPaymentType().equals("BANK")){
+            userAccount = userService.getUserAccount(user.getId());
+            if(userAccount==null){
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "환불 계좌 등록후 취소 요청이 가능합니다.");
+            }
+            refundName = userAccount.getBankHolderName();
+            refundBank = userAccount.getBankName();
+            refundAccount = userAccount.getBankAccountNumber();
+        }
+        return OrderCancelItemTempResponse.of(orderItem, reason, refundName, refundBank, refundAccount);
+    }
+
+    @Transactional
+    public void createOrderCancel(OrderRequest.OrderCancel request){
+        User user = userService.getUserNotNonUser();
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(request.getId(), user.getId());
+        String refundName = null;
+        String refundAccount = null;
+        String refundBank = null;
+        ShippingTemplate shippingTemplate = null;
+        if(orderItem.getOrder().getPaymentType().equals(EPaymentType.BANK)){
+            UserAccount userAccount = userService.getUserAccount(user.getId());
+            refundName = userAccount.getBankHolderName();
+            refundBank = userAccount.getBankName();
+            refundAccount = userAccount.getBankAccountNumber();
+        }
+        if(request.getShippingTemplateId()!=null){
+            shippingTemplate = shippingTemplateRepository.findByShippingTemplateId(request.getShippingTemplateId());
+        }
+        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, request.getReason(), refundName, refundAccount, refundBank);
+        OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, request.getReason().getDescription());
+        orderCancelCommentRepository.save(orderCancelComment);
+        OrderCancel orderCancel = OrderCancel.newInstance(orderItem.getOrder(),orderCancelComment,  shippingTemplate, EOrderCancelTypeFlag.CANCEL, EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
+        Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
+        ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
+        EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
+        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : ApiUtil.toJsonStr(orderItemInfo.getOptionName()), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
+        orderCancel.addOrderCancelItem(orderCancelItem);
+        orderCancelRepository.save(orderCancel);
+        if(orderItem.getStatus().equals(EOrderItemStatusFlag.ORDER_ITEM_RECEIPT)){
+            orderItem.updateReceiptCancel();
+        } else if(orderItem.getStatus().equals(EOrderItemStatusFlag.ORDER_ITEM_APPROVE)){
+            orderItem.updateApproveCancel();
+        }
+        orderItem.getOrderShipping().updateCancel();
+    }
+
+    @Transactional(readOnly = true)
+    public OrderCancelListResponse getOrderCancelList(Pageable pageable){
+        User user = userService.getUserNotNonUser();
+        List<OrderCancel> result = orderCancelRepository.findAllFetchJoin(user.getId(), pageable);
+        List<OrderCancelResponse> response = OrderCancelResponse.of(result);
+        return OrderCancelListResponse.of(response);
+    }
+
+    @Transactional(readOnly = true)
+    public OrderCancelDetailResponse getOrderCancel(Long cancelId){
+        User user = userService.getUserNotNonUser();
+        OrderCancel result = orderCancelRepository.findFetchJoin(cancelId, user.getId());
+        if(result==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("%s는 존재하지 않는 주문 아이디입니다.", cancelId));
+        }
+        return OrderCancelDetailResponse.of(result);
     }
 }

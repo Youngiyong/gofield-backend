@@ -25,9 +25,10 @@ public class ItemResponse {
     private String itemNumber;
     private Long bundleId;
     private int price;
+
+    private int deliveryPrice;
     private int qty;
     private Long likeId;
-
     private Boolean isOption;
     private EItemClassificationFlag classification;
     private EItemSpecFlag spec;
@@ -41,7 +42,7 @@ public class ItemResponse {
 
     @Builder
     private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, Long bundleId,
-                         int price, int qty, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate){
+                         int price, int deliveryPrice, int qty, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -49,6 +50,7 @@ public class ItemResponse {
         this.itemNumber = itemNumber;
         this.bundleId = bundleId;
         this.price = price;
+        this.deliveryPrice = deliveryPrice;
         this.qty = qty;
         this.likeId = likeId;
         this.isOption = isOption;
@@ -71,6 +73,7 @@ public class ItemResponse {
                 .itemNumber(projection.getItemNumber())
                 .bundleId(projection.getBundleId())
                 .price(projection.getPrice())
+                .deliveryPrice(projection.getDeliveryPrice())
                 .qty(projection.getQty())
                 .likeId(projection.getLikeId())
                 .isOption(projection.getIsOption())

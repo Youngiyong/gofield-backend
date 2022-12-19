@@ -1,7 +1,7 @@
 package com.gofield.api.dto.res;
 
 import com.gofield.domain.rds.domain.item.EItemChargeFlag;
-import com.gofield.domain.rds.domain.seller.ShippingTemplate;
+import com.gofield.domain.rds.domain.item.ShippingTemplate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -48,7 +48,7 @@ public class ShippingTemplateResponse {
     public static ShippingTemplateResponse of(ShippingTemplate shippingTemplate){
         return ShippingTemplateResponse.builder()
                 .id(shippingTemplate.getId())
-                .sellerId(shippingTemplate.getSeller().getId())
+                .sellerId(shippingTemplate.getSellerId())
                 .title(shippingTemplate.getTitle())
                 .isCondition(shippingTemplate.getIsCondition())
                 .condition(shippingTemplate.getCondition())
