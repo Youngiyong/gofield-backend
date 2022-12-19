@@ -56,30 +56,6 @@ public class OrderRequest {
     @Getter
     public static class OrderCancel {
         private Long id;
-        private Long orderId;
-        private Long itemId;
-        private Long itemOptionId;
-        private Long shippingTemplateId;
-        private String itemNumber;
-        private String name;
-        private List<String> optionName;
-        private String thumbnail;
-        private EOrderItemStatusFlag status;
-        private Boolean isOption;
-        private int qty;
-        private int totalAmount;
-        private int itemPrice;
-        private int discountPrice;
-        private int deliveryPrice;
-        private int refundPrice;
-        private String paymentCompany;
-        private String paymentType;
-        private String cardNumber;
-        private String cardType;
-        private int installmentPlanMonth;
         private EOrderCancelReasonFlag reason;
-        private String refundName;
-        private String refundAccount;
-        private String refundBank;
     }
 }

@@ -335,20 +335,16 @@ public class OrderService {
         String refundName = null;
         String refundAccount = null;
         String refundBank = null;
-        ShippingTemplate shippingTemplate = null;
-        if(orderItem.getOrder().getPaymentType().equals(EPaymentType.BANK)){
+        if(orderItem.getOrder().getPaymentType().equals("BANK")){
             UserAccount userAccount = userService.getUserAccount(user.getId());
             refundName = userAccount.getBankHolderName();
             refundBank = userAccount.getBankName();
             refundAccount = userAccount.getBankAccountNumber();
         }
-        if(request.getShippingTemplateId()!=null){
-            shippingTemplate = shippingTemplateRepository.findByShippingTemplateId(request.getShippingTemplateId());
-        }
         OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, request.getReason(), refundName, refundAccount, refundBank);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, request.getReason().getDescription());
         orderCancelCommentRepository.save(orderCancelComment);
-        OrderCancel orderCancel = OrderCancel.newInstance(orderItem.getOrder(),orderCancelComment,  shippingTemplate, EOrderCancelTypeFlag.CANCEL, EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
+        OrderCancel orderCancel = OrderCancel.newInstance(orderItem.getOrder(),orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelTypeFlag.CANCEL, EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
