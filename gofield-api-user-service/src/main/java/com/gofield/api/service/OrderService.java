@@ -329,9 +329,9 @@ public class OrderService {
     }
 
     @Transactional
-    public void createOrderCancel(OrderRequest.OrderCancel request){
+    public void createOrderCancel(Long orderItemId, OrderRequest.OrderCancel request){
         User user = userService.getUserNotNonUser();
-        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(request.getId(), user.getId());
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId, user.getId());
         String refundName = null;
         String refundAccount = null;
         String refundBank = null;

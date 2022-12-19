@@ -55,7 +55,6 @@ public class OrderRequest {
 
     @Getter
     public static class OrderCancel {
-        private Long id;
         private EOrderCancelReasonFlag reason;
     }
 }

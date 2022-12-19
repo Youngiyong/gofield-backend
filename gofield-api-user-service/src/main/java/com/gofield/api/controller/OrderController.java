@@ -132,23 +132,23 @@ public class OrderController {
     }
 
     @ApiOperation(value = "주문 취소")
-    @PostMapping("/v1/cancel")
-    public ApiResponse createOrderCancel(@RequestBody OrderRequest.OrderCancel request){
-        orderService.createOrderCancel(request);
+    @PostMapping("/v1/cancel/{orderItemId}")
+    public ApiResponse createOrderCancel(@PathVariable Long orderItemId, @RequestBody OrderRequest.OrderCancel request){
+        orderService.createOrderCancel(orderItemId, request);
         return ApiResponse.SUCCESS;
     }
 
     @ApiOperation(value = "반풍 취소")
     @PostMapping("/v1/return")
     public ApiResponse createOrderReturn(@RequestBody OrderRequest.OrderCancel request){
-        orderService.createOrderCancel(request);
+//        orderService.createOrderCancel(request);
         return ApiResponse.SUCCESS;
     }
 
     @ApiOperation(value = "교환 요청")
     @PostMapping("/v1/change")
     public ApiResponse createOrderChange(@RequestBody OrderRequest.OrderCancel request){
-        orderService.createOrderCancel(request);
+//        orderService.createOrderCancel(request);
         return ApiResponse.SUCCESS;
     }
 
