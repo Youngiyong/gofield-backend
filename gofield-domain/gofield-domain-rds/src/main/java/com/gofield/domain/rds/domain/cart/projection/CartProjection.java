@@ -16,11 +16,13 @@ public class CartProjection {
     private final String sellerName;
     private final String optionName;
     private final String thumbnail;
-
     private final int price;
+    private final int deliveryPrice;
     private final int qty;
     private final Boolean isOrder;
     private final EItemClassificationFlag classification;
+
+    private final EItemDeliveryFlag delivery;
     private final EItemSpecFlag spec;
     private final EItemGenderFlag gender;
     private final Boolean isCondition;
@@ -31,7 +33,7 @@ public class CartProjection {
     private final int feeJejuBesides;
 
     @QueryProjection
-    public CartProjection(Long id, String itemName, String itemNumber, Long sellerId, String sellerName, String optionName, String thumbnail, int price, int qty, Boolean isOrder, EItemClassificationFlag classification, EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
+    public CartProjection(Long id, String itemName, String itemNumber, Long sellerId, String sellerName, String optionName, String thumbnail, int price, int deliveryPrice, int qty, Boolean isOrder, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
         this.id = id;
         this.itemName = itemName;
         this.itemNumber = itemNumber;
@@ -40,9 +42,11 @@ public class CartProjection {
         this.optionName = optionName;
         this.thumbnail = thumbnail;
         this.price = price;
+        this.deliveryPrice = deliveryPrice;
         this.qty = qty;
         this.isOrder = isOrder;
         this.classification = classification;
+        this.delivery = delivery;
         this.spec = spec;
         this.gender = gender;
         this.isCondition = isCondition;

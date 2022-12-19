@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.domain.order;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
+import com.gofield.domain.rds.domain.item.ShippingTemplate;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -25,13 +26,20 @@ public class OrderCancel extends BaseTimeEntity {
     @JoinColumn(name = "order_id")
     private Order order;
 
-    @Column(nullable = false)
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "shipping_template_id")
+    private ShippingTemplate shippingTemplate;
+
+    @Column(name = "type_flag", nullable = false)
     private EOrderCancelTypeFlag type;
 
-    @Column(name = "code_flag", nullable = false)
-    private EOrderCancelFlagCodeModel code;
+    @Column(name = "status_flag", nullable = false)
+    private EOrderCancelStatusFlag status;
 
-    @Column(name = "reason_flag")
+    @Column(name = "code_flag", nullable = false)
+    private EOrderCancelCodeFlag code;
+
+    @Column(name = "reason_flag", nullable = false)
     private EOrderCancelReasonFlag reason;
 
     @Column(nullable = false)
@@ -49,9 +57,6 @@ public class OrderCancel extends BaseTimeEntity {
     @Column(nullable = false)
     private int totalPg;
 
-    @Column
-    @Enumerated
-    private EPaymentType paymentType;
 
     @Column
     private String carrier;
@@ -63,7 +68,7 @@ public class OrderCancel extends BaseTimeEntity {
     private String refundName;
 
     @Column
-    private String refundCode;
+    private String refundAccount;
 
     @Column
     private String refundBank;
@@ -71,17 +76,24 @@ public class OrderCancel extends BaseTimeEntity {
     @Column
     private LocalDateTime recalledDate;
 
+    @Column
+    private LocalDateTime refundDate;
+
     @OneToMany(mappedBy = "cancel", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderCancelItem> orderCancelItems = new ArrayList<>();
 
-    @OneToMany(mappedBy = "cancel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<OrderCancelComment> orderCancelComments = new ArrayList<>();
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "comment_id")
+    private OrderCancelComment orderCancelComment;
 
     @Builder
-    private OrderCancel(Order order, EOrderCancelTypeFlag type, EOrderCancelFlagCodeModel code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
-                        int totalDelivery, int totalDiscount, int totalPg, EPaymentType paymentType, String refundName, String refundCode, String refundBank) {
+    private OrderCancel(Order order, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+                        int totalDelivery, int totalDiscount, int totalPg, String refundName, String refundAccount, String refundBank) {
         this.order = order;
+        this.orderCancelComment = orderCancelComment;
+        this.shippingTemplate = shippingTemplate;
         this.type = type;
+        this.status = status;
         this.code = code;
         this.reason = reason;
         this.totalAmount = totalAmount;
@@ -89,17 +101,19 @@ public class OrderCancel extends BaseTimeEntity {
         this.totalDelivery = totalDelivery;
         this.totalDiscount = totalDiscount;
         this.totalPg = totalPg;
-        this.paymentType = paymentType;
         this.refundName = refundName;
-        this.refundCode = refundCode;
+        this.refundAccount = refundAccount;
         this.refundBank = refundBank;
     }
 
-    public static OrderCancel newInstance(Order order, EOrderCancelTypeFlag type, EOrderCancelFlagCodeModel code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
-                                          int totalDelivery, int totalDiscount, int totalPg, EPaymentType paymentType, String refundName, String refundCode, String refundBank) {
+    public static OrderCancel newInstance(Order order, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate,  EOrderCancelTypeFlag type, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+                                          int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
         return OrderCancel.builder()
                 .order(order)
+                .orderCancelComment(orderCancelComment)
+                .shippingTemplate(shippingTemplate)
                 .type(type)
+                .status(EOrderCancelStatusFlag.ORDER_CANCEL_REQUEST)
                 .code(code)
                 .reason(reason)
                 .totalAmount(totalAmount)
@@ -107,9 +121,8 @@ public class OrderCancel extends BaseTimeEntity {
                 .totalDelivery(totalDelivery)
                 .totalDiscount(totalDiscount)
                 .totalPg(totalPg)
-                .paymentType(paymentType)
                 .refundName(refundName)
-                .refundCode(refundCode)
+                .refundAccount(refundAccount)
                 .refundBank(refundBank)
                 .build();
     }
@@ -117,10 +130,5 @@ public class OrderCancel extends BaseTimeEntity {
     public void addOrderCancelItem(OrderCancelItem orderCancelItem){
         this.orderCancelItems.add(orderCancelItem);
     }
-
-    public void addOrderCancelComment(OrderCancelComment orderCancelComment){
-        this.orderCancelComments.add(orderCancelComment);
-    }
-
 
 }

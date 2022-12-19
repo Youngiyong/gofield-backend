@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.domain.item.projection;
 
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
+import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.item.EItemGenderFlag;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,26 +21,30 @@ public class ItemClassificationProjectionResponse {
     private String brandName;
     private String thumbnail;
     private int price;
+    private int deliveryPrice;
     private Long likeId;
     private EItemClassificationFlag classification;
+    private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
     private String tags;
 
     @Builder
-    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, String tags) {
+    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags) {
         this.id = id;
         this.itemNumber = itemNumber;
         this.name = name;
         this.brandName = brandName;
         this.thumbnail = thumbnail;
         this.price = price;
+        this.deliveryPrice =deliveryPrice;
         this.likeId = likeId;
         this.classification = classification;
+        this.delivery = delivery;
         this.gender = gender;
         this.tags = tags;
     }
 
-    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, String tags){
+    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags){
         return ItemClassificationProjectionResponse.builder()
                 .id(id)
                 .itemNumber(itemNumber)
@@ -47,8 +52,10 @@ public class ItemClassificationProjectionResponse {
                 .brandName(brandName)
                 .thumbnail(thumbnail)
                 .price(price)
+                .deliveryPrice(deliveryPrice)
                 .likeId(likeId)
                 .classification(classification)
+                .delivery(delivery)
                 .gender(gender)
                 .tags(tags)
                 .build();
@@ -58,7 +65,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getLikeId(), p.getClassification(), p.getGender(), p.getTags()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getDelivery(), p.getGender(), p.getTags()))
                 .collect(Collectors.toList());
     }
 
@@ -66,7 +73,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), null, p.getClassification(), p.getGender(), p.getTags()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), null, p.getClassification(), p.getDelivery(),  p.getGender(), p.getTags()))
                 .collect(Collectors.toList());
     }
 
@@ -78,8 +85,10 @@ public class ItemClassificationProjectionResponse {
                 .brandName(projection.getBrandName())
                 .thumbnail(projection.getThumbnail())
                 .price(projection.getPrice())
+                .deliveryPrice(projection.getDeliveryPrice())
                 .likeId(null)
                 .classification(projection.getClassification())
+                .delivery(projection.getDelivery())
                 .gender(projection.getGender())
                 .tags(projection.getTags())
                 .build();

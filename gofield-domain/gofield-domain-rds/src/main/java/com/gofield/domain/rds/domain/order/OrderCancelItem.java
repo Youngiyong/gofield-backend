@@ -3,6 +3,8 @@ package com.gofield.domain.rds.domain.order;
 
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
+import com.gofield.domain.rds.domain.item.Item;
+import com.gofield.domain.rds.domain.item.ItemOption;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,11 +26,22 @@ public class OrderCancelItem extends BaseTimeEntity {
     @JoinColumn(name = "cancel_id")
     private OrderCancel cancel;
 
-    @Column(nullable = false)
-    private Long refId;
-
     @Column(name = "type_flag")
     private EOrderCancelItemFlag type;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_id")
+    private Item item;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "item_option_id")
+    private ItemOption itemOption;
+
+    @Column(nullable = false)
+    private String name;
+
+    @Column(columnDefinition = "TEXT")
+    private String optionName;
 
     @Column(nullable = false)
     private int qty;
@@ -36,27 +49,29 @@ public class OrderCancelItem extends BaseTimeEntity {
     @Column(nullable = false)
     private int price;
 
-    @Column(name = "reason_flag")
-    private EOrderCancelReasonFlag reason;
 
     @Builder
-    private OrderCancelItem(OrderCancel orderCancel, Long refId, EOrderCancelItemFlag type, int qty, int price, EOrderCancelReasonFlag reason){
+    private OrderCancelItem(OrderCancel orderCancel, Item item, ItemOption itemOption, String name, String optionName, EOrderCancelItemFlag type, int qty, int price){
         this.cancel = orderCancel;
-        this.refId = refId;
+        this.item = item;
+        this.itemOption = itemOption;
+        this.name = name;
+        this.optionName = optionName;
         this.type = type;
         this.qty = qty;
         this.price = price;
-        this.reason = reason;
     }
 
-    public static OrderCancelItem newInstance(OrderCancel orderCancel, Long refId, EOrderCancelItemFlag type, int qty, int price, EOrderCancelReasonFlag reason){
+    public static OrderCancelItem newInstance(OrderCancel orderCancel, Item item, ItemOption itemOption, String name, String optionName, EOrderCancelItemFlag type, int qty, int price){
         return OrderCancelItem.builder()
                 .orderCancel(orderCancel)
-                .refId(refId)
+                .item(item)
+                .itemOption(itemOption)
+                .name(name)
+                .optionName(optionName)
                 .type(type)
                 .qty(qty)
                 .price(price)
-                .reason(reason)
                 .build();
     }
 }

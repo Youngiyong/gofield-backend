@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.domain.item.projection;
 
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
+import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.item.EItemGenderFlag;
 import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
@@ -16,21 +17,27 @@ public class ItemClassificationProjection {
     private final String brandName;
     private final String thumbnail;
     private final int price;
+
+    private final int deliveryPrice;
     private final Long likeId;
     private final EItemClassificationFlag classification;
+
+    private final EItemDeliveryFlag delivery;
     private final EItemGenderFlag gender;
     private final String tags;
 
     @QueryProjection
-    public ItemClassificationProjection(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, Long likeId, EItemClassificationFlag classification, EItemGenderFlag gender, String tags) {
+    public ItemClassificationProjection(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags) {
         this.id = id;
         this.itemNumber = itemNumber;
         this.name = name;
         this.brandName = brandName;
         this.thumbnail = thumbnail;
         this.price = price;
+        this.deliveryPrice = deliveryPrice;
         this.likeId = likeId;
         this.classification = classification;
+        this.delivery = delivery;
         this.gender = gender;
         this.tags = tags;
     }

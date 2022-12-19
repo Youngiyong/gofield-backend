@@ -1,5 +1,5 @@
 
-package com.gofield.domain.rds.domain.seller;
+package com.gofield.domain.rds.domain.item;
 
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
@@ -20,9 +20,8 @@ import javax.persistence.*;
 @Table(	name = "shipping_template")
 public class ShippingTemplate extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "seller_id")
-    private Seller seller;
+    @Column
+    private Long sellerId;
 
     @Column
     private String title;
@@ -62,4 +61,28 @@ public class ShippingTemplate extends BaseTimeEntity {
 
     @Column
     private String shippingComment;
+
+    @Column
+    private String zipCode;
+
+    @Column
+    private String address;
+
+    @Column
+    private String addressExtra;
+
+    @Column
+    private String receiver;
+
+    @Column
+    private String receiverTel;
+
+    @Column
+    private String returnZipCode;
+
+    @Column
+    private String returnAddress;
+
+    @Column
+    private String returnAddressExtra;
 }

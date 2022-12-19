@@ -7,7 +7,7 @@ import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
-import com.gofield.domain.rds.domain.seller.ShippingTemplate;
+import com.gofield.domain.rds.domain.item.ShippingTemplate;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +18,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
-import static com.gofield.domain.rds.domain.seller.QShippingTemplate.shippingTemplate;
+import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
+
 import static com.gofield.domain.rds.domain.item.QCategory.category;
 import static com.gofield.domain.rds.domain.item.QItem.item;
 import static com.gofield.domain.rds.domain.item.QItemDetail.itemDetail;
@@ -72,7 +73,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             brand.name.as("brandName"),
                             item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             item.price,
+                            item.deliveryPrice,
                             item.classification,
+                            item.delivery,
                             itemDetail.gender,
                             item.tags))
                     .from(itemStock)
@@ -103,8 +106,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -140,7 +145,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             brand.name.as("brandName"),
                             item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             item.price,
+                            item.deliveryPrice,
                             item.classification,
+                            item.delivery,
                             itemDetail.gender,
                             item.tags))
                     .from(itemStock)
@@ -171,8 +178,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -209,8 +218,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -241,8 +252,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -272,7 +285,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -301,8 +316,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -332,7 +349,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -363,8 +382,10 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -394,7 +415,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         item.price,
+                        item.deliveryPrice,
                         item.classification,
+                        item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
@@ -528,6 +551,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             itemDetail.description,
                             item.itemNumber,
                             item.price,
+                            item.deliveryPrice,
                             itemStock.qty,
                             item.isOption,
                             itemStock.status,
@@ -553,7 +577,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
             ShippingTemplate resultShip = jpaQueryFactory
                     .select(shippingTemplate)
                     .from(shippingTemplate)
-                    .where(shippingTemplate.seller.id.eq(projection.getSellerId()))
+                    .where(shippingTemplate.sellerId.eq(projection.getSellerId()))
                     .fetchOne();
 
             List<String> images = jpaQueryFactory
@@ -563,7 +587,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .fetch();
 
             return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
-                    projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(), projection.getPrice(), projection.getQty(), projection.getStatus(),
+                    projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(), projection.getPrice(), projection.getDeliveryPrice(),  projection.getQty(), projection.getStatus(),
                     null, projection.getIsOption(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                     projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
         }
@@ -579,6 +603,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.description,
                         item.itemNumber,
                         item.price,
+                        item.deliveryPrice,
                         itemStock.qty,
                         itemStock.status,
                         userLikeItem.id.as("likeId"),
@@ -607,7 +632,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         ShippingTemplate resultShip = jpaQueryFactory
                 .select(shippingTemplate)
                 .from(shippingTemplate)
-                .where(shippingTemplate.seller.id.eq(projection.getSellerId()))
+                .where(shippingTemplate.sellerId.eq(projection.getSellerId()))
                 .fetchOne();
 
         List<String> images = jpaQueryFactory
@@ -617,7 +642,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetch();
 
         return ItemProjectionResponse.of(projection.getId(), projection.getName(), projection.getBrandName(),
-                projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(),  projection.getPrice(), projection.getQty(), projection.getStatus(),
+                projection.getThumbnail(), projection.getDescription(), projection.getItemNumber(), projection.getBundleId(),  projection.getPrice(), projection.getDeliveryPrice(), projection.getQty(), projection.getStatus(),
                 projection.getLikeId(), projection.getIsOption(), projection.getClassification(), projection.getSpec(), projection.getDelivery(),
                 projection.getGender(), projection.getTags(), projection.getOption(), images, resultShip);
     }
@@ -653,7 +678,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(shippingTemplate)
-                .on(itemStock.sellerId.eq(shippingTemplate.seller.id))
+                .on(itemStock.sellerId.eq(shippingTemplate.sellerId))
                 .leftJoin(itemOption)
                 .on(itemStock.itemNumber.eq(itemOption.itemNumber))
                 .fetchOne();

@@ -1,7 +1,10 @@
 package com.gofield.domain.rds.domain.seller.repository;
 
+import com.gofield.domain.rds.domain.item.ShippingTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+
+import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
 
 
 @RequiredArgsConstructor
@@ -9,4 +12,11 @@ public class ShippingTemplateRepositoryCustomImpl implements ShippingTemplateRep
 
     private final JPAQueryFactory jpaQueryFactory;
 
+    @Override
+    public ShippingTemplate findByShippingTemplateId(Long id) {
+        return jpaQueryFactory
+                .selectFrom(shippingTemplate)
+                .where(shippingTemplate.id.eq(id))
+                .fetchFirst();
+    }
 }

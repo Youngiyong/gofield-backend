@@ -2,7 +2,6 @@
 package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import com.gofield.domain.rds.domain.seller.ShippingTemplate;
 import com.gofield.domain.rds.domain.user.UserLikeItem;
 import lombok.AccessLevel;
 import lombok.Getter;

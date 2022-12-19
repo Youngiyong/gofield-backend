@@ -18,7 +18,7 @@ import static com.gofield.domain.rds.domain.order.QOrderItem.orderItem;
 import static com.gofield.domain.rds.domain.order.QOrderItemOption.orderItemOption;
 import static com.gofield.domain.rds.domain.order.QOrderShipping.orderShipping;
 import static com.gofield.domain.rds.domain.seller.QSeller.seller;
-import static com.gofield.domain.rds.domain.seller.QShippingTemplate.shippingTemplate;
+import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
 
 @RequiredArgsConstructor
 public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom {
@@ -46,7 +46,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
     }
 
     @Override
-    public OrderItem findByOrderItemIdFetch(Long id) {
+    public OrderItem findByOrderItemIdFetch(Long id, Long userId) {
         return jpaQueryFactory
                 .select(orderItem)
                 .from(orderItem)
@@ -54,7 +54,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                 .innerJoin(orderItem.item, item).fetchJoin()
                 .leftJoin(orderItem.orderItemOption, orderItemOption).fetchJoin()
                 .leftJoin(item.shippingTemplate, shippingTemplate).fetchJoin()
-                .where(orderItem.id.eq(id))
+                .where(orderItem.id.eq(id), order.userId.eq(userId))
                 .fetchOne();
     }
 

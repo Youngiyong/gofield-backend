@@ -19,10 +19,6 @@ import javax.persistence.*;
 @Table(	name = "order_cancel_comment")
 public class OrderCancelComment extends BaseTimeEntity {
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cancel_id")
-    private OrderCancel cancel;
-
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -31,15 +27,13 @@ public class OrderCancelComment extends BaseTimeEntity {
     private String content;
 
     @Builder
-    private OrderCancelComment(OrderCancel cancel, User user, String content){
-        this.cancel = cancel;
+    private OrderCancelComment(User user, String content){
         this.user = user;
         this.content = content;
     }
 
-    public static OrderCancelComment newInstance(OrderCancel cancel, User user, String content){
+    public static OrderCancelComment newInstance(User user, String content){
         return OrderCancelComment.builder()
-                .cancel(cancel)
                 .user(user)
                 .content(content)
                 .build();

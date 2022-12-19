@@ -14,6 +14,7 @@ public enum EOrderCancelStatusFlag implements EnumCodeModel {
     ORDER_CANCEL_COMPLETE("주문 취소 완료", "504"),
     ORDER_CANCEL_DENIED("주문 거절/철회","505"),
     ;
+
     private String description;
     private String code;
 

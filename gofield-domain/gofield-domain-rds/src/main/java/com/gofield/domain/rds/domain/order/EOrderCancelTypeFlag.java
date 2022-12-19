@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 public enum EOrderCancelTypeFlag implements EnumCodeModel {
     CANCEL("취소", "C"),
+    EXCHANGE("교환", "E"),
     RECALLED("반품", "R"),
     ;
     private String description;

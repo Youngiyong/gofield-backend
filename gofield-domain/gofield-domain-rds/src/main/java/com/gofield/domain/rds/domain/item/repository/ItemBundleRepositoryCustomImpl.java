@@ -164,8 +164,10 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             brand.name.as("brandName"),
                             item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             item.price,
+                            item.deliveryPrice,
                             userLikeItem.id.as("likeId"),
                             item.classification,
+                            item.delivery,
                             itemDetail.gender,
                             item.tags))
                     .from(item)
@@ -196,7 +198,9 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             brand.name.as("brandName"),
                             item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             item.price,
+                            item.deliveryPrice,
                             item.classification,
+                            item.delivery,
                             itemDetail.gender,
                             item.tags))
                     .from(item)

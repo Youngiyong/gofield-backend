@@ -15,7 +15,7 @@ import static com.gofield.domain.rds.domain.item.QItemDetail.itemDetail;
 import static com.gofield.domain.rds.domain.item.QItemOption.itemOption;
 import static com.gofield.domain.rds.domain.item.QItemStock.itemStock;
 import static com.gofield.domain.rds.domain.seller.QSeller.seller;
-import static com.gofield.domain.rds.domain.seller.QShippingTemplate.shippingTemplate;
+import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
 import static com.gofield.domain.rds.domain.user.QUser.user;
 @RequiredArgsConstructor
 public class CartRepositoryCustomImpl implements CartRepositoryCustom {
@@ -66,9 +66,11 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                         itemOption.name,
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                         cart.price,
+                        item.deliveryPrice,
                         cart.qty,
                         cart.isOrder,
                         item.classification,
+                        item.delivery,
                         itemDetail.spec,
                         itemDetail.gender,
                         shippingTemplate.isCondition,
@@ -83,7 +85,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                 .innerJoin(seller)
                 .on(itemStock.sellerId.eq(seller.id))
                 .innerJoin(shippingTemplate)
-                .on(seller.id.eq(shippingTemplate.seller.id))
+                .on(seller.id.eq(shippingTemplate.sellerId))
                 .innerJoin(item)
                 .on(itemStock.item.id.eq(item.id))
                 .leftJoin(itemOption)

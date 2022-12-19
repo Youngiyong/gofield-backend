@@ -27,7 +27,7 @@ public class OrderItem extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_shipping_id")
-    private OrderShipping  orderShipping;
+    private OrderShipping orderShipping;
 
     @Column
     private Long sellerId;
@@ -99,5 +99,14 @@ public class OrderItem extends BaseTimeEntity {
     public void updateReview(){
         this.isReview = true;
         this.reviewDate = LocalDateTime.now();
+    }
+
+
+    public void updateReceiptCancel(){
+        this.status = EOrderItemStatusFlag.ORDER_ITEM_RECEIPT_CANCEL;
+    }
+
+    public void updateApproveCancel(){
+        this.status = EOrderItemStatusFlag.ORDER_ITEM_APPROVE_CANCEL;
     }
 }

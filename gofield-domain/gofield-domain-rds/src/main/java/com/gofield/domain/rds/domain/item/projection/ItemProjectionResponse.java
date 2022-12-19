@@ -1,7 +1,7 @@
 package com.gofield.domain.rds.domain.item.projection;
 
 import com.gofield.domain.rds.domain.item.*;
-import com.gofield.domain.rds.domain.seller.ShippingTemplate;
+import com.gofield.domain.rds.domain.item.ShippingTemplate;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.ToString;
@@ -20,6 +20,7 @@ public class ItemProjectionResponse {
     private String itemNumber;
     private Long bundleId;
     private int price;
+    private int deliveryPrice;
     private int qty;
     private Long likeId;
     private Boolean isOption;
@@ -36,7 +37,7 @@ public class ItemProjectionResponse {
     private ShippingTemplate shippingTemplate;
 
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, int price, int deliveryPrice, int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -45,6 +46,7 @@ public class ItemProjectionResponse {
         this.itemNumber = itemNumber;
         this.bundleId = bundleId;
         this.price = price;
+        this.deliveryPrice = deliveryPrice;
         this.qty = qty;
         this.status = status;
         this.likeId = likeId;
@@ -59,7 +61,7 @@ public class ItemProjectionResponse {
         this.shippingTemplate = shippingTemplate;
     }
 
-    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
+    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int deliveryPrice,  int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
         return ItemProjectionResponse.builder()
                 .id(id)
                 .name(name)
@@ -69,6 +71,7 @@ public class ItemProjectionResponse {
                 .itemNumber(itemNumber)
                 .bundleId(bundleId)
                 .price(price)
+                .deliveryPrice(deliveryPrice)
                 .status(status)
                 .qty(qty)
                 .likeId(likeId)

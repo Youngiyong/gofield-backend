@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
-public enum EOrderCancelFlagCodeModel implements EnumCodeModel {
+public enum EOrderCancelCodeFlag implements EnumCodeModel {
     USER("사용자 취소", "101"),
     ADMIN("관리자 취소", "102"),
     SELLER("셀러 취소", "103"),
