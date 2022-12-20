@@ -75,19 +75,20 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     private List<OrderSpecifier> orderByItemClassificationSort(List<EItemSort> sorts){
         List<OrderSpecifier> result = new ArrayList<>();
         if(sorts==null || sorts.isEmpty()){
-            result.add(item.price.asc());
+            result.add(itemStock.createDate.desc());
+        } else {
+            sorts.forEach(sort -> {
+                if(sort.equals(EItemSort.NEWEST)){
+                    result.add(itemStock.createDate.desc());
+                } else if(sort.equals(EItemSort.OLDEST)){
+                    result.add(itemStock.createDate.asc());
+                } else if(sort.equals(EItemSort.LOWER_PRICE)){
+                    result.add(item.price.asc());
+                } else if(sort.equals(EItemSort.HIGHER_PRICE)){
+                    result.add(item.price.desc());
+                }
+            });
         }
-        sorts.forEach(sort -> {
-            if(sort.equals(EItemSort.NEWEST)){
-                result.add(itemStock.createDate.desc());
-            } else if(sort.equals(EItemSort.OLDEST)){
-                result.add(itemStock.createDate.asc());
-            } else if(sort.equals(EItemSort.LOWER_PRICE)){
-                result.add(item.price.asc());
-            } else if(sort.equals(EItemSort.HIGHER_PRICE)){
-                result.add(item.price.desc());
-            }
-        });
         return result;
     }
 
