@@ -43,7 +43,9 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     private OrderSpecifier orderByAllCategorySort(EItemBundleSort sort){
-        if(sort.equals(EItemBundleSort.NEWEST)){
+        if(sort==null){
+            return itemBundleAggregation.reviewCount.desc();
+        } else if(sort.equals(EItemBundleSort.NEWEST)){
             return itemBundleAggregation.registerDate.desc();
         } else if(sort.equals(EItemBundleSort.POPULAR)){
             return itemBundleAggregation.reviewCount.desc();
