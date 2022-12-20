@@ -56,8 +56,8 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemBundleCategoryResponse> getCategoryItemBundleList(Long categoryId, Long subCategoryId, Pageable pageable){
-        List<ItemBundlePopularProjection> result = itemBundleRepository.findAllByCategoryId(categoryId, subCategoryId, pageable);
+    public List<ItemBundleCategoryResponse> getCategoryItemBundleList(Long categoryId, Long subCategoryId, EItemBundleSort sort, Pageable pageable){
+        List<ItemBundlePopularProjection> result = itemBundleRepository.findAllByCategoryId(categoryId, subCategoryId, sort, pageable);
         return ItemBundleCategoryResponse.of(result);
     }
 
@@ -81,9 +81,9 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, Long categoryId, Pageable pageable){
+    public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, List<Long> categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable){
         User user = userService.getUser();
-        List<ItemClassificationProjectionResponse> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), categoryId, classification, pageable);
+        List<ItemClassificationProjectionResponse> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), classification, categoryId, spec, sort, pageable);
         return ItemClassificationResponse.of(result);
     }
 

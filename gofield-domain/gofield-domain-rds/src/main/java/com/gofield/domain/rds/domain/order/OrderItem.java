@@ -109,4 +109,5 @@ public class OrderItem extends BaseTimeEntity {
     public void updateApproveCancel(){
         this.status = EOrderItemStatusFlag.ORDER_ITEM_APPROVE_CANCEL;
     }
+
 }

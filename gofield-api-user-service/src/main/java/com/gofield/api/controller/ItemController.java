@@ -4,7 +4,10 @@ import com.gofield.api.dto.req.ItemRequest;
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.ItemService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.domain.rds.domain.item.EItemBundleSort;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
+import com.gofield.domain.rds.domain.item.EItemSort;
+import com.gofield.domain.rds.domain.item.EItemSpecFlag;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -35,13 +38,13 @@ public class ItemController {
         return ApiResponse.success(itemService.getUserLikeItemList(pageable));
     }
 
-    @ApiOperation(value ="인기 상품 리스트")
+    @ApiOperation(value = "인기 상품 리스트")
     @GetMapping("/v1/popular")
     public ApiResponse<List<ItemBundlePopularResponse>> getPopularItemBundleList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getPopularItemBundleList(pageable));
     }
 
-    @ApiOperation(value ="추천 상품 리스트")
+    @ApiOperation(value = "추천 상품 리스트")
     @GetMapping("/v1/recommend")
     public ApiResponse<List<ItemBundleRecommendResponse>> getRecommendItemBundleList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getRecommendItemBundleList(pageable));
@@ -55,18 +58,21 @@ public class ItemController {
 
     @ApiOperation(value = "새상품/중고 상품 리스트")
     @GetMapping("/v1")
-    public ApiResponse<List<ItemClassificationResponse>> getItemList(@RequestParam(required = false) Long categoryId,
-                                                                     @RequestParam(required = false) EItemClassificationFlag classification,
+    public ApiResponse<List<ItemClassificationResponse>> getItemList(@RequestParam(required = false) EItemClassificationFlag classification,
+                                                                     @RequestParam(required = false) List<Long> categoryId,
+                                                                     @RequestParam(required = false) List<EItemSpecFlag> spec,
+                                                                     @RequestParam(required = false) List<EItemSort> sort,
                                                                      @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return ApiResponse.success(itemService.getClassificationItemList(classification, categoryId, pageable));
+        return ApiResponse.success(itemService.getClassificationItemList(classification, categoryId, spec,  sort, pageable));
     }
 
     @ApiOperation(value = "묶음 상품 - 카테고리 조회")
     @GetMapping("/v1/bundle")
     public ApiResponse<List<ItemBundleCategoryResponse>> getBundleCategoryList(@RequestParam Long categoryId,
                                                                                @RequestParam(required = false) Long subCategoryId,
+                                                                               @RequestParam(required = false) EItemBundleSort sort,
                                                                                @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return ApiResponse.success(itemService.getCategoryItemBundleList(categoryId, subCategoryId, pageable));
+        return ApiResponse.success(itemService.getCategoryItemBundleList(categoryId, subCategoryId, sort, pageable));
     }
 
     @ApiOperation(value = "묶음 상품 - 상품 조회")

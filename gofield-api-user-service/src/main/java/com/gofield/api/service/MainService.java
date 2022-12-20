@@ -30,7 +30,7 @@ public class MainService {
     public MainResponse getMainItemList(){
         List<ItemBundlePopularResponse> popularBundleList = itemService.getPopularItemBundleList(Pageable.ofSize(30));
         List<ItemBundleRecommendResponse> recommendBundleList = itemService.getRecommendItemBundleList(Pageable.ofSize(30));
-        List<ItemClassificationResponse> classificationItemList = itemService.getClassificationItemList(EItemClassificationFlag.USED, null, Pageable.ofSize(30));
+        List<ItemClassificationResponse> classificationItemList = itemService.getClassificationItemList(EItemClassificationFlag.USED, null, null, null,  Pageable.ofSize(30));
         return MainResponse.of(popularBundleList, recommendBundleList, recommendBundleList, classificationItemList);
     }
 

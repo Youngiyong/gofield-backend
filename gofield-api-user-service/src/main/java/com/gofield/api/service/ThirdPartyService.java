@@ -228,8 +228,12 @@ public class ThirdPartyService {
             if(result.getBundleId()!=null){
                 ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(result.getBundleId());
                 Item item = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
+                Item lowestPriceItem = itemRepository.findLowestItemByBundleId(itemStock.getItem().getBundle().getId());
+                Item highestPriceItem = itemRepository.findHighestItemByBundleId(itemStock.getItem().getBundle().getId());
                 int updatePrice = item == null ? 0 : item.getPrice();
-                itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice);
+                int lowestPrice = lowestPriceItem == null ? 0 : item.getPrice();
+                int highestPrice = highestPriceItem == null ? 0 : item.getPrice();
+                itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice, lowestPrice, highestPrice);
             }
         }
         List<Long> cartIdList = orderSheetContent.getCartIdList();

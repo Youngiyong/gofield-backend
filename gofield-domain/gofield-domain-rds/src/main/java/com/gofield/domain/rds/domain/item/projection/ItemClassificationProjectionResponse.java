@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.item.projection;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.item.EItemGenderFlag;
+import com.gofield.domain.rds.domain.item.EItemSpecFlag;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,12 +25,14 @@ public class ItemClassificationProjectionResponse {
     private int deliveryPrice;
     private Long likeId;
     private EItemClassificationFlag classification;
+
+    private EItemSpecFlag spec;
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
     private String tags;
 
     @Builder
-    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags) {
+    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags) {
         this.id = id;
         this.itemNumber = itemNumber;
         this.name = name;
@@ -39,12 +42,13 @@ public class ItemClassificationProjectionResponse {
         this.deliveryPrice =deliveryPrice;
         this.likeId = likeId;
         this.classification = classification;
+        this.spec = spec;
         this.delivery = delivery;
         this.gender = gender;
         this.tags = tags;
     }
 
-    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags){
+    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags){
         return ItemClassificationProjectionResponse.builder()
                 .id(id)
                 .itemNumber(itemNumber)
@@ -55,6 +59,7 @@ public class ItemClassificationProjectionResponse {
                 .deliveryPrice(deliveryPrice)
                 .likeId(likeId)
                 .classification(classification)
+                .spec(spec)
                 .delivery(delivery)
                 .gender(gender)
                 .tags(tags)
@@ -65,7 +70,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getDelivery(), p.getGender(), p.getTags()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getSpec(), p.getDelivery(), p.getGender(), p.getTags()))
                 .collect(Collectors.toList());
     }
 
@@ -73,7 +78,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), null, p.getClassification(), p.getDelivery(),  p.getGender(), p.getTags()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), null, p.getClassification(), p.getSpec(), p.getDelivery(),  p.getGender(), p.getTags()))
                 .collect(Collectors.toList());
     }
 
@@ -88,6 +93,7 @@ public class ItemClassificationProjectionResponse {
                 .deliveryPrice(projection.getDeliveryPrice())
                 .likeId(null)
                 .classification(projection.getClassification())
+                .spec(projection.getSpec())
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
                 .tags(projection.getTags())

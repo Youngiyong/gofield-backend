@@ -4,9 +4,11 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.domain.rds.domain.item.EItemBundleSort;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import com.gofield.domain.rds.domain.item.projection.*;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,23 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         return itemBundle.name.contains(keyword).or(itemBundle.category.name.contains(keyword).or(itemBundle.brand.name.contains(keyword)));
     }
 
+    private OrderSpecifier orderByAllCategorySort(EItemBundleSort sort){
+        if(sort.equals(EItemBundleSort.NEWEST)){
+            return itemBundleAggregation.registerDate.desc();
+        } else if(sort.equals(EItemBundleSort.POPULAR)){
+            return itemBundleAggregation.reviewCount.desc();
+        } else if(sort.equals(EItemBundleSort.LOWER_PRICE)){
+            return itemBundleAggregation.newLowestPrice.asc();
+        } else if(sort.equals(EItemBundleSort.HIGHER_PRICE)){
+            return itemBundleAggregation.newLowestPrice.desc();
+        } else if(sort.equals(EItemBundleSort.REVIEW)){
+            return itemBundleAggregation.reviewScore.desc();
+        } else if(sort.equals(EItemBundleSort.RECOMMEND)){
+            return itemBundle.isRecommend.desc();
+        }
+        return itemBundleAggregation.reviewCount.desc();
+    }
+
     @Override
     public List<ItemBundlePopularProjection> findAllPopularBundleItemList(Pageable pageable) {
         return jpaQueryFactory
@@ -63,7 +82,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     @Override
-    public List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, Pageable pageable) {
+    public List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, EItemBundleSort sort, Pageable pageable) {
         if(subCategoryId!=null){
             return jpaQueryFactory
                     .select(new QItemBundlePopularProjection(
@@ -78,10 +97,10 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.id.eq(subCategoryId), itemBundle.isActive.isTrue())
+                    .where(itemBundle.category.id.eq(subCategoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
-                    .orderBy(itemBundleAggregation.reviewCount.desc())
+                    .orderBy(orderByAllCategorySort(sort))
                     .fetch();
 
         } else {
@@ -98,13 +117,12 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue())
+                    .where(itemBundle.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
-                    .orderBy(itemBundleAggregation.reviewCount.desc())
+                    .orderBy(orderByAllCategorySort(sort))
                     .fetch();
         }
-
     }
 
     @Override
@@ -167,6 +185,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.deliveryPrice,
                             userLikeItem.id.as("likeId"),
                             item.classification,
+                            itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
                             item.tags))
@@ -200,6 +219,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.price,
                             item.deliveryPrice,
                             item.classification,
+                            itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
                             item.tags))

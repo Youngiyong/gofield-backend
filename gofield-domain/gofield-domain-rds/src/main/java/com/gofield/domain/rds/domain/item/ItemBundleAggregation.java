@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -38,12 +39,22 @@ public class ItemBundleAggregation extends BaseTimeEntity {
     @Column
     private int usedLowestPrice;
 
+    @Column
+    private int lowestPrice;
+
+    @Column
+    private int highestPrice;
+
+    @Column
+    private LocalDateTime registerDate;
+
     @Builder
     private ItemBundleAggregation(ItemBundle itemBundle){
         this.bundle = itemBundle;
         this.reviewScore = 0.0;
         this.reviewCount = 0;
         this.itemCount = 0;
+        this.lowestPrice = 0;
         this.newLowestPrice = 0;
         this.usedLowestPrice = 0;
     }
@@ -56,12 +67,15 @@ public class ItemBundleAggregation extends BaseTimeEntity {
 
 
 
-    public void updateAggregationPrice(EItemClassificationFlag classification, int price){
+    public void updateAggregationPrice(EItemClassificationFlag classification, int price, int lowestPrice, int highestPrice){
         if(classification.equals(EItemClassificationFlag.USED)){
             this.usedLowestPrice = price;
         } else if(classification.equals(EItemClassificationFlag.NEW)){
             this.newLowestPrice = price;
         }
+
+        this.lowestPrice = lowestPrice;
+        this.highestPrice = highestPrice;
     }
 
     public void updateReviewScore(int reviewCount, Double reviewScore){

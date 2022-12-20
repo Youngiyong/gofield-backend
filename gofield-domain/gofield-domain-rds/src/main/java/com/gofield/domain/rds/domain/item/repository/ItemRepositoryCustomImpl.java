@@ -8,6 +8,8 @@ import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.gofield.domain.rds.domain.item.ShippingTemplate;
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
@@ -48,11 +51,18 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return itemStock.status.eq(status);
     }
 
-    private BooleanExpression eqCategoryParentId(Long categoryId){
+    private BooleanExpression inCategoryParentId(List<Long> categoryId){
         if(categoryId == null){
             return null;
         }
-        return category.parent.id.eq(categoryId);
+        return category.parent.id.in(categoryId);
+    }
+
+    private BooleanExpression inSpec(List<EItemSpecFlag> spec){
+        if(spec == null || spec.isEmpty()){
+            return null;
+        }
+        return itemDetail.spec.in(spec);
     }
 
     private BooleanExpression containName(String keyword){
@@ -62,19 +72,39 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return item.name.contains(keyword).or(item.category.name.contains(keyword).or(item.itemNumber.contains(keyword)));
     }
 
+    private List<OrderSpecifier> orderByItemClassificationSort(List<EItemSort> sorts){
+        List<OrderSpecifier> result = new ArrayList<>();
+        if(sorts==null || sorts.isEmpty()){
+            result.add(item.price.asc());
+        }
+        sorts.forEach(sort -> {
+            if(sort.equals(EItemSort.NEWEST)){
+                result.add(itemStock.createDate.desc());
+            } else if(sort.equals(EItemSort.OLDEST)){
+                result.add(itemStock.createDate.asc());
+            } else if(sort.equals(EItemSort.LOWER_PRICE)){
+                result.add(item.price.asc());
+            } else if(sort.equals(EItemSort.HIGHER_PRICE)){
+                result.add(item.price.desc());
+            }
+        });
+        return result;
+    }
+
     @Override
-    public List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, Long categoryId, EItemClassificationFlag classification, Pageable pageable) {
+    public List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, EItemClassificationFlag classification, List<Long> categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable) {
         if(userId==null){
             List<ItemNonMemberClassificationProjection> projection =  jpaQueryFactory
                     .select(new QItemNonMemberClassificationProjection(
                             item.id,
-                            item.itemNumber,
+                            itemStock.itemNumber,
                             item.name,
                             brand.name.as("brandName"),
                             item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
                             item.price,
                             item.deliveryPrice,
                             item.classification,
+                            itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
                             item.tags))
@@ -89,8 +119,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .where(itemStock.status.eq(EItemStatusFlag.SALE),
                             eqClassification(classification),
-                            eqCategoryParentId(categoryId))
-                    .orderBy(itemStock.createDate.desc())
+                            inCategoryParentId(categoryId),
+                            inSpec(spec))
+                    .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -101,7 +132,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         List<ItemClassificationProjection> projection =  jpaQueryFactory
                 .select(new QItemClassificationProjection(
                         item.id,
-                        item.itemNumber,
+                        itemStock.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
                         item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
@@ -109,12 +140,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -125,8 +157,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(itemStock.status.eq(EItemStatusFlag.SALE),
                         eqClassification(classification),
-                        eqCategoryParentId(categoryId))
-                .orderBy(itemStock.createDate.desc())
+                        inCategoryParentId(categoryId),
+                        inSpec(spec))
+                .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -147,12 +180,13 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.price,
                             item.deliveryPrice,
                             item.classification,
+                            itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
                             item.tags))
                     .from(itemStock)
                     .innerJoin(item)
-                    .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                    .on(itemStock.itemNumber.eq(item.itemNumber))
                     .innerJoin(category)
                     .on(item.category.id.eq(category.id))
                     .innerJoin(itemDetail)
@@ -181,6 +215,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -221,6 +256,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -255,6 +291,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -287,6 +324,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.price,
                         item.deliveryPrice,
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -319,6 +357,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -351,6 +390,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.price,
                         item.deliveryPrice,
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -385,6 +425,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -417,6 +458,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.price,
                         item.deliveryPrice,
                         item.classification,
+                        itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
                         item.tags))
@@ -696,6 +738,33 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .orderBy(item.price.asc())
                 .fetchFirst();
     }
+
+    @Override
+    public Item findLowestItemByBundleId(Long bundleId) {
+        return jpaQueryFactory
+                .select(item)
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .where(item.bundle.id.eq(bundleId),
+                        itemStock.status.eq(EItemStatusFlag.SALE))
+                .orderBy(item.price.asc())
+                .fetchFirst();
+    }
+
+    @Override
+    public Item findHighestItemByBundleId(Long bundleId) {
+        return jpaQueryFactory
+                .select(item)
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .where(item.bundle.id.eq(bundleId),
+                        itemStock.status.eq(EItemStatusFlag.SALE))
+                .orderBy(item.price.desc())
+                .fetchFirst();
+    }
+
 
     @Override
     public ItemBundleOptionProjection findItemBundleOption(String itemNumber) {

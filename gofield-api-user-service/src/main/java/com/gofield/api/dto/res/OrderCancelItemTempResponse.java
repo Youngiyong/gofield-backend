@@ -20,7 +20,6 @@ public class OrderCancelItemTempResponse {
     private Long orderId;
     private Long itemId;
     private Long itemOptionId;
-
     private Long shippingTemplateId;
     private String itemNumber;
     private String name;

@@ -2,10 +2,7 @@ package com.gofield.domain.rds.domain.order;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.item.ShippingTemplate;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -106,13 +103,29 @@ public class OrderCancel extends BaseTimeEntity {
         this.refundBank = refundBank;
     }
 
-    public static OrderCancel newInstance(Order order, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate,  EOrderCancelTypeFlag type, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+
+    public static OrderCancel newChangeInstance(Order order, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem){
+        return OrderCancel.builder()
+                .order(order)
+                .orderCancelComment(orderCancelComment)
+                .shippingTemplate(shippingTemplate)
+                .status(EOrderCancelStatusFlag.ORDER_CHANGE_REQUEST)
+                .type(EOrderCancelTypeFlag.CHANGE)
+                .code(code)
+                .reason(reason)
+                .totalAmount(totalAmount)
+                .totalItem(totalItem)
+                .build();
+    }
+
+
+    public static OrderCancel newCancelInstance(Order order, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelTypeFlag cancelType,  EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
                                           int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
         return OrderCancel.builder()
                 .order(order)
                 .orderCancelComment(orderCancelComment)
                 .shippingTemplate(shippingTemplate)
-                .type(type)
+                .type(cancelType)
                 .status(EOrderCancelStatusFlag.ORDER_CANCEL_REQUEST)
                 .code(code)
                 .reason(reason)

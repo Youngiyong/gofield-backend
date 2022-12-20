@@ -21,10 +21,9 @@ public class OrderCancelDetailResponse {
     private EOrderCancelTypeFlag type;
     private EOrderCancelStatusFlag status;
     private EOrderCancelReasonFlag reason;
+    private String content;
     private String paymentType;
-
     private int totalAmount;
-
     private int totalItem;
 
     private int totalDelivery;
@@ -50,7 +49,7 @@ public class OrderCancelDetailResponse {
     private List<OrderCancelItemDetailResponse> cancelItems;
 
     @Builder
-    private OrderCancelDetailResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String paymentType,
+    private OrderCancelDetailResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String content,  String paymentType,
                                       int totalAmount, int totalItem, int totalDelivery, int totalDiscount, int totalPg, String carrier, String trackingNumber,
                                       String refundName, String refundAccount, String refundBank, LocalDateTime createDate, LocalDateTime recalledDate, LocalDateTime refundDate,
                                       String receiver, String receiverTel, String receiverZipCode, String receiverAddress, String receiverAddressExtra, List<OrderCancelItemDetailResponse> cancelItems){
@@ -59,6 +58,7 @@ public class OrderCancelDetailResponse {
         this.type = type;
         this.status = status;
         this.reason = reason;
+        this.content = content;
         this.paymentType = paymentType;
         this.totalAmount = totalAmount;
         this.totalItem = totalItem;
@@ -89,6 +89,7 @@ public class OrderCancelDetailResponse {
                 .type(orderCancel.getType())
                 .status(orderCancel.getStatus())
                 .reason(orderCancel.getReason())
+                .content(orderCancel.getOrderCancelComment().getContent())
                 .paymentType(orderCancel.getOrder().getPaymentType())
                 .totalAmount(orderCancel.getTotalAmount())
                 .totalItem(orderCancel.getTotalItem())

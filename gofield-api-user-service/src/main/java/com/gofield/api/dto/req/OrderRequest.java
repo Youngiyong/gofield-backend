@@ -55,6 +55,21 @@ public class OrderRequest {
 
     @Getter
     public static class OrderCancel {
+        @NotNull(message = "reason은 필수값입니다.")
         private EOrderCancelReasonFlag reason;
+    }
+
+    @Getter
+    public static class OrderReturn {
+        @NotNull(message = "reason은 필수값입니다.")
+        private EOrderCancelReasonFlag reason;
+    }
+
+    @Getter
+    public static class OrderChange {
+        @NotNull(message = "reason은 필수값입니다.")
+        private EOrderCancelReasonFlag reason;
+        @NotNull(message = "교환 상품 정보를 입력해주세요.")
+        private String content;
     }
 }

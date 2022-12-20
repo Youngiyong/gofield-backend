@@ -60,6 +60,46 @@ public class OrderService {
     private final ThirdPartyService thirdPartyService;
     private final S3FileStorageClient s3FileStorageClient;
 
+    private void validateOrderShippingCancelStatus(EOrderShippingStatusFlag status){
+        if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 주문 취소가 접수된 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 주문 취소가 완료된 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품이 진행중인 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품이 완료된 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환 신청이 진행중인 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환이 완료된 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "배송이 완료된 상품은 교환/반품 진행이 가능합니다.");
+        }
+    }
+
+    private void validateOrderShippingReturnAndChangeStatus(EOrderShippingStatusFlag status){
+        if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "구매 확정된 상품은 교환/반품 진행이 불가합니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 주문 취소가 접수된 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 주문 취소가 완료된 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품이 진행중인 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품이 완료된 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환 신청이 진행중인 상품입니다.");
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환이 완료된 상품입니다.");
+        } else {
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "교환/반품 진행이 불가한 상품입니다.");
+        }
+    }
+
+
 
     public String makeOrderNumber(){
         return String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis());
@@ -212,6 +252,7 @@ public class OrderService {
     @Transactional
     public void deleteOrderShipping(String orderNumber, String shippingNumber){
         OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
+
         if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 상품 확인중이거나 완료된 배송은 구매 내역 삭제가 불가합니다.", shippingNumber));
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
@@ -219,24 +260,33 @@ public class OrderService {
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 아직 배송중이어서 삭제가 불가합니다.", shippingNumber));
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 이미 삭제처리가 되어 있는 배송 번호입니다.", shippingNumber));
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 이미 삭제 처리가 되어 있는 배송 번호입니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 주문 취소 접수가 되어 있어 삭제가 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 교환 접수가 되어 있어 삭제가 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 반품 접수가 되어 있어 삭제가 불가합니다.", shippingNumber));
         }
-
         orderShipping.updateDelete();
     }
 
     @Transactional
     public void completeOrderShipping(String orderNumber, String shippingNumber){
         OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
-
+        EOrderShippingStatusFlag status = orderShipping.getStatus();
         if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 상품 확인중이거나 완료된 배송은 구매 확정이 불가합니다.", shippingNumber));
-        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 취소 처리된 배송은 구매 확정이 불가합니다.", shippingNumber));
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 준비중인 배송은 구매 확정이 불가합니다.", shippingNumber));
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 삭제 처리된 배송은 구매 확정이 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 취소 처리된 배송은 구매 확정이 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 교환 접수가 되어 있어 구매 확정이 불가합니다.", shippingNumber));
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 반품 접수가 되어 있어 구매 확정이 불가합니다.", shippingNumber));
         }
 
         orderShipping.updateComplete();
@@ -313,9 +363,7 @@ public class OrderService {
         if(orderItem==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
         }
-        if(orderItem.getStatus().equals(EOrderItemStatusFlag.ORDER_ITEM_APPROVE_CANCEL) || orderItem.getStatus().equals(EOrderItemStatusFlag.ORDER_ITEM_RECEIPT_CANCEL)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 취소 처리된 상품입니다.");
-        }
+        validateOrderShippingCancelStatus(orderItem.getOrderShipping().getStatus());
         if(orderItem.getOrder().getPaymentType().equals("BANK")){
             userAccount = userService.getUserAccount(user.getId());
             if(userAccount==null){
@@ -329,9 +377,39 @@ public class OrderService {
     }
 
     @Transactional
-    public void createOrderCancel(Long orderItemId, OrderRequest.OrderCancel request){
+    public void createOrderChange(Long orderItemId, OrderRequest.OrderChange request){
         User user = userService.getUserNotNonUser();
         OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId, user.getId());
+        if(orderItem==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
+        }
+        validateOrderShippingReturnAndChangeStatus(orderItem.getOrderShipping().getStatus());
+        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, request.getReason(), null, null, null);
+        OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, request.getContent());
+        orderCancelCommentRepository.save(orderCancelComment);
+        OrderCancel orderCancel = OrderCancel.newChangeInstance(orderItem.getOrder(),orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice());
+        Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
+        ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
+        EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
+        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : ApiUtil.toJsonStr(orderItemInfo.getOptionName()), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
+        orderCancel.addOrderCancelItem(orderCancelItem);
+        orderCancelRepository.save(orderCancel);
+        orderItem.getOrderShipping().updateChange();
+    }
+
+
+    @Transactional
+    public void createOrderCancel(Long orderItemId, OrderRequest.OrderCancel request, EOrderCancelTypeFlag cancelType){
+        User user = userService.getUserNotNonUser();
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId, user.getId());
+        if(orderItem==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
+        }
+        if(cancelType.equals(EOrderCancelTypeFlag.CANCEL)){
+            validateOrderShippingCancelStatus(orderItem.getOrderShipping().getStatus());
+        } else {
+            validateOrderShippingReturnAndChangeStatus(orderItem.getOrderShipping().getStatus());
+        }
         String refundName = null;
         String refundAccount = null;
         String refundBank = null;
@@ -344,7 +422,7 @@ public class OrderService {
         OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, request.getReason(), refundName, refundAccount, refundBank);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, request.getReason().getDescription());
         orderCancelCommentRepository.save(orderCancelComment);
-        OrderCancel orderCancel = OrderCancel.newInstance(orderItem.getOrder(),orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelTypeFlag.CANCEL, EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
+        OrderCancel orderCancel = OrderCancel.newCancelInstance(orderItem.getOrder(),orderCancelComment, orderItem.getItem().getShippingTemplate(), cancelType, EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;

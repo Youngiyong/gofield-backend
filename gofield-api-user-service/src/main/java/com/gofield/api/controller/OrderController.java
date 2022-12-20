@@ -5,6 +5,7 @@ import com.gofield.api.dto.res.*;
 import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
+import com.gofield.domain.rds.domain.order.EOrderCancelTypeFlag;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -135,23 +136,23 @@ public class OrderController {
     @PostMapping("/v1/cancel/{orderItemId}")
     public ApiResponse createOrderCancel(@PathVariable Long orderItemId,
                                          @RequestBody OrderRequest.OrderCancel request){
-        orderService.createOrderCancel(orderItemId, request);
+        orderService.createOrderCancel(orderItemId, request, EOrderCancelTypeFlag.CANCEL);
         return ApiResponse.SUCCESS;
     }
 
     @ApiOperation(value = "반풍 취소")
-    @PostMapping("/v1/return")
-    public ApiResponse createOrderReturn(@RequestBody OrderRequest.OrderCancel request){
-//        orderService.createOrderCancel(request);
+    @PostMapping("/v1/return/{orderItemId}")
+    public ApiResponse createOrderReturn(@PathVariable Long orderItemId,
+                                         @RequestBody OrderRequest.OrderCancel request){
+        orderService.createOrderCancel(orderItemId, request, EOrderCancelTypeFlag.RECALLED);
         return ApiResponse.SUCCESS;
     }
 
     @ApiOperation(value = "교환 요청")
-    @PostMapping("/v1/change")
-    public ApiResponse createOrderChange(@RequestBody OrderRequest.OrderCancel request){
-//        orderService.createOrderCancel(request);
+    @PostMapping("/v1/change/{orderItemId}")
+    public ApiResponse createOrderChange(@PathVariable Long orderItemId,
+                                         @RequestBody OrderRequest.OrderChange request){
+        orderService.createOrderChange(orderItemId, request);
         return ApiResponse.SUCCESS;
     }
-
-
 }
