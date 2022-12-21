@@ -31,6 +31,11 @@ public class BrandService {
         return BrandListDto.of(projectionResponse, page);
     }
 
+    @Transactional(readOnly = true)
+    public List<BrandInfoProjectionResponse> downloadBrands(String keyword){
+        return BrandInfoProjectionResponse.of(brandRepository.findAllByKeyword(keyword));
+    }
+
     @Transactional
     public void updateBrand(BrandDto brandDto){
         Brand brand = brandRepository.findByBrandId(brandDto.getId());

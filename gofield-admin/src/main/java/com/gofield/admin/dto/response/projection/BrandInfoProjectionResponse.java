@@ -3,6 +3,9 @@ package com.gofield.admin.dto.response.projection;
 import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.admin.projection.AdminInfoProjection;
 import com.gofield.domain.rds.domain.item.Brand;
+import com.lannstark.ExcelColumn;
+import com.lannstark.ExcelColumnStyle;
+import com.lannstark.style.DefaultExcelCellStyle;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,10 +17,15 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 public class BrandInfoProjectionResponse {
+    @ExcelColumn(headerName = "브랜드아이디", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private Long id;
+    @ExcelColumn(headerName = "브랜드명", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String name;
+
     private String thumbnail;
+    @ExcelColumn(headerName = "활성화여부", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String isVisible;
+    @ExcelColumn(headerName = "생성날짜", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String createDate;
 
 

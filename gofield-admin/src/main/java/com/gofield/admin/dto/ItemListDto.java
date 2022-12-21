@@ -19,16 +19,29 @@ public class ItemListDto {
     private List<ItemInfoProjectionResponse> list;
     private Page<ItemInfoProjection> page;
 
+    private int allCount;
+    private Long salesCount;
+    private Long hideCount;
+    private Long soldOutCount;
+
     @Builder
-    private ItemListDto(List<ItemInfoProjectionResponse> list, Page<ItemInfoProjection> page){
+    private ItemListDto(List<ItemInfoProjectionResponse> list, Page<ItemInfoProjection> page,  int allCount, Long salesCount, Long hideCount, Long soldOutCount){
         this.list = list;
         this.page = page;
+        this.allCount = allCount;
+        this.salesCount = salesCount;
+        this.hideCount = hideCount;
+        this.soldOutCount = soldOutCount;
     }
 
-    public static ItemListDto of(List<ItemInfoProjectionResponse> list, Page<ItemInfoProjection> page){
+    public static ItemListDto of(List<ItemInfoProjectionResponse> list, Page<ItemInfoProjection> page,  int allCount, Long salesCount, Long hideCount, Long soldOutCount){
         return ItemListDto.builder()
                 .list(list)
                 .page(page)
+                .allCount(allCount)
+                .salesCount(salesCount)
+                .hideCount(hideCount)
+                .soldOutCount(soldOutCount)
                 .build();
     }
 

@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List User</title>
+    <title>상품 리스트</title>
 </head>
 <body>
 
@@ -33,10 +33,10 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <a href="/item" class="nav-link">전체</a>
-                <a href="/item?status=SALE" class="nav-link">판매중</a>
-                <a href="/item?status=SOLD_OUT" class="nav-link">품절</a>
-                <a href="/item?status=HIDE" class="nav-link">숨김</a>
+                <a href="/item" class="nav-link" th:text="${'전체('+allCount}+')'"></a>
+                <a href="/item?status=SALE" class="nav-link" th:text="${'판매중('+salesCount}+')'"></a>
+                <a href="/item?status=SOLD_OUT" class="nav-link" th:text="${'품절('+soldOutCount}+')'"></a>
+                <a href="/item?status=HIDE" class="nav-link" th:text="${'숨김('+hideCount}+')'"></a>
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
@@ -59,11 +59,17 @@
                                 <a class="btn btn-app float-right"  href="/item/add/used">
                                     <i class="fas fa-edit"></i> 중고 상품 추가
                                 </a>
-                            </div>
+                                <div th:switch="true">
+                                    <a class="btn btn-app float-right"  th:case="${keyword == null && status == null}" th:href="${'/excel/item'}"><i class="fas fa-save"></i>엑셀 다운</a>
+                                    <a class="btn btn-app float-right"  th:case="${keyword != null && status != null}" th:href="${'/excel/item?keyword='+keyword+'&status='+status}"><i class="fas fa-save"></i>엑셀 다운</a>
+                                    <a class="btn btn-app float-right"  th:case="${keyword != null && status == null}" th:href="${'/excel/item?keyword='+keyword}"><i class="fas fa-save"></i>엑셀 다운</a>
+                                    <a class="btn btn-app float-right"  th:case="${status != null && keyword == null}" th:href="${'/excel/item?status='+status}"><i class="fas fa-save"></i>엑셀 다운</a>
+                                </div>
+                               </div>
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
-                            <h5 class="float-md-none" style="color: lightskyblue" th:text="${totalItems} +'개 검색됨' "></h5>
+<!--                            <h5 class="float-md-none" style="color: lightskyblue" th:text="${totalItems} +'개 검색됨' "></h5>-->
                             <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
                                 <tr>
                                     <th>id</th>
@@ -135,6 +141,8 @@
             </div>
         </div>
     </section>
+    <input type="hidden" th:if="${status == null || status == ''}" th:value="null">
+    <input type="hidden" th:if="${status != null || status != ''}" th:value="${status}">
     <!-- Main content -->
 
 

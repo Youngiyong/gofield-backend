@@ -1,6 +1,9 @@
 package com.gofield.admin.dto.response.projection;
 
 import com.gofield.domain.rds.domain.item.projection.ItemInfoProjection;
+import com.lannstark.ExcelColumn;
+import com.lannstark.ExcelColumnStyle;
+import com.lannstark.style.DefaultExcelCellStyle;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,12 +14,19 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 public class ItemInfoProjectionResponse {
+    @ExcelColumn(headerName = "상품아이디", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private Long id;
+    @ExcelColumn(headerName = "상품명", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String name;
+    @ExcelColumn(headerName = "분류", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String classification;
+    @ExcelColumn(headerName = "상품가격", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private int price;
+    @ExcelColumn(headerName = "카테고리명", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String categoryName;
+    @ExcelColumn(headerName = "상태", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String status;
+    @ExcelColumn(headerName = "생성일자", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String createDate;
 
     @Builder

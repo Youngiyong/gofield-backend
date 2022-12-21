@@ -1,6 +1,7 @@
 package com.gofield.admin.dto;
 
 import com.gofield.common.model.Constants;
+import com.gofield.domain.rds.domain.item.Brand;
 import com.gofield.domain.rds.domain.item.Category;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import lombok.Builder;
@@ -10,6 +11,7 @@ import lombok.Setter;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
@@ -28,7 +30,7 @@ public class ItemBundleDto {
     private String createDate;
 
     @Builder
-    private ItemBundleDto(Long id, String name, List<CategoryDto> categoryList, List<BrandDto> brandList, Long categoryId, String categoryName, Long brandId, String brandName, String thumbnail,  Boolean isRecommend, String createDate){
+    private ItemBundleDto(Long id, String name, List<CategoryDto> categoryList, List<BrandDto> brandList, Long categoryId, String categoryName, Long brandId, String brandName, String thumbnail,  Boolean isRecommend, String createDate) {
         this.id = id;
         this.name = name;
         this.categoryList = categoryList;
@@ -62,5 +64,22 @@ public class ItemBundleDto {
                 .isRecommend(itemBundle.getIsRecommend())
                 .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_150x150))
                 .build();
+    }
+
+    public static ItemBundleDto of(Long id, String name, Long categoryId, Long brandId, String thumbnail, Boolean isRecommend, String createDate){
+        return ItemBundleDto.builder()
+                .id(id)
+                .name(name)
+                .categoryId(categoryId)
+                .brandId(brandId)
+                .thumbnail(thumbnail==null ? null : Constants.CDN_URL.concat(thumbnail))
+                .isRecommend(isRecommend)
+                .createDate(createDate)
+                .build();
+    }
+
+    public static List<ItemBundleDto> of(List<ItemBundle> list){
+        return list.stream().map(p -> ItemBundleDto.of(p.getId(), p.getName(), p.getCategory().getId(), p.getBrand().getId(), p.getThumbnail(), p.getIsRecommend(), p.getCreateDate().toLocalDate().toString()))
+                .collect(Collectors.toList());
     }
 }

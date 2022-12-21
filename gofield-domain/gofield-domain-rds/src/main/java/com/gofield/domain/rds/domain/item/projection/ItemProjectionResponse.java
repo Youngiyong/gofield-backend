@@ -29,7 +29,6 @@ public class ItemProjectionResponse {
     private EItemSpecFlag spec;
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
-
     private List<String> images;
     private String tags;
     private String option;

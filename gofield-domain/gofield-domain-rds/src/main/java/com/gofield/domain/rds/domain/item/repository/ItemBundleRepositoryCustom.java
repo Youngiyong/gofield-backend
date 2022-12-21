@@ -18,5 +18,8 @@ public interface ItemBundleRepositoryCustom {
     ItemBundleImageProjectionResponse findByBundleId(Long userId, Long bundleId, Pageable pageable);
     ItemBundle findByBundleId(Long bundleId);
     ItemBundle findByBundleIdFetchJoin(Long bundleId);
+
+    List<ItemBundle> findAllActive();
     Page<ItemBundle> findAllByKeyword(String keyword, Pageable pageable);
+    List<ItemBundle> findAllByKeyword(String keyword);
 }

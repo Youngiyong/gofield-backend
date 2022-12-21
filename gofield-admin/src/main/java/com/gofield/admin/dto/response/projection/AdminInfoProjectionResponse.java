@@ -1,6 +1,9 @@
 package com.gofield.admin.dto.response.projection;
 
 import com.gofield.domain.rds.domain.admin.projection.AdminInfoProjection;
+import com.lannstark.ExcelColumn;
+import com.lannstark.ExcelColumnStyle;
+import com.lannstark.style.DefaultExcelCellStyle;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,10 +15,18 @@ import java.util.stream.Collectors;
 @Getter
 @NoArgsConstructor
 public class AdminInfoProjectionResponse {
+    @ExcelColumn(headerName = "id", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private Long id;
+
+    @ExcelColumn(headerName = "이름", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String name;
+
+    @ExcelColumn(headerName = "아이디", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String username;
+
+    @ExcelColumn(headerName = "권한", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String role;
+    @ExcelColumn(headerName = "생성날짜", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String createDate;
 
 

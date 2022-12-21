@@ -5,7 +5,10 @@ import com.gofield.admin.dto.*;
 import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
 import com.gofield.common.model.Constants;
+import com.gofield.domain.rds.domain.code.CodeRepository;
+import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.item.*;
+import com.gofield.domain.rds.domain.item.projection.ItemInfoAdminProjectionResponse;
 import com.gofield.domain.rds.domain.item.projection.ItemInfoProjection;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
@@ -28,15 +31,23 @@ public class ItemService {
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
 
+
+    private final ItemBundleRepository itemBundleRepository;
+
     private final ItemBundleImageRepository itemBundleImageRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final S3FileStorageClient s3FileStorageClient;
 
     @Transactional(readOnly = true)
     public ItemListDto getItemList(String keyword, EItemStatusFlag status, Pageable pageable){
-        Page<ItemInfoProjection> page = itemRepository.findAllByKeyword(keyword, status, pageable);
-        List<ItemInfoProjectionResponse> result = ItemInfoProjectionResponse.of(page.getContent());
-        return ItemListDto.of(result, page);
+        ItemInfoAdminProjectionResponse page = itemRepository.findAllByKeyword(keyword, status, pageable);
+        List<ItemInfoProjectionResponse> result = ItemInfoProjectionResponse.of(page.getPage().getContent());
+        return ItemListDto.of(result, page.getPage(), page.getAllCount(), page.getSalesCount(), page.getHideCount(), page.getSoldOutCount());
+    }
+
+    @Transactional(readOnly = true)
+    public List<ItemInfoProjectionResponse> downloadItems(String keyword, EItemStatusFlag status){
+        return ItemInfoProjectionResponse.of(itemRepository.findAllByKeyword(keyword, status));
     }
 
 //    @Transactional
@@ -58,15 +69,16 @@ public class ItemService {
 //        }
 //    }
 //
-//    @Transactional(readOnly = true)
-//    public ItemBundleDto getItemBundle(Long id){
-//        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllIsActiveOrderBySort());
-//        List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
-//        if(id==null){
-//            return ItemBundleDto.of(categoryDtoList, brandDtoList);
-//        }
-//        return null;
-//    }
+    @Transactional(readOnly = true)
+    public ItemDto getItem(Long id){
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllIsActiveOrderBySort());
+        List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
+        List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
+        if(id==null){
+            return ItemDto.of(categoryDtoList, brandDtoList,  bundleDtoList);
+        }
+        return null;
+    }
 //
 //    @Transactional(readOnly = true)
 //    public ItemBundleEditDto getItemBundleImage(Long id){

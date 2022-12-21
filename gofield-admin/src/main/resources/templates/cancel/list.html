@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>주문 취소 리스트</title>
+</head>
+<body>
+
+<div layout:fragment="content">
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>주문 취소 관리</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">주문 취소 리스트</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <a href="/cancel" class="nav-link" th:text="${'전체('+allCount}+')'"></a>
+                <a href="/cancel?status=ORDER_SHIPPING_CHECK" class="nav-link" th:text="${'신규주문('+receiptCount}+')'"></a>
+                <a href="/cancel?status=ORDER_SHIPPING_CHECK_COMPLETE" class="nav-link" th:text="${'거절/철회('+refuseCount}+')'"></a>
+                <a href="/cancel?status=ORDER_SHIPPING_DELIVERY" class="nav-link" th:text="${'취소완료('+completeCount}+')'"></a>
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+                            <div class="row">
+                                <div class="col-md-8 offset-md-2">
+                                    <form th:action="@{/cancel}" id="searchForm">
+                                        <div class="input-group">
+                                            <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-lg btn-default">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div th:switch="true">
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword == null && status == null}" th:href="${'/excel/cancel'}"><i class="fas fa-save"></i>주문취소내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status != null}" th:href="${'/excel/cancel?keyword='+keyword+'&status='+status}"><i class="fas fa-save"></i>주문취소내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status == null}" th:href="${'/excel/cancel?keyword='+keyword}"><i class="fas fa-save"></i>주문취소내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${status != null && keyword == null}" th:href="${'/excel/cancel?status='+status}"><i class="fas fa-save"></i>주문취소내역 다운</a>
+                                </div>
+                               </div>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+<!--                            <h5 class="float-md-none" style="color: lightskyblue" th:text="${totalItems} +'개 검색됨' "></h5>-->
+                            <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
+                                <tr>
+                                    <th>주문취소아이디</th>
+                                    <th>주문번호/시각</th>
+                                    <th>주문상품</th>
+                                    <th>상품금액</th>
+                                    <th>수량</th>
+                                    <th>상태</th>
+                                    <th>취소요청일</th>
+                                    <th>배송정보</th>
+                                    <th>상태변경</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                <tr th:each="data : ${list}">
+                                    <td th:text="${data.id}"></td>
+                                    <td>
+                                        <div th:text="${data.orderNumber}">
+                                        </div>
+                                        <div th:text="${data.orderDate}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div th:text="${data.name}">
+                                        </div>
+                                        <div th:text="${data.optionName}">
+                                        </div>
+                                    </td>
+                                    <td th:text="${data.price}"></td>
+                                    <td th:text="${data.qty}"></td>
+                                    <td th:text="${data.status}"></td>
+                                    <td>
+                                        <div th:text="${data.cancelDate}">
+                                        </div>
+                                        <h6>취소사유</h6>
+                                        <div th:text="${data.comment}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div th:text="${data.customerName + '/ ' + data.customerTel + '/ '+ data.zipCode}">
+                                        </div>
+                                        <div th:text="${data.address + ' ' + data.addressExtra}">
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_CHECK_COMPLETE'}">
+                                            <i class="fas fa-pencil-alt">
+                                            </i>
+                                            취소승인
+                                        </a>
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_DELIVERY'}">
+                                            <i class="fas fa-inbox">
+                                            </i>
+                                            취소거절
+                                        </a>
+                                    </td>
+                                </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <!-- /.card-body -->
+                        <div th:unless="${list.size() > 0}">
+                            <p class="text-center">조회되는 데이터가 없습니다.</p>
+                        </div>
+                        <nav aria-label="Pagination" th:if="${totalPages > 0}">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a th:replace="fragments/orderPaging :: paging(1, '<<', 'First Page')"></a>
+                                </li>
+                                <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
+                                    <a th:replace="fragments/orderPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                                </li>
+                                <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
+                                    <a class="page-link" href="#">...</a>
+                                </li>
+                                <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
+                                    th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
+                                    <a th:replace="fragments/orderPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                                </li>
+                                <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
+                                    <a class="page-link" href="#">...</a>
+                                </li>
+                                <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a th:replace="fragments/orderPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                                </li>
+                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
+                                    <a th:replace="fragments/orderPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <input type="hidden" th:if="${status == null || status == ''}" th:value="null">
+    <input type="hidden" th:if="${status != null || status != ''}" th:value="${status}">
+</div>
+
+
+<th:block layout:fragment="script">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

@@ -153,4 +153,9 @@ public class OrderShipping extends BaseTimeEntity {
     }
 
     public void updateReturn() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN; }
+
+    public void updateCarrier(String carrier, String trackingNumber){
+        this.carrier = carrier;
+        this.trackingNumber = trackingNumber;
+    }
 }

@@ -75,6 +75,25 @@ public class AdminRepositoryCustomImpl implements AdminRepositoryCustom {
     }
 
     @Override
+    public List<AdminInfoProjection> findAllAdminInfoList(String name) {
+        return jpaQueryFactory
+                .select(new QAdminInfoProjection(
+                        admin.id,
+                        admin.name,
+                        admin.username,
+                        admin.password,
+                        admin.tel,
+                        adminRole.role,
+                        admin.createDate))
+                .from(admin)
+                .innerJoin(adminRole)
+                .on(admin.adminRole.id.eq(adminRole.id))
+                .where(containKeyword((name)))
+                .orderBy(admin.id.desc())
+                .fetch();
+    }
+
+    @Override
     public AdminInfoProjection findAdminInfoProjectionById(Long id) {
         return jpaQueryFactory
                 .select(new QAdminInfoProjection(

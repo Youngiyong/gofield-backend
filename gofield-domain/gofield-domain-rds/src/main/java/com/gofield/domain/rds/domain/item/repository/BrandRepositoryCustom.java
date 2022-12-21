@@ -10,6 +10,7 @@ import java.util.List;
 public interface BrandRepositoryCustom {
     Page<Brand> findAllByKeyword(String keyword, Pageable pageable);
     List<Brand> findAllByActiveOrderBySort();
+    List<Brand> findAllByKeyword(String keyword);
     Brand findByBrandId(Long id);
     Brand findByName(String name);
 }

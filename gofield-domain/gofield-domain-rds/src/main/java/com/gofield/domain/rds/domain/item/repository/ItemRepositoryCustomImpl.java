@@ -8,17 +8,16 @@ import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.gofield.domain.rds.domain.item.ShippingTemplate;
-import com.querydsl.core.types.Order;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
 import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
@@ -795,7 +794,27 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public Page<ItemInfoProjection> findAllByKeyword(String keyword, EItemStatusFlag status, Pageable pageable) {
+    public List<ItemInfoProjection> findAllByKeyword(String keyword, EItemStatusFlag status){
+        return jpaQueryFactory
+                .select(new QItemInfoProjection(
+                        item.id,
+                        item.name,
+                        item.classification,
+                        item.price,
+                        item.category.name,
+                        itemStock.status,
+                        item.createDate))
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .innerJoin(category)
+                .on(item.category.id.eq(category.id))
+                .where(containName(keyword), eqStatus(status))
+                .fetch();
+    }
+
+    @Override
+    public ItemInfoAdminProjectionResponse findAllByKeyword(String keyword, EItemStatusFlag status, Pageable pageable) {
         List<ItemInfoProjection> content =  jpaQueryFactory
                 .select(new QItemInfoProjection(
                         item.id,
@@ -816,10 +835,6 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .limit(pageable.getPageSize())
                 .fetch();
 
-        if(content.isEmpty()){
-            return new PageImpl<>(content, pageable, 0);
-        }
-
         List<Long> totalCount = jpaQueryFactory
                 .select(item.id)
                 .from(item)
@@ -830,7 +845,23 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .where(containName(keyword), eqStatus(status))
                 .fetch();
 
-        return new PageImpl<>(content, pageable, totalCount.size());
+        List<EItemStatusFlag> allCount = jpaQueryFactory
+                .select(itemStock.status)
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .innerJoin(category)
+                .on(item.category.id.eq(category.id))
+                .fetch();
+
+        Long salesCount = allCount.stream().filter(p-> p.equals(EItemStatusFlag.SALE)).collect(Collectors.counting());
+        Long hideCount = allCount.stream().filter(p -> p.equals(EItemStatusFlag.HIDE)).collect(Collectors.counting());
+        Long soldOutCount = allCount.stream().filter(p-> p.equals(EItemStatusFlag.SOLD_OUT)).collect(Collectors.counting());
+
+        if(content.isEmpty()){
+            return ItemInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, 0), allCount.size(), salesCount, hideCount, soldOutCount);
+        }
+        return ItemInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, totalCount.size()), allCount.size(), salesCount, hideCount, soldOutCount);
     }
 
 

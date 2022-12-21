@@ -17,16 +17,20 @@ public class AdminListDto {
     private List<AdminInfoProjectionResponse> list;
     private Page<AdminInfoProjection> page;
 
+    private String keyword;
+
     @Builder
-    private AdminListDto(List<AdminInfoProjectionResponse> list, Page<AdminInfoProjection> page){
+    private AdminListDto(List<AdminInfoProjectionResponse> list, Page<AdminInfoProjection> page, String keyword){
         this.list = list;
         this.page = page;
+        this.keyword = keyword;
     }
 
-    public static AdminListDto of(List<AdminInfoProjectionResponse> list, Page<AdminInfoProjection> page){
+    public static AdminListDto of(List<AdminInfoProjectionResponse> list, Page<AdminInfoProjection> page, String keyword){
         return AdminListDto.builder()
                 .list(list)
                 .page(page)
+                .keyword(keyword)
                 .build();
     }
 

@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>List User</title>
+    <title>브랜드 리스트</title>
 </head>
 <body>
 
@@ -52,6 +52,8 @@
                                 <a class="btn btn-app float-right"  href="/brand/add">
                                     <i class="fas fa-edit"></i> 브랜드 추가
                                 </a>
+<!--                                <a class="btn btn-app float-right"  th:if="${keyword == null || keyword == ''}" th:href="${'/excel/brand'}"><i class="fas fa-edit"></i> 엑셀 다운</a>-->
+<!--                                <a class="btn btn-app float-right"  th:if="${keyword != null}" th:href="${'/excel/brand?keyword='+keyword}"><i class="fas fa-edit"></i> 엑셀 다운</a>-->
                             </div>
 <!--                            <form th:action="@{/tutorials}" id="searchForm">-->
 <!--                                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"-->

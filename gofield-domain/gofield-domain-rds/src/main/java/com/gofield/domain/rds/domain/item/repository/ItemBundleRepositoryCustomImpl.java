@@ -256,6 +256,16 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     @Override
+    public List<ItemBundle> findAllActive() {
+        return jpaQueryFactory
+                .selectFrom(itemBundle)
+                .where(itemBundle.isActive.isTrue())
+                .orderBy(itemBundle.name.asc())
+                .fetch();
+
+    }
+
+    @Override
     public ItemBundle findByBundleId(Long bundleId) {
         return jpaQueryFactory
                 .selectFrom(itemBundle)
@@ -286,5 +296,16 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .fetch();
 
         return new PageImpl<>(content, pageable, totalCount.size());
+    }
+
+    @Override
+    public List<ItemBundle> findAllByKeyword(String keyword) {
+        return jpaQueryFactory
+                .selectFrom(itemBundle)
+                .innerJoin(itemBundle.category, category).fetchJoin()
+                .innerJoin(itemBundle.brand, brand).fetchJoin()
+                .where(containName(keyword), itemBundle.isActive.isTrue())
+                .orderBy(itemBundle.id.desc())
+                .fetch();
     }
 }

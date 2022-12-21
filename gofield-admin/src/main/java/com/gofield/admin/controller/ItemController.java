@@ -32,6 +32,12 @@ public class ItemController {
         ItemListDto result = itemService.getItemList(keyword, status, pageable);
         session.setAttribute("username", principal.getName());
         model.addAttribute("list", result.getList());
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("allCount", result.getAllCount());
+        model.addAttribute("salesCount", result.getSalesCount());
+        model.addAttribute("hideCount", result.getHideCount());
+        model.addAttribute("soldOutCount", result.getSoldOutCount());
         model.addAttribute("currentPage", result.getPage().getNumber() + 1);
         model.addAttribute("totalItems", result.getPage().getTotalElements());
         model.addAttribute("totalPages", result.getPage().getTotalPages());
@@ -71,14 +77,14 @@ public class ItemController {
 //
     @GetMapping("/item/add/new")
     public String getItemNewAddPage(Model model){
-        model.addAttribute("item",  new ItemDto());
+        model.addAttribute("item",  itemService.getItem(null));
         return "item/new_add";
     }
 
     @GetMapping("/item/add/used")
     public String getItemUsedAddPage(Model model){
-        model.addAttribute("item", new ItemDto());
-        return "item/use_add";
+        model.addAttribute("item", itemService.getItem(null));
+        return "item/used_add";
     }
 
     @PostMapping("/item/add/new")

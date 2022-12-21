@@ -3,6 +3,7 @@ package com.gofield.admin.controller;
 import com.gofield.admin.dto.*;
 import com.gofield.admin.service.CategoryService;
 import com.gofield.admin.service.ItemBundleService;
+import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
@@ -31,6 +32,7 @@ public class ItemBundleController {
         ItemBundleListDto result = itemBundleService.getBundleList(keyword, pageable);
         session.setAttribute("username", principal.getName());
         model.addAttribute("list", result.getList());
+        model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", result.getPage().getNumber() + 1);
         model.addAttribute("totalItems", result.getPage().getTotalElements());
         model.addAttribute("totalPages", result.getPage().getTotalPages());

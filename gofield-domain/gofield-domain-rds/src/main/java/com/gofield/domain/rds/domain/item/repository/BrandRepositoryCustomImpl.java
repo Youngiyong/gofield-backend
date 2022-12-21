@@ -31,7 +31,7 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
         List<Brand> content = jpaQueryFactory
                 .selectFrom(brand)
                 .where(brand.status.ne(EStatusFlag.DELETE), containKeyword(keyword))
-                .orderBy(brand.id.desc())
+                .orderBy(brand.name.asc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
@@ -50,7 +50,16 @@ public class BrandRepositoryCustomImpl implements BrandRepositoryCustom {
         return jpaQueryFactory
                 .selectFrom(brand)
                 .where(brand.status.eq(EStatusFlag.ACTIVE))
-                .orderBy(brand.sort.desc())
+                .orderBy(brand.name.asc(), brand.sort.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<Brand> findAllByKeyword(String keyword) {
+        return jpaQueryFactory
+                .selectFrom(brand)
+                .where(brand.status.eq(EStatusFlag.ACTIVE),
+                        containKeyword(keyword))
                 .fetch();
     }
 

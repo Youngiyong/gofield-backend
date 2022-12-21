@@ -37,6 +37,11 @@ public class ItemBundleService {
         return ItemBundleListDto.of(result, page);
     }
 
+    @Transactional(readOnly = true)
+    public List<ItemBundleInfoProjectionResponse> downloadBundles(String keyword){
+        return ItemBundleInfoProjectionResponse.of(itemBundleRepository.findAllByKeyword(keyword));
+    }
+
     @Transactional
     public void updateItemBundle(MultipartFile image, List<MultipartFile> images, ItemBundleDto itemBundleDto){
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>문의 리스트</title>
+</head>
+<body>
+
+
+<div layout:fragment="content">
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>문의 관리</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">문의 리스트</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="card">
+                        <div class="card-header">
+<!--                            <h3 class="card-title">Bordered Table></h3>-->
+                            <div class="row">
+                                <div class="col-md-8 offset-md-2">
+                                    <form th:action="@{/qna}" id="searchForm">
+                                        <div class="input-group">
+                                            <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
+                                            <div class="input-group-append">
+                                                <button type="submit" class="btn btn-lg btn-default">
+                                                    <i class="fa fa-search"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+
+                                  </div>
+<!--                            <form th:action="@{/tutorials}" id="searchForm">-->
+<!--                                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"-->
+<!--                                       placeholder="Enter keyword">-->
+
+
+<!--                            </form>-->
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
+                                <tr>
+                                    <th>id</th>
+                                    <th>이름</th>
+                                    <th>상태</th>
+                                    <th>답변자</th>
+                                    <th>접수 날짜</th>
+                                    <th>답변 날짜</th>
+                                </tr>
+<!--                                </thead>-->
+                                <tbody>
+<!--                                <tr th:each="data : ${list}">-->
+<!--                                    <td th:text="${data.id}"></td>-->
+<!--                                    <td th:text="${data.username}"></td>-->
+<!--                                    <td th:text="${data.name}"></td>-->
+<!--                                    <td th:text="${data.role}"></td>-->
+<!--                                    <td th:text="${data.createDate}"></td>-->
+<!--                                    <td>-->
+<!--                                        <a class="btn btn-info btn-sm" th:href="${'/admin/edit/'+data.id}">-->
+<!--                                            <i class="fas fa-pencil-alt">-->
+<!--                                            </i>-->
+<!--                                            수정-->
+<!--                                        </a>-->
+<!--                                        <a class="btn btn-danger btn-sm" th:href="${'/admin/delete/'+data.id}">-->
+<!--                                            <i class="fas fa-trash">-->
+<!--                                            </i>-->
+<!--                                            삭제-->
+<!--                                        </a>-->
+<!--                                    </td>-->
+<!--                                </tr>-->
+                                </tbody>
+                            </table>
+                        </div>
+                        <h2 class="text-center">공사중</h2>
+
+
+                        <!-- /.card-body -->
+<!--                        <div th:unless="${list.size() > 0}">-->
+<!--                            <p class="text-center">조회되는 데이터가 없습니다.</p>-->
+<!--                        </div>-->
+<!--                        <nav aria-label="Pagination" th:if="${totalPages > 0}">-->
+<!--                            <ul class="pagination justify-content-center">-->
+<!--                                <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">-->
+<!--                                    <a th:replace="fragments/adminPaging :: paging(1, '<<', 'First Page')"></a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">-->
+<!--                                    <a th:replace="fragments/adminPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item disabled" th:if="${currentPage - 2 > 1}">-->
+<!--                                    <a class="page-link" href="#">...</a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item" th:classappend="${page == currentPage} ? 'active'"-->
+<!--                                    th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">-->
+<!--                                    <a th:replace="fragments/adminPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">-->
+<!--                                    <a class="page-link" href="#">...</a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
+<!--                                    <a th:replace="fragments/adminPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>-->
+<!--                                </li>-->
+<!--                                <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">-->
+<!--                                    <a th:replace="fragments/adminPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>-->
+<!--                                </li>-->
+<!--                            </ul>-->
+<!--                        </nav>-->
+                    </div>
+
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+    <!-- Main content -->
+
+
+</div>
+
+
+<th:block layout:fragment="script">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

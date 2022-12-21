@@ -34,7 +34,12 @@ public class AdminService {
     public AdminListDto getAdminList(String name, Pageable pageable) {
         Page<AdminInfoProjection> page = adminRepository.findAllAdminInfoList(name, pageable);
         List<AdminInfoProjectionResponse> projectionResponse = AdminInfoProjectionResponse.of(page.getContent());
-        return AdminListDto.of(projectionResponse, page);
+        return AdminListDto.of(projectionResponse, page, name);
+    }
+
+    @Transactional(readOnly = true)
+    public List<AdminInfoProjectionResponse> getExcelAdminList(String keyword){
+        return AdminInfoProjectionResponse.of(adminRepository.findAllAdminInfoList(keyword));
     }
 
     @Transactional

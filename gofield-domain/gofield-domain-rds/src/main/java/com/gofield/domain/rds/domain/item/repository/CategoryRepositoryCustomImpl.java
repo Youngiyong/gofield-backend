@@ -98,7 +98,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
         return jpaQueryFactory
                 .selectFrom(category)
                 .where(category.isActive.isTrue())
-                .orderBy(category.sort.desc())
+                .orderBy(category.name.asc(), category.sort.desc())
                 .fetch();
     }
 
@@ -107,6 +107,7 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
         List<Category> content = jpaQueryFactory
                 .selectFrom(category)
                 .where(parentIsNull(keyword), containKeyword(keyword))
+                .orderBy(category.name.asc())
                 .fetch();
 
         for(Category category: content){

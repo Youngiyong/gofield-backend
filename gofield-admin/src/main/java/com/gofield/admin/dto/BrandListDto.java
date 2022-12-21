@@ -17,6 +17,7 @@ public class BrandListDto {
     private List<BrandInfoProjectionResponse> list;
     private Page<Brand> page;
 
+
     @Builder
     private BrandListDto(List<BrandInfoProjectionResponse> list, Page<Brand> page){
         this.list = list;
