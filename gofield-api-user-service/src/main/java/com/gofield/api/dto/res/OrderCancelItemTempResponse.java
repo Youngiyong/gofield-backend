@@ -7,6 +7,7 @@ import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
 import com.gofield.domain.rds.domain.order.EOrderItemStatusFlag;
 import com.gofield.domain.rds.domain.order.OrderItem;
+import com.gofield.domain.rds.domain.order.OrderShipping;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -92,7 +93,16 @@ public class OrderCancelItemTempResponse {
             ToDO: 조건부 배송 추후 정해지면 처리
              */
         }
-        int refundPrice = orderItem.getItem().getShippingTemplate()==null ? 0 : orderItem.getItem().getShippingTemplate().getTakebackCharge();
+        int refundPrice = 0;
+
+        OrderShipping orderShipping = orderItem.getOrderShipping();
+        switch (orderShipping.getStatus()){
+            case ORDER_SHIPPING_DELIVERY_COMPLETE: case ORDER_SHIPPING_COMPLETE:
+                refundPrice = orderItem.getItem().getShippingTemplate()==null ? 0 : orderItem.getItem().getShippingTemplate().getTakebackCharge();
+            default:
+                refundPrice = 0;
+        }
+
         int totalAmount = itemPrice * qty - discountPrice - deliveryPrice - refundPrice;
 
         return OrderCancelItemTempResponse.builder()
