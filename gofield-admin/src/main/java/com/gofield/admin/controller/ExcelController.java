@@ -8,11 +8,11 @@ import com.gofield.admin.dto.response.projection.BrandInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
 import com.gofield.admin.service.ExcelService;
+import com.gofield.common.excel.ExcelFile;
+import com.gofield.common.excel.poi.PoiSheetExcelFile;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderCancelStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
-import com.lannstark.excel.ExcelFile;
-import com.lannstark.excel.onesheet.OneSheetExcelFile;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,18 +30,20 @@ public class ExcelController {
     @GetMapping("/brand")
     public void downloadBrandListExcel(@RequestParam(required = false) String keyword,
                                        HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<BrandInfoProjectionResponse> result = excelService.downloadBrands(keyword);
-        ExcelFile excelFile = new OneSheetExcelFile<>(result, BrandInfoProjectionResponse.class);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, BrandInfoProjectionResponse.class);
         excelFile.write(response.getOutputStream());
     }
 
     @GetMapping("/bundle")
     public void downloadBundleListExcel(@RequestParam(required = false) String keyword,
                                        HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<ItemBundleInfoProjectionResponse> result = excelService.downloadBundles(keyword);
-        ExcelFile excelFile = new OneSheetExcelFile<>(result, ItemBundleInfoProjectionResponse.class);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, ItemBundleInfoProjectionResponse.class);
         excelFile.write(response.getOutputStream());
     }
 
@@ -49,9 +51,10 @@ public class ExcelController {
     public void downloadItemListExcel(@RequestParam(required = false) String keyword,
                                       @RequestParam(required = false) EItemStatusFlag status,
                                       HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<ItemInfoProjectionResponse> result = excelService.downloadItems(keyword, status);
-        ExcelFile excelFile = new OneSheetExcelFile<>(result, ItemInfoProjectionResponse.class);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, ItemInfoProjectionResponse.class);
         excelFile.write(response.getOutputStream());
     }
 
@@ -59,9 +62,10 @@ public class ExcelController {
     public void downloadOrderShipping(@RequestParam(required = false) String keyword,
                                       @RequestParam(required = false) EOrderShippingStatusFlag status,
                                       HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<OrderShippingDto> result = excelService.downloadOrderShipping(keyword, status);
-        ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderShippingDto.class);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, OrderShippingDto.class);
         excelFile.write(response.getOutputStream());
     }
 
@@ -69,9 +73,10 @@ public class ExcelController {
     public void downloadOrderCancel(@RequestParam(required = false) String keyword,
                                       @RequestParam(required = false) EOrderCancelStatusFlag status,
                                       HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<OrderCancelDto> result = excelService.downloadOrderCancels(keyword, status);
-        ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderCancelDto.class);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, OrderCancelDto.class);
         excelFile.write(response.getOutputStream());
     }
 
@@ -79,9 +84,10 @@ public class ExcelController {
     public void downloadOrderChange(@RequestParam(required = false) String keyword,
                                     @RequestParam(required = false) EOrderCancelStatusFlag status,
                                     HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<OrderChangeDto> result = excelService.downloadOrderChanges(keyword, status);
-        ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderChangeDto.class);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, OrderChangeDto.class);
         excelFile.write(response.getOutputStream());
     }
 
@@ -89,9 +95,10 @@ public class ExcelController {
     public void downloadOrderReturn(@RequestParam(required = false) String keyword,
                                     @RequestParam(required = false) EOrderCancelStatusFlag status,
                                     HttpServletResponse response) throws IOException {
-        response.setContentType("application/vnd.ms-excel");
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<OrderReturnDto> result = excelService.downloadOrderReturns(keyword, status);
-        ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderReturnDto.class);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, OrderReturnDto.class);
         excelFile.write(response.getOutputStream());
     }
 }
