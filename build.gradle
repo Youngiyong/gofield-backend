@@ -19,7 +19,6 @@ ext {
 allprojects {
     repositories {
         mavenCentral()
-        maven { url 'https://jitpack.io' }
     }
     group = 'com.gofield'
 }

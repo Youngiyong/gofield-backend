@@ -103,7 +103,7 @@ public class OrderCancelItemTempResponse {
                 refundPrice = 0;
         }
 
-        int totalAmount = itemPrice * qty - discountPrice - deliveryPrice - refundPrice;
+        int totalAmount = itemPrice * qty + deliveryPrice - discountPrice - refundPrice;
 
         return OrderCancelItemTempResponse.builder()
                 .id(orderItem.getId())
