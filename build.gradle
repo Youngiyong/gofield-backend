@@ -18,8 +18,11 @@ ext {
 }
 
 allprojects {
+    group = 'io.jitpack.gradle-modular'
+
     repositories {
         mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     group = 'com.gofield'
 }
@@ -30,6 +33,7 @@ subprojects {
         plugin('eclipse')
         plugin('org.springframework.boot')
         plugin('io.spring.dependency-management')
+        plugin('maven-publish')
     }
 
     sourceCompatibility = '11'
@@ -52,6 +56,17 @@ subprojects {
     configurations {
         compileOnly {
             extendsFrom annotationProcessor
+        }
+    }
+
+    publishing {
+        publications {
+            maven(MavenPublication) {
+                groupId project.group
+                artifactId project.name
+                version project.version
+                from components.java
+            }
         }
     }
 
