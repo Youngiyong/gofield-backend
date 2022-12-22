@@ -92,7 +92,6 @@
                                     </td>
                                     <td class="text-center" th:text="${data.qty}"></td>
                                     <td class="text-center" th:text="${data.price}"></td>
-                                    <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div class="text-center" th:text="${data.cancelDate}">
                                         </div>
@@ -105,6 +104,7 @@
                                         <div class="text-center" th:text="${data.address + ' ' + data.addressExtra}">
                                         </div>
                                     </td>
+                                    <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div style="text-align: center">
                                         <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('취소처리실패') && !data.status.equals('취소완료')  }" th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_COMPLETE'}">

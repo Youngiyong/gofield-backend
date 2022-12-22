@@ -59,6 +59,13 @@ public class TossPaymentRequest {
         /*
         ToDo: 가상계좌 추가시 추가 https://docs.tosspayments.com/reference#%EA%B2%B0%EC%A0%9C-%EC%B7%A8%EC%86%8C
          */
+
+        public static PaymentCancel of(String cancelReason, Integer cancelAmount){
+            return PaymentCancel.builder()
+                    .cancelReason(cancelReason)
+                    .cancelAmount(cancelAmount)
+                    .build();
+        }
     }
 
 }

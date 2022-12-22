@@ -36,7 +36,7 @@
                 <a href="/return?status=ORDER_RETURN_COLLECT_PROCESS" class="nav-link" th:text="${'수거중('+collectCount}+')'"></a>
                 <a href="/return?status=ORDER_RETURN_COLLECT_PROCESS_COMPLETE" class="nav-link" th:text="${'수거완료('+collectCompleteCount}+')'"></a>
                 <a href="/return?status=ORDER_RETURN_DENIED" class="nav-link" th:text="${'반품처리실패('+refuseCount}+')'"></a>
-                <a href="/return?status=ORDER_RETURN_COMPLETE" class="nav-link" th:text="${'교환완료('+completeCount}+')'"></a>
+                <a href="/return?status=ORDER_RETURN_COMPLETE" class="nav-link" th:text="${'반품완료('+completeCount}+')'"></a>
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
@@ -98,8 +98,6 @@
                                         <div class="text-center" th:text="${data.cancelDate}"></div>
                                         <div style="color: orange" class="text-center" th:text="${'반품사유: '+data.reason.getDescription()}">
                                         </div>
-                                        <div style="color: darkorange" class="text-center" th:text="${'사유내용: '+data.comment}">
-                                        </div>
                                     </td>
                                     <td>
                                         <div class="text-center" th:text="${data.customerName + '/ ' + data.customerTel + '/ '+ data.zipCode}">
@@ -110,22 +108,22 @@
                                     <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COLLECT_PROCESS'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('반품완료') && !data.status.equals('반품처리실패')  }"  th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COLLECT_PROCESS'}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
-                                            수거지시
+                                            반품수거지시
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COLLECT_PROCESS_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('반품완료') && !data.status.equals('반품처리실패')  }"th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COLLECT_PROCESS_COMPLETE'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             반품수거완료
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('반품완료') && !data.status.equals('반품처리실패')  }" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COMPLETE'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             반품완료처리
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_DENIED'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('반품완료') && !data.status.equals('반품처리실패')  }" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_DENIED'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             반품처리실패

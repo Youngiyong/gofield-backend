@@ -171,11 +171,37 @@ public class OrderCancel extends BaseTimeEntity {
         this.orderCancelItems.add(orderCancelItem);
     }
 
-    public void updateAdminStatus(EOrderCancelStatusFlag status){
+    public void updateAdminCancelStatus(EOrderCancelStatusFlag status){
         if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE)){
             this.status = EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE;
         } else if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
             this.status = EOrderCancelStatusFlag.ORDER_CANCEL_DENIED;
+        }
+    }
+
+    public void updateAdminReturnStatus(EOrderCancelStatusFlag status){
+        if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_COLLECT_PROCESS)){
+            this.status = EOrderCancelStatusFlag.ORDER_RETURN_COLLECT_PROCESS;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_COLLECT_PROCESS_COMPLETE)){
+            this.status = EOrderCancelStatusFlag.ORDER_RETURN_COLLECT_PROCESS_COMPLETE;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
+            this.status = EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
+            this.status = EOrderCancelStatusFlag.ORDER_CANCEL_DENIED;
+        }
+    }
+
+    public void updateAdminChangeStatus(EOrderCancelStatusFlag status){
+        if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COLLECT_PROCESS)){
+            this.status = EOrderCancelStatusFlag.ORDER_CHANGE_COLLECT_PROCESS;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COLLECT_PROCESS_COMPLETE)){
+            this.status = EOrderCancelStatusFlag.ORDER_CHANGE_COLLECT_PROCESS_COMPLETE;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_REDELIVERY)){
+            this.status = EOrderCancelStatusFlag.ORDER_CHANGE_REDELIVERY;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)){
+            this.status = EOrderCancelStatusFlag.ORDER_CHANGE_DENIED;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)) {
+            this.status = EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE;
         }
     }
 }

@@ -155,9 +155,9 @@ public class OrderService {
       }
 
     @Transactional(readOnly = true)
-    public OrderListResponse getOrderList(Pageable pageable){
+    public OrderListResponse getOrderList(EOrderShippingStatusFlag status, Pageable pageable){
         User user = userService.getUserNotNonUser();
-        List<Order> orderList = orderRepository.findAllByUserIdAndNotStatusDelete(user.getId(), pageable);
+        List<Order> orderList = orderRepository.findAllByUserIdAndNotStatusDelete(user.getId(), status, pageable);
         return OrderListResponse.of(OrderResponse.of(orderList));
     }
 

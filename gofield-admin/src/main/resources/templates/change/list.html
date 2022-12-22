@@ -95,9 +95,12 @@
                                     </td>
                                     <td class="text-center" th:text="${data.qty}"></td>
                                     <td class="text-center" th:text="${data.price}"></td>
+
                                     <td>
                                         <div class="text-center" th:text="${data.cancelDate}"></div>
-                                        <div style="color: orange" class="text-center" th:text="${'반품사유: '+data.reason.getDescription()}">
+                                        <div style="color: orange" class="text-center" th:text="${'교환사유: '+data.reason.getDescription()}">
+                                        </div>
+                                        <div style="color: darkorange" class="text-center" th:text="${'사유내용: '+data.comment}">
                                         </div>
                                     </td>
                                     <td>

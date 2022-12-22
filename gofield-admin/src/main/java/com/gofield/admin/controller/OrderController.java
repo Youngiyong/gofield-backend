@@ -151,6 +151,19 @@ public class OrderController {
         return "redirect:/cancel";
     }
 
+    @GetMapping("/order/return/{id}")
+    public String updateEditOrderReturn(@PathVariable Long id, @RequestParam EOrderCancelStatusFlag status){
+        orderService.updateOrderReturnStatus(id, status);
+        return "redirect:/return";
+    }
+
+    @GetMapping("/order/change/{id}")
+    public String updateEditOrderChange(@PathVariable Long id, @RequestParam EOrderCancelStatusFlag status){
+        orderService.updateOrderChangeStatus(id, status);
+        return "redirect:/change";
+    }
+
+
 //    @GetMapping("/bundle/delete/{id}")
 //    public String deleteItemBundle(@PathVariable Long id){
 //        itemBundleService.delete(id);

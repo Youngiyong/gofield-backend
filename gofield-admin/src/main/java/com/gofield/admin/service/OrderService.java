@@ -160,16 +160,38 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "취소가 거절된 주문입니다.");
         }
         if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE)){
-            Order order = orderCancel.getOrder();
-            TossPaymentRequest.PaymentCancel paymentCancel = TossPaymentRequest.PaymentCancel.builder()
-                    .cancelAmount(orderCancel.getTotalAmount())
-                    .cancelReason(EOrderCancelReasonFlag.CHANGE_REASON_103.getDescription())
-                    .build();
-            TossPaymentCancelResponse response = thirdPartyService.cancelPayment(order.getPaymentKey(), paymentCancel);
+            TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
             purchaseCancelRepository.save(purchase);
         }
-        orderCancel.updateAdminStatus(status);
+        orderCancel.updateAdminCancelStatus(status);
+    }
+
+    @Transactional
+    public void updateOrderReturnStatus(Long id, EOrderCancelStatusFlag status){
+        OrderCancel orderCancel = orderCancelRepository.findByCancelIdFetchJoin(id);
+        if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품완료된 주문입니다.");
+        } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "반품 처리가 거절/철회된 주문입니다.");
+        }
+        if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
+            TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
+            PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
+            purchaseCancelRepository.save(purchase);
+        }
+        orderCancel.updateAdminReturnStatus(status);
+    }
+
+    @Transactional
+    public void updateOrderChangeStatus(Long id, EOrderCancelStatusFlag status){
+        OrderCancel orderCancel = orderCancelRepository.findByCancelIdFetchJoin(id);
+        if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환이 완료된 주문입니다.");
+        } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "교환 처리가 거절/철회된 주문입니다.");
+        }
+        orderCancel.updateAdminChangeStatus(status);
     }
 
     @Transactional

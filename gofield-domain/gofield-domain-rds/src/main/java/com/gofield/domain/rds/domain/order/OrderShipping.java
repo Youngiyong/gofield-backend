@@ -167,4 +167,9 @@ public class OrderShipping extends BaseTimeEntity {
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE;
         this.cancelDate = LocalDateTime.now();
     }
+
+    public void updateAdminReturn(){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE;
+        this.cancelDate = LocalDateTime.now();
+    }
 }

@@ -6,6 +6,8 @@ import com.gofield.api.service.OrderService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
 import com.gofield.domain.rds.domain.order.EOrderCancelTypeFlag;
+import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
+import com.gofield.domain.rds.domain.order.EOrderStatusFlag;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -64,8 +66,9 @@ public class OrderController {
 
     @ApiOperation(value = "주문목록")
     @GetMapping("/v1")
-    public ApiResponse<OrderListResponse> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return ApiResponse.success(orderService.getOrderList(pageable));
+    public ApiResponse<OrderListResponse> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable,
+                                                       @RequestParam(required = false) EOrderShippingStatusFlag status){
+        return ApiResponse.success(orderService.getOrderList(status, pageable));
     }
 
     @ApiOperation(value = "구매확정")
