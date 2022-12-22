@@ -54,7 +54,6 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
 
     @Override
     public OrderShippingInfoAdminProjectionResponse findAllOrderShippingByKeyword(String keyword, EOrderShippingStatusFlag status, Pageable pageable) {
-
         List<OrderShipping> content = jpaQueryFactory
                 .selectFrom(orderShipping)
                 .innerJoin(orderShipping.orderItems, orderItem).fetchJoin()
@@ -69,7 +68,7 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
                         EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN,
                         EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE),
                         containKeyword(keyword), eqStatus(status))
-                .orderBy(orderShipping.id.desc())
+                .orderBy(orderShipping.status.asc(), orderShipping.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
@@ -134,6 +133,15 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
                 .innerJoin(orderShipping.orderItems, orderItem).fetchJoin()
                 .where(orderShipping.id.eq(id))
                 .fetchOne();
+    }
+
+    @Override
+    public OrderShipping findByIdFetchOrder(Long id) {
+        return jpaQueryFactory
+                .selectFrom(orderShipping)
+                .innerJoin(orderShipping.order, order).fetchJoin()
+                .where(orderShipping.id.eq(id))
+                .fetchFirst();
     }
 
     @Override

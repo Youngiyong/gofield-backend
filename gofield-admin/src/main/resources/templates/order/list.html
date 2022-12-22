@@ -33,7 +33,7 @@
             <div class="row">
                 <a href="/order" class="nav-link" th:text="${'전체('+allCount}+')'"></a>
                 <a href="/order?status=ORDER_SHIPPING_CHECK" class="nav-link" th:text="${'신규주문('+receiptCount}+')'"></a>
-                <a href="/order?status=ORDER_SHIPPING_CHECK_COMPLETE" class="nav-link" th:text="${'배송준비중('+readyCount}+')'"></a>
+                <a href="/order?status=ORDER_SHIPPING_READY" class="nav-link" th:text="${'배송준비중('+readyCount}+')'"></a>
                 <a href="/order?status=ORDER_SHIPPING_DELIVERY" class="nav-link" th:text="${'배송중('+deliveryCount}+')'"></a>
                 <a href="/order?status=ORDER_SHIPPING_DELIVERY_COMPLETE" class="nav-link" th:text="${'배송완료('+deliveryCompleteCount}+')'"></a>
                 <div class="col-md-12">
@@ -65,67 +65,73 @@
 <!--                            <h5 class="float-md-none" style="color: lightskyblue" th:text="${totalItems} +'개 검색됨' "></h5>-->
                             <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
                                 <tr>
-                                    <th>배송아이디</th>
-                                    <th>주문번호/시각</th>
-                                    <th>주문상품</th>
-                                    <th>상품금액</th>
-                                    <th>수량</th>
-                                    <th>택배사/운송장번호</th>
-                                    <th>배송정보</th>
-                                    <th>상태변경</th>
+                                    <th class="text-center">id</th>
+                                    <th class="text-center">주문번호/시각</th>
+                                    <th class="text-center">주문상품명</th>
+                                    <th class="text-center">수량</th>
+                                    <th class="text-center">상품금액</th>
+                                    <th class="text-center">택배사/운송장번호</th>
+                                    <th class="text-center">배송정보</th>
+                                    <th class="text-center">상태</th>
+                                    <th class="text-center">작업</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="data : ${list}">
-                                    <td th:text="${data.id}"></td>
+                                    <td class="text-center"  th:text="${data.id}"></td>
                                     <td>
-                                        <div th:text="${data.orderNumber}">
+                                        <div class="text-center" th:text="${data.orderNumber}">
                                         </div>
-                                        <div th:text="${data.createDate}">
+                                        <div class="text-center" th:text="${data.createDate}">
                                         </div>
                                     </td>
                                     <td>
-                                        <div th:text="${data.name}">
+                                        <div class="text-center" th:text="${data.name}">
                                         </div>
-                                        <div th:text="${data.optionName}">
+                                        <div class="text-center" th:text="${data.optionName}">
                                         </div>
                                     </td>
-                                    <td th:text="${data.price}"></td>
-                                    <td th:text="${data.qty}"></td>
+                                    <td class="text-center" th:text="${data.qty}"></td>
+                                    <td class="text-center" th:text="${data.price}"></td>
                                     <td>
+                                        <div style="text-align: center">
+                                            <a class="btn btn-info btn-sm text-center" th:href="${'/order/shipping/edit/'+data.id}">
+                                                택배사/송장 수정
+                                            </a>
+                                        </div>
                                         <div th:if="${data.carrier != null}" >
                                             <div th:each="item : ${data.codeList}" >
-                                                <div th:if="${data.carrier.equals(item.code)}" th:text="${item.name}" ></div>
+                                                <div style="color: cornflowerblue" class="text-center"  th:if="${data.carrier.equals(item.code)}" th:text="${item.name}" ></div>
                                             </div>
                                         </div>
-                                        <div th:text="${data.trackingNumber}">
-                                        </div>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/shipping/edit/'+data.id}">
-                                            택배사/송장 수정
-                                        </a>
-                                    </td>
-                                    <td>
-                                        <div th:text="${data.customerName + '/ ' + data.customerTel + '/ '+ data.zipCode}">
-                                        </div>
-                                        <div th:text="${data.address + ' ' + data.addressExtra}">
+                                        <div style="color: cornflowerblue" class="text-center" th:text="${data.trackingNumber}">
                                         </div>
                                     </td>
                                     <td>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_CHECK_COMPLETE'}">
+                                        <div class="text-center" th:text="${data.customerName + '/ ' + data.customerTel + '/ '+ data.zipCode}">
+                                        </div>
+                                        <div class="text-center"  th:text="${data.address + ' ' + data.addressExtra}">
+                                        </div>
+                                    </td>
+                                    <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
+                                    <td>
+                                        <div style="text-align: center">
+                                        <a class="btn btn-info btn-sm"  th:if="${ !data.status.equals('배송완료') }" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_READY'}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             발주확인
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_DELIVERY'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('배송완료')  }" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_DELIVERY'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             발송처리
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_CANCEL_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('배송완료') }" th:href="${'/order/shipping/edit/'+data.id}+'/cancel'">
                                         <i class="fas fa-pause">
                                             </i>
                                             판매자취소
                                         </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>

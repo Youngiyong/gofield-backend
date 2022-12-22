@@ -15,7 +15,6 @@ public class OrderShippingListDto {
 
     private List<OrderShippingDto> list;
     private Page<OrderShipping> page;
-
     private int allCount;
     private Long receiptCount;
     private Long readyCount;

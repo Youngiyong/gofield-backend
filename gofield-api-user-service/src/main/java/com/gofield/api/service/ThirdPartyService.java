@@ -108,6 +108,7 @@ public class ThirdPartyService {
     private final NaverProfileApiClient naverProfileApiClient;
     private final StateLogRepository stateLogRepository;
     private final PurchaseRepository purchaseRepository;
+    private final PurchaseCancelRepository purchaseCancelRepository;
     private final PurchaseFailRepository purchaseFailRepository;
     private final ItemStockRepository itemStockRepository;
     private final ItemRepository itemRepository;
@@ -252,8 +253,8 @@ public class ThirdPartyService {
     @Transactional
     public String callbackFailPayment(String orderId, String code, String message){
         OrderWait orderWait = orderWaitRepository.findByOid(orderId);
-        PurchaseFail purchase = PurchaseFail.newInstance(orderId, code, message);
-        purchaseFailRepository.save(purchase);
+        PurchaseFail purchaseFail = PurchaseFail.newInstance(orderId, code, message);
+        purchaseFailRepository.save(purchaseFail);
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_FAIL_REDIRECT_URL + orderId + "?" + message;
         } else {

@@ -1,11 +1,15 @@
 package com.gofield.admin.controller;
 
+import com.gofield.admin.dto.OrderCancelDto;
+import com.gofield.admin.dto.OrderChangeDto;
+import com.gofield.admin.dto.OrderReturnDto;
 import com.gofield.admin.dto.OrderShippingDto;
 import com.gofield.admin.dto.response.projection.BrandInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
 import com.gofield.admin.service.ExcelService;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
+import com.gofield.domain.rds.domain.order.EOrderCancelStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
 import com.lannstark.excel.ExcelFile;
 import com.lannstark.excel.onesheet.OneSheetExcelFile;
@@ -58,6 +62,36 @@ public class ExcelController {
         response.setContentType("application/vnd.ms-excel");
         List<OrderShippingDto> result = excelService.downloadOrderShipping(keyword, status);
         ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderShippingDto.class);
+        excelFile.write(response.getOutputStream());
+    }
+
+    @GetMapping("/cancel")
+    public void downloadOrderCancel(@RequestParam(required = false) String keyword,
+                                      @RequestParam(required = false) EOrderCancelStatusFlag status,
+                                      HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        List<OrderCancelDto> result = excelService.downloadOrderCancels(keyword, status);
+        ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderCancelDto.class);
+        excelFile.write(response.getOutputStream());
+    }
+
+    @GetMapping("/change")
+    public void downloadOrderChange(@RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) EOrderCancelStatusFlag status,
+                                    HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        List<OrderChangeDto> result = excelService.downloadOrderChanges(keyword, status);
+        ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderChangeDto.class);
+        excelFile.write(response.getOutputStream());
+    }
+
+    @GetMapping("/return")
+    public void downloadOrderReturn(@RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) EOrderCancelStatusFlag status,
+                                    HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.ms-excel");
+        List<OrderReturnDto> result = excelService.downloadOrderReturns(keyword, status);
+        ExcelFile excelFile = new OneSheetExcelFile<>(result, OrderReturnDto.class);
         excelFile.write(response.getOutputStream());
     }
 }

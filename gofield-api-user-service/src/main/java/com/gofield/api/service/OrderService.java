@@ -359,7 +359,7 @@ public class OrderService {
         String refundBank = null;
         String refundName = null;
         String refundAccount = null;
-        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId, user.getId());
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdAndUserIdFetch(orderItemId, user.getId());
         if(orderItem==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
         }
@@ -379,7 +379,7 @@ public class OrderService {
     @Transactional
     public void createOrderChange(Long orderItemId, OrderRequest.OrderChange request){
         User user = userService.getUserNotNonUser();
-        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId, user.getId());
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdAndUserIdFetch(orderItemId, user.getId());
         if(orderItem==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
         }
@@ -401,7 +401,7 @@ public class OrderService {
     @Transactional
     public void createOrderCancel(Long orderItemId, OrderRequest.OrderCancel request, EOrderCancelTypeFlag cancelType){
         User user = userService.getUserNotNonUser();
-        OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderItemId, user.getId());
+        OrderItem orderItem =  orderItemRepository.findByOrderItemIdAndUserIdFetch(orderItemId, user.getId());
         if(orderItem==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
         }
@@ -448,7 +448,7 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderCancelDetailResponse getOrderCancel(Long cancelId){
         User user = userService.getUserNotNonUser();
-        OrderCancel result = orderCancelRepository.findFetchJoin(cancelId, user.getId());
+        OrderCancel result = orderCancelRepository.findByCancelIdAndUserIdFetchJoin(cancelId, user.getId());
         if(result==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("%s는 존재하지 않는 주문 아이디입니다.", cancelId));
         }

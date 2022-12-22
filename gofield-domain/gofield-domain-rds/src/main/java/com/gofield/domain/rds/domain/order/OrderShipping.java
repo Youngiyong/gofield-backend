@@ -158,4 +158,13 @@ public class OrderShipping extends BaseTimeEntity {
         this.carrier = carrier;
         this.trackingNumber = trackingNumber;
     }
+
+    public void updateAdminStatus(EOrderShippingStatusFlag status){
+        this.status = status;
+    }
+
+    public void updateAdminCancel(){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE;
+        this.cancelDate = LocalDateTime.now();
+    }
 }

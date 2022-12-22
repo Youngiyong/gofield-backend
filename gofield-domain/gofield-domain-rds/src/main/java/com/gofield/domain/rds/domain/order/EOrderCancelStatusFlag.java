@@ -8,17 +8,28 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @Getter
 public enum EOrderCancelStatusFlag implements EnumCodeModel {
-    ORDER_CANCEL_REQUEST("주문 취소 신청", "500"),
-    ORDER_CANCEL_HOLD("주문 취소 보류", "501"),
-    ORDER_CANCEL_PROCESS("주문 취소 처리중", "503"),
-    ORDER_CANCEL_COMPLETE("주문 취소 완료", "504"),
-    ORDER_CANCEL_DENIED("주문 거절/철회","505"),
+    ORDER_CANCEL_REQUEST("취소신청", "500"),
+    ORDER_CANCEL_PROCESS("취소처리중", "503"),
+    ORDER_CANCEL_COMPLETE("취소완료", "504"),
+    ORDER_CANCEL_DENIED("취소처리실패","505"),
 
-    ORDER_CHANGE_REQUEST("주문 교환 신청", "600"),
-    ORDER_CHANGE_HOLD("주문 교환 보류", "601"),
-    ORDER_CHANGE_PROCESS("주문 교환 처리중", "603"),
-    ORDER_CHANGE_COMPLETE("주문 교환 완료", "604"),
-    ORDER_CHANGE_DENIED("주문 교환 거절/철회","605"),
+
+
+    ORDER_CHANGE_REQUEST("교환신청", "600"),
+    ORDER_CHANGE_COLLECT_PROCESS("수거중", "601"),
+    ORDER_CHANGE_COLLECT_PROCESS_COMPLETE("수거완료 ", "602"),
+    ORDER_CHANGE_REDELIVERY("재배송", "603"),
+    ORDER_CHANGE_DENIED("교환처리실패","605"),
+    ORDER_CHANGE_COMPLETE("주문 교환 완료", "610"),
+
+
+
+    ORDER_RETURN_REQUEST("반품신청", "700"),
+    ORDER_RETURN_COLLECT_PROCESS("수거중", "701"),
+    ORDER_RETURN_COLLECT_PROCESS_COMPLETE("수거완료", "702"),
+    ORDER_RETURN_DENIED("반품처리실패", "705"),
+    ORDER_RETURN_COMPLETE("반품완료", "710"),
+
     ;
 
     private String description;

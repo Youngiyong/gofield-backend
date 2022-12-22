@@ -1,5 +1,6 @@
 package com.gofield.admin.dto;
 
+import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
 import com.gofield.domain.rds.domain.order.OrderItem;
 import com.gofield.domain.rds.domain.order.OrderShipping;
 import com.lannstark.ExcelColumn;
@@ -65,11 +66,15 @@ public class OrderShippingDto {
 
     private List<CodeDto> codeList;
 
+    private EOrderCancelReasonFlag reason;
+
+    private OrderCancelItemTempDto cancel;
+
 
     @Builder
     private OrderShippingDto(Long id, String orderNumber, String shippingNumber, String status, String createDate, String name,
                              String optionName, int price, int qty, String carrier, String trackingNumber, String customerTel, String customerName,
-                             String address, String addressExtra, String zipCode, List<CodeDto> codeList){
+                             String address, String addressExtra, String zipCode, List<CodeDto> codeList, EOrderCancelReasonFlag reason, OrderCancelItemTempDto cancel){
         this.id = id;
         this.orderNumber = orderNumber;
         this.shippingNumber = shippingNumber;
@@ -87,10 +92,12 @@ public class OrderShippingDto {
         this.addressExtra = addressExtra;
         this.zipCode = zipCode;
         this.codeList = codeList;
+        this.reason = reason;
+        this.cancel = cancel;
     }
 
 
-    public static OrderShippingDto of(OrderShipping orderShipping, List<CodeDto> codeList){
+    public static OrderShippingDto of(OrderShipping orderShipping, List<CodeDto> codeList, OrderCancelItemTempDto cancel){
         OrderItem orderItem = orderShipping.getOrderItems().get(0);
         int qty = orderItem.getOrderItemOption() == null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty();
         int price = orderItem.getOrderItemOption() == null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
@@ -114,12 +121,14 @@ public class OrderShippingDto {
                 .addressExtra(orderItem.getOrder().getShippingAddress().getAddressExtra())
                 .zipCode(orderItem.getOrder().getShippingAddress().getZipCode())
                 .codeList(codeList)
+                .reason(EOrderCancelReasonFlag.CANCEL_REASON_101)
+                .cancel(cancel)
                 .build();
     }
 
     public static List<OrderShippingDto> of(List<OrderShipping> list, List<CodeDto> codeList){
         return list.stream()
-                .map(p -> OrderShippingDto.of(p, codeList))
+                .map(p -> OrderShippingDto.of(p, codeList, null))
                 .collect(Collectors.toList());
     }
 }

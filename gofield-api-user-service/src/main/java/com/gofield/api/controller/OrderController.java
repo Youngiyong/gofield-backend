@@ -144,7 +144,7 @@ public class OrderController {
     @PostMapping("/v1/return/{orderItemId}")
     public ApiResponse createOrderReturn(@PathVariable Long orderItemId,
                                          @RequestBody OrderRequest.OrderCancel request){
-        orderService.createOrderCancel(orderItemId, request, EOrderCancelTypeFlag.RECALLED);
+        orderService.createOrderCancel(orderItemId, request, EOrderCancelTypeFlag.RETURN);
         return ApiResponse.SUCCESS;
     }
 

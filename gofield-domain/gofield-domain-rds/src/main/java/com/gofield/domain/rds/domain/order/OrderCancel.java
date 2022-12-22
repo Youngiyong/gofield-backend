@@ -121,12 +121,39 @@ public class OrderCancel extends BaseTimeEntity {
 
     public static OrderCancel newCancelInstance(Order order, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelTypeFlag cancelType,  EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
                                           int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
+
+        EOrderCancelStatusFlag cancelStatusFlag = EOrderCancelStatusFlag.ORDER_CANCEL_REQUEST;
+        if(cancelType.equals(EOrderCancelTypeFlag.RETURN)){
+            cancelStatusFlag = EOrderCancelStatusFlag.ORDER_RETURN_REQUEST;
+        }
         return OrderCancel.builder()
                 .order(order)
                 .orderCancelComment(orderCancelComment)
                 .shippingTemplate(shippingTemplate)
                 .type(cancelType)
-                .status(EOrderCancelStatusFlag.ORDER_CANCEL_REQUEST)
+                .status(cancelStatusFlag)
+                .code(code)
+                .reason(reason)
+                .totalAmount(totalAmount)
+                .totalItem(totalItem)
+                .totalDelivery(totalDelivery)
+                .totalDiscount(totalDiscount)
+                .totalPg(totalPg)
+                .refundName(refundName)
+                .refundAccount(refundAccount)
+                .refundBank(refundBank)
+                .build();
+    }
+
+    public static OrderCancel newCancelCompleteInstance(Order order, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelStatusFlag status, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+                                                        int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
+
+        return OrderCancel.builder()
+                .order(order)
+                .orderCancelComment(orderCancelComment)
+                .shippingTemplate(shippingTemplate)
+                .status(status)
+                .type(EOrderCancelTypeFlag.CANCEL)
                 .code(code)
                 .reason(reason)
                 .totalAmount(totalAmount)
@@ -144,4 +171,11 @@ public class OrderCancel extends BaseTimeEntity {
         this.orderCancelItems.add(orderCancelItem);
     }
 
+    public void updateAdminStatus(EOrderCancelStatusFlag status){
+        if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE)){
+            this.status = EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
+            this.status = EOrderCancelStatusFlag.ORDER_CANCEL_DENIED;
+        }
+    }
 }

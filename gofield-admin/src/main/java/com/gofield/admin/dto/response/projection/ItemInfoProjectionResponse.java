@@ -1,5 +1,6 @@
 package com.gofield.admin.dto.response.projection;
 
+import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.projection.ItemInfoProjection;
 import com.lannstark.ExcelColumn;
 import com.lannstark.ExcelColumnStyle;
@@ -26,17 +27,20 @@ public class ItemInfoProjectionResponse {
     private String categoryName;
     @ExcelColumn(headerName = "상태", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String status;
+    @ExcelColumn(headerName = "대표이미지", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
+    private String thumbnail;
     @ExcelColumn(headerName = "생성일자", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String createDate;
 
     @Builder
-    private ItemInfoProjectionResponse(Long id, String name, String classification, int price, String categoryName, String status, String createDate){
+    private ItemInfoProjectionResponse(Long id, String name, String classification, int price, String categoryName, String status, String thumbnail, String createDate){
         this.id = id;
         this.name = name;
         this.classification = classification;
         this.price = price;
         this.categoryName = categoryName;
         this.status = status;
+        this.thumbnail = thumbnail;
         this.createDate = createDate;
     }
 
@@ -48,6 +52,7 @@ public class ItemInfoProjectionResponse {
                 .price(itemInfoProjection.getPrice())
                 .categoryName(itemInfoProjection.getCategoryName())
                 .status(itemInfoProjection.getStatus().getDescription())
+                .thumbnail(itemInfoProjection.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemInfoProjection.getThumbnail()).concat(Constants.RESIZE_150x150))
                 .createDate(itemInfoProjection.getCreateDate().toLocalDate().toString())
                 .build();
     }

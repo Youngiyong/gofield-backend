@@ -66,25 +66,27 @@
                         <div class="card-body">
                             <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
                                 <tr>
-                                    <th>id</th>
-                                    <th>브랜드명</th>
-                                    <th>숨김상태</th>
-                                    <th>등록날짜</th>
+                                    <th class="text-center">id</th>
+                                    <th class="text-center">브랜드명</th>
+                                    <th class="text-center">활성여부</th>
+                                    <th class="text-center">등록날짜</th>
+                                    <th class="text-center">작업</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="data : ${list}">
-                                    <td th:text="${data.id}"></td>
-                                    <td th:text="${data.name}"></td>
-                                    <td th:text="${data.isVisible}"></td>
-                                    <td th:text="${data.createDate}"></td>
+                                    <td class="text-center" th:text="${data.id}"></td>
+                                    <td class="text-center" th:text="${data.name}"></td>
+                                    <td class="text-center" th:text="${data.isVisible}"></td>
+                                    <td class="text-center" th:text="${data.createDate}"></td>
                                     <td>
+                                        <div style="text-align: center">
                                         <a class="btn btn-info btn-sm" th:href="${'/brand/edit/'+data.id}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             수정
                                         </a>
-
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>

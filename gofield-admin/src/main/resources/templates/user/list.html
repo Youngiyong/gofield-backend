@@ -59,36 +59,38 @@
                             <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
                                 <thead>
                                 <tr>
-                                    <th>id</th>
-                                    <th>닉네임</th>
-                                    <th>이름</th>
-                                    <th>이메일</th>
-                                    <th>상태</th>
-                                    <th>등록 날짜</th>
-                                    <th>누적 구매 금액</th>
-                                    <th>작업</th>
+                                    <th class="text-center">id</th>
+                                    <th class="text-center">닉네임</th>
+                                    <th class="text-center">이름</th>
+                                    <th class="text-center">이메일</th>
+                                    <th class="text-center">누적구매금액</th>
+                                    <th class="text-center">가입날짜</th>
+                                    <th class="text-center">상태</th>
+                                    <th class="text-center">작업</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="data : ${list}">
-                                    <td th:text="${data.id}"></td>
-                                    <td th:text="${data.name}"></td>
-                                    <td th:text="${data.nickname}"></td>
-                                    <td th:text="${data.email}"></td>
-                                    <td th:text="${data.status.getDescription()}"></td>
-                                    <td th:text="${data.createDate}"></td>
-                                    <td th:text="${data.totalPurchaseAmount}"></td>
+                                    <td class="text-center" th:text="${data.id}"></td>
+                                    <td class="text-center" th:text="${data.name}"></td>
+                                    <td class="text-center" th:text="${data.nickname}"></td>
+                                    <td class="text-center" th:text="${data.email}"></td>
+                                    <td class="text-center" th:text="${data.totalPurchaseAmount}"></td>
+                                    <td class="text-center" th:text="${data.createDate}"></td>
+                                    <td style="color: orangered" class="text-center" th:text="${data.status.getDescription()}"></td>
                                     <td>
-                                        <a class="btn btn-info btn-sm" th:href="${'/user/edit/'+data.id}">
-                                            <i class="fas fa-pencil-alt">
-                                            </i>
-                                            수정
-                                        </a>
-                                        <a class="btn btn-danger btn-sm" th:href="${'/user/delete/'+data.id}">
-                                        <i class="fas fa-trash">
-                                        </i>
-                                        삭제
-                                        </a>
+                                        <div style="text-align: center">
+                                            <a class="btn btn-info btn-sm" th:href="${'/user/edit/'+data.id}">
+                                                <i class="fas fa-pencil-alt">
+                                                </i>
+                                                수정
+                                            </a>
+                                            <a class="btn btn-danger btn-sm" th:href="${'/user/delete/'+data.id}">
+                                                <i class="fas fa-trash">
+                                                </i>
+                                                삭제
+                                            </a>
+                                        </div>
                                     </td>
                                 </tr>
                                 </tbody>

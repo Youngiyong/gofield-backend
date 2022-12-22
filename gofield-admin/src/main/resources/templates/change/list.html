@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>취소 리스트</title>
+    <title>교환 리스트</title>
 </head>
 <body>
 
@@ -15,12 +15,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>취소 관리</h1>
+                    <h1>교환 관리</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">취소 리스트</li>
+                        <li class="breadcrumb-item active">교환 리스트</li>
                     </ol>
                 </div>
             </div>
@@ -31,16 +31,19 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <a href="/cancel" class="nav-link" th:text="${'전체('+allCount}+')'"></a>
-                <a href="/cancel?status=ORDER_CANCEL_REQUEST" class="nav-link" th:text="${'신규취소('+receiptCount}+')'"></a>
-                <a href="/cancel?status=ORDER_CANCEL_DENIED" class="nav-link" th:text="${'취소처리실패('+refuseCount}+')'"></a>
-                <a href="/cancel?status=ORDER_CANCEL_COMPLETE" class="nav-link" th:text="${'취소완료('+completeCount}+')'"></a>
+                <a href="/change" class="nav-link" th:text="${'전체('+allCount}+')'"></a>
+                <a href="/change?status=ORDER_CHANGE_REQUEST" class="nav-link" th:text="${'교환요청('+receiptCount}+')'"></a>
+                <a href="/change?status=ORDER_CHANGE_COLLECT_PROCESS" class="nav-link" th:text="${'수거중('+collectCount}+')'"></a>
+                <a href="/change?status=ORDER_CHANGE_COLLECT_PROCESS_COMPLETE" class="nav-link" th:text="${'수거완료('+collectCompleteCount}+')'"></a>
+                <a href="/change?status=ORDER_CHANGE_REDELIVERY" class="nav-link" th:text="${'재배송('+reDeliveryCount}+')'"></a>
+                <a href="/change?status=ORDER_CHANGE_DENIED" class="nav-link" th:text="${'교환처리실패('+refuseCount}+')'"></a>
+                <a href="/change?status=ORDER_CHANGE_COMPLETE" class="nav-link" th:text="${'교환완료('+completeCount}+')'"></a>
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-8 offset-md-2">
-                                    <form th:action="@{/cancel}" id="searchForm">
+                                    <form th:action="@{/change}" id="searchForm">
                                         <div class="input-group">
                                             <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
                                             <div class="input-group-append">
@@ -52,10 +55,10 @@
                                     </form>
                                 </div>
                                 <div th:switch="true">
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword == null && status == null}" th:href="${'/excel/cancel'}"><i class="fas fa-save"></i>취소내역 다운</a>
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status != null}" th:href="${'/excel/cancel?keyword='+keyword+'&status='+status}"><i class="fas fa-save"></i>취소내역 다운</a>
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status == null}" th:href="${'/excel/cancel?keyword='+keyword}"><i class="fas fa-save"></i>취소내역 다운</a>
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${status != null && keyword == null}" th:href="${'/excel/cancel?status='+status}"><i class="fas fa-save"></i>취소내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword == null && status == null}" th:href="${'/excel/change'}"><i class="fas fa-save"></i>교환내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status != null}" th:href="${'/excel/change?keyword='+keyword+'&status='+status}"><i class="fas fa-save"></i>교환내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status == null}" th:href="${'/excel/change?keyword='+keyword}"><i class="fas fa-save"></i>교환내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${status != null && keyword == null}" th:href="${'/excel/change?status='+status}"><i class="fas fa-save"></i>교환내역 다운</a>
                                 </div>
                                </div>
                         </div>
@@ -69,7 +72,7 @@
                                     <th class="text-center">주문상품</th>
                                     <th class="text-center">수량</th>
                                     <th class="text-center">상품금액</th>
-                                    <th class="text-center">취소요청일</th>
+                                    <th class="text-center">교환요청일</th>
                                     <th class="text-center">배송정보</th>
                                     <th class="text-center">상태</th>
                                     <th class="text-center">작업</th>
@@ -81,7 +84,7 @@
                                     <td>
                                         <div class="text-center" th:text="${data.orderNumber}">
                                         </div>
-                                        <div class="text-center" th:text="${data.orderDate}">
+                                        <div class="text-center" th:text="${data.cancelDate}">
                                         </div>
                                     </td>
                                     <td>
@@ -92,11 +95,9 @@
                                     </td>
                                     <td class="text-center" th:text="${data.qty}"></td>
                                     <td class="text-center" th:text="${data.price}"></td>
-                                    <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
-                                        <div class="text-center" th:text="${data.cancelDate}">
-                                        </div>
-                                        <div style="color: orange" class="text-center" th:text="${'취소사유: '+data.reason.getDescription()}">
+                                        <div class="text-center" th:text="${data.cancelDate}"></div>
+                                        <div style="color: orange" class="text-center" th:text="${'반품사유: '+data.reason.getDescription()}">
                                         </div>
                                     </td>
                                     <td>
@@ -105,17 +106,33 @@
                                         <div class="text-center" th:text="${data.address + ' ' + data.addressExtra}">
                                         </div>
                                     </td>
+                                    <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COLLECT_PROCESS'}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
-                                            취소승인
+                                            수거지시
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_DENIED'}">
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COLLECT_PROCESS_COMPLETE'}">
                                             <i class="fas fa-inbox">
                                             </i>
-                                            취소거절
+                                            교환수거완료
+                                        </a>
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_REDELIVERY'}">
+                                            <i class="fas fa-inbox">
+                                            </i>
+                                            교환재발송
+                                        </a>
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_DENIED'}">
+                                            <i class="fas fa-inbox">
+                                            </i>
+                                            교환거부
+                                        </a>
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COMPLETE'}">
+                                            <i class="fas fa-inbox">
+                                            </i>
+                                            교환확인완료
                                         </a>
                                         </div>
                                     </td>

@@ -1,6 +1,9 @@
 package com.gofield.admin.dto;
 
-import com.gofield.domain.rds.domain.order.*;
+import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
+import com.gofield.domain.rds.domain.order.Order;
+import com.gofield.domain.rds.domain.order.OrderCancel;
+import com.gofield.domain.rds.domain.order.OrderCancelItem;
 import com.lannstark.ExcelColumn;
 import com.lannstark.ExcelColumnStyle;
 import com.lannstark.style.DefaultExcelCellStyle;
@@ -15,7 +18,7 @@ import java.util.stream.Collectors;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderCancelDto {
+public class OrderChangeDto {
     private Long id;
 
     @ExcelColumn(headerName = "주문번호", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
@@ -32,9 +35,8 @@ public class OrderCancelDto {
 
     private EOrderCancelReasonFlag reason;
 
-    @ExcelColumn(headerName = "취소사유", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
-    private String cancelReason;
-
+    @ExcelColumn(headerName = "교환사유", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
+    private String changeReason;
     @ExcelColumn(headerName = "취소내용", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String comment;
 
@@ -67,9 +69,9 @@ public class OrderCancelDto {
 
 
     @Builder
-    private OrderCancelDto(Long id, String orderNumber, String orderDate, String status, String cancelDate, EOrderCancelReasonFlag reason, String comment, String name,
+    private OrderChangeDto(Long id, String orderNumber, String orderDate, String status, String cancelDate, EOrderCancelReasonFlag reason, String comment, String name,
                            String optionName, int price, int qty, String customerTel, String customerName,
-                           String address, String addressExtra, String zipCode, String cancelReason){
+                           String address, String addressExtra, String zipCode, String changeReason){
         this.id = id;
         this.orderNumber = orderNumber;
         this.orderDate = orderDate;
@@ -86,16 +88,16 @@ public class OrderCancelDto {
         this.address = address;
         this.addressExtra = addressExtra;
         this.zipCode = zipCode;
-        this.cancelReason = cancelReason;
+        this.changeReason = changeReason;
     }
 
 
-    public static OrderCancelDto of(OrderCancel orderCancel){
+    public static OrderChangeDto of(OrderCancel orderCancel){
         OrderCancelItem orderCancelItem = orderCancel.getOrderCancelItems().get(0);
         Order order = orderCancel.getOrder();
         int qty = orderCancelItem.getQty();
         int price = orderCancelItem.getPrice();
-        return OrderCancelDto.builder()
+        return OrderChangeDto.builder()
                 .id(orderCancel.getId())
                 .orderNumber(orderCancel.getOrder().getOrderNumber())
                 .orderDate(orderCancel.getOrder().getCreateDate().toString())
@@ -114,13 +116,13 @@ public class OrderCancelDto {
                 .address(order.getShippingAddress().getAddress())
                 .addressExtra(order.getShippingAddress().getAddressExtra())
                 .zipCode(order.getShippingAddress().getZipCode())
-                .cancelReason(orderCancel.getReason().getDescription())
+                .changeReason(orderCancel.getReason().getDescription())
                 .build();
     }
 
-    public static List<OrderCancelDto> of(List<OrderCancel> list){
+    public static List<OrderChangeDto> of(List<OrderCancel> list){
         return list.stream()
-                .map(p -> OrderCancelDto.of(p))
+                .map(p -> OrderChangeDto.of(p))
                 .collect(Collectors.toList());
     }
 }

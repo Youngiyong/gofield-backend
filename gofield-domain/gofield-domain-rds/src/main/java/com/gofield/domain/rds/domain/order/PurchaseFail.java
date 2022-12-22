@@ -4,15 +4,11 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
-import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@DynamicInsert
-@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "purchase_fail")
@@ -35,10 +31,11 @@ public class PurchaseFail {
     private LocalDateTime createDate;
 
     @Builder
-    private PurchaseFail(String orderNumber, String code, String message){
+    private PurchaseFail(String orderNumber, String code, String message, LocalDateTime createDate){
         this.orderNumber = orderNumber;
         this.code = code;
         this.message = message;
+        this.createDate = createDate;
     }
 
     public static PurchaseFail newInstance(String orderNumber, String code, String message){
@@ -46,6 +43,7 @@ public class PurchaseFail {
                 .orderNumber(orderNumber)
                 .code(code)
                 .message(message)
+                .createDate(LocalDateTime.now())
                 .build();
     }
 

@@ -13,8 +13,8 @@ public enum EOrderCancelReasonFlag implements EnumCodeModel {
 
     CANCEL_REASON_101("상품이 마음에 들지 않음(단숨변심)", "101"),
     CANCEL_REASON_102("상품이 문제 있음(불량)", "102"),
-    CHANGE_REASON_104("상품이 설명과 다름", "103"),
-    CANCEL_REASON_103("다른 상품 추가 후 재주문 예정", "104"),
+    CHANGE_REASON_103("상품이 설명과 다름", "103"),
+    CANCEL_REASON_104("다른 상품 추가 후 재주문 예정", "104"),
     CANCEL_REASON_105("오배송 및 배송 누락", "105"),
 
     //관리자, 셀러
@@ -25,6 +25,7 @@ public enum EOrderCancelReasonFlag implements EnumCodeModel {
     CANCEL_REASON_205("주문 상품 삭제","205"),
     CANCEL_REASON_206("주문 상품 가격 변동","206"),
     CANCEL_REASON_207("조기마감","208"),
+    CANCEL_REASON_208("배송지연","209"),
 
     CHANGE_REASON_301("상품이 마음에 들지 않음(단숨변심)", "301"),
     CHANGE_REASON_302("상품이 문제 있음(불량)", "302"),

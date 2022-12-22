@@ -13,8 +13,8 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "purchase")
-public class Purchase {
+@Table(	name = "purchase_cancel")
+public class PurchaseCancel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -36,7 +36,7 @@ public class Purchase {
     private LocalDateTime createDate;
 
     @Builder
-    private Purchase(String orderNumber, String paymentKey, int amount, String response, LocalDateTime createDate){
+    private PurchaseCancel(String orderNumber, String paymentKey, int amount, String response, LocalDateTime createDate){
         this.orderNumber = orderNumber;
         this.paymentKey = paymentKey;
         this.amount = amount;
@@ -44,8 +44,8 @@ public class Purchase {
         this.createDate = createDate;
     }
 
-    public static Purchase newInstance(String orderNumber, String paymentKey, int amount, String response){
-        return Purchase.builder()
+    public static PurchaseCancel newInstance(String orderNumber, String paymentKey, int amount, String response){
+        return PurchaseCancel.builder()
                 .orderNumber(orderNumber)
                 .paymentKey(paymentKey)
                 .amount(amount)
@@ -53,5 +53,6 @@ public class Purchase {
                 .createDate(LocalDateTime.now())
                 .build();
     }
+
 
 }

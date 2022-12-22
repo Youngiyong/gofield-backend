@@ -1,9 +1,12 @@
 package com.gofield.domain.rds.domain.order.repository;
 
 import com.gofield.domain.rds.domain.order.EOrderCancelStatusFlag;
+import com.gofield.domain.rds.domain.order.EOrderCancelTypeFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
 import com.gofield.domain.rds.domain.order.OrderCancel;
 import com.gofield.domain.rds.domain.order.projection.OrderCancelInfoAdminProjectionResponse;
+import com.gofield.domain.rds.domain.order.projection.OrderChangeInfoAdminProjectionResponse;
+import com.gofield.domain.rds.domain.order.projection.OrderReturnInfoAdminProjectionResponse;
 import com.gofield.domain.rds.domain.order.projection.OrderShippingInfoAdminProjectionResponse;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -60,7 +63,7 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
     }
 
     @Override
-    public OrderCancel findFetchJoin(Long cancelId, Long userId) {
+    public OrderCancel findByCancelIdAndUserIdFetchJoin(Long cancelId, Long userId) {
         return jpaQueryFactory
                 .selectFrom(orderCancel)
                 .innerJoin(orderCancel.order, order).fetchJoin()
@@ -73,8 +76,51 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
     }
 
     @Override
-    public OrderCancelInfoAdminProjectionResponse findAllOrderCancelByKeyword(String keyword, EOrderCancelStatusFlag status, Pageable pageable) {
+    public OrderCancel findByCancelIdFetchJoin(Long cancelId) {
+        return jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancel.order, order).fetchJoin()
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
+                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .leftJoin(orderCancel.shippingTemplate, shippingTemplate).fetchJoin()
+                .innerJoin(orderCancel.orderCancelItems, orderCancelItem).fetchJoin()
+                .where(orderCancel.id.eq(cancelId))
+                .fetchFirst();
+    }
 
+    @Override
+    public List<OrderCancel> findAllOrderCancelByKeyword(String keyword, EOrderCancelStatusFlag status) {
+        return jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancel.order, order)
+                .innerJoin(order.shippingAddress, orderShippingAddress)
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
+                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .innerJoin(orderCancel.orderCancelItems, orderCancelItem).fetchJoin()
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CANCEL), containKeyword(keyword), eqStatus(status))
+                .orderBy(orderCancel.id.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<OrderCancel> findAllOrderChangeByKeyword(String keyword, EOrderCancelStatusFlag status) {
+        return jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancel.order, order)
+                .innerJoin(order.shippingAddress, orderShippingAddress)
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
+                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .innerJoin(orderCancel.orderCancelItems, orderCancelItem).fetchJoin()
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CHANGE),
+                        containKeyword(keyword), eqStatus(status))
+                .orderBy(orderCancel.id.desc())
+                .fetch();
+    }
+
+
+
+    @Override
+    public OrderCancelInfoAdminProjectionResponse findAllOrderCancelByKeyword(String keyword, EOrderCancelStatusFlag status, Pageable pageable) {
         List<OrderCancel> content = jpaQueryFactory
                 .selectFrom(orderCancel)
                 .innerJoin(orderCancel.order, order)
@@ -82,14 +128,9 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
                 .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
                 .innerJoin(orderCancelComment.user, user).fetchJoin()
                 .innerJoin(orderCancel.orderCancelItems, orderCancelItem).fetchJoin()
-                .where(orderCancel.status.notIn(
-                        EOrderCancelStatusFlag.ORDER_CHANGE_REQUEST,
-                        EOrderCancelStatusFlag.ORDER_CHANGE_HOLD,
-                        EOrderCancelStatusFlag.ORDER_CHANGE_PROCESS,
-                        EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE,
-                        EOrderCancelStatusFlag.ORDER_CHANGE_DENIED),
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CANCEL),
                         containKeyword(keyword), eqStatus(status))
-                .orderBy(orderCancel.id.desc())
+                .orderBy(orderCancel.status.asc(), orderCancel.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
@@ -97,24 +138,14 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
         List<Long> totalCount = jpaQueryFactory
                 .select(orderCancel.id)
                 .from(orderCancel)
-                .where(orderCancel.status.notIn(
-                                EOrderCancelStatusFlag.ORDER_CHANGE_REQUEST,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_HOLD,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_PROCESS,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_DENIED),
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CANCEL),
                         containKeyword(keyword), eqStatus(status))
                 .fetch();
 
         List<EOrderCancelStatusFlag> allCount = jpaQueryFactory
                 .select(orderCancel.status)
                 .from(orderCancel)
-                .where(orderCancel.status.notIn(
-                                EOrderCancelStatusFlag.ORDER_CHANGE_REQUEST,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_HOLD,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_PROCESS,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE,
-                                EOrderCancelStatusFlag.ORDER_CHANGE_DENIED))
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CANCEL))
                 .fetch();
 
         Long receiptCount = allCount.stream().filter(p-> p.equals(EOrderCancelStatusFlag.ORDER_CANCEL_REQUEST)).collect(Collectors.counting());
@@ -124,6 +155,101 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
             return OrderCancelInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, 0), allCount.size(), receiptCount, refuseCount, completeCount);
         }
         return OrderCancelInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, totalCount.size()), allCount.size(), receiptCount, refuseCount, completeCount);
+    }
+
+    @Override
+    public OrderChangeInfoAdminProjectionResponse findAllOrderChangeByKeyword(String keyword, EOrderCancelStatusFlag status, Pageable pageable) {
+        List<OrderCancel> content = jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancel.order, order)
+                .innerJoin(order.shippingAddress, orderShippingAddress)
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
+                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .innerJoin(orderCancel.orderCancelItems, orderCancelItem).fetchJoin()
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CHANGE),
+                        containKeyword(keyword), eqStatus(status))
+                .orderBy(orderCancel.status.asc(), orderCancel.id.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(orderCancel.id)
+                .from(orderCancel)
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CHANGE), containKeyword(keyword), eqStatus(status))
+                .fetch();
+
+        List<EOrderCancelStatusFlag> allCount = jpaQueryFactory
+                .select(orderCancel.status)
+                .from(orderCancel)
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.CHANGE))
+                .fetch();
+
+        Long receiptCount = allCount.stream().filter(p-> p.equals(EOrderCancelStatusFlag.ORDER_CHANGE_REQUEST)).collect(Collectors.counting());
+        Long refuseCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)).collect(Collectors.counting());
+        Long collectCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COLLECT_PROCESS)).collect(Collectors.counting());
+        Long collectCompleteCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COLLECT_PROCESS_COMPLETE)).collect(Collectors.counting());
+        Long reDeliveryCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_CHANGE_REDELIVERY)).collect(Collectors.counting());
+        Long completeCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)).collect(Collectors.counting());
+        if(content.isEmpty()){
+            return OrderChangeInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, 0), allCount.size(), receiptCount, refuseCount, collectCount, collectCompleteCount, reDeliveryCount, completeCount);
+        }
+        return OrderChangeInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, totalCount.size()), allCount.size(), receiptCount, refuseCount, collectCount, collectCompleteCount, reDeliveryCount, completeCount);
+    }
+
+    @Override
+    public OrderReturnInfoAdminProjectionResponse findAllOrderReturnByKeyword(String keyword, EOrderCancelStatusFlag status, Pageable pageable) {
+        List<OrderCancel> content = jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancel.order, order)
+                .innerJoin(order.shippingAddress, orderShippingAddress)
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
+                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .innerJoin(orderCancel.orderCancelItems, orderCancelItem).fetchJoin()
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.RETURN),
+                        containKeyword(keyword), eqStatus(status))
+                .orderBy(orderCancel.status.asc(), orderCancel.id.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(orderCancel.id)
+                .from(orderCancel)
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.RETURN), containKeyword(keyword), eqStatus(status))
+                .fetch();
+
+        List<EOrderCancelStatusFlag> allCount = jpaQueryFactory
+                .select(orderCancel.status)
+                .from(orderCancel)
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.RETURN))
+                .fetch();
+
+        Long receiptCount = allCount.stream().filter(p-> p.equals(EOrderCancelStatusFlag.ORDER_RETURN_REQUEST)).collect(Collectors.counting());
+        Long refuseCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)).collect(Collectors.counting());
+        Long collectCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_RETURN_COLLECT_PROCESS)).collect(Collectors.counting());
+        Long collectCompleteCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_RETURN_COLLECT_PROCESS_COMPLETE)).collect(Collectors.counting());
+        Long completeCount = allCount.stream().filter(p -> p.equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)).collect(Collectors.counting());
+        if(content.isEmpty()){
+            return OrderReturnInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, 0), allCount.size(), receiptCount, refuseCount, collectCount, collectCompleteCount, completeCount);
+        }
+        return OrderReturnInfoAdminProjectionResponse.of(new PageImpl<>(content, pageable, totalCount.size()), allCount.size(), receiptCount, refuseCount, collectCount, collectCompleteCount, completeCount);
+
+    }
+
+    @Override
+    public List<OrderCancel> findAllOrderReturnByKeyword(String keyword, EOrderCancelStatusFlag status) {
+        return jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancel.order, order)
+                .innerJoin(order.shippingAddress, orderShippingAddress)
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
+                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .innerJoin(orderCancel.orderCancelItems, orderCancelItem).fetchJoin()
+                .where(orderCancel.type.eq(EOrderCancelTypeFlag.RETURN),
+                        containKeyword(keyword), eqStatus(status))
+                .orderBy(orderCancel.id.desc())
+                .fetch();
     }
 
 }

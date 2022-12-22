@@ -12,7 +12,7 @@ public interface OrderShippingRepositoryCustom {
     OrderShipping findByShippingNumberAndOrderNumber(String shippingNumber, String orderNumber);
     OrderShippingInfoAdminProjectionResponse findAllOrderShippingByKeyword(String keyword, EOrderShippingStatusFlag status, Pageable pageable);
     List<OrderShipping> findAllByKeyword(String keyword, EOrderShippingStatusFlag status);
-
     OrderShipping findAdminOrderShippingById(Long id);
+    OrderShipping findByIdFetchOrder(Long id);
     OrderShipping findByIdNotFetch(Long id);
 }

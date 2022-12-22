@@ -1,8 +1,6 @@
 package com.gofield.admin.controller;
 
-import com.gofield.admin.dto.OrderCancelListDto;
-import com.gofield.admin.dto.OrderShippingListDto;
-import com.gofield.admin.dto.OrderShippingDto;
+import com.gofield.admin.dto.*;
 import com.gofield.admin.service.OrderService;
 import com.gofield.domain.rds.domain.order.EOrderCancelStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
@@ -51,7 +49,6 @@ public class OrderController {
     public String getOrderCancelListPage(@RequestParam(required = false) String keyword,
                                          @RequestParam(required = false) EOrderCancelStatusFlag status,
                                          @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable, Model model, HttpSession session, Principal principal) {
-
         OrderCancelListDto result = orderService.getOrderCancelList(keyword, status, pageable);
         session.setAttribute("username", principal.getName());
         model.addAttribute("list", result.getList());
@@ -68,19 +65,90 @@ public class OrderController {
         return "cancel/list";
     }
 
-    @GetMapping("/order/shipping/edit/{id}")
-    public String getItemBundleEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
+    @GetMapping("/change")
+    public String getOrderChangeListPage(@RequestParam(required = false) String keyword,
+                                         @RequestParam(required = false) EOrderCancelStatusFlag status,
+                                         @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable, Model model, HttpSession session, Principal principal) {
+        OrderChangeListDto result = orderService.getOrderChangeList(keyword, status, pageable);
         session.setAttribute("username", principal.getName());
-        OrderShippingDto projection = orderService.getOrderShipping(id);
+        model.addAttribute("list", result.getList());
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("allCount", result.getAllCount());
+        model.addAttribute("receiptCount", result.getReceiptCount());
+        model.addAttribute("refuseCount", result.getRefuseCount());
+        model.addAttribute("collectCount", result.getCollectCount());
+        model.addAttribute("collectCompleteCount", result.getCollectCompleteCount());
+        model.addAttribute("reDeliveryCount", result.getReDeliveryCount());
+        model.addAttribute("completeCount", result.getCompleteCount());
+        model.addAttribute("currentPage", result.getPage().getNumber() + 1);
+        model.addAttribute("totalItems", result.getPage().getTotalElements());
+        model.addAttribute("totalPages", result.getPage().getTotalPages());
+        model.addAttribute("pageSize", pageable.getPageSize());
+        return "change/list";
+    }
+
+    @GetMapping("/return")
+    public String getOrderReturnListPage(@RequestParam(required = false) String keyword,
+                                         @RequestParam(required = false) EOrderCancelStatusFlag status,
+                                         @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable, Model model, HttpSession session, Principal principal) {
+        OrderReturnListDto result = orderService.getOrderReturnList(keyword, status, pageable);
+        session.setAttribute("username", principal.getName());
+        model.addAttribute("list", result.getList());
+        model.addAttribute("status", status);
+        model.addAttribute("keyword", keyword);
+        model.addAttribute("allCount", result.getAllCount());
+        model.addAttribute("receiptCount", result.getReceiptCount());
+        model.addAttribute("refuseCount", result.getRefuseCount());
+        model.addAttribute("collectCount", result.getCollectCount());
+        model.addAttribute("collectCompleteCount", result.getCollectCompleteCount());
+        model.addAttribute("completeCount", result.getCompleteCount());
+        model.addAttribute("currentPage", result.getPage().getNumber() + 1);
+        model.addAttribute("totalItems", result.getPage().getTotalElements());
+        model.addAttribute("totalPages", result.getPage().getTotalPages());
+        model.addAttribute("pageSize", pageable.getPageSize());
+        return "return/list";
+    }
+
+    @GetMapping("/order/shipping/edit/{id}")
+    public String getOrderShippingEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
+        session.setAttribute("username", principal.getName());
+        OrderShippingDto projection = orderService.getOrderShipping(id, false);
         model.addAttribute("order", projection);
         model.addAttribute("codeList", projection.getCodeList());
         return "order/edit";
+    }
+
+    @GetMapping("/order/shipping/edit/{id}/cancel")
+    public String getOrderShippingEditCancelPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
+        session.setAttribute("username", principal.getName());
+        OrderShippingDto projection = orderService.getOrderShipping(id, true);
+        model.addAttribute("order", projection);
+        return "order/edit_cancel";
     }
 
     @PostMapping("/order/shipping/edit")
     public String updateEditOrderShipping(OrderShippingDto request){
         orderService.updateOrderShipping(request);
         return "redirect:/order";
+    }
+
+    @PostMapping("/order/shipping/edit/cancel")
+    public String updateEditOrderShippingCancel(OrderShippingDto request){
+        orderService.updateOrderShippingCancel(request);
+        return "redirect:/order?status=ORDER_SHIPPING_CHECK";
+    }
+
+    @GetMapping("/order/shipping/{id}")
+    public String updateEditOrderShipping(@PathVariable Long id, @RequestParam EOrderShippingStatusFlag status){
+        orderService.updateOrderShippingStatus(id, status);
+        return "redirect:/order";
+    }
+
+    @GetMapping("/order/cancel/{id}")
+    public String updateEditOrderCancel(@PathVariable Long id, @RequestParam EOrderCancelStatusFlag status){
+        orderService.updateOrderCancelStatus(id, status);
+        return "redirect:/cancel";
     }
 
 //    @GetMapping("/bundle/delete/{id}")

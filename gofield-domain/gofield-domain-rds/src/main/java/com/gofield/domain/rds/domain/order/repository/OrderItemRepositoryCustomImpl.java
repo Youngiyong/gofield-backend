@@ -46,7 +46,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
     }
 
     @Override
-    public OrderItem findByOrderItemIdFetch(Long id, Long userId) {
+    public OrderItem findByOrderItemIdAndUserIdFetch(Long id, Long userId) {
         return jpaQueryFactory
                 .select(orderItem)
                 .from(orderItem)
@@ -55,6 +55,19 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                 .leftJoin(orderItem.orderItemOption, orderItemOption).fetchJoin()
                 .leftJoin(item.shippingTemplate, shippingTemplate).fetchJoin()
                 .where(orderItem.id.eq(id), order.userId.eq(userId))
+                .fetchOne();
+    }
+
+    @Override
+    public OrderItem findByOrderItemIdFetch(Long id) {
+        return jpaQueryFactory
+                .select(orderItem)
+                .from(orderItem)
+                .innerJoin(orderItem.order, order).fetchJoin()
+                .innerJoin(orderItem.item, item).fetchJoin()
+                .leftJoin(orderItem.orderItemOption, orderItemOption).fetchJoin()
+                .leftJoin(item.shippingTemplate, shippingTemplate).fetchJoin()
+                .where(orderItem.id.eq(id))
                 .fetchOne();
     }
 

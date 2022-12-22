@@ -11,31 +11,37 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class OrderCancelListDto {
-    private List<OrderCancelDto> list;
+public class OrderReturnListDto {
+    private List<OrderReturnDto> list;
     private Page<OrderCancel> page;
     private int allCount;
     private Long receiptCount;
     private Long refuseCount;
+    private Long collectCount;
+    private Long collectCompleteCount;
     private Long completeCount;
 
     @Builder
-    private OrderCancelListDto(List<OrderCancelDto> list, Page<OrderCancel> page, int allCount, Long receiptCount, Long refuseCount, Long completeCount){
+    private OrderReturnListDto(List<OrderReturnDto> list, Page<OrderCancel> page, int allCount, Long receiptCount, Long refuseCount, Long collectCount, Long collectCompleteCount, Long completeCount){
         this.list = list;
         this.page = page;
         this.allCount = allCount;
         this.receiptCount = receiptCount;
         this.refuseCount = refuseCount;
+        this.collectCount = collectCount;
+        this.collectCompleteCount = collectCompleteCount;
         this.completeCount = completeCount;
     }
 
-    public static OrderCancelListDto of(List<OrderCancelDto> list, Page<OrderCancel> page, int allCount, Long receiptCount, Long refuseCount, Long completeCount){
-        return OrderCancelListDto.builder()
+    public static OrderReturnListDto of(List<OrderReturnDto> list, Page<OrderCancel> page, int allCount, Long receiptCount, Long refuseCount, Long collectCount, Long collectCompleteCount, Long completeCount){
+        return OrderReturnListDto.builder()
                 .list(list)
                 .page(page)
                 .allCount(allCount)
                 .receiptCount(receiptCount)
                 .refuseCount(refuseCount)
+                .collectCount(collectCount)
+                .collectCompleteCount(collectCompleteCount)
                 .completeCount(completeCount)
                 .build();
     }

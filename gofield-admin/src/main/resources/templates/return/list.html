@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>취소 리스트</title>
+    <title>반품 리스트</title>
 </head>
 <body>
 
@@ -15,12 +15,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>취소 관리</h1>
+                    <h1>반품 관리</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">취소 리스트</li>
+                        <li class="breadcrumb-item active">반품 리스트</li>
                     </ol>
                 </div>
             </div>
@@ -31,16 +31,18 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <a href="/cancel" class="nav-link" th:text="${'전체('+allCount}+')'"></a>
-                <a href="/cancel?status=ORDER_CANCEL_REQUEST" class="nav-link" th:text="${'신규취소('+receiptCount}+')'"></a>
-                <a href="/cancel?status=ORDER_CANCEL_DENIED" class="nav-link" th:text="${'취소처리실패('+refuseCount}+')'"></a>
-                <a href="/cancel?status=ORDER_CANCEL_COMPLETE" class="nav-link" th:text="${'취소완료('+completeCount}+')'"></a>
+                <a href="/return" class="nav-link" th:text="${'전체('+allCount}+')'"></a>
+                <a href="/return?status=ORDER_RETURN_REQUEST" class="nav-link" th:text="${'반품요청('+receiptCount}+')'"></a>
+                <a href="/return?status=ORDER_RETURN_COLLECT_PROCESS" class="nav-link" th:text="${'수거중('+collectCount}+')'"></a>
+                <a href="/return?status=ORDER_RETURN_COLLECT_PROCESS_COMPLETE" class="nav-link" th:text="${'수거완료('+collectCompleteCount}+')'"></a>
+                <a href="/return?status=ORDER_RETURN_DENIED" class="nav-link" th:text="${'반품처리실패('+refuseCount}+')'"></a>
+                <a href="/return?status=ORDER_RETURN_COMPLETE" class="nav-link" th:text="${'교환완료('+completeCount}+')'"></a>
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
                             <div class="row">
                                 <div class="col-md-8 offset-md-2">
-                                    <form th:action="@{/cancel}" id="searchForm">
+                                    <form th:action="@{/return}" id="searchForm">
                                         <div class="input-group">
                                             <input type="keyword" name="keyword" class="form-control form-control-lg" placeholder="검색어를 입력하세요.">
                                             <div class="input-group-append">
@@ -52,10 +54,10 @@
                                     </form>
                                 </div>
                                 <div th:switch="true">
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword == null && status == null}" th:href="${'/excel/cancel'}"><i class="fas fa-save"></i>취소내역 다운</a>
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status != null}" th:href="${'/excel/cancel?keyword='+keyword+'&status='+status}"><i class="fas fa-save"></i>취소내역 다운</a>
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status == null}" th:href="${'/excel/cancel?keyword='+keyword}"><i class="fas fa-save"></i>취소내역 다운</a>
-                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${status != null && keyword == null}" th:href="${'/excel/cancel?status='+status}"><i class="fas fa-save"></i>취소내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword == null && status == null}" th:href="${'/excel/return'}"><i class="fas fa-save"></i>반품내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status != null}" th:href="${'/excel/return?keyword='+keyword+'&status='+status}"><i class="fas fa-save"></i>반품내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${keyword != null && status == null}" th:href="${'/excel/return?keyword='+keyword}"><i class="fas fa-save"></i>반품내역 다운</a>
+                                    <a class="btn btn-app float-right" style="color: cornflowerblue" th:case="${status != null && keyword == null}" th:href="${'/excel/return?status='+status}"><i class="fas fa-save"></i>반품내역 다운</a>
                                 </div>
                                </div>
                         </div>
@@ -69,7 +71,7 @@
                                     <th class="text-center">주문상품</th>
                                     <th class="text-center">수량</th>
                                     <th class="text-center">상품금액</th>
-                                    <th class="text-center">취소요청일</th>
+                                    <th class="text-center">반품요청일</th>
                                     <th class="text-center">배송정보</th>
                                     <th class="text-center">상태</th>
                                     <th class="text-center">작업</th>
@@ -81,7 +83,7 @@
                                     <td>
                                         <div class="text-center" th:text="${data.orderNumber}">
                                         </div>
-                                        <div class="text-center" th:text="${data.orderDate}">
+                                        <div class="text-center" th:text="${data.cancelDate}">
                                         </div>
                                     </td>
                                     <td>
@@ -92,11 +94,11 @@
                                     </td>
                                     <td class="text-center" th:text="${data.qty}"></td>
                                     <td class="text-center" th:text="${data.price}"></td>
-                                    <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
-                                        <div class="text-center" th:text="${data.cancelDate}">
+                                        <div class="text-center" th:text="${data.cancelDate}"></div>
+                                        <div style="color: orange" class="text-center" th:text="${'반품사유: '+data.reason.getDescription()}">
                                         </div>
-                                        <div style="color: orange" class="text-center" th:text="${'취소사유: '+data.reason.getDescription()}">
+                                        <div style="color: darkorange" class="text-center" th:text="${'사유내용: '+data.comment}">
                                         </div>
                                     </td>
                                     <td>
@@ -105,17 +107,28 @@
                                         <div class="text-center" th:text="${data.address + ' ' + data.addressExtra}">
                                         </div>
                                     </td>
+                                    <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COLLECT_PROCESS'}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
-                                            취소승인
+                                            수거지시
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_DENIED'}">
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COLLECT_PROCESS_COMPLETE'}">
                                             <i class="fas fa-inbox">
                                             </i>
-                                            취소거절
+                                            반품수거완료
+                                        </a>
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_COMPLETE'}">
+                                            <i class="fas fa-inbox">
+                                            </i>
+                                            반품완료처리
+                                        </a>
+                                        <a class="btn btn-info btn-sm" th:href="${'/order/return/'+data.id+'?status=ORDER_RETURN_DENIED'}">
+                                            <i class="fas fa-inbox">
+                                            </i>
+                                            반품처리실패
                                         </a>
                                         </div>
                                     </td>
@@ -130,26 +143,26 @@
                         <nav aria-label="Pagination" th:if="${totalPages > 0}">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                                    <a th:replace="fragments/cancelPaging :: paging(1, '<<', 'First Page')"></a>
+                                    <a th:replace="fragments/returnPaging :: paging(1, '<<', 'First Page')"></a>
                                 </li>
                                 <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
-                                    <a th:replace="fragments/cancelPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                                    <a th:replace="fragments/returnPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
                                 </li>
                                 <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
                                     <a class="page-link" href="#">...</a>
                                 </li>
                                 <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
                                     th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
-                                    <a th:replace="fragments/cancelPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                                    <a th:replace="fragments/returnPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
                                 </li>
                                 <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
                                     <a class="page-link" href="#">...</a>
                                 </li>
                                 <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                                    <a th:replace="fragments/cancelPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                                    <a th:replace="fragments/returnPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
                                 </li>
                                 <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                                    <a th:replace="fragments/cancelPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                                    <a th:replace="fragments/returnPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
                                 </li>
                             </ul>
                         </nav>
