@@ -15,7 +15,6 @@ import java.util.List;
 public class ItemUsedDto {
     private Long id;
     private List<CategoryDto> categoryList;
-
     private List<BrandDto> brandList;
     private List<ItemBundleDto> bundleList;
     private Long bundleId;
