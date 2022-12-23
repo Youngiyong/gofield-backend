@@ -186,8 +186,8 @@ public class OrderCancel extends BaseTimeEntity {
             this.status = EOrderCancelStatusFlag.ORDER_RETURN_COLLECT_PROCESS_COMPLETE;
         } else if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
             this.status = EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE;
-        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
-            this.status = EOrderCancelStatusFlag.ORDER_CANCEL_DENIED;
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
+            this.status = EOrderCancelStatusFlag.ORDER_RETURN_DENIED;
         }
     }
 

@@ -97,7 +97,7 @@ public class AuthService {
 
         UserAccessLog saveLog = UserAccessLog.newInstance(userSns.getUser().getId(), userAgent, ipAddress);
         userWebAccessLogRepository.save(saveLog);
-        return LoginResponse.of(token.getGrantType(), token.getAccessToken(), token.getRefreshToken(), token.getAccessTokenExpiresIn(), token.getRefreshTokenExpiresIn());
+        return LoginResponse.of(token.getGrantType(), token.getAccessToken(), token.getRefreshToken(), token.getAccessTokenExpiresIn(), token.getRefreshTokenExpiresIn(), isSign);
     }
 
     @Transactional
