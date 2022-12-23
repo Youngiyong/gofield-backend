@@ -15,8 +15,8 @@ public class LoginRequest {
     @NotNull
     private String code;
 
-    private String state;
-
     @NotNull
     private ESocialFlag social;
+
+    private EEnvironmentFlag environment;
 }
