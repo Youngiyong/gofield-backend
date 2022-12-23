@@ -119,8 +119,8 @@
                 <img alt="User Image" class="user-image img-circle elevation-2"
                      th:src="@{/dist/img/cat.png}">
                 <span class="d-none d-md-inline" th:text="${session.username}"></span>
-
             </a>
+
             <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                 <!-- User image -->
                 <li class="user-header" style="background: whitesmoke">
@@ -130,6 +130,7 @@
                     <p th:text="${session.username}">
                     </p>
                 </li>
+
                 <!-- Menu Body -->
 <!--                <li class="user-body">-->
 <!--                    <div class="row">-->
@@ -152,8 +153,8 @@
             </ul>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-slide="true" data-widget="control-sidebar" href="#" role="button">
-                <i class="fas fa-th-large"></i>
+            <a class="nav-link" data-slide="true" data-widget="control-sidebar" href="/logout" role="button">
+                <i class="fas fa-times-circle"></i>
             </a>
         </li>
     </ul>
