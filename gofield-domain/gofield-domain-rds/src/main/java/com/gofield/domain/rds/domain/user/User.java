@@ -68,9 +68,10 @@ public class User extends BaseTimeEntity {
     @Column
     private LocalDateTime deleteDate;
 
-    private User(String uuid, String email, String nickName){
+    private User(String uuid, String name, String email, String nickName){
         this.uuid = uuid;
         this.email = email;
+        this.name = name;
         this.nickName = nickName;
         this.status = EStatusFlag.WAIT;
         this.isAlertPush = false;
@@ -78,9 +79,9 @@ public class User extends BaseTimeEntity {
     }
 
 
-    public static User newNonMemberInstance() { return new User("nonMember", "youn9354@naver.com", "비회원"); }
-    public static User newInstance(String uuid, String email, String nickName){
-        return new User(uuid, email, nickName);
+    public static User newNonMemberInstance() { return new User("nonMember","비회원", "youn9354@naver.com", "비회원"); }
+    public static User newInstance(String uuid, String name, String email, String nickName){
+        return new User(uuid, name, email, nickName);
     }
 
     public void updateProfile(String name, String nickName, String thumbnail, Boolean isAlertPromotion, Integer weight, Integer height){
