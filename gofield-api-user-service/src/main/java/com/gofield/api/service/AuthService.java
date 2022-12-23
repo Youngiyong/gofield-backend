@@ -73,7 +73,7 @@ public class AuthService {
         if(resultClientDetail==null){
             throw new NotFoundException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("<%s> 유효하지 않는 클라이언트 아이디입니다.", clientDetail.getClientId()));
         }
-        SocialAuthentication socialAuthentication = thirdPartyService.getSocialAuthentication(request.getState(), request.getCode(), request.getSocial(), environment);
+        SocialAuthentication socialAuthentication = thirdPartyService.getSocialAuthentication(request.getCode(), request.getSocial(), environment);
 
         UserSns userSns = userSnsRepository.findByUniQueIdAndRoute(socialAuthentication.getUniqueId(), request.getSocial());
         if(userSns==null){
