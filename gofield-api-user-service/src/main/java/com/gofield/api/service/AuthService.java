@@ -19,6 +19,7 @@ import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.common.utils.RandomUtils;
+import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.item.Category;
 import com.gofield.domain.rds.domain.item.CategoryRepository;
 import com.gofield.domain.rds.domain.user.*;
@@ -59,7 +60,7 @@ public class AuthService {
     private final ThirdPartyService thirdPartyService;
 
     @Transactional
-    public LoginResponse login(LoginRequest request, String secret){
+    public LoginResponse login(LoginRequest request, String secret, EEnvironmentFlag environment){
         Boolean isSign = true;
 
         HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
@@ -72,7 +73,7 @@ public class AuthService {
         if(resultClientDetail==null){
             throw new NotFoundException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("<%s> 유효하지 않는 클라이언트 아이디입니다.", clientDetail.getClientId()));
         }
-        SocialAuthentication socialAuthentication = thirdPartyService.getSocialAuthentication(request.getState(), request.getCode(), request.getSocial());
+        SocialAuthentication socialAuthentication = thirdPartyService.getSocialAuthentication(request.getState(), request.getCode(), request.getSocial(), environment);
 
         UserSns userSns = userSnsRepository.findByUniQueIdAndRoute(socialAuthentication.getUniqueId(), request.getSocial());
         if(userSns==null){

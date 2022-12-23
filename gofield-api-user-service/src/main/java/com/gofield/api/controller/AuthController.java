@@ -7,6 +7,7 @@ import com.gofield.api.dto.res.LoginResponse;
 import com.gofield.api.dto.res.TokenResponse;
 import com.gofield.api.service.AuthService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import lombok.RequiredArgsConstructor;
@@ -30,8 +31,9 @@ public class AuthController {
     @ApiOperation(value = "로그인")
     @PostMapping("/v1/login")
     public ApiResponse<LoginResponse> login(@RequestHeader(defaultValue = "eyJjbGllbnRJZCI6Ill4WldiQ041ZHBmMEUxUk9lQVNDZHllSjd5bE44aFFDIn0=") @ApiParam(value = "{\"clientId\":\"YxZWbCN5dpf0E1ROeASCdyeJ7ylN8hQC\"} eyJjbGllbnRJZCI6IkNIRUVTRS1JT1MtQVBQIn0") String secret,
+                                            @RequestParam(required = false, defaultValue = "PROD") EEnvironmentFlag environment,
                                             @Valid @RequestBody LoginRequest request) {
-        return ApiResponse.success(authService.login(request, secret));
+        return ApiResponse.success(authService.login(request, secret, environment));
     }
 
     @ApiOperation(value = "토큰 갱신")

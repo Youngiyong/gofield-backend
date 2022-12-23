@@ -1,5 +1,6 @@
 package com.gofield.api.dto.req;
 
+import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
 import lombok.*;
 
@@ -18,5 +19,4 @@ public class LoginRequest {
 
     @NotNull
     private ESocialFlag social;
-
 }

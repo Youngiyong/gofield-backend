@@ -73,11 +73,17 @@ public class ThirdPartyService {
     @Value("${secret.auth.callback_url}")
     private String AUTH_CALLBACK_URL;
 
-    @Value("${secret.auth.front_local_redirect_url}")
-    private String AUTH_FRONT_LOCAL_REDIRECT_URL;
+    @Value("${secret.kakao.front_local_redirect_url}")
+    private String AUTH_FRONT_KAKAO_LOCAL_REDIRECT_URL;
 
-    @Value("${secret.auth.front_service_redirect_url}")
-    private String AUTH_FRONT_SERVICE_REDIRECT_URL;
+    @Value("${secret.kakao.front_service_redirect_url}")
+    private String AUTH_FRONT_KAKAO_SERVICE_REDIRECT_URL;
+
+    @Value("${secret.naver.front_local_redirect_url}")
+    private String AUTH_FRONT_NAVER_LOCAL_REDIRECT_URL;
+
+    @Value("${secret.naver.front_service_redirect_url}")
+    private String AUTH_FRONT_NAVER_SERVICE_REDIRECT_URL;
 
     @Value("${secret.payment.success.front_service_redirect_url}")
     private String AUTH_FRONT_PAYMENT_SERVICE_SUCCESS_REDIRECT_URL;
@@ -140,12 +146,12 @@ public class ThirdPartyService {
         if(stateLog==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("<%s> 존재하지 않는 state입니다.", state));
         }
-        if(stateLog.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
-            redirectUrl = AUTH_FRONT_LOCAL_REDIRECT_URL + "?state=" + state + "&code=" + code + "&social=" + stateLog.getSocial().getKey();
-        } else {
-            redirectUrl = AUTH_FRONT_SERVICE_REDIRECT_URL + "?state=" + state + "&code=" + code + "&social=" + stateLog.getSocial().getKey();
-        }
-        return redirectUrl;
+//        if(stateLog.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
+//            redirectUrl = AUTH_FRONT_LOCAL_REDIRECT_URL + "?state=" + state + "&code=" + code + "&social=" + stateLog.getSocial().getKey();
+//        } else {
+//            redirectUrl = AUTH_FRONT_SERVICE_REDIRECT_URL + "?state=" + state + "&code=" + code + "&social=" + stateLog.getSocial().getKey();
+//        }
+        return null;
     }
 
     public TossPaymentResponse getPaymentReadyInfo(TossPaymentRequest.Payment request){
@@ -263,16 +269,20 @@ public class ThirdPartyService {
     }
 
 
-    public SocialAuthentication getSocialAuthentication(String state, String code, ESocialFlag social){
+    public SocialAuthentication getSocialAuthentication(String state, String code, ESocialFlag social, EEnvironmentFlag environment){
         if(social.equals(ESocialFlag.KAKAO)){
-            KaKaoTokenRequest request = KaKaoTokenRequest.of(KAKAO_CLIENT_ID, AUTH_CALLBACK_URL, code, KAKAO_CLIENT_SECRET);
+            String redirectUrl = AUTH_FRONT_KAKAO_SERVICE_REDIRECT_URL;
+            if(environment.equals(EEnvironmentFlag.LOCAL)){
+                redirectUrl = AUTH_FRONT_KAKAO_LOCAL_REDIRECT_URL;
+            }
+            KaKaoTokenRequest request = KaKaoTokenRequest.of(KAKAO_CLIENT_ID, redirectUrl, code, KAKAO_CLIENT_SECRET);
             KaKaoTokenResponse tokenResponse = kaKaoAuthApiClient.getToken(request);
-            KaKaoProfileResponse profileResponse = kaKaoProfileApiClient.getProfileInfo(HttpUtils.withBearerToken(code));
+            KaKaoProfileResponse profileResponse = kaKaoProfileApiClient.getProfileInfo(HttpUtils.withBearerToken(tokenResponse.getAccess_token()));
             return SocialAuthentication.of(profileResponse.getId(), profileResponse.getNickName(), profileResponse.getEmail());
         } else if(social.equals(ESocialFlag.NAVER)) {
             NaverTokenRequest request = NaverTokenRequest.of(NAVER_CLIENT_ID, NAVER_CLIENT_SECRET, code, state);
             NaverTokenResponse tokenResponse = naverAuthApiClient.getToken(request);
-            NaverProfileResponse profileResponse = naverProfileApiClient.getProfileInfo(HttpUtils.withBearerToken(code));
+            NaverProfileResponse profileResponse = naverProfileApiClient.getProfileInfo(HttpUtils.withBearerToken(tokenResponse.getAccess_token()));
             return SocialAuthentication.of(profileResponse.getResponse().getId(), profileResponse.getResponse().getName()==null ? profileResponse.getResponse().getNickname() : profileResponse.getResponse().getName(), profileResponse.getResponse().getEmail());
         } else {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 소셜 로그인입니다.");
