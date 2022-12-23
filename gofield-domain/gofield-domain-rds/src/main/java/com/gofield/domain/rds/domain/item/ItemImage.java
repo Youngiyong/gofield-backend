@@ -1,18 +1,16 @@
-
-
 package com.gofield.domain.rds.domain.item;
 
-import com.gofield.domain.rds.domain.item.Item;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
-@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "item_image")
@@ -32,4 +30,17 @@ public class ItemImage {
     @Column
     private LocalDateTime createDate;
 
+    @Builder
+    private ItemImage(Item item, String image){
+        this.item = item;
+        this.image= image;
+        this.createDate = LocalDateTime.now();
+    }
+
+    public static ItemImage of(Item item, String image){
+        return ItemImage.builder()
+                .item(item)
+                .image(image)
+                .build();
+    }
 }

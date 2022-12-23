@@ -31,7 +31,6 @@ public class ItemDto {
     private int qty;
     private EItemClassificationFlag classification;
     private EItemDeliveryFlag delivery;
-    private EItemChargeFlag charge;
     private int deliveryPrice;
     private List<String> tags;
     private String description;
@@ -66,7 +65,7 @@ public class ItemDto {
     @Builder
     private ItemDto(Long id, List<CategoryDto> categoryList, List<BrandDto> brandList, List<ItemBundleDto> bundleList, Long bundleId, Long categoryId,
                         String categoryName, Long brandId, String brandName, Long detailId, Long shippingTemplateId, String name, String itemNumber,
-                        int price, int qty, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemChargeFlag charge, int deliveryPrice, List<String> tags,
+                        int price, int qty, EItemClassificationFlag classification, EItemDeliveryFlag delivery, int deliveryPrice, List<String> tags,
                         String description, String manufacturer, String origin, String itemSpec, EItemGenderFlag gender, String length,
                         String weight, Boolean isAs, EItemSpecFlag spec, EItemShippingFlag shipping, List<ItemDetailOptionDto> options, String thumbnail, String createDate, ShippingTemplateDto shippingTemplate){
         this.id = id;
@@ -86,7 +85,6 @@ public class ItemDto {
         this.qty = qty;
         this.classification = classification;
         this.delivery = delivery;
-        this.charge = charge;
         this.deliveryPrice = deliveryPrice;
         this.tags = tags;
         this.description = description;

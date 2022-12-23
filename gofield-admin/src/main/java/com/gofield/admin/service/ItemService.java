@@ -78,12 +78,24 @@ public class ItemService {
     }
 
     @Transactional
-    public void saveUsedItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
-        Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
-        Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
-        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
-        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
+    public void saveNewItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
+//        Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
+//        Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
+//        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
+//        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
+//        ItemDetail itemDetail = ItemDetail.newInstance(itemDto.getDescription(), null, itemDto.getGender(), itemDto.getSpec());
     }
+    @Transactional
+    public void saveUsedItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
+//        Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
+//        Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
+//        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
+//        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
+//        ItemDetail itemDetail = ItemDetail.newInstance(itemDto.getDescription(), null, itemDto.getGender(), itemDto.getSpec());
+//        ShippingTemplate shippingTemplate = ShippingTemplate.newInstance(1L,  itemDto.getShippingTemplate().getChargeType(), itemDto.getShippingTemplate().getCharge(), true,, )
+//        Item item = Item.usedItemInstance(itemBundle, brand, category)
+    }
+
 //
 //    @Transactional(readOnly = true)
 //    public ItemBundleEditDto getItemBundleImage(Long id){

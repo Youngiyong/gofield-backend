@@ -4,6 +4,7 @@ package com.gofield.domain.rds.domain.item;
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.user.UserLikeItem;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -86,6 +87,45 @@ public class Item extends BaseTimeEntity {
     @OneToMany(mappedBy = "item")
     private List<ItemHasTag> tag;
 
+    @Builder
+    private Item(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate,
+                 String itemNumber, String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemClassificationFlag classification, String thumbnail, String tags, Boolean isOption){
+        this.bundle = itemBundle;
+        this.brand = brand;
+        this.category = category;
+        this.detail = itemDetail;
+        this.shippingTemplate = shippingTemplate;
+        this.itemNumber = itemNumber;
+        this.name = name;
+        this.price = price;
+        this.deliveryPrice = deliveryPrice;
+        this.delivery = delivery;
+        this.classification = classification;
+        this.thumbnail = thumbnail;
+        this.tags = tags;
+        this.isOption = isOption;
+    }
+
+    public static Item usedItemInstance(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate,
+                          String itemNumber, String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, String thumbnail, String tags, Boolean isOption){
+        return Item.builder()
+                .itemBundle(itemBundle)
+                .brand(brand)
+                .category(category)
+                .itemDetail(itemDetail)
+                .shippingTemplate(shippingTemplate)
+                .itemNumber(itemNumber)
+                .name(name)
+                .price(price)
+                .deliveryPrice(deliveryPrice)
+                .delivery(delivery)
+                .classification(EItemClassificationFlag.USED)
+                .thumbnail(thumbnail)
+                .tags(tags)
+                .isOption(isOption)
+                .build();
+
+    }
 
     public void addOption(ItemOption itemOption){
         this.options.add(itemOption);

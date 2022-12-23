@@ -88,7 +88,7 @@ public class ItemController {
 
     @PostMapping("/item/add/new")
     public String addItemNew(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
-//        itemService.save(image, images, itemBundleDto);
+        itemService.saveNewItem(image, images, itemDto);
         return "redirect:/item";
     }
 

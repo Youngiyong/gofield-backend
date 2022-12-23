@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.item;
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.seller.Seller;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -49,5 +50,26 @@ public class ItemStock extends BaseTimeEntity {
 
     public boolean isSale(){
         return this.status.equals(EItemStatusFlag.SALE) ? true : false;
+    }
+
+    @Builder
+    private ItemStock(Item item, EItemStatusFlag status, EItemStockFlag type, String itemNumber, Long sellerId, int qty){
+        this.item = item;
+        this.status = status;
+        this.type = type;
+        this.itemNumber = itemNumber;
+        this.sellerId = sellerId;
+        this.qty = qty;
+    }
+
+    public static ItemStock of(Item item, EItemStatusFlag status, EItemStockFlag type, String itemNumber, Long sellerId, int qty){
+        return ItemStock.builder()
+                .item(item)
+                .status(status)
+                .type(type)
+                .itemNumber(itemNumber)
+                .sellerId(sellerId)
+                .qty(qty)
+                .build();
     }
 }

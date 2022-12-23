@@ -88,6 +88,84 @@ public class ShippingTemplate extends BaseTimeEntity {
     private String returnAddressExtra;
 
 
-//    @Builder
-//    private ShippingTemplate(Long sellerId, String title, Boolean isCondition)
+    @Builder
+    private ShippingTemplate(Long sellerId, int condition, String title, Boolean isCondition, EItemChargeFlag chargeType, int charge, Boolean isPaid,
+                             String exchangeCourierName, int exchangeCharge, int takebackCharge, Boolean isFee, int feeJeju, int feeJejuBesides,
+                             String shippingComment, String zipCode, String address, String addressExtra, String receiver, String receiverTel,
+                             String returnZipCode, String returnAddress, String returnAddressExtra){
+        this.sellerId = sellerId;
+        this.condition = condition;
+        this.title = title;
+        this.isCondition = isCondition;
+        this.chargeType = chargeType;
+        this.charge = charge;
+        this.isPaid = isPaid;
+        this.exchangeCourierName = exchangeCourierName;
+        this.exchangeCharge = exchangeCharge;
+        this.takebackCharge = takebackCharge;
+        this.isFee = isFee;
+        this.feeJeju = feeJeju;
+        this.feeJejuBesides = feeJejuBesides;
+        this.shippingComment = shippingComment;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.addressExtra = addressExtra;
+        this.receiver = receiver;
+        this.receiverTel = receiverTel;
+        this.returnZipCode = returnZipCode;
+        this.returnAddress = returnAddress;
+        this.returnAddressExtra = returnAddressExtra;
+    }
+
+    public static ShippingTemplate newInstance(Long sellerId, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, Boolean isPaid, int exchangeCharge, int takebackCharge, Boolean isFee, int feeJeju, int feeJejuBesides,
+                                                String zipCode, String address, String addressExtra, String returnZipCode, String returnAddress, String returnAddressExtra){
+        return ShippingTemplate.builder()
+                .sellerId(sellerId)
+                .isCondition(isCondition)
+                .condition(condition)
+                .chargeType(chargeType)
+                .charge(charge)
+                .isPaid(isPaid)
+                .exchangeCharge(exchangeCharge)
+                .takebackCharge(takebackCharge)
+                .isFee(isFee)
+                .feeJeju(feeJeju)
+                .feeJejuBesides(feeJejuBesides)
+                .zipCode(zipCode)
+                .address(address)
+                .addressExtra(addressExtra)
+                .returnZipCode(returnZipCode)
+                .returnAddress(returnAddress)
+                .returnAddressExtra(returnAddressExtra)
+                .build();
+    }
+
+    public static ShippingTemplate newInstance(Long sellerId, String title, Boolean isCondition, EItemChargeFlag chargeType, int charge, Boolean isPaid,
+                                               String exchangeCourierName, int exchangeCharge, int takebackCharge, Boolean isFee, int feeJeju, int feeJejuBesides,
+                                               String shippingComment, String zipCode, String address, String addressExtra, String receiver, String receiverTel,
+                                               String returnZipCode, String returnAddress, String returnAddressExtra){
+        return ShippingTemplate.builder()
+                .sellerId(sellerId)
+                .title(title)
+                .isCondition(isCondition)
+                .chargeType(chargeType)
+                .charge(charge)
+                .isPaid(isPaid)
+                .exchangeCourierName(exchangeCourierName)
+                .exchangeCharge(exchangeCharge)
+                .takebackCharge(takebackCharge)
+                .isFee(isFee)
+                .feeJeju(feeJeju)
+                .feeJejuBesides(feeJejuBesides)
+                .shippingComment(shippingComment)
+                .zipCode(zipCode)
+                .address(address)
+                .addressExtra(addressExtra)
+                .receiver(receiver)
+                .receiverTel(receiverTel)
+                .returnZipCode(returnZipCode)
+                .returnAddress(returnAddress)
+                .returnAddressExtra(returnAddressExtra)
+                .build();
+    }
 }

@@ -40,4 +40,8 @@ public class AdminUtil {
         }
     }
 
+    public static String makeItemNumber(Long itemNumber){
+        return String.format("A%s", itemNumber);
+    }
+
 }
