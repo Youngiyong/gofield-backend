@@ -20,7 +20,7 @@ public enum EOrderCancelStatusFlag implements EnumCodeModel {
     ORDER_CHANGE_COLLECT_PROCESS_COMPLETE("수거완료 ", "602"),
     ORDER_CHANGE_REDELIVERY("재배송", "603"),
     ORDER_CHANGE_DENIED("교환처리실패","605"),
-    ORDER_CHANGE_COMPLETE("주문 교환 완료", "610"),
+    ORDER_CHANGE_COMPLETE("교환완료", "610"),
 
 
 

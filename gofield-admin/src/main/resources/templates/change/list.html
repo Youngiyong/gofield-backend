@@ -112,27 +112,27 @@
                                     <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COLLECT_PROCESS'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('교환완료') && !data.status.equals('교환처리실패')}" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COLLECT_PROCESS'}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             수거지시
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COLLECT_PROCESS_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('교환완료') && !data.status.equals('교환처리실패')  }" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COLLECT_PROCESS_COMPLETE'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             교환수거완료
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_REDELIVERY'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('교환완료') && !data.status.equals('교환처리실패')  }" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_REDELIVERY'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             교환재발송
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_DENIED'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('교환완료') && !data.status.equals('교환처리실패')  }" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_DENIED'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             교환거부
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('교환완료') && !data.status.equals('교환처리실패')  }" th:href="${'/order/change/'+data.id+'?status=ORDER_CHANGE_COMPLETE'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             교환확인완료
