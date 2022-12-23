@@ -163,6 +163,9 @@ public class OrderService {
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
             purchaseCancelRepository.save(purchase);
+            /*
+            ToDo Stock 증가
+             */
         }
         orderCancel.updateAdminCancelStatus(status);
     }
@@ -179,6 +182,9 @@ public class OrderService {
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
             purchaseCancelRepository.save(purchase);
+            /*
+            ToDo Stock 증가
+             */
         }
         orderCancel.updateAdminReturnStatus(status);
     }
@@ -219,6 +225,9 @@ public class OrderService {
         orderCancelCommentRepository.save(orderCancelComment);
         /*
         TODo: 반품비 제거, 할인율 제거 후 환불 처리 필요
+         */
+        /*
+            ToDo Stock 증가
          */
         OrderCancel orderCancel = OrderCancel.newCancelCompleteInstance(orderItem.getOrder(),orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE, EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getItemPrice()-orderItemInfo.getDiscountPrice(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
