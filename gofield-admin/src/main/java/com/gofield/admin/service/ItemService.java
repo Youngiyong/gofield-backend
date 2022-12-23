@@ -30,10 +30,7 @@ public class ItemService {
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
-
-
     private final ItemBundleRepository itemBundleRepository;
-
     private final ItemBundleImageRepository itemBundleImageRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final S3FileStorageClient s3FileStorageClient;
@@ -78,6 +75,14 @@ public class ItemService {
             return ItemDto.of(categoryDtoList, brandDtoList,  bundleDtoList);
         }
         return null;
+    }
+
+    @Transactional
+    public void saveUsedItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
+        Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
+        Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
+        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
+        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
     }
 //
 //    @Transactional(readOnly = true)

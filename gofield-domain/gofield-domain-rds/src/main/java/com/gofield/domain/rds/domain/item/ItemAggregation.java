@@ -3,6 +3,7 @@ package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -33,4 +34,19 @@ public class ItemAggregation extends BaseTimeEntity {
 
     @Column
     private int orderCount;
+
+    @Builder
+    private ItemAggregation(Item item){
+        this.item = item;
+        this.hitCount = 0;
+        this.likeCount = 0;
+        this.reviewCount = 0;
+        this.orderCount = 0;
+    }
+
+    public static ItemAggregation of(Item item){
+        return ItemAggregation.builder()
+                .item(item)
+                .build();
+    }
 }

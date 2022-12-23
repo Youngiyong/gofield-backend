@@ -69,12 +69,11 @@ public class ItemController {
 //    }
 //
 //
-//    @PostMapping("/bundle/edit")
-//    public String updateEditItemBundle(ItemBundleDto itemBundleDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
-//        itemBundleService.updateItemBundle(image, images, itemBundleDto);
-//        return "redirect:/bundle";
+//    @PostMapping("/item/add/used")
+//    public String updateEditItemBundle(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+//        itemService.updateItemBundle(image, images, itemDto);
+//        return "redirect:/item";
 //    }
-//
     @GetMapping("/item/add/new")
     public String getItemNewAddPage(Model model){
         model.addAttribute("item",  itemService.getItem(null));
@@ -89,12 +88,13 @@ public class ItemController {
 
     @PostMapping("/item/add/new")
     public String addItemNew(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
-//        itemBundleService.save(image, images, itemBundleDto);
+//        itemService.save(image, images, itemBundleDto);
         return "redirect:/item";
     }
 
     @PostMapping("/item/add/used")
     public String addItemUsed(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+        itemService.saveUsedItem(image, images, itemDto);
         return "redirect:/item";
     }
 

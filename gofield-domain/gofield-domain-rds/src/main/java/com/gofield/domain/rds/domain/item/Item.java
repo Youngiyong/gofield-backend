@@ -62,9 +62,6 @@ public class Item extends BaseTimeEntity {
     @Column(name = "classification_flag", nullable = false)
     private EItemClassificationFlag classification;
 
-    @Column(name = "charge_flag", nullable = false)
-    private EItemChargeFlag charge;
-
     @Column
     private String thumbnail;
 

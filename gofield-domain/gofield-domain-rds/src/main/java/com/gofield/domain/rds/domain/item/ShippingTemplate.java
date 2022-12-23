@@ -5,6 +5,7 @@ package com.gofield.domain.rds.domain.item;
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import com.gofield.domain.rds.domain.item.EItemChargeFlag;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -85,4 +86,8 @@ public class ShippingTemplate extends BaseTimeEntity {
 
     @Column
     private String returnAddressExtra;
+
+
+//    @Builder
+//    private ShippingTemplate(Long sellerId, String title, Boolean isCondition)
 }

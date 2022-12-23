@@ -35,8 +35,6 @@ public class ItemDto {
     private int deliveryPrice;
     private List<String> tags;
     private String description;
-
-    private String summernote;
     //제조사
     private String manufacturer;
     //원산지
@@ -52,18 +50,25 @@ public class ItemDto {
 
     private Boolean isAs;
 
+    private EItemSpecFlag spec;
+
+    private EItemShippingFlag shipping;
+
     private List<ItemDetailOptionDto> options;
 
     private String thumbnail;
 
     private String createDate;
+    private ShippingTemplateDto shippingTemplate;
+
+
 
     @Builder
     private ItemDto(Long id, List<CategoryDto> categoryList, List<BrandDto> brandList, List<ItemBundleDto> bundleList, Long bundleId, Long categoryId,
                         String categoryName, Long brandId, String brandName, Long detailId, Long shippingTemplateId, String name, String itemNumber,
                         int price, int qty, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemChargeFlag charge, int deliveryPrice, List<String> tags,
-                        String description, String summernote, String manufacturer, String origin, String itemSpec, EItemGenderFlag gender, String length,
-                        String weight, Boolean isAs, List<ItemDetailOptionDto> options, String thumbnail, String createDate){
+                        String description, String manufacturer, String origin, String itemSpec, EItemGenderFlag gender, String length,
+                        String weight, Boolean isAs, EItemSpecFlag spec, EItemShippingFlag shipping, List<ItemDetailOptionDto> options, String thumbnail, String createDate, ShippingTemplateDto shippingTemplate){
         this.id = id;
         this.categoryList = categoryList;
         this.brandList = brandList;
@@ -85,7 +90,6 @@ public class ItemDto {
         this.deliveryPrice = deliveryPrice;
         this.tags = tags;
         this.description = description;
-        this.summernote = summernote;
         this.manufacturer = manufacturer;
         this.origin = origin;
         this.itemSpec = itemSpec;
@@ -93,9 +97,12 @@ public class ItemDto {
         this.length = length;
         this.weight = weight;
         this.isAs = isAs;
+        this.spec = spec;
+        this.shipping = shipping;
         this.options = options;
         this.thumbnail = thumbnail;
         this.createDate = createDate;
+        this.shippingTemplate = shippingTemplate;
     }
 
     public static ItemDto of(List<CategoryDto> categoryList, List<BrandDto> brandList, List<ItemBundleDto> bundleList){
@@ -103,6 +110,7 @@ public class ItemDto {
                 .categoryList(categoryList)
                 .brandList(brandList)
                 .bundleList(bundleList)
+                .shippingTemplate(new ShippingTemplateDto())
                 .build();
     }
 
