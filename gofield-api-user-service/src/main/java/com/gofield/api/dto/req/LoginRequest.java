@@ -14,7 +14,6 @@ public class LoginRequest {
     @NotNull
     private String code;
 
-    @NotNull
     private String state;
 
     @NotNull
