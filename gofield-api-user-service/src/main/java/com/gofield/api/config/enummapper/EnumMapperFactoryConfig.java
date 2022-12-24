@@ -22,7 +22,6 @@ public class EnumMapperFactoryConfig {
         enumMapperFactory.putEnumModel("ORDER_CANCEL_REASON", EOrderCancelClientReason.class);
         enumMapperFactory.putEnumCodeModel("ORDER_CANCEL_ALL_REASON", EOrderCancelReasonFlag.class);
         enumMapperFactory.putEnumModel("ORDER_CHANGE_REASON", EOrderChangeClientReason.class);
-        enumMapperFactory.putEnumModel("ORDER_RETURN_REASON", EOrderCancelClientReason.class);
         enumMapperFactory.putEnumModel("ITEM_BUNDLE_SORT", EItemBundleSort.class);
         enumMapperFactory.putEnumModel("ITEM_SORT", EItemSort.class);
         return enumMapperFactory;

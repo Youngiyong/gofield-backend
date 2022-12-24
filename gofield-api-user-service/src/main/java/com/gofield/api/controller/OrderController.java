@@ -143,7 +143,7 @@ public class OrderController {
         return ApiResponse.SUCCESS;
     }
 
-    @ApiOperation(value = "반풍 취소")
+    @ApiOperation(value = "반풍 요청")
     @PostMapping("/v1/return/{orderItemId}")
     public ApiResponse createOrderReturn(@PathVariable Long orderItemId,
                                          @RequestBody OrderRequest.OrderCancel request){
