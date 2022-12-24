@@ -7,6 +7,7 @@ import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.gofield.domain.rds.domain.user.User;
@@ -14,10 +15,12 @@ import com.gofield.domain.rds.domain.user.UserLikeItem;
 import com.gofield.domain.rds.domain.user.UserLikeItemRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -32,6 +35,8 @@ public class ItemService {
     private final UserLikeItemRepository userLikeItemRepository;
     private final ItemBundleReviewRepository itemBundleReviewRepository;
     private final ItemOptionRepository itemOptionRepository;
+
+    private final ItemRecentRepository itemRecentRepository;
     private final ItemOptionGroupRepository itemOptionGroupRepository;
 
     @Transactional
@@ -81,6 +86,18 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
+    public List<ItemClassificationResponse> getUserRecentItemList(Pageable pageable){
+        User user = userService.getUser();
+        List<Long> itemIdList = itemRecentRepository.findAllItemIdList(user.getId(), pageable);
+        if(itemIdList.isEmpty()){
+            return new ArrayList<>();
+        }
+        List<ItemClassificationProjectionResponse> result = itemRepository.findAllInIdListAndUserId(user.getId(), itemIdList);
+        return ItemClassificationResponse.of(result);
+    }
+
+
+    @Transactional(readOnly = true)
     public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, List<Long> categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable){
         User user = userService.getUser();
         List<ItemClassificationProjectionResponse> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), classification, categoryId, spec, sort, pageable);
@@ -103,16 +120,22 @@ public class ItemService {
 
 
     @Transactional(readOnly = true)
-    public List<ItemBundleReviewResponse> getBundleItemReviewList(Long bundleId, Pageable pageable){
+    public ItemBundleReviewListResponse getBundleItemReviewList(Long bundleId, Pageable pageable){
         User user = userService.getUser();
-        List<ItemBundleReview> result = itemBundleReviewRepository.findByBundleId(bundleId, pageable);
-        return ItemBundleReviewResponse.of(result);
+        Page<ItemBundleReview> result = itemBundleReviewRepository.findByBundleId(bundleId, pageable);
+        List<ItemBundleReviewResponse> list = ItemBundleReviewResponse.of(result.getContent());
+        return ItemBundleReviewListResponse.of(list, PaginationResponse.of(result));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public ItemResponse getItem(String itemNumber){
         User user = userService.getUser();
         ItemProjectionResponse item = itemRepository.findByItemNumberAndUserId(itemNumber, user.getId());
+        if(item==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", itemNumber));
+        }
+        ItemRecent itemRecent = ItemRecent.newInstance(user.getId(), item.getId(), itemNumber);
+        itemRecentRepository.save(itemRecent);
         return ItemResponse.of(item);
     }
 

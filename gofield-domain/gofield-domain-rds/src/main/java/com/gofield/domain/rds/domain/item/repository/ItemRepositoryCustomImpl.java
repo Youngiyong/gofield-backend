@@ -110,7 +110,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.tags))
                     .from(itemStock)
                     .innerJoin(item)
-                    .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                    .on(itemStock.itemNumber.eq(item.itemNumber))
                     .innerJoin(category)
                     .on(item.category.id.eq(category.id))
                     .innerJoin(itemDetail)
@@ -221,7 +221,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -262,7 +262,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -279,6 +279,41 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
         return ItemClassificationProjectionResponse.of(projection);
     }
+
+    @Override
+    public List<ItemClassificationProjectionResponse> findAllInIdListAndUserId(Long userId, List<Long> idList) {
+        List<ItemClassificationProjection> projection = jpaQueryFactory
+                .select(new QItemClassificationProjection(
+                        item.id,
+                        item.itemNumber,
+                        item.name,
+                        brand.name.as("brandName"),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.price,
+                        item.deliveryPrice,
+                        userLikeItem.id.as("likeId"),
+                        item.classification,
+                        itemDetail.spec,
+                        item.delivery,
+                        itemDetail.gender,
+                        item.tags))
+                .from(itemStock)
+                .innerJoin(item)
+                .on(itemStock.itemNumber.eq(item.itemNumber))
+                .innerJoin(category)
+                .on(item.category.id.eq(category.id))
+                .innerJoin(itemDetail)
+                .on(item.detail.id.eq(itemDetail.id))
+                .innerJoin(brand)
+                .on(item.brand.id.eq(brand.id))
+                .leftJoin(userLikeItem)
+                .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
+                .where(item.id.in(idList))
+                .fetch();
+
+        return ItemClassificationProjectionResponse.of(projection);
+    }
+
     private List<ItemClassificationProjection> findAllMemberClassificationByUserIdAndBrandId(Long userId, Long brandId, Pageable pageable){
         return jpaQueryFactory
                 .select(new QItemClassificationProjection(
@@ -297,7 +332,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -330,7 +365,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -363,7 +398,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -396,7 +431,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -431,7 +466,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -464,7 +499,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.tags))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -481,7 +516,6 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     @Override
     public ItemListProjectionResponse findAllClassificationItemByKeyword(String keyword, Long userId, Pageable pageable) {
-
         Category resultCat = jpaQueryFactory
                 .selectFrom(category)
                 .where(category.name.contains(keyword))
@@ -532,7 +566,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .select(item.id.count())
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -549,7 +583,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .select(item.id.count())
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -566,7 +600,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .select(item.id.count())
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -605,7 +639,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             itemDetail.option))
                     .from(itemStock)
                     .innerJoin(item)
-                    .on(itemStock.item.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
+                    .on(itemStock.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
                     .innerJoin(itemDetail)
@@ -658,7 +692,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.option))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(itemDetail)

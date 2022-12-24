@@ -5,6 +5,8 @@ import com.gofield.domain.rds.domain.item.projection.ItemBundleReviewScoreProjec
 import com.gofield.domain.rds.domain.item.projection.QItemBundleReviewScoreProjection;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
@@ -20,16 +22,28 @@ public class ItemBundleReviewRepositoryCustomImpl implements ItemBundleReviewRep
 
 
     @Override
-    public List<ItemBundleReview> findByBundleId(Long bundleId, Pageable pageable) {
-        return jpaQueryFactory
+    public Page<ItemBundleReview> findByBundleId(Long bundleId, Pageable pageable) {
+        List<ItemBundleReview> result = jpaQueryFactory
                 .select(itemBundleReview)
                 .from(itemBundleReview)
                 .leftJoin(itemBundleReview.images, itemBundleReviewImage).fetchJoin()
                 .where(itemBundleReview.bundle.id.eq(bundleId))
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
-                .orderBy(itemBundleReview.createDate.desc())
+                .orderBy(itemBundleReview.id.desc())
                 .fetch();
+
+        if(result.isEmpty()){
+            return new PageImpl<>(result, pageable, 0);
+        }
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(itemBundleReview.id)
+                .from(itemBundleReview)
+                .where(itemBundleReview.bundle.id.eq(bundleId))
+                .fetch();
+
+        return new PageImpl<>(result, pageable, totalCount.size());
     }
 
     @Override

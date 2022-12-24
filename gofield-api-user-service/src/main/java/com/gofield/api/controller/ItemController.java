@@ -38,6 +38,12 @@ public class ItemController {
         return ApiResponse.success(itemService.getUserLikeItemList(pageable));
     }
 
+    @ApiOperation(value = "최근 본 상품 리스트")
+    @GetMapping("/v1/recent")
+    public ApiResponse<List<ItemClassificationResponse>> getUserRecentItemList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getUserRecentItemList(pageable));
+    }
+
     @ApiOperation(value = "인기 상품 리스트")
     @GetMapping("/v1/popular")
     public ApiResponse<List<ItemBundlePopularResponse>> getPopularItemBundleList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
@@ -93,8 +99,8 @@ public class ItemController {
 
     @ApiOperation(value = "묶음 상품 - 리뷰 조회")
     @GetMapping("/v1/bundle/{bundleId}/review")
-    public ApiResponse<List<ItemBundleReviewResponse>> getBundleItemReviewList(@PathVariable Long bundleId,
-                                                                               @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+    public ApiResponse<ItemBundleReviewListResponse> getBundleItemReviewList(@PathVariable Long bundleId,
+                                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getBundleItemReviewList(bundleId, pageable));
     }
 

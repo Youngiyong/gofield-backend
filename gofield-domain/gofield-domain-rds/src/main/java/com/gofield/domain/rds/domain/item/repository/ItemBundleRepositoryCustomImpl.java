@@ -4,6 +4,7 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.EItemBundleSort;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.ItemBundle;
@@ -208,7 +209,25 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .limit(pageable.getPageSize())
                     .fetch();
 
-            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.of(items));
+            List<Long> totalCount = jpaQueryFactory
+                    .select(item.id)
+                    .from(item)
+                    .innerJoin(itemStock)
+                    .on(item.itemNumber.eq(itemStock.itemNumber))
+                    .innerJoin(category)
+                    .on(item.category.id.eq(category.id))
+                    .innerJoin(itemDetail)
+                    .on(item.detail.id.eq(itemDetail.id))
+                    .innerJoin(brand)
+                    .on(item.brand.id.eq(brand.id))
+                    .leftJoin(userLikeItem)
+                    .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
+                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .fetch();
+
+            PaginationResponse page = PaginationResponse.of(new PageImpl<>(items, pageable, totalCount.size()));
+
+            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.of(items), page);
 
         } else {
             List<ItemNonMemberClassificationProjection> items = jpaQueryFactory
@@ -240,7 +259,23 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .limit(pageable.getPageSize())
                     .fetch();
 
-            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.ofNon(items));
+            List<Long> totalCount = jpaQueryFactory
+                    .select(item.id)
+                    .from(item)
+                    .innerJoin(itemStock)
+                    .on(item.itemNumber.eq(itemStock.itemNumber))
+                    .innerJoin(category)
+                    .on(item.category.id.eq(category.id))
+                    .innerJoin(itemDetail)
+                    .on(item.detail.id.eq(itemDetail.id))
+                    .innerJoin(brand)
+                    .on(item.brand.id.eq(brand.id))
+                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .fetch();
+
+            PaginationResponse page = PaginationResponse.of(new PageImpl<>(items, pageable, totalCount.size()));
+
+            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.ofNon(items), page);
         }
     }
 

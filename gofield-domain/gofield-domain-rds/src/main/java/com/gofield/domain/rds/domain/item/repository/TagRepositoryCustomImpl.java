@@ -8,7 +8,6 @@ import java.util.List;
 import static com.gofield.domain.rds.domain.item.QItemHasTag.itemHasTag;
 import static com.gofield.domain.rds.domain.item.QTag.tag;
 
-
 @RequiredArgsConstructor
 public class TagRepositoryCustomImpl implements TagRepositoryCustom {
 

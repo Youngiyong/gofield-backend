@@ -1,5 +1,6 @@
 package com.gofield.api.dto.res;
 
+import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.projection.ItemBundleImageProjectionResponse;
 import lombok.Builder;
@@ -22,11 +23,13 @@ public class ItemBundleResponse {
     private int usedLowestPrice;
     private int newItemCount;
     private int usedItemCount;
+
+    private PaginationResponse page;
     private List<String> images;
     private List<ItemClassificationResponse> items;
 
     @Builder
-    private ItemBundleResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int newItemCount, int usedItemCount, List<String> images, List<ItemClassificationResponse> items){
+    private ItemBundleResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int newItemCount, int usedItemCount, PaginationResponse page, List<String> images, List<ItemClassificationResponse> items){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -37,6 +40,7 @@ public class ItemBundleResponse {
         this.usedLowestPrice = usedLowestPrice;
         this.newItemCount = newItemCount;
         this.usedItemCount = usedItemCount;
+        this.page = page;
         this.images = images;
         this.items = items;
     }
@@ -66,6 +70,7 @@ public class ItemBundleResponse {
                 .usedItemCount(usedItemCount)
                 .images(projection.getImages())
                 .items(items)
+                .page(projection.getPage())
                 .build();
     }
 
