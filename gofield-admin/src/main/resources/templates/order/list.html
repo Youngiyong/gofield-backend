@@ -116,21 +116,26 @@
                                     <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm"  th:if="${ !data.status.equals('배송완료') }" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_READY'}">
+                                        <a class="btn btn-info btn-sm"  th:if="${ data.status.equals('상품확인중') }" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_READY'}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             발주확인
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('배송완료')  }" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_DELIVERY'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ data.status.equals('배송준비중')  }" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_DELIVERY'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             발송처리
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('배송완료') }" th:href="${'/order/shipping/edit/'+data.id}+'/cancel'">
+                                        <a class="btn btn-info btn-sm" th:if="${ data.status.equals('상품확인중') }" th:href="${'/order/shipping/edit/'+data.id}+'/cancel'">
                                         <i class="fas fa-pause">
                                             </i>
                                             판매자취소
                                         </a>
+                                            <a class="btn btn-info btn-sm" th:if="${ data.status.equals('배송중')  }" th:href="${'/order/shipping/'+data.id+'?status=ORDER_SHIPPING_DELIVERY_COMPLETE'}">
+                                                <i class="fas fa-pause">
+                                                </i>
+                                                배송완료
+                                            </a>
                                         </div>
                                     </td>
                                 </tr>

@@ -169,7 +169,7 @@ public class OrderCancel extends BaseTimeEntity {
                 .build();
     }
 
-    public static OrderCancel newCancelCompleteInstance(Order order, OrderShipping orderShipping,  OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelStatusFlag status, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+    public static OrderCancel newCancelCompleteInstance(Order order, OrderShipping orderShipping,  OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
                                                         int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
 
         return OrderCancel.builder()
@@ -177,7 +177,7 @@ public class OrderCancel extends BaseTimeEntity {
                 .orderShipping(orderShipping)
                 .orderCancelComment(orderCancelComment)
                 .shippingTemplate(shippingTemplate)
-                .status(status)
+                .status(EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE)
                 .type(EOrderCancelTypeFlag.CANCEL)
                 .code(code)
                 .reason(reason)

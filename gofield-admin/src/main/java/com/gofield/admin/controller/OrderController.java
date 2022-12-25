@@ -136,7 +136,7 @@ public class OrderController {
     @PostMapping("/order/shipping/edit/cancel")
     public String updateEditOrderShippingCancel(OrderShippingDto request){
         orderService.updateOrderShippingCancel(request);
-        return "redirect:/order?status=ORDER_SHIPPING_CHECK";
+        return "redirect:/cancel?status=ORDER_CANCEL_COMPLETE";
     }
 
     @GetMapping("/order/shipping/{id}")

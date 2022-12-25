@@ -104,7 +104,6 @@ public class OrderService {
 
     @Transactional(readOnly = true)
     public OrderShippingDto getOrderShipping(Long id, Boolean isCancel){
-
         OrderShipping orderShipping = orderShippingRepository.findAdminOrderShippingById(id);
         List<CodeDto> codeList = CodeDto.of(codeRepository.findAllByGroupByIsHide(ECodeGroup.CARRIER, false));
         if(!isCancel){
@@ -126,7 +125,6 @@ public class OrderService {
         }
 
         OrderCancelItemTempDto orderCancelItemTempDto = OrderCancelItemTempDto.of(orderItem, EOrderCancelReasonFlag.CANCEL_REASON_101, refundName, refundBank, refundAccount);
-
         return OrderShippingDto.of(orderShipping, codeList, orderCancelItemTempDto);
     }
 
@@ -145,6 +143,14 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 취소처리가 접수된 주문입니다.");
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 취소처리가 완료된 주문입니다.");
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품처리가 접수된 주문입니다.");
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품처리가 완료된 주문입니다.");
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환처리가 접수된 주문입니다.");
+        } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE)){
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환처리가 완료된 주문입니다.");
         }
         orderShipping.updateAdminStatus(status);
         OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderShipping.getOrder().getUserId(), EGofieldService.GOFIELD_BACK_OFFICE, status);
@@ -166,6 +172,7 @@ public class OrderService {
             /*
             ToDo Stock 증가
              */
+            orderCancel.getOrderShipping().updateCancelComplete();
         }
         orderCancel.updateAdminCancelStatus(status);
     }
@@ -185,6 +192,7 @@ public class OrderService {
             /*
             ToDo Stock 증가
              */
+            orderCancel.getOrderShipping().updateReturnComplete();
         }
         orderCancel.updateAdminReturnStatus(status);
     }
@@ -197,31 +205,29 @@ public class OrderService {
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "교환 처리가 거절/철회된 주문입니다.");
         }
+        if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)) {
+            orderCancel.getOrderShipping().updateChangeComplete();
+        }
         orderCancel.updateAdminChangeStatus(status);
     }
 
     @Transactional
     public void updateOrderShippingCancel(OrderShippingDto request){
         OrderShipping orderShipping = orderShippingRepository.findByIdFetchOrder(request.getId());
-        orderShipping.updateAdminCancel();
-
-        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderShipping.getOrder().getUserId(), EGofieldService.GOFIELD_BACK_OFFICE, EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE);
-        orderShippingLogRepository.save(orderShippingLog);
         OrderItem orderItem =  orderItemRepository.findByOrderItemIdFetch(orderShipping.getOrderItems().get(0).getId());
         User user = userRepository.findByUserId(orderShipping.getOrder().getUserId());
         String refundName = null;
         String refundAccount = null;
         String refundBank = null;
-
         if(orderItem.getOrder().getPaymentType().equals("BANK")){
-            UserAccount userAccount =userAccountRepository.findByUserId(orderShipping.getOrder().getUserId());
+            UserAccount userAccount = userAccountRepository.findByUserId(orderShipping.getOrder().getUserId());
             refundName = userAccount.getBankHolderName();
             refundBank = userAccount.getBankName();
             refundAccount = userAccount.getBankAccountNumber();
         }
-
+        OrderShippingAddress orderShippingAddress = orderItem.getOrder().getShippingAddress();
         OrderCancelItemTempDto orderItemInfo = OrderCancelItemTempDto.of(orderItem, request.getReason(), refundName, refundAccount, refundBank);
-        OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, request.getReason().getDescription());
+        OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, orderShippingAddress.getName(), orderShippingAddress.getTel(), orderShippingAddress.getZipCode(), orderShippingAddress.getAddress(), orderShippingAddress.getAddressExtra(), request.getReason().getDescription());
         orderCancelCommentRepository.save(orderCancelComment);
         /*
         TODo: 반품비 제거, 할인율 제거 후 환불 처리 필요
@@ -229,7 +235,7 @@ public class OrderService {
         /*
             ToDo Stock 증가
          */
-        OrderCancel orderCancel = OrderCancel.newCancelCompleteInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE, EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getItemPrice()-orderItemInfo.getDiscountPrice(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
+        OrderCancel orderCancel = OrderCancel.newCancelCompleteInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
@@ -251,6 +257,8 @@ public class OrderService {
         } else if(orderItem.getStatus().equals(EOrderItemStatusFlag.ORDER_ITEM_APPROVE)){
             orderItem.updateApproveCancel();
         }
-        orderItem.getOrderShipping().updateCancel();
+        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderShipping.getOrder().getUserId(), EGofieldService.GOFIELD_BACK_OFFICE, EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE);
+        orderShippingLogRepository.save(orderShippingLog);
+        orderItem.getOrderShipping().updateCancelComplete();
     }
 }
