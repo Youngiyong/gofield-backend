@@ -46,6 +46,12 @@ public class UserRequest {
     }
 
     @Getter
+    public static class UserAlert {
+        @NotNull(message = "isAlertPromotion 필수값입니다.")
+        private Boolean isAlertPromotion;
+    }
+
+    @Getter
     public static class ShippingAddress {
         @NotNull(message = "전화번호는 필수값입니다.")
         @Pattern(regexp = "(01\\d{1}|02|0505|0502|0506|0\\d{1,2})-?(\\d{3,4})-?(\\d{4})", message = "전화번호 형식이 맞지 않습니다.")

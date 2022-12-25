@@ -126,9 +126,9 @@ public class ItemController {
 
     @ApiOperation(value = "상품 상세 - 상품 문의 리스트")
     @GetMapping("/v1/{itemId}/qna")
-    public ApiResponse<List<ItemQnaResponse>> getQnaList(@PathVariable Long itemId,
-                                                         @RequestParam(required = false, defaultValue = "false") Boolean isMe,
-                                                         @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+    public ApiResponse<ItemQnaPaginationResponse> getQnaList(@PathVariable Long itemId,
+                                                             @RequestParam(required = false, defaultValue = "false") Boolean isMe,
+                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getQnaList(itemId, isMe, pageable));
     }
 

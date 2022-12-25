@@ -293,5 +293,16 @@ public class UserService {
         return userAddressRepository.findByUserIdOrderByMain(userId);
     }
 
+    @Transactional(readOnly = true)
+    public UserAlertResponse getUserAlert(){
+        return UserAlertResponse.of(getUser());
+    }
+
+    @Transactional
+    public void updateUserAlert(UserRequest.UserAlert request){
+        User user = getUser();
+        user.updateUserAlertPromotion(request.getIsAlertPromotion());
+
+    }
 
 }

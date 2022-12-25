@@ -161,10 +161,11 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public List<ItemQnaResponse> getQnaList(Long itemId, Boolean isMe, Pageable pageable){
+    public ItemQnaPaginationResponse getQnaList(Long itemId, Boolean isMe, Pageable pageable){
         User user = userService.getUser();
-        List<ItemQna> result = itemQnaRepository.findAllByItemIdAndUserId(itemId, isMe ? user.getId() : null, pageable);
-        return ItemQnaResponse.of(result, user.getId());
+        Page<ItemQna> result = itemQnaRepository.findAllByItemIdAndUserId(itemId, isMe ? user.getId() : null, pageable);
+        List<ItemQnaResponse> response = ItemQnaResponse.of(result.getContent(), user.getId());
+        return ItemQnaPaginationResponse.of(response, PaginationResponse.of(result));
     }
 
     @Transactional(readOnly = true)

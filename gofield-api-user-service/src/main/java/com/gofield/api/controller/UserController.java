@@ -3,6 +3,7 @@ package com.gofield.api.controller;
 import com.gofield.api.dto.enums.TermType;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.TermResponse;
+import com.gofield.api.dto.res.UserAlertResponse;
 import com.gofield.api.dto.res.UserProfileResponse;
 import com.gofield.api.service.UserService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -103,4 +104,18 @@ public class UserController {
     public ApiResponse<List<TermResponse>> getTermList(@RequestParam TermType type){
         return ApiResponse.success(userService.getTermList(type));
     }
+
+    @ApiOperation(value = "사용자 알림 여부 조회")
+    @GetMapping("/v1/alert")
+    public ApiResponse<UserAlertResponse> getUserAlert(){
+        return ApiResponse.success(userService.getUserAlert());
+    }
+
+    @ApiOperation(value = "사용자 알림 여부 업데이트")
+    @PutMapping("/v1/alert")
+    public ApiResponse updateUserAlert(@RequestBody UserRequest.UserAlert request){
+        userService.updateUserAlert(request);
+        return ApiResponse.SUCCESS;
+    }
+
 }

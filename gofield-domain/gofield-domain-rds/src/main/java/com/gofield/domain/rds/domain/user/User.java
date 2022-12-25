@@ -118,7 +118,10 @@ public class User extends BaseTimeEntity {
         this.nickName = nickName != null ? nickName : this.nickName;
         this.email = email != null ? email : this.email;
         this.status = status != null ? status : this.status;
-
     }
 
+
+    public void updateUserAlertPromotion(Boolean isAlertPromotion){
+        this.isAlertPromotion = isAlertPromotion;
+    }
 }
