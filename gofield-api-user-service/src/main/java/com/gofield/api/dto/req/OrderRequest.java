@@ -40,7 +40,6 @@ public class OrderRequest {
         }
     }
 
-
     @Getter
     public static class OrderReview {
         @NotNull(message = "몸무게는 필수값입니다.")
@@ -63,12 +62,43 @@ public class OrderRequest {
     public static class OrderReturn {
         @NotNull(message = "reason은 필수값입니다.")
         private EOrderCancelReasonFlag reason;
+
+        @NotNull(message = "반품 사용자 이름은 필수값입니다.")
+        private String username;
+
+        @NotNull(message = "반품 사용자 전화번호는 필수값입니다.")
+        private String userTel;
+
+        @NotNull(message = "반품 우편번호는 필수값입니다.")
+        private String zipCode;
+
+        @NotNull(message = "반품 주소는 필수값입니다.")
+        private String address;
+
+        @NotNull(message = "반품 상세 주소는 필수값입니다.")
+        private String addressExtra;
     }
 
     @Getter
     public static class OrderChange {
         @NotNull(message = "reason은 필수값입니다.")
         private EOrderCancelReasonFlag reason;
+
+        @NotNull(message = "교환 사용자 이름은 필수값입니다.")
+        private String username;
+
+        @NotNull(message = "교환 사용자 전화번호는 필수값입니다.")
+        private String userTel;
+
+        @NotNull(message = "교환 우편번호는 필수값입니다.")
+        private String zipCode;
+
+        @NotNull(message = "교환 주소는 필수값입니다.")
+        private String address;
+
+        @NotNull(message = "교환 상세 주소는 필수값입니다.")
+        private String addressExtra;
+
         @NotNull(message = "교환 상품 정보를 입력해주세요.")
         private String content;
     }

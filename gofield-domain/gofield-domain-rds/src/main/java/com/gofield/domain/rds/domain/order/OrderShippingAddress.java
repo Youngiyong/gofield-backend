@@ -23,16 +23,16 @@ public class OrderShippingAddress extends BaseTimeEntity {
     @Column(length = 64, nullable = false)
     private String orderNumber;
 
-    @Column
+    @Column(length = 50, nullable = false)
     private String name;
 
-    @Column
+    @Column(length = 20, nullable = false)
     private String tel;
 
-    @Column
+    @Column(length = 10, nullable = false)
     private String zipCode;
 
-    @Column
+    @Column(length = 128, nullable = false)
     private String address;
 
     @Column

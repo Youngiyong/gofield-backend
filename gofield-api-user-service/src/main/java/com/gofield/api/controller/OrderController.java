@@ -138,15 +138,15 @@ public class OrderController {
     @PostMapping("/v1/cancel/{orderItemId}")
     public ApiResponse createOrderCancel(@PathVariable Long orderItemId,
                                          @RequestBody OrderRequest.OrderCancel request){
-        orderService.createOrderCancel(orderItemId, request, EOrderCancelTypeFlag.CANCEL);
+        orderService.createOrderCancel(orderItemId, request);
         return ApiResponse.SUCCESS;
     }
 
     @ApiOperation(value = "반풍 요청")
     @PostMapping("/v1/return/{orderItemId}")
     public ApiResponse createOrderReturn(@PathVariable Long orderItemId,
-                                         @RequestBody OrderRequest.OrderCancel request){
-        orderService.createOrderCancel(orderItemId, request, EOrderCancelTypeFlag.RETURN);
+                                         @RequestBody OrderRequest.OrderReturn request){
+        orderService.createOrderReturn(orderItemId, request);
         return ApiResponse.SUCCESS;
     }
 

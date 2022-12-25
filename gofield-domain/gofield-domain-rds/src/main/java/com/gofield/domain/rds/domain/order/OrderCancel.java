@@ -124,21 +124,38 @@ public class OrderCancel extends BaseTimeEntity {
                 .build();
     }
 
-
-    public static OrderCancel newCancelInstance(Order order, OrderShipping orderShipping, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelTypeFlag cancelType,  EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
-                                          int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
-
-        EOrderCancelStatusFlag cancelStatusFlag = EOrderCancelStatusFlag.ORDER_CANCEL_REQUEST;
-        if(cancelType.equals(EOrderCancelTypeFlag.RETURN)){
-            cancelStatusFlag = EOrderCancelStatusFlag.ORDER_RETURN_REQUEST;
-        }
+    public static OrderCancel newReturnInstance(Order order, OrderShipping orderShipping, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+                                                int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
         return OrderCancel.builder()
                 .order(order)
                 .orderShipping(orderShipping)
                 .orderCancelComment(orderCancelComment)
                 .shippingTemplate(shippingTemplate)
-                .type(cancelType)
-                .status(cancelStatusFlag)
+                .type(EOrderCancelTypeFlag.RETURN)
+                .status(EOrderCancelStatusFlag.ORDER_RETURN_REQUEST)
+                .code(code)
+                .reason(reason)
+                .totalAmount(totalAmount)
+                .totalItem(totalItem)
+                .totalDelivery(totalDelivery)
+                .totalDiscount(totalDiscount)
+                .totalPg(totalPg)
+                .refundName(refundName)
+                .refundAccount(refundAccount)
+                .refundBank(refundBank)
+                .build();
+    }
+
+
+    public static OrderCancel newCancelInstance(Order order, OrderShipping orderShipping, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
+                                          int totalDelivery, int totalDiscount, int totalPg,  String refundName, String refundAccount, String refundBank) {
+        return OrderCancel.builder()
+                .order(order)
+                .orderShipping(orderShipping)
+                .orderCancelComment(orderCancelComment)
+                .shippingTemplate(shippingTemplate)
+                .type(EOrderCancelTypeFlag.CANCEL)
+                .status(EOrderCancelStatusFlag.ORDER_CANCEL_REQUEST)
                 .code(code)
                 .reason(reason)
                 .totalAmount(totalAmount)

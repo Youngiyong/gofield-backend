@@ -4,10 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
-import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
-import com.gofield.domain.rds.domain.order.EOrderItemStatusFlag;
-import com.gofield.domain.rds.domain.order.OrderItem;
-import com.gofield.domain.rds.domain.order.OrderShipping;
+import com.gofield.domain.rds.domain.order.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -43,13 +40,20 @@ public class OrderCancelItemTempResponse {
     private String refundName;
     private String refundAccount;
     private String refundBank;
+    private String userTel;
+    private String username;
+    private String zipCode;
+    private String address;
+    private String addressExtra;
+
+
 
     @Builder
     private OrderCancelItemTempResponse(Long id, Long orderId, Long itemId, Long itemOptionId, Long shippingTemplateId, String itemNumber,
                                         String name, List<String> optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
                                         int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int refundPrice, String paymentCompany,
                                         String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderCancelReasonFlag reason,
-                                        String refundName, String refundAccount, String refundBank){
+                                        String refundName, String refundAccount, String refundBank, String userTel, String username, String zipCode, String address, String addressExtra){
         this.id = id;
         this.orderId = orderId;
         this.itemId = itemId;
@@ -76,6 +80,11 @@ public class OrderCancelItemTempResponse {
         this.refundName = refundName;
         this.refundAccount  = refundAccount;
         this.refundBank = refundBank;
+        this.userTel = userTel;
+        this.username = username;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.addressExtra = addressExtra;
     }
 
     public static OrderCancelItemTempResponse of(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
@@ -104,7 +113,7 @@ public class OrderCancelItemTempResponse {
         }
 
         int totalAmount = itemPrice * qty + deliveryPrice - discountPrice - refundPrice;
-
+        OrderShippingAddress orderShippingAddress = orderItem.getOrder().getShippingAddress();
         return OrderCancelItemTempResponse.builder()
                 .id(orderItem.getId())
                 .orderId(orderItem.getOrder().getId())
@@ -133,6 +142,11 @@ public class OrderCancelItemTempResponse {
                 .refundBank(refundBank)
                 .refundAccount(refundAccount)
                 .refundName(refundName)
+                .userTel(orderShippingAddress.getTel())
+                .username(orderShippingAddress.getName())
+                .zipCode(orderShippingAddress.getZipCode())
+                .address(orderShippingAddress.getAddress())
+                .addressExtra(orderShippingAddress.getAddressExtra())
                 .build();
     }
 
