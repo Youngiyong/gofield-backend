@@ -101,6 +101,7 @@ public class OrderCancelItemTempResponse {
             /*
             ToDO: 조건부 배송 추후 정해지면 처리
              */
+            deliveryPrice = orderItem.getItem().getShippingTemplate().getCharge();
         }
         int refundPrice = 0;
 
