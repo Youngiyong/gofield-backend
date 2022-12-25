@@ -90,8 +90,9 @@ public class ItemController {
     @ApiOperation(value = "묶음 상품 - 상품 리스트 조회")
     @GetMapping("/v1/bundle/{bundleId}/item")
     public ApiResponse<ItemClassificationPaginationResponse> getBundleItemList(@PathVariable Long bundleId,
-                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
-        return ApiResponse.success(itemService.getBundleItemList(bundleId, pageable));
+                                                                               @RequestParam(required = false) EItemClassificationFlag classification,
+                                                                               @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.getBundleItemList(bundleId, classification, pageable));
     }
 
 

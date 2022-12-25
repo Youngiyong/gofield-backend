@@ -114,9 +114,9 @@ public class ItemService {
     }
 
     @Transactional(readOnly = true)
-    public ItemClassificationPaginationResponse getBundleItemList(Long bundleId, Pageable pageable){
+    public ItemClassificationPaginationResponse getBundleItemList(Long bundleId, EItemClassificationFlag classification, Pageable pageable){
         User user = userService.getUser();
-        Page<ItemClassificationProjectionResponse> result = itemBundleRepository.findAllItemByBundleId(user.getId(), bundleId, pageable);
+        Page<ItemClassificationProjectionResponse> result = itemBundleRepository.findAllItemByBundleIdAndClassification(user.getId(), bundleId, classification, pageable);
         List<ItemClassificationResponse> list = ItemClassificationResponse.of(result.getContent());
         return ItemClassificationPaginationResponse.of(list, PaginationResponse.of(result));
     }

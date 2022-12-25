@@ -46,6 +46,13 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         return itemBundle.name.contains(keyword).or(itemBundle.category.name.contains(keyword).or(itemBundle.brand.name.contains(keyword)));
     }
 
+    private BooleanExpression eqClassification(EItemClassificationFlag classification){
+        if(classification == null){
+            return null;
+        }
+        return item.classification.eq(classification);
+    }
+
     private OrderSpecifier orderByAllCategorySort(EItemBundleSort sort){
         if(sort==null){
             return itemBundleAggregation.reviewCount.desc();
@@ -194,7 +201,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     @Override
-    public Page<ItemClassificationProjectionResponse> findAllItemByBundleId(Long userId, Long bundleId, Pageable pageable) {
+    public Page<ItemClassificationProjectionResponse> findAllItemByBundleIdAndClassification(Long userId, Long bundleId, EItemClassificationFlag classification, Pageable pageable) {
         if(userId!=null){
             List<ItemClassificationProjection> items = jpaQueryFactory
                     .select(new QItemClassificationProjection(
@@ -222,7 +229,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.brand.id.eq(brand.id))
                     .leftJoin(userLikeItem)
                     .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId), eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -247,7 +254,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.brand.id.eq(brand.id))
                     .leftJoin(userLikeItem)
                     .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId),  eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
                     .fetch();
 
             return new PageImpl<>(list, pageable, totalCount.size());
@@ -275,7 +282,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId),  eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -298,7 +305,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId),  eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
                     .fetch();
 
             return new PageImpl<>(list, pageable, totalCount.size());
