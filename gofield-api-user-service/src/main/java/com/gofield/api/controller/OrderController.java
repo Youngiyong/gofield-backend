@@ -118,8 +118,8 @@ public class OrderController {
 
     @ApiOperation(value = "주문 취소/교환/반품 전 상품 정보")
     @GetMapping("/v1/item/{orderItemId}")
-    public ApiResponse<OrderCancelItemTempResponse> getOrderItem(@PathVariable Long orderItemId, @RequestParam EOrderCancelReasonFlag reason){
-        return ApiResponse.success(orderService.getOrderItemCancelAndChangeAndReturnTemp(orderItemId, reason));
+    public ApiResponse<OrderCancelItemTempResponse> getOrderItem(@PathVariable Long orderItemId){
+        return ApiResponse.success(orderService.getOrderItemCancelAndChangeAndReturnTemp(orderItemId));
     }
 
     @ApiOperation(value = "취소/반품/교환 리스트")

@@ -357,7 +357,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderCancelItemTempResponse getOrderItemCancelAndChangeAndReturnTemp(Long orderItemId, EOrderCancelReasonFlag reason){
+    public OrderCancelItemTempResponse getOrderItemCancelAndChangeAndReturnTemp(Long orderItemId){
         User user = userService.getUserNotNonUser();
         UserAccount userAccount = null;
         String refundBank = null;
@@ -367,7 +367,6 @@ public class OrderService {
         if(orderItem==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
         }
-        validateOrderShippingCancelStatus(orderItem.getOrderShipping().getStatus());
         if(orderItem.getOrder().getPaymentType().equals("BANK")){
             userAccount = userService.getUserAccount(user.getId());
             if(userAccount==null){
@@ -377,7 +376,7 @@ public class OrderService {
             refundBank = userAccount.getBankName();
             refundAccount = userAccount.getBankAccountNumber();
         }
-        return OrderCancelItemTempResponse.of(orderItem, reason, refundName, refundBank, refundAccount);
+        return OrderCancelItemTempResponse.of(orderItem, refundName, refundBank, refundAccount);
     }
 
     @Transactional
@@ -388,7 +387,7 @@ public class OrderService {
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 않는 주문 상품 번호입니다.", orderItemId));
         }
         validateOrderShippingReturnAndChangeStatus(orderItem.getOrderShipping().getStatus());
-        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, request.getReason(), null, null, null);
+        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem,null, null, null);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, request.getUsername(), request.getUserTel(), request.getZipCode(), request.getAddress(), request.getAddressExtra(), request.getReason().getDescription());
         orderCancelCommentRepository.save(orderCancelComment);
         OrderCancel orderCancel = OrderCancel.newChangeInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice());
@@ -419,7 +418,7 @@ public class OrderService {
             refundBank = userAccount.getBankName();
             refundAccount = userAccount.getBankAccountNumber();
         }
-        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, request.getReason(), refundName, refundAccount, refundBank);
+        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, refundName, refundAccount, refundBank);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, request.getUsername(), request.getUserTel(), request.getZipCode(), request.getAddress(), request.getAddressExtra(), request.getReason().getDescription());
         orderCancelCommentRepository.save(orderCancelComment);
         OrderCancel orderCancel = OrderCancel.newReturnInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
@@ -449,7 +448,7 @@ public class OrderService {
             refundAccount = userAccount.getBankAccountNumber();
         }
         OrderShippingAddress orderShippingAddress = orderItem.getOrder().getShippingAddress();
-        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, request.getReason(), refundName, refundAccount, refundBank);
+        OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, refundName, refundAccount, refundBank);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, orderShippingAddress.getName(), orderShippingAddress.getTel(), orderShippingAddress.getZipCode(), orderShippingAddress.getAddress(), orderShippingAddress.getAddressExtra(), request.getReason().getDescription());
         orderCancelCommentRepository.save(orderCancelComment);
         OrderCancel orderCancel = OrderCancel.newCancelInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());

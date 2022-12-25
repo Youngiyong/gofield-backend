@@ -36,7 +36,6 @@ public class OrderCancelItemTempResponse {
     private String cardNumber;
     private String cardType;
     private int installmentPlanMonth;
-    private EOrderCancelReasonFlag reason;
     private String refundName;
     private String refundAccount;
     private String refundBank;
@@ -52,7 +51,7 @@ public class OrderCancelItemTempResponse {
     private OrderCancelItemTempResponse(Long id, Long orderId, Long itemId, Long itemOptionId, Long shippingTemplateId, String itemNumber,
                                         String name, List<String> optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
                                         int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int refundPrice, String paymentCompany,
-                                        String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderCancelReasonFlag reason,
+                                        String paymentType, String cardNumber, String cardType, int installmentPlanMonth,
                                         String refundName, String refundAccount, String refundBank, String userTel, String username, String zipCode, String address, String addressExtra){
         this.id = id;
         this.orderId = orderId;
@@ -76,7 +75,6 @@ public class OrderCancelItemTempResponse {
         this.cardNumber = cardNumber;
         this.cardType = cardType;
         this.installmentPlanMonth = installmentPlanMonth;
-        this.reason = reason;
         this.refundName = refundName;
         this.refundAccount  = refundAccount;
         this.refundBank = refundBank;
@@ -88,7 +86,7 @@ public class OrderCancelItemTempResponse {
     }
 
 
-    public static OrderCancelItemTempResponse ofReturn(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
+    public static OrderCancelItemTempResponse ofReturn(OrderItem orderItem, String refundName, String refundAccount, String refundBank){
         int qty = orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty();
         int itemPrice = orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
         int refundPrice = 0;
@@ -133,7 +131,6 @@ public class OrderCancelItemTempResponse {
                 .cardNumber(orderItem.getOrder().getCardNumber())
                 .cardType(orderItem.getOrder().getCardType())
                 .installmentPlanMonth(orderItem.getOrder().getInstallmentPlanMonth())
-                .reason(reason)
                 .refundBank(refundBank)
                 .refundAccount(refundAccount)
                 .refundName(refundName)
@@ -145,7 +142,7 @@ public class OrderCancelItemTempResponse {
                 .build();
     }
 
-    public static OrderCancelItemTempResponse of(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
+    public static OrderCancelItemTempResponse of(OrderItem orderItem, String refundName, String refundAccount, String refundBank){
         int qty = orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty();
         int itemPrice = orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
         /*
@@ -186,7 +183,6 @@ public class OrderCancelItemTempResponse {
                 .cardNumber(orderItem.getOrder().getCardNumber())
                 .cardType(orderItem.getOrder().getCardType())
                 .installmentPlanMonth(orderItem.getOrder().getInstallmentPlanMonth())
-                .reason(reason)
                 .refundBank(refundBank)
                 .refundAccount(refundAccount)
                 .refundName(refundName)

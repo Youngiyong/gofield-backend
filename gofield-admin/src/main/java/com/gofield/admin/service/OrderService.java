@@ -37,13 +37,11 @@ public class OrderService {
     private final OrderCancelRepository orderCancelRepository;
     private final OrderShippingRepository orderShippingRepository;
     private final OrderShippingLogRepository orderShippingLogRepository;
-
     private final UserRepository userRepository;
     private final UserAccountRepository userAccountRepository;
     private final OrderItemRepository orderItemRepository;
     private final ItemRepository itemRepository;
     private final ItemOptionRepository itemOptionRepository;
-
     private final ItemStockRepository itemStockRepository;
     private final OrderCancelCommentRepository orderCancelCommentRepository;
     private final PurchaseCancelRepository purchaseCancelRepository;
@@ -218,6 +216,8 @@ public class OrderService {
                 }
             }
             orderCancel.getOrderShipping().updateReturnComplete();
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
+            orderCancel.getOrderShipping().updateShippingComplete();
         }
         orderCancel.updateAdminReturnStatus(status);
     }
@@ -232,6 +232,8 @@ public class OrderService {
         }
         if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)) {
             orderCancel.getOrderShipping().updateChangeComplete();
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
+            orderCancel.getOrderShipping().updateShippingComplete();
         }
         orderCancel.updateAdminChangeStatus(status);
     }
