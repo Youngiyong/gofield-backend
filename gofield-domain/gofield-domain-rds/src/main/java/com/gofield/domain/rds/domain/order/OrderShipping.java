@@ -147,12 +147,19 @@ public class OrderShipping extends BaseTimeEntity {
     }
 
     public void updateChange() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE; }
+    public void updateChangeComplete() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE; }
 
     public void updateCancel(){
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL;
     }
 
+    public void updateCancelComplete(){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE;
+    }
+
+
     public void updateReturn() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN; }
+    public void updateReturnComplete() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE; }
 
     public void updateCarrier(String carrier, String trackingNumber){
         this.carrier = carrier;

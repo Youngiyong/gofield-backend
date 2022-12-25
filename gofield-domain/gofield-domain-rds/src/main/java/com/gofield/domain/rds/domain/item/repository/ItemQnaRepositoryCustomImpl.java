@@ -40,6 +40,7 @@ public class ItemQnaRepositoryCustomImpl implements ItemQnaRepositoryCustom {
                 .from(itemQna)
                 .where(itemQna.item.id.eq(itemId),
                         eqUserId(userId))
+                .orderBy(itemQna.id.desc())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .fetch();
