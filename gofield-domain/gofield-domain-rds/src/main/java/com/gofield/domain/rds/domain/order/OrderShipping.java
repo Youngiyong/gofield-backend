@@ -127,11 +127,6 @@ public class OrderShipping extends BaseTimeEntity {
         this.orderItems.add(orderItem);
     }
 
-    public void updateComplete(){
-        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE;
-        this.finishedDate = LocalDateTime.now();
-    }
-
     public void updateDelete(){
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE;
         this.deleteDate = LocalDateTime.now();
@@ -146,6 +141,11 @@ public class OrderShipping extends BaseTimeEntity {
         }
     }
 
+    public void updateShippingComplete(){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE;
+        this.finishedDate = LocalDateTime.now();
+    }
+
     public void updateChange() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE; }
     public void updateChangeComplete() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE; }
 
@@ -157,7 +157,6 @@ public class OrderShipping extends BaseTimeEntity {
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE;
     }
 
-
     public void updateReturn() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN; }
     public void updateReturnComplete() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE; }
 
@@ -167,6 +166,11 @@ public class OrderShipping extends BaseTimeEntity {
     }
 
     public void updateAdminStatus(EOrderShippingStatusFlag status){
+        if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY)){
+            this.deliveryDate = LocalDateTime.now();
+        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+            this.deliveredDate = LocalDateTime.now();
+        }
         this.status = status;
     }
 

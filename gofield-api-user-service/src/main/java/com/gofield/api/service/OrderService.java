@@ -292,8 +292,7 @@ public class OrderService {
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 반품 접수가 되어 있어 구매 확정이 불가합니다.", shippingNumber));
         }
-
-        orderShipping.updateComplete();
+        orderShipping.updateShippingComplete();
     }
 
     @Transactional(readOnly = true)
@@ -354,6 +353,7 @@ public class OrderService {
             itemBundleAggregation.updateReviewScore(reviewCount, reviewScore/reviewCount);
         }
         orderItem.updateReview();
+        orderItem.getOrderShipping().updateShippingComplete();
     }
 
     @Transactional(readOnly = true)

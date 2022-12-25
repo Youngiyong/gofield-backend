@@ -87,12 +87,11 @@ public class OrderCancelItemTempResponse {
         this.addressExtra = addressExtra;
     }
 
-    public static OrderCancelItemTempResponse of(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
+
+    public static OrderCancelItemTempResponse ofReturn(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
         int qty = orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty();
         int itemPrice = orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
-        /*
-           ToDo : DiscountPrice
-        */
+        int refundPrice = 0;
         int discountPrice = 0;
         int deliveryPrice = 0;
         if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.PAY)){
@@ -101,18 +100,13 @@ public class OrderCancelItemTempResponse {
             /*
             ToDO: 조건부 배송 추후 정해지면 처리
              */
-            deliveryPrice = orderItem.getItem().getShippingTemplate().getCharge();
+            if(orderItem.getQty()*orderItem.getPrice()<orderItem.getItem().getShippingTemplate().getCondition()){
+                deliveryPrice = orderItem.getItem().getShippingTemplate().getCharge();
+            } else {
+                deliveryPrice = 0;
+            }
         }
-        int refundPrice = 0;
-
-        OrderShipping orderShipping = orderItem.getOrderShipping();
-        switch (orderShipping.getStatus()){
-            case ORDER_SHIPPING_DELIVERY_COMPLETE: case ORDER_SHIPPING_COMPLETE:
-                refundPrice = orderItem.getItem().getShippingTemplate()==null ? 0 : orderItem.getItem().getShippingTemplate().getTakebackCharge();
-            default:
-                refundPrice = 0;
-        }
-
+        refundPrice = orderItem.getItem().getShippingTemplate().getTakebackCharge();
         int totalAmount = itemPrice * qty + deliveryPrice - discountPrice - refundPrice;
         OrderShippingAddress orderShippingAddress = orderItem.getOrder().getShippingAddress();
         return OrderCancelItemTempResponse.builder()
@@ -134,6 +128,59 @@ public class OrderCancelItemTempResponse {
                 .deliveryPrice(deliveryPrice)
                 .discountPrice(discountPrice)
                 .refundPrice(refundPrice)
+                .paymentCompany(orderItem.getOrder().getPaymentCompany())
+                .paymentType(orderItem.getOrder().getPaymentType())
+                .cardNumber(orderItem.getOrder().getCardNumber())
+                .cardType(orderItem.getOrder().getCardType())
+                .installmentPlanMonth(orderItem.getOrder().getInstallmentPlanMonth())
+                .reason(reason)
+                .refundBank(refundBank)
+                .refundAccount(refundAccount)
+                .refundName(refundName)
+                .userTel(orderShippingAddress.getTel())
+                .username(orderShippingAddress.getName())
+                .zipCode(orderShippingAddress.getZipCode())
+                .address(orderShippingAddress.getAddress())
+                .addressExtra(orderShippingAddress.getAddressExtra())
+                .build();
+    }
+
+    public static OrderCancelItemTempResponse of(OrderItem orderItem, EOrderCancelReasonFlag reason, String refundName, String refundAccount, String refundBank){
+        int qty = orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty();
+        int itemPrice = orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
+        /*
+           ToDo : DiscountPrice
+        */
+        int discountPrice = 0;
+        int deliveryPrice = 0;
+        if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.PAY)){
+            deliveryPrice = orderItem.getItem().getDeliveryPrice();
+        } else if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.CONDITION)){
+            /*
+            ToDO: 조건부 배송 추후 정해지면 처리
+             */
+            deliveryPrice = orderItem.getItem().getShippingTemplate().getCharge();
+        }
+        int totalAmount = itemPrice * qty + deliveryPrice - discountPrice;
+        OrderShippingAddress orderShippingAddress = orderItem.getOrder().getShippingAddress();
+        return OrderCancelItemTempResponse.builder()
+                .id(orderItem.getId())
+                .orderId(orderItem.getOrder().getId())
+                .itemId(orderItem.getItem().getId())
+                .itemOptionId(orderItem.getOrderItemOption()==null ? null : orderItem.getOrderItemOption().getItemOptionId())
+                .shippingTemplateId(orderItem.getItem().getShippingTemplate()==null ? null : orderItem.getItem().getShippingTemplate().getId())
+                .itemNumber(orderItem.getItemNumber())
+                .name(orderItem.getName())
+                .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
+                .thumbnail(Constants.CDN_URL.concat(orderItem.getItem().getThumbnail().concat(Constants.RESIZE_150x150)))
+                .status(orderItem.getStatus())
+                .isOption(orderItem.getOrderItemOption()==null ? false : true)
+                .qty(qty)
+                .totalAmount(totalAmount)
+                .itemPrice(itemPrice)
+                .discountPrice(discountPrice)
+                .deliveryPrice(deliveryPrice)
+                .discountPrice(discountPrice)
                 .paymentCompany(orderItem.getOrder().getPaymentCompany())
                 .paymentType(orderItem.getOrder().getPaymentType())
                 .cardNumber(orderItem.getOrder().getCardNumber())
