@@ -6,6 +6,7 @@ import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.EItemBundleSort;
+import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import com.gofield.domain.rds.domain.item.projection.*;
@@ -17,7 +18,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
@@ -151,7 +154,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     @Override
-    public ItemBundleImageProjectionResponse findByBundleId(Long userId, Long bundleId, Pageable pageable) {
+    public ItemBundleImageProjectionResponse findAggregationByBundleId(Long bundleId){
         ItemBundleImageProjection bundle = jpaQueryFactory
                 .select(new QItemBundleImageProjection(
                         itemBundle.id,
@@ -176,6 +179,22 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .where(itemBundleImage.bundle.id.eq(bundleId))
                 .fetch();
 
+        List<EItemClassificationFlag> allCount = jpaQueryFactory
+                .select(item.classification)
+                .from(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
+                .fetch();
+
+        Long newItemCount = allCount.stream().filter(p -> p.equals(EItemClassificationFlag.NEW)).collect(Collectors.counting());
+        Long usedItemCount = allCount.stream().filter(p-> p.equals(EItemClassificationFlag.USED)).collect(Collectors.counting());
+
+        return ItemBundleImageProjectionResponse.of(bundle, allCount.size(), newItemCount, usedItemCount, bundleImages);
+    }
+
+    @Override
+    public Page<ItemClassificationProjectionResponse> findAllItemByBundleId(Long userId, Long bundleId, Pageable pageable) {
         if(userId!=null){
             List<ItemClassificationProjection> items = jpaQueryFactory
                     .select(new QItemClassificationProjection(
@@ -203,11 +222,17 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.brand.id.eq(brand.id))
                     .leftJoin(userLikeItem)
                     .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
+
+            if(items.isEmpty()){
+                return new PageImpl<>(new ArrayList<>(), pageable, 0);
+            }
+
+            List<ItemClassificationProjectionResponse> list = ItemClassificationProjectionResponse.of(items);
 
             List<Long> totalCount = jpaQueryFactory
                     .select(item.id)
@@ -222,13 +247,10 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.brand.id.eq(brand.id))
                     .leftJoin(userLikeItem)
                     .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
                     .fetch();
 
-            PaginationResponse page = PaginationResponse.of(new PageImpl<>(items, pageable, totalCount.size()));
-
-            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.of(items), page);
-
+            return new PageImpl<>(list, pageable, totalCount.size());
         } else {
             List<ItemNonMemberClassificationProjection> items = jpaQueryFactory
                     .select(new QItemNonMemberClassificationProjection(
@@ -253,11 +275,17 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
+
+            if(items.isEmpty()){
+                return new PageImpl<>(new ArrayList<>(), pageable, 0);
+            }
+
+            List<ItemClassificationProjectionResponse> list = ItemClassificationProjectionResponse.ofNon(items);
 
             List<Long> totalCount = jpaQueryFactory
                     .select(item.id)
@@ -270,13 +298,11 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(item.bundle.id.eq(bundle.getId()), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
                     .fetch();
 
-            PaginationResponse page = PaginationResponse.of(new PageImpl<>(items, pageable, totalCount.size()));
-
-            return ItemBundleImageProjectionResponse.of(bundle, bundleImages, ItemClassificationProjectionResponse.ofNon(items), page);
-        }
+            return new PageImpl<>(list, pageable, totalCount.size());
+      }
     }
 
     @Override

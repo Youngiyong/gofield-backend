@@ -20,15 +20,14 @@ public class ItemBundleImageProjectionResponse {
     private Double reviewScore;
     private int newLowestPrice;
     private int usedLowestPrice;
-
+    private int allItemCount;
+    private Long newItemCount;
+    private Long usedItemCount;
     private List<String> images;
 
-    private List<ItemClassificationProjectionResponse> items;
-
-    private PaginationResponse page;
 
     @Builder
-    public ItemBundleImageProjectionResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, List<String> images, List<ItemClassificationProjectionResponse> items, PaginationResponse page) {
+    public ItemBundleImageProjectionResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int allItemCount, Long newItemCount, Long usedItemCount,  List<String> images) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -37,12 +36,13 @@ public class ItemBundleImageProjectionResponse {
         this.reviewScore = reviewScore;
         this.newLowestPrice = newLowestPrice;
         this.usedLowestPrice = usedLowestPrice;
+        this.allItemCount = allItemCount;
+        this.newItemCount = newItemCount;
+        this.usedItemCount = usedItemCount;
         this.images = images;
-        this.items = items;
-        this.page = page;
     }
 
-    public static ItemBundleImageProjectionResponse of(ItemBundleImageProjection projection,  List<String> images, List<ItemClassificationProjectionResponse> items, PaginationResponse page){
+    public static ItemBundleImageProjectionResponse of(ItemBundleImageProjection projection, int allItemCount, Long newItemCount, Long usedItemCount, List<String> images){
         return ItemBundleImageProjectionResponse.builder()
                 .id(projection.getId())
                 .name(projection.getName())
@@ -52,9 +52,10 @@ public class ItemBundleImageProjectionResponse {
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())
                 .usedLowestPrice(projection.getUsedLowestPrice())
+                .allItemCount(allItemCount)
+                .newItemCount(newItemCount)
+                .usedItemCount(usedItemCount)
                 .images(images)
-                .items(items)
-                .page(page)
                 .build();
     }
 

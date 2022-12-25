@@ -21,15 +21,13 @@ public class ItemBundleResponse {
     private Double reviewScore;
     private int newLowestPrice;
     private int usedLowestPrice;
-    private int newItemCount;
-    private int usedItemCount;
-
-    private PaginationResponse page;
+    private int allItemCount;
+    private Long newItemCount;
+    private Long usedItemCount;
     private List<String> images;
-    private List<ItemClassificationResponse> items;
 
     @Builder
-    private ItemBundleResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int newItemCount, int usedItemCount, PaginationResponse page, List<String> images, List<ItemClassificationResponse> items){
+    private ItemBundleResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int allItemCount,  Long newItemCount, Long usedItemCount, List<String> images){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -38,25 +36,13 @@ public class ItemBundleResponse {
         this.reviewScore = reviewScore;
         this.newLowestPrice = newLowestPrice;
         this.usedLowestPrice = usedLowestPrice;
+        this.allItemCount = allItemCount;
         this.newItemCount = newItemCount;
         this.usedItemCount = usedItemCount;
-        this.page = page;
         this.images = images;
-        this.items = items;
     }
 
     public static ItemBundleResponse of(ItemBundleImageProjectionResponse projection){
-        int newItemCount = 0;
-        int usedItemCount = 0;
-        List<ItemClassificationResponse> items = ItemClassificationResponse.of(projection.getItems());
-        for(ItemClassificationResponse classification: items){
-            if(classification.getClassification().equals(EItemClassificationFlag.USED)){
-                usedItemCount++;
-            } else {
-                newItemCount++;
-            }
-        }
-
         return ItemBundleResponse.builder()
                 .id(projection.getId())
                 .name(projection.getName())
@@ -66,13 +52,11 @@ public class ItemBundleResponse {
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())
                 .usedLowestPrice(projection.getUsedLowestPrice())
-                .newItemCount(newItemCount)
-                .usedItemCount(usedItemCount)
+                .allItemCount(projection.getAllItemCount())
+                .newItemCount(projection.getNewItemCount())
+                .usedItemCount(projection.getUsedItemCount())
                 .images(projection.getImages())
-                .items(items)
-                .page(projection.getPage())
                 .build();
     }
-
 
 }

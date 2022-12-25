@@ -104,11 +104,21 @@ public class ItemService {
         return ItemClassificationResponse.of(result);
     }
 
-    @Transactional(readOnly = true)
-    public ItemBundleResponse getBundleItemList(Long bundleId, Pageable pageable){
-        User user = userService.getUser();
-        ItemBundleImageProjectionResponse result = itemBundleRepository.findByBundleId(user.getId(), bundleId, pageable);
+    @Transactional
+    public ItemBundleResponse getBundle(Long bundleId){
+        ItemBundleImageProjectionResponse result = itemBundleRepository.findAggregationByBundleId(bundleId);
+        if(result==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "<%s>는 존재하지 않는 묶음 상품입니다.");
+        }
         return ItemBundleResponse.of(result);
+    }
+
+    @Transactional(readOnly = true)
+    public ItemClassificationPaginationResponse getBundleItemList(Long bundleId, Pageable pageable){
+        User user = userService.getUser();
+        Page<ItemClassificationProjectionResponse> result = itemBundleRepository.findAllItemByBundleId(user.getId(), bundleId, pageable);
+        List<ItemClassificationResponse> list = ItemClassificationResponse.of(result.getContent());
+        return ItemClassificationPaginationResponse.of(list, PaginationResponse.of(result));
     }
 
     @Transactional(readOnly = true)

@@ -21,7 +21,6 @@ public class ItemClassificationProjection {
     private final int deliveryPrice;
     private final Long likeId;
     private final EItemClassificationFlag classification;
-
     private final EItemSpecFlag spec;
     private final EItemDeliveryFlag delivery;
     private final EItemGenderFlag gender;

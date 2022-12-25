@@ -81,12 +81,19 @@ public class ItemController {
         return ApiResponse.success(itemService.getCategoryItemBundleList(categoryId, subCategoryId, sort, pageable));
     }
 
-    @ApiOperation(value = "묶음 상품 - 상품 조회")
+    @ApiOperation(value = "묶음 상품 상세 조회")
     @GetMapping("/v1/bundle/{bundleId}")
-    public ApiResponse<ItemBundleResponse> getBundleItemList(@PathVariable Long bundleId,
+    public ApiResponse<ItemBundleResponse> getBundleItemList(@PathVariable Long bundleId){
+        return ApiResponse.success(itemService.getBundle(bundleId));
+    }
+
+    @ApiOperation(value = "묶음 상품 - 상품 리스트 조회")
+    @GetMapping("/v1/bundle/{bundleId}/item")
+    public ApiResponse<ItemClassificationPaginationResponse> getBundleItemList(@PathVariable Long bundleId,
                                                              @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getBundleItemList(bundleId, pageable));
     }
+
 
     @ApiOperation(value = "묶음 상품 - 다른 (새/중고) 상품 조회")
     @GetMapping("/v1/bundle/{bundleId}/other/{itemId}")

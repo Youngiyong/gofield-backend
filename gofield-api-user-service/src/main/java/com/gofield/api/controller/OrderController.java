@@ -7,7 +7,6 @@ import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
 import com.gofield.domain.rds.domain.order.EOrderCancelTypeFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
-import com.gofield.domain.rds.domain.order.EOrderStatusFlag;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -117,10 +116,10 @@ public class OrderController {
         return ApiResponse.success(orderService.getOrderItemReviewDetailList(pageable));
     }
 
-    @ApiOperation(value = "주문 취소전 상품 정보")
+    @ApiOperation(value = "주문 취소/교환/반품 전 상품 정보")
     @GetMapping("/v1/item/{orderItemId}")
     public ApiResponse<OrderCancelItemTempResponse> getOrderItem(@PathVariable Long orderItemId, @RequestParam EOrderCancelReasonFlag reason){
-        return ApiResponse.success(orderService.getOrderItemCancelTemp(orderItemId, reason));
+        return ApiResponse.success(orderService.getOrderItemCancelAndChangeAndReturnTemp(orderItemId, reason));
     }
 
     @ApiOperation(value = "취소/반품/교환 리스트")

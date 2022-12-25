@@ -359,7 +359,7 @@ public class OrderService {
     }
 
     @Transactional(readOnly = true)
-    public OrderCancelItemTempResponse getOrderItemCancelTemp(Long orderItemId, EOrderCancelReasonFlag reason){
+    public OrderCancelItemTempResponse getOrderItemCancelAndChangeAndReturnTemp(Long orderItemId, EOrderCancelReasonFlag reason){
         User user = userService.getUserNotNonUser();
         UserAccount userAccount = null;
         String refundBank = null;
