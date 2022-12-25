@@ -67,8 +67,9 @@
                                     <th class="text-center">id</th>
                                     <th class="text-center">주문번호/시각</th>
                                     <th class="text-center">주문상품</th>
+                                    <th class="text-center">총취소금액</th>
                                     <th class="text-center">수량</th>
-                                    <th class="text-center">취소금액</th>
+                                    <th class="text-center">상품가격</th>
                                     <th class="text-center">취소요청일</th>
                                     <th class="text-center">배송정보</th>
                                     <th class="text-center">상태</th>
@@ -90,6 +91,7 @@
                                         <div class="text-center" th:text="${data.optionName}">
                                         </div>
                                     </td>
+                                    <td class="text-center" th:text="${data.totalAmount}"></td>
                                     <td class="text-center" th:text="${data.qty}"></td>
                                     <td class="text-center" th:text="${data.price}"></td>
                                     <td>

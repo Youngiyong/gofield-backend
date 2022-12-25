@@ -95,8 +95,6 @@ public class OrderChangeDto {
     public static OrderChangeDto of(OrderCancel orderCancel){
         OrderCancelItem orderCancelItem = orderCancel.getOrderCancelItems().get(0);
         Order order = orderCancel.getOrder();
-        int qty = orderCancelItem.getQty();
-        int price = orderCancelItem.getPrice();
         return OrderChangeDto.builder()
                 .id(orderCancel.getId())
                 .orderNumber(orderCancel.getOrder().getOrderNumber())
@@ -109,8 +107,6 @@ public class OrderChangeDto {
                 .optionName(orderCancelItem.getOptionName())
                 .price(orderCancelItem.getPrice())
                 .qty(orderCancelItem.getQty())
-                .qty(qty)
-                .price(price)
                 .customerTel(order.getShippingAddress().getTel())
                 .customerName(order.getShippingAddress().getName())
                 .address(order.getShippingAddress().getAddress())

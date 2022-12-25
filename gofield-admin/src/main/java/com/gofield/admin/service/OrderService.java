@@ -9,10 +9,7 @@ import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.common.EGofieldService;
-import com.gofield.domain.rds.domain.item.Item;
-import com.gofield.domain.rds.domain.item.ItemOption;
-import com.gofield.domain.rds.domain.item.ItemOptionRepository;
-import com.gofield.domain.rds.domain.item.ItemRepository;
+import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.order.*;
 import com.gofield.domain.rds.domain.order.projection.OrderCancelInfoAdminProjectionResponse;
 import com.gofield.domain.rds.domain.order.projection.OrderChangeInfoAdminProjectionResponse;
@@ -46,6 +43,8 @@ public class OrderService {
     private final OrderItemRepository orderItemRepository;
     private final ItemRepository itemRepository;
     private final ItemOptionRepository itemOptionRepository;
+
+    private final ItemStockRepository itemStockRepository;
     private final OrderCancelCommentRepository orderCancelCommentRepository;
     private final PurchaseCancelRepository purchaseCancelRepository;
     private final ThirdPartyService thirdPartyService;
@@ -169,9 +168,22 @@ public class OrderService {
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
             purchaseCancelRepository.save(purchase);
-            /*
-            ToDo Stock 증가
-             */
+
+            List<OrderCancelItem> cancelItemList = orderCancel.getOrderCancelItems();
+            for(OrderCancelItem orderCancelItem: cancelItemList){
+                String itemNumber = null;
+                if(orderCancelItem.getType().equals(EOrderCancelItemFlag.ORDER_ITEM)){
+                    Item item = orderCancelItem.getItem();
+                    itemNumber = item.getItemNumber();
+                } else if(orderCancelItem.getType().equals(EOrderCancelItemFlag.ORDER_ITEM_OPTION)){
+                    ItemOption itemOption = orderCancelItem.getItemOption();
+                    itemNumber = itemOption.getItemNumber();
+                }
+                ItemStock itemStock = itemStockRepository.findByItemNumber(itemNumber);
+                if(itemStock!=null){
+                    itemStock.updateOrderCancel();
+                }
+            }
             orderCancel.getOrderShipping().updateCancelComplete();
         }
         orderCancel.updateAdminCancelStatus(status);
@@ -189,9 +201,22 @@ public class OrderService {
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
             purchaseCancelRepository.save(purchase);
-            /*
-            ToDo Stock 증가
-             */
+
+            List<OrderCancelItem> cancelItemList = orderCancel.getOrderCancelItems();
+            for(OrderCancelItem orderCancelItem: cancelItemList){
+                String itemNumber = null;
+                if(orderCancelItem.getType().equals(EOrderCancelItemFlag.ORDER_ITEM)){
+                    Item item = orderCancelItem.getItem();
+                    itemNumber = item.getItemNumber();
+                } else if(orderCancelItem.getType().equals(EOrderCancelItemFlag.ORDER_ITEM_OPTION)){
+                    ItemOption itemOption = orderCancelItem.getItemOption();
+                    itemNumber = itemOption.getItemNumber();
+                }
+                ItemStock itemStock = itemStockRepository.findByItemNumber(itemNumber);
+                if(itemStock!=null){
+                    itemStock.updateOrderCancel();
+                }
+            }
             orderCancel.getOrderShipping().updateReturnComplete();
         }
         orderCancel.updateAdminReturnStatus(status);
@@ -229,18 +254,23 @@ public class OrderService {
         OrderCancelItemTempDto orderItemInfo = OrderCancelItemTempDto.of(orderItem, request.getReason(), refundName, refundAccount, refundBank);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, orderShippingAddress.getName(), orderShippingAddress.getTel(), orderShippingAddress.getZipCode(), orderShippingAddress.getAddress(), orderShippingAddress.getAddressExtra(), request.getReason().getDescription());
         orderCancelCommentRepository.save(orderCancelComment);
-        /*
-        TODo: 반품비 제거, 할인율 제거 후 환불 처리 필요
-         */
-        /*
-            ToDo Stock 증가
-         */
+
         OrderCancel orderCancel = OrderCancel.newCancelCompleteInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), 0,  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
         OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : AdminUtil.toJsonStr(orderItemInfo.getOptionName()), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
 
+        String itemNumber = null;
+        if(itemType.equals(EOrderCancelItemFlag.ORDER_ITEM)){
+            itemNumber = item.getItemNumber();
+        } else if(orderCancelItem.getType().equals(EOrderCancelItemFlag.ORDER_ITEM_OPTION)){
+            itemNumber = itemOption.getItemNumber();
+        }
+        ItemStock itemStock = itemStockRepository.findByItemNumber(itemNumber);
+        if(itemStock!=null){
+            itemStock.updateOrderCancel();
+        }
         TossPaymentRequest.PaymentCancel paymentCancel = TossPaymentRequest.PaymentCancel.builder()
                 .cancelAmount(orderCancel.getTotalAmount())
                 .cancelReason(request.getReason().getDescription())

@@ -43,10 +43,13 @@ public class OrderCancelDto {
 
     @ExcelColumn(headerName = "상품옵션명", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String optionName;
+
+    @ExcelColumn(headerName = "취소금액", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
+    private int totalAmount;
     @ExcelColumn(headerName = "상품가격", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private int price;
 
-    @ExcelColumn(headerName = "상품가격", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
+    @ExcelColumn(headerName = "상품수량", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private int qty;
 
     @ExcelColumn(headerName = "배송지 전화번호", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
@@ -68,7 +71,7 @@ public class OrderCancelDto {
 
     @Builder
     private OrderCancelDto(Long id, String orderNumber, String orderDate, String status, String cancelDate, EOrderCancelReasonFlag reason, String comment, String name,
-                           String optionName, int price, int qty, String customerTel, String customerName,
+                           String optionName, int totalAmount,  int price, int qty, String customerTel, String customerName,
                            String address, String addressExtra, String zipCode, String cancelReason){
         this.id = id;
         this.orderNumber = orderNumber;
@@ -79,6 +82,7 @@ public class OrderCancelDto {
         this.comment = comment;
         this.name = name;
         this.optionName = optionName;
+        this.totalAmount = totalAmount;
         this.price = price;
         this.qty = qty;
         this.customerTel = customerTel;
@@ -93,8 +97,7 @@ public class OrderCancelDto {
     public static OrderCancelDto of(OrderCancel orderCancel){
         OrderCancelItem orderCancelItem = orderCancel.getOrderCancelItems().get(0);
         Order order = orderCancel.getOrder();
-        int qty = orderCancelItem.getQty();
-        int price = orderCancelItem.getPrice();
+
         return OrderCancelDto.builder()
                 .id(orderCancel.getId())
                 .orderNumber(orderCancel.getOrder().getOrderNumber())
@@ -105,10 +108,9 @@ public class OrderCancelDto {
                 .comment(orderCancel.getOrderCancelComment().getContent())
                 .name(orderCancelItem.getName())
                 .optionName(orderCancelItem.getOptionName())
+                .totalAmount(orderCancel.getTotalAmount())
                 .price(orderCancelItem.getPrice())
                 .qty(orderCancelItem.getQty())
-                .qty(qty)
-                .price(price)
                 .customerTel(order.getShippingAddress().getTel())
                 .customerName(order.getShippingAddress().getName())
                 .address(order.getShippingAddress().getAddress())

@@ -72,4 +72,8 @@ public class ItemStock extends BaseTimeEntity {
                 .qty(qty)
                 .build();
     }
+
+    public void updateOrderCancel(){
+        this.qty += 1;
+    }
 }
