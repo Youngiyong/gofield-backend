@@ -11,6 +11,8 @@ import java.util.List;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class SignupRequest {
+    private Integer weight;
+    private Integer height;
     private List<Long> categoryList;
     @NotNull
     private List<Long> agreeList;

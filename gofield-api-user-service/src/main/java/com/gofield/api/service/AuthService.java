@@ -133,7 +133,7 @@ public class AuthService {
                     userService.insertUserHasTerm(type, user);
                 }
             }
-            user.updateSign();
+            user.updateSign(request.getWeight(), request.getHeight());
         }
 
         Authentication authentication = Authentication.of(user.getUuid(), user.getId(), Constants.TOKEN_ISSUER);

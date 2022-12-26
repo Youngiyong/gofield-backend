@@ -93,7 +93,9 @@ public class User extends BaseTimeEntity {
         this.height = height != null ? height : this.height;
 
     }
-    public void updateSign(){
+    public void updateSign(Integer weight, Integer height){
+        this.weight = weight;
+        this.height = height;
         this.status = EStatusFlag.ACTIVE;
     }
 
