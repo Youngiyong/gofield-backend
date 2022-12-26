@@ -172,6 +172,7 @@ public class OrderService {
         }
         OrderShipping orderShipping = orderCancel.getOrderShipping();
         User user = orderCancel.getOrderCancelComment().getUser();
+        orderCancel.updateAdminCancelStatus(status);
         if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE)){
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
@@ -220,7 +221,6 @@ public class OrderService {
             OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShippingLog.getStatus());
             orderShippingLogRepository.save(save);
         }
-        orderCancel.updateAdminCancelStatus(status);
     }
 
     @Transactional
@@ -233,6 +233,7 @@ public class OrderService {
         }
         OrderShipping orderShipping = orderCancel.getOrderShipping();
         User user = orderCancel.getOrderCancelComment().getUser();
+        orderCancel.updateAdminReturnStatus(status);
         if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
@@ -261,7 +262,6 @@ public class OrderService {
             OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
             orderShippingLogRepository.save(save);
         }
-        orderCancel.updateAdminReturnStatus(status);
     }
 
     @Transactional
@@ -274,6 +274,7 @@ public class OrderService {
         }
         OrderShipping orderShipping = orderCancel.getOrderShipping();
         User user = orderCancel.getOrderCancelComment().getUser();
+        orderCancel.updateAdminChangeStatus(status);
         if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)) {
             orderShipping.updateChangeComplete();
             OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
@@ -283,7 +284,6 @@ public class OrderService {
             OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
             orderShippingLogRepository.save(save);
         }
-        orderCancel.updateAdminChangeStatus(status);
     }
 
     @Transactional

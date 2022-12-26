@@ -81,9 +81,9 @@ public class ItemBundle extends BaseTimeEntity {
     }
 
     public void update(Brand brand, Category category, String name, Boolean isRecommend, String thumbnail){
-        this.brand = brand;
-        this.category = category;
-        this.name = name;
+        this.brand = brand != null ? brand : this.brand;
+        this.category = category != null ? category : this.category;
+        this.name = name != null ? name : this.name;
         this.isRecommend = isRecommend;
         this.thumbnail = thumbnail;
     }

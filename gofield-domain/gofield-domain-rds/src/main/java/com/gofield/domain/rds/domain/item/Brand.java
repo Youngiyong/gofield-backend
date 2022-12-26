@@ -51,9 +51,9 @@ public class Brand extends BaseTimeEntity {
     }
 
     public void update(String name, String thumbnail, Boolean isVisible){
-        this.name =  name != null ? name : this.name;
-        this.thumbnail =  thumbnail != thumbnail ? name : this.thumbnail;
-        this.isVisible =  isVisible != null ? isVisible : this.isVisible;
+        this.name = name != null ? name : this.name;
+        this.thumbnail = thumbnail;
+        this.isVisible = isVisible;
     }
 
     public void delete(){

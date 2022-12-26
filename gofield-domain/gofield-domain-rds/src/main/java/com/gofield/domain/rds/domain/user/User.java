@@ -85,12 +85,12 @@ public class User extends BaseTimeEntity {
     }
 
     public void updateProfile(String name, String nickName, String thumbnail, Boolean isAlertPromotion, Integer weight, Integer height){
-        this.name =  name != null ? name : this.name;
-        this.nickName = nickName != null ? nickName : this.nickName;
-        this.thumbnail = thumbnail != null ? thumbnail : this.thumbnail;
-        this.isAlertPromotion = isAlertPromotion != null ? isAlertPromotion : this.isAlertPromotion;
-        this.weight = weight != null ? weight : this.weight;
-        this.height = height != null ? height : this.height;
+        this.name = name != null ? name : this.name;
+        this.nickName = nickName;
+        this.thumbnail = thumbnail;
+        this.isAlertPromotion = isAlertPromotion;
+        this.weight = weight;
+        this.height = height;
 
     }
     public void updateSign(Integer weight, Integer height){
@@ -100,15 +100,9 @@ public class User extends BaseTimeEntity {
     }
 
     public void updateTel(String tel){
-        this.tel = tel != null ? tel : this.tel;
+        this.tel = tel;
     }
 
-    public void update(String nickName, String thumbnail, Boolean isAlertPush, Boolean isAlertPromotion){
-        this.nickName = nickName != null ? nickName : this.nickName;
-        this.thumbnail = thumbnail != null ? thumbnail : this.thumbnail;
-        this.isAlertPush = isAlertPush != null ? isAlertPush : this.isAlertPush;
-        this.isAlertPromotion = isAlertPromotion != null ? isAlertPromotion : this.isAlertPromotion;
-    }
 
     public void withDraw(){
         this.status = EStatusFlag.DELETE;
@@ -116,10 +110,10 @@ public class User extends BaseTimeEntity {
     }
 
     public void updateAdmin(String name, String nickName, String email, EStatusFlag status){
-        this.name = name != null ? name : this.name;
-        this.nickName = nickName != null ? nickName : this.nickName;
-        this.email = email != null ? email : this.email;
-        this.status = status != null ? status : this.status;
+        this.name = name;
+        this.nickName = nickName;
+        this.email = email;
+        this.status = status;
     }
 
 
