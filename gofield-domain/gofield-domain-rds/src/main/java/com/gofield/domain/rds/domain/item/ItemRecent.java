@@ -30,12 +30,16 @@ public class ItemRecent {
     @Column
     private LocalDateTime createDate;
 
+    @Column
+    private LocalDateTime updateDate;
+
     @Builder
     private ItemRecent(Long userId, Long itemId, String itemNumber){
         this.userId = userId;
         this.itemId = itemId;
         this.itemNumber = itemNumber;
         this.createDate = LocalDateTime.now();
+        this.updateDate = LocalDateTime.now();
     }
 
     public static ItemRecent newInstance(Long userId, Long itemId, String itemNumber){
@@ -44,5 +48,9 @@ public class ItemRecent {
                  .itemId(itemId)
                  .itemNumber(itemNumber)
                  .build();
+    }
+
+    public void update(){
+        this.updateDate = LocalDateTime.now();
     }
 }

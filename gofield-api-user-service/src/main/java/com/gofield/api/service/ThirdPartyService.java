@@ -45,7 +45,9 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 @Slf4j
 @Service
@@ -135,6 +137,12 @@ public class ThirdPartyService {
 
     public TossPaymentCancelResponse cancelPayment(String paymentKey, TossPaymentRequest.PaymentCancel request){
         return tossPaymentApiClient.cancelPayment(TOSS_PAYMENT_CLIENT_SECRET, paymentKey, request);
+    }
+
+    public String makeOrderItemNumber() {
+        StringBuilder cancelNumber =  new StringBuilder(String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis()));
+        cancelNumber.setCharAt(0, '9');
+        return cancelNumber.toString();
     }
 
     @Transactional(readOnly = true)
@@ -228,7 +236,7 @@ public class ThirdPartyService {
                 orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ApiUtil.toJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
                 orderItemOptionRepository.save(orderItemOption);
             }
-            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, makeOrderItemNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
             if(result.getBundleId()!=null){
                 ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(result.getBundleId());

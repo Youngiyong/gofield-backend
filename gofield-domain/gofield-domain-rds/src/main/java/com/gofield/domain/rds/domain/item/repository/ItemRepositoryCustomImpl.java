@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
+import static com.gofield.domain.rds.domain.item.QItemRecent.itemRecent;
 import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
 
 import static com.gofield.domain.rds.domain.item.QCategory.category;
@@ -281,7 +282,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public List<ItemClassificationProjectionResponse> findAllInIdListAndUserId(Long userId, List<Long> idList) {
+    public List<ItemClassificationProjectionResponse> findAllRecentItemByUserId(Long userId) {
         List<ItemClassificationProjection> projection = jpaQueryFactory
                 .select(new QItemClassificationProjection(
                         item.id,
@@ -300,6 +301,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
+                .innerJoin(itemRecent)
+                .on(itemStock.itemNumber.eq(itemRecent.itemNumber), itemRecent.userId.eq(userId))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
                 .innerJoin(itemDetail)
@@ -308,7 +311,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.brand.id.eq(brand.id))
                 .leftJoin(userLikeItem)
                 .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
-                .where(item.id.in(idList))
+                .orderBy(itemRecent.updateDate.desc())
                 .fetch();
 
         return ItemClassificationProjectionResponse.of(projection);

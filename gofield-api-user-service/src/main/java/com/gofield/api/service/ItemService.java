@@ -91,11 +91,7 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<ItemClassificationResponse> getUserRecentItemList(Pageable pageable){
         User user = userService.getUser();
-        List<Long> itemIdList = itemRecentRepository.findByUserId(user.getId(), pageable);
-        if(itemIdList.isEmpty()){
-            return new ArrayList<>();
-        }
-        List<ItemClassificationProjectionResponse> result = itemRepository.findAllInIdListAndUserId(user.getId(), itemIdList);
+        List<ItemClassificationProjectionResponse> result = itemRepository.findAllRecentItemByUserId(user.getId());
         return ItemClassificationResponse.of(result);
     }
 
@@ -148,7 +144,11 @@ public class ItemService {
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", itemNumber));
         }
         ItemRecent itemRecent = ItemRecent.newInstance(user.getId(), item.getId(), itemNumber);
-        itemRecentRepository.save(itemRecent);
+        if(itemRecent==null){
+            itemRecentRepository.save(itemRecent);
+        } else {
+            itemRecent.update();
+        }
         return ItemResponse.of(item);
     }
 

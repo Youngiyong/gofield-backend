@@ -19,25 +19,26 @@ public class OrderItemResponse {
     private Long id;
     private Long itemId;
     private Long itemOptionId;
+
+    private String orderItemNumber;
     private String itemNumber;
     private String name;
     private List<String> optionName;
     private EItemClassificationFlag classification;
     private String thumbnail;
     private EOrderItemStatusFlag status;
-
     private Boolean isReview;
-
     private int price;
     private int qty;
 
     @Builder
-    private OrderItemResponse(Long id, Long itemId, Long itemOptionId, String itemNumber,
+    private OrderItemResponse(Long id, Long itemId, Long itemOptionId, String orderItemNumber,  String itemNumber,
                               String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status, Boolean isReview,
                               int price, int qty){
         this.id = id;
         this.itemId = itemId;
         this.itemOptionId = itemOptionId;
+        this.orderItemNumber = orderItemNumber;
         this.itemNumber = itemNumber;
         this.name = name;
         this.optionName = optionName;
@@ -54,6 +55,7 @@ public class OrderItemResponse {
                 .id(orderItem.getId())
                 .itemId(orderItem.getOrder().getId())
                 .itemOptionId(orderItem.getOrderItemOption()==null ? null : orderItem.getOrderItemOption().getItemOptionId())
+                .orderItemNumber(orderItem.getOrderItemNumber())
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))

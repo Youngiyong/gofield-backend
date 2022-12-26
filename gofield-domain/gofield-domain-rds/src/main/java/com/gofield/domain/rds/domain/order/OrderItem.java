@@ -40,8 +40,11 @@ public class OrderItem extends BaseTimeEntity {
     @JoinColumn(name = "order_item_option_id")
     private OrderItemOption orderItemOption;
 
-    @Column
+    @Column(nullable = false, length = 16)
     private String orderNumber;
+
+    @Column(nullable = false, length = 16)
+    private String orderItemNumber;
 
     @Column
     private String itemNumber;
@@ -65,7 +68,7 @@ public class OrderItem extends BaseTimeEntity {
     private LocalDateTime reviewDate;
 
     @Builder
-    private OrderItem(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
+    private OrderItem(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber, String orderItemNumber,
                       String itemNumber, String name, int qty, int price){
         this.order = order;
         this.sellerId = sellerId;
@@ -73,6 +76,7 @@ public class OrderItem extends BaseTimeEntity {
         this.orderItemOption = orderItemOption;
         this.orderShipping = orderShipping;
         this.orderNumber = orderNumber;
+        this.orderItemNumber = orderItemNumber;
         this.itemNumber = itemNumber;
         this.name = name;
         this.qty = qty;
@@ -80,7 +84,7 @@ public class OrderItem extends BaseTimeEntity {
         this.status = EOrderItemStatusFlag.ORDER_ITEM_RECEIPT;
     }
 
-    public static OrderItem newInstance(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber,
+    public static OrderItem newInstance(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber, String orderItemNumber,
                                         String itemNumber, String name, int qty, int price){
         return OrderItem.builder()
                 .order(order)
@@ -89,6 +93,7 @@ public class OrderItem extends BaseTimeEntity {
                 .orderItemOption(orderItemOption)
                 .orderShipping(orderShipping)
                 .orderNumber(orderNumber)
+                .orderItemNumber(orderItemNumber)
                 .itemNumber(itemNumber)
                 .name(name)
                 .qty(qty)

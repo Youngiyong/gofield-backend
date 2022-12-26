@@ -20,6 +20,7 @@ public class OrderCancelItemResponse {
     private Long id;
     private Long itemId;
     private Long itemOptionId;
+    private String itemNumber;
     private String name;
     private List<String> optionName;
     private EOrderCancelItemFlag type;
@@ -27,10 +28,11 @@ public class OrderCancelItemResponse {
     private int price;
 
     @Builder
-    private OrderCancelItemResponse(Long id, Long itemId, Long itemOptionId, String name, List<String> optionName, EOrderCancelItemFlag type, int qty, int price){
+    private OrderCancelItemResponse(Long id, Long itemId, Long itemOptionId, String itemNumber, String name, List<String> optionName, EOrderCancelItemFlag type, int qty, int price){
         this.id = id;
         this.itemId = itemId;
         this.itemOptionId = itemOptionId;
+        this.itemNumber = itemNumber;
         this.name = name;
         this.optionName = optionName;
         this.type = type;
@@ -43,8 +45,9 @@ public class OrderCancelItemResponse {
         ItemOption itemOption = orderCancelItem.getItemOption();
         return OrderCancelItemResponse.builder()
                 .id(orderCancelItem.getId())
-                .itemId(item==null ? null : orderCancelItem.getItem().getId())
-                .itemOptionId(itemOption==null ? null : orderCancelItem.getItemOption().getId())
+                .itemId(item==null ? null : item.getId())
+                .itemOptionId(itemOption==null ? null : itemOption.getId())
+                .itemNumber(item!=null ? item.getItemNumber() : itemOption.getItemNumber())
                 .name(orderCancelItem.getName())
                 .optionName(orderCancelItem.getOptionName()==null ? null : ApiUtil.strToObject(orderCancelItem.getOptionName(), new TypeReference<List<String>>(){}))
                 .type(orderCancelItem.getType())

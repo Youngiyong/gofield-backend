@@ -15,7 +15,6 @@ import java.util.stream.Collectors;
 public class OrderCancelResponse {
     private Long id;
     private Long orderId;
-
     private String cancelNumber;
     private EOrderCancelTypeFlag type;
     private EOrderCancelStatusFlag status;
@@ -28,8 +27,6 @@ public class OrderCancelResponse {
     private LocalDateTime createDate;
     private LocalDateTime recalledDate;
     private LocalDateTime refundDate;
-
-
     private List<OrderCancelItemResponse> cancelItems;
 
     @Builder
