@@ -9,7 +9,8 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 public interface OrderShippingRepositoryCustom {
-    OrderShipping findByShippingNumberAndOrderNumber(String shippingNumber, String orderNumber);
+    OrderShipping findByShippingNumberAndOrderNumberFetchOrder(Long userId, String shippingNumber, String orderNumber);
+    OrderShipping findByShippingNumberAndOrderNumberFetch(Long userId, String shippingNumber, String orderNumber);;
     OrderShippingInfoAdminProjectionResponse findAllOrderShippingByKeyword(String keyword, EOrderShippingStatusFlag status, Pageable pageable);
     List<OrderShipping> findAllByKeyword(String keyword, EOrderShippingStatusFlag status);
     OrderShipping findAdminOrderShippingById(Long id);

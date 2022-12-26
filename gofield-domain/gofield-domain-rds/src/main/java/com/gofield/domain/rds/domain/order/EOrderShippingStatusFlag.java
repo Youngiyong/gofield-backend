@@ -12,8 +12,6 @@ public enum EOrderShippingStatusFlag implements EnumCodeModel {
     ORDER_SHIPPING_CHECK("상품확인중", "300"),
     ORDER_SHIPPING_CANCEL("주문취소접수", "301"),
     ORDER_SHIPPING_CANCEL_COMPLETE("주문취소완료", "302"),
-
-    ORDER_SHIPPING_CHECK_COMPLETE("주문확인완료", "309"),
     ORDER_SHIPPING_READY("배송준비중", "310"),
     ORDER_SHIPPING_DELIVERY("배송중", "340"),
     ORDER_SHIPPING_DELIVERY_COMPLETE("배송완료", "350"),

@@ -1,4 +1,4 @@
-package com.gofield.domain.rds.domain.seller.repository;
+package com.gofield.domain.rds.domain.item.repository;
 
 import com.gofield.domain.rds.domain.item.ShippingTemplate;
 import com.querydsl.jpa.impl.JPAQueryFactory;

@@ -13,6 +13,7 @@ import com.gofield.common.model.ErrorCode;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
+import com.gofield.domain.rds.domain.common.EGofieldService;
 import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemBundleReviewScoreProjection;
@@ -50,6 +51,8 @@ public class OrderService {
     private final ItemOptionRepository itemOptionRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final OrderRepository orderRepository;
+
+    private final OrderShippingLogRepository orderShippingLogRepository;
     private final OrderSheetRepository orderSheetRepository;
     private final OrderCancelRepository orderCancelRepository;
     private final OrderCancelCommentRepository orderCancelCommentRepository;
@@ -153,7 +156,7 @@ public class OrderService {
     public OrderShippingDetailResponse getOrderShipping(String orderNumber, String shippingNumber){
         User user = userService.getUserNotNonUser();
         OrderShippingAddress orderShippingAddress = orderShippingAddressRepository.findByOrderNumber(orderNumber);
-        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
+        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumberFetch(user.getId(), shippingNumber, orderNumber);
         return OrderShippingDetailResponse.of(orderShipping, orderShippingAddress);
       }
 
@@ -259,7 +262,8 @@ public class OrderService {
 
     @Transactional
     public void deleteOrderShipping(String orderNumber, String shippingNumber){
-        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
+        User user = userService.getUserNotNonUser();
+        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumberFetchOrder(user.getId(), shippingNumber, orderNumber);
         if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 상품 확인중이거나 완료된 배송은 구매 내역 삭제가 불가합니다.", shippingNumber));
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
@@ -276,11 +280,14 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 반품 접수가 되어 있어 삭제가 불가합니다.", shippingNumber));
         }
         orderShipping.updateDelete();
+        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_DELETE);
+        orderShippingLogRepository.save(orderShippingLog);
     }
 
     @Transactional
     public void completeOrderShipping(String orderNumber, String shippingNumber){
-        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumber(shippingNumber, orderNumber);
+        User user = userService.getUserNotNonUser();
+        OrderShipping orderShipping = orderShippingRepository.findByShippingNumberAndOrderNumberFetchOrder(user.getId(), shippingNumber, orderNumber);
         if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 상품 확인중이거나 완료된 배송은 구매 확정이 불가합니다.", shippingNumber));
         } else if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
@@ -295,6 +302,8 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 반품 접수가 되어 있어 구매 확정이 불가합니다.", shippingNumber));
         }
         orderShipping.updateShippingComplete();
+        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE);
+        orderShippingLogRepository.save(orderShippingLog);
     }
 
     @Transactional(readOnly = true)
@@ -400,6 +409,8 @@ public class OrderService {
         orderCancel.addOrderCancelItem(orderCancelItem);
         orderCancelRepository.save(orderCancel);
         orderItem.getOrderShipping().updateChange();
+        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderItem.getOrderShipping().getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE);
+        orderShippingLogRepository.save(orderShippingLog);
     }
 
 
@@ -431,6 +442,8 @@ public class OrderService {
         orderCancel.addOrderCancelItem(orderCancelItem);
         orderCancelRepository.save(orderCancel);
         orderItem.getOrderShipping().updateReturn();
+        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderItem.getOrderShipping().getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN);
+        orderShippingLogRepository.save(orderShippingLog);
     }
 
     @Transactional
@@ -461,6 +474,8 @@ public class OrderService {
         orderCancel.addOrderCancelItem(orderCancelItem);
         orderCancelRepository.save(orderCancel);
         orderItem.getOrderShipping().updateCancel();
+        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderItem.getOrderShipping().getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL);
+        orderShippingLogRepository.save(orderShippingLog);
     }
 
     @Transactional(readOnly = true)

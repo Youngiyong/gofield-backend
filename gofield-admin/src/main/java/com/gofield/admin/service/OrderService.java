@@ -170,6 +170,8 @@ public class OrderService {
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "취소가 거절된 주문입니다.");
         }
+        OrderShipping orderShipping = orderCancel.getOrderShipping();
+        User user = orderCancel.getOrderCancelComment().getUser();
         if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_COMPLETE)){
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
@@ -190,7 +192,33 @@ public class OrderService {
                     itemStock.updateOrderCancel();
                 }
             }
-            orderCancel.getOrderShipping().updateCancelComplete();
+            orderShipping.updateCancelComplete();
+            OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE);
+            orderShippingLogRepository.save(orderShippingLog);
+        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
+            OrderShippingLog orderShippingLog = orderShippingLogRepository.findLastShippingStatus(orderCancel.getOrderShipping().getId(), orderCancel.getOrderCancelComment().getUser().getId());
+            if(orderShippingLog==null){
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "배송 로그가 존재하지 않습니다.");
+            }
+
+            switch (orderShippingLog.getStatus()){
+                case ORDER_SHIPPING_CHECK:
+                    orderShipping.updateShippingCheck();
+                    break;
+                case ORDER_SHIPPING_READY:
+                    orderShipping.updateShippingReady();
+                    break;
+                case ORDER_SHIPPING_DELIVERY:
+                    orderShipping.updateShippingDelivery();
+                    break;
+                case ORDER_SHIPPING_DELIVERY_COMPLETE:
+                    orderShipping.updateShippingDeliveryComplete();
+                    break;
+                default:
+                    throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("%s log status 오류", orderShippingLog.getStatus()));
+            }
+            OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShippingLog.getStatus());
+            orderShippingLogRepository.save(save);
         }
         orderCancel.updateAdminCancelStatus(status);
     }
@@ -203,7 +231,8 @@ public class OrderService {
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "반품 처리가 거절/철회된 주문입니다.");
         }
-        orderCancel.updateAdminReturnStatus(status);
+        OrderShipping orderShipping = orderCancel.getOrderShipping();
+        User user = orderCancel.getOrderCancelComment().getUser();
         if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
@@ -224,10 +253,15 @@ public class OrderService {
                     itemStock.updateOrderCancel();
                 }
             }
-            orderCancel.getOrderShipping().updateReturnComplete();
+            orderShipping.updateReturnComplete();
+            OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
+            orderShippingLogRepository.save(save);
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
-            orderCancel.getOrderShipping().updateShippingDeliveryComplete();
+            orderShipping.updateShippingDeliveryComplete();
+            OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
+            orderShippingLogRepository.save(save);
         }
+        orderCancel.updateAdminReturnStatus(status);
     }
 
     @Transactional
@@ -238,12 +272,18 @@ public class OrderService {
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "교환 처리가 거절/철회된 주문입니다.");
         }
-        orderCancel.updateAdminChangeStatus(status);
+        OrderShipping orderShipping = orderCancel.getOrderShipping();
+        User user = orderCancel.getOrderCancelComment().getUser();
         if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)) {
-            orderCancel.getOrderShipping().updateChangeComplete();
+            orderShipping.updateChangeComplete();
+            OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
+            orderShippingLogRepository.save(save);
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)){
-            orderCancel.getOrderShipping().updateShippingDeliveryComplete();
+            orderShipping.updateShippingDeliveryComplete();
+            OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
+            orderShippingLogRepository.save(save);
         }
+        orderCancel.updateAdminChangeStatus(status);
     }
 
     @Transactional

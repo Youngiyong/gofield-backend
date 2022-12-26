@@ -42,13 +42,27 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
 
 
     @Override
-    public OrderShipping findByShippingNumberAndOrderNumber(String shippingNumber, String orderNumber) {
+    public OrderShipping findByShippingNumberAndOrderNumberFetchOrder(Long userId, String shippingNumber, String orderNumber) {
+        return jpaQueryFactory
+                .select(orderShipping)
+                .from(orderShipping)
+                .innerJoin(orderShipping.order, order).fetchJoin()
+                .where(orderShipping.shippingNumber.eq(shippingNumber),
+                        orderShipping.orderNumber.eq(orderNumber),
+                        order.userId.eq(userId))
+                .fetchFirst();
+    }
+
+    @Override
+    public OrderShipping findByShippingNumberAndOrderNumberFetch(Long userId, String shippingNumber, String orderNumber) {
         return jpaQueryFactory
                 .select(orderShipping)
                 .from(orderShipping)
                 .innerJoin(orderShipping.orderItems, orderItem).fetchJoin()
+                .innerJoin(orderShipping.order, order).fetchJoin()
                 .where(orderShipping.shippingNumber.eq(shippingNumber),
-                        orderShipping.orderNumber.eq(orderNumber))
+                        orderShipping.orderNumber.eq(orderNumber),
+                        order.userId.eq(userId))
                 .fetchFirst();
     }
 
