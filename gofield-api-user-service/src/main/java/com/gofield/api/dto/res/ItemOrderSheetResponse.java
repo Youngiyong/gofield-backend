@@ -2,6 +2,7 @@ package com.gofield.api.dto.res;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemChargeFlag;
 import com.gofield.domain.rds.domain.item.EItemOptionTypeFlag;
 import lombok.Builder;
@@ -69,7 +70,7 @@ public class ItemOrderSheetResponse {
                 .brandName(brandName)
                 .name(name)
                 .optionName(optionName==null ? null : ApiUtil.strToObject(optionName, new TypeReference<List<String>>(){}))
-                .thumbnail(thumbnail)
+                .thumbnail(CommonUtils.makeCloudFrontUrl(thumbnail))
                 .itemNumber(itemNumber)
                 .price(price)
                 .qty(qty)
