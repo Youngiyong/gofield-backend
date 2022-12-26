@@ -195,7 +195,8 @@ public class OrderService {
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "반품 처리가 거절/철회된 주문입니다.");
         }
-        if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
+        orderCancel.updateAdminReturnStatus(status);
+        if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_COMPLETE)){
             TossPaymentCancelResponse response = thirdPartyService.cancelPayment(orderCancel.getOrder().getPaymentKey(), TossPaymentRequest.PaymentCancel.of(orderCancel.getReason().getDescription(), orderCancel.getTotalAmount()));
             PurchaseCancel purchase = PurchaseCancel.newInstance(response.getOrderId(), response.getPaymentKey(), response.getTotalAmount(), AdminUtil.toJsonStr(response));
             purchaseCancelRepository.save(purchase);
@@ -216,10 +217,9 @@ public class OrderService {
                 }
             }
             orderCancel.getOrderShipping().updateReturnComplete();
-        } else if(status.equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
-            orderCancel.getOrderShipping().updateShippingComplete();
+        } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_RETURN_DENIED)){
+            orderCancel.getOrderShipping().updateShippingDeliveryComplete();
         }
-        orderCancel.updateAdminReturnStatus(status);
     }
 
     @Transactional
@@ -230,12 +230,12 @@ public class OrderService {
         } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "교환 처리가 거절/철회된 주문입니다.");
         }
-        if(status.equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)) {
-            orderCancel.getOrderShipping().updateChangeComplete();
-        } else if(status.equals(EOrderCancelStatusFlag.ORDER_CANCEL_DENIED)){
-            orderCancel.getOrderShipping().updateShippingComplete();
-        }
         orderCancel.updateAdminChangeStatus(status);
+        if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE)) {
+            orderCancel.getOrderShipping().updateChangeComplete();
+        } else if(orderCancel.getStatus().equals(EOrderCancelStatusFlag.ORDER_CHANGE_DENIED)){
+            orderCancel.getOrderShipping().updateShippingDeliveryComplete();
+        }
     }
 
     @Transactional

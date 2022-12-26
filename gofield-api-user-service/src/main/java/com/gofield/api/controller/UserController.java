@@ -98,7 +98,6 @@ public class UserController {
         return ApiResponse.SUCCESS;
     }
 
-
     @ApiOperation(value = "이용약관 리스트 조회")
     @GetMapping("/v1/term")
     public ApiResponse<List<TermResponse>> getTermList(@RequestParam TermType type){

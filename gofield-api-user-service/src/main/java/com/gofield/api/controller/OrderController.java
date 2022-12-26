@@ -39,7 +39,7 @@ public class OrderController {
 
     @ApiOperation(value = "주문하기 - 결제")
     @PostMapping("/v1/payment")
-    public ApiResponse<OrderWaitResponse> redirectPayment(@Valid @RequestBody OrderRequest.OrderPay request){
+    public ApiResponse<NextUrlResponse> redirectPayment(@Valid @RequestBody OrderRequest.OrderPay request){
         return ApiResponse.success(orderService.createOrderWait(request));
     }
 

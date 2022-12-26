@@ -11,6 +11,7 @@ import com.gofield.domain.rds.domain.order.projection.OrderShippingInfoAdminProj
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -48,8 +49,8 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
 
 
     @Override
-    public List<OrderCancel> findAllFetchJoin(Long userId, Pageable pageable) {
-        return jpaQueryFactory
+    public Page<OrderCancel> findAllFetchJoin(Long userId, Pageable pageable) {
+        List<OrderCancel> result = jpaQueryFactory
                 .selectFrom(orderCancel)
                 .innerJoin(orderCancel.order, order).fetchJoin()
                 .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
@@ -60,6 +61,19 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
+
+        if(result.isEmpty()){
+            return new PageImpl<>(result, pageable, 0);
+        }
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(orderCancelComment.id)
+                .from(orderCancel)
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment)
+                .where(orderCancelComment.user.id.eq(userId))
+                .fetch();
+
+        return new PageImpl<>(result, pageable, totalCount.size());
     }
 
     @Override

@@ -5,12 +5,13 @@ import com.gofield.domain.rds.domain.order.OrderCancel;
 import com.gofield.domain.rds.domain.order.projection.OrderCancelInfoAdminProjectionResponse;
 import com.gofield.domain.rds.domain.order.projection.OrderChangeInfoAdminProjectionResponse;
 import com.gofield.domain.rds.domain.order.projection.OrderReturnInfoAdminProjectionResponse;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface OrderCancelRepositoryCustom {
-    List<OrderCancel> findAllFetchJoin(Long userId, Pageable pageable);
+    Page<OrderCancel> findAllFetchJoin(Long userId, Pageable pageable);
     OrderCancel findByCancelIdAndUserIdFetchJoin(Long cancelId, Long userId);
 
     OrderCancel findByCancelIdFetchJoin(Long cancelId);

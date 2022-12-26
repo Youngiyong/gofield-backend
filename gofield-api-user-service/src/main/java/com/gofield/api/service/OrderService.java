@@ -12,6 +12,7 @@ import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
+import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemBundleReviewScoreProjection;
 import com.gofield.domain.rds.domain.item.projection.ItemOrderSheetProjection;
@@ -27,6 +28,7 @@ import com.gofield.infrastructure.s3.model.enums.FileType;
 import com.google.gson.Gson;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -228,7 +230,7 @@ public class OrderService {
     }
 
     @Transactional
-    public OrderWaitResponse createOrderWait(OrderRequest.OrderPay request){
+    public NextUrlResponse createOrderWait(OrderRequest.OrderPay request){
         User user = userService.getUserNotNonUser();
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(user.getId(), request.getUuid());
         if(orderSheet==null){
@@ -241,7 +243,7 @@ public class OrderService {
         TossPaymentResponse response = thirdPartyService.getPaymentReadyInfo(externalRequest);
         OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(),  new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()), request.getPaymentType(), request.getEnvironment());
         orderWaitRepository.save(orderWait);
-        return OrderWaitResponse.of(response.getCheckout().getUrl());
+        return NextUrlResponse.of(response.getCheckout().getUrl());
     }
 
     public void cancelPayment(String orderNumber)  {
@@ -464,9 +466,10 @@ public class OrderService {
     @Transactional(readOnly = true)
     public OrderCancelListResponse getOrderCancelList(Pageable pageable){
         User user = userService.getUserNotNonUser();
-        List<OrderCancel> result = orderCancelRepository.findAllFetchJoin(user.getId(), pageable);
-        List<OrderCancelResponse> response = OrderCancelResponse.of(result);
-        return OrderCancelListResponse.of(response);
+        Page<OrderCancel> result = orderCancelRepository.findAllFetchJoin(user.getId(), pageable);
+        List<OrderCancelResponse> response = OrderCancelResponse.of(result.getContent());
+        PaginationResponse page = PaginationResponse.of(result);
+        return OrderCancelListResponse.of(response, page);
     }
 
     @Transactional(readOnly = true)

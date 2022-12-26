@@ -141,6 +141,11 @@ public class OrderShipping extends BaseTimeEntity {
         }
     }
 
+    public void updateShippingDeliveryComplete(){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE;
+        this.deliveredDate = LocalDateTime.now();
+    }
+
     public void updateShippingComplete(){
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE;
         this.finishedDate = LocalDateTime.now();
