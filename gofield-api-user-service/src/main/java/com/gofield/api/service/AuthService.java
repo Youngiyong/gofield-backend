@@ -77,7 +77,7 @@ public class AuthService {
 
         UserSns userSns = userSnsRepository.findByUniQueIdAndRoute(socialAuthentication.getUniqueId(), request.getSocial());
         if(userSns==null){
-            User saveUser = User.newInstance(RandomUtils.makeRandomUuid(), socialAuthentication.getEmail(), socialAuthentication.getNickName(), socialAuthentication.getNickName());
+            User saveUser = User.newInstance(RandomUtils.makeRandomUuid(), socialAuthentication.getNickName(), socialAuthentication.getEmail(),  socialAuthentication.getNickName());
             userRepository.save(saveUser);
             UserSns saveSns = UserSns.newInstance(saveUser, socialAuthentication.getUniqueId(), request.getSocial());
             userSnsRepository.save(saveSns);
