@@ -15,9 +15,9 @@ public class ItemRecentRepositoryCustomImpl implements ItemRecentRepositoryCusto
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Long> findAllItemIdList(Long userId, Pageable pageable) {
+    public List<Long> findByUserId(Long userId, Pageable pageable) {
         return jpaQueryFactory
-                .select(itemRecent.itemId)
+                .select(itemRecent.itemId.count())
                 .from(itemRecent)
                 .innerJoin(itemStock)
                 .on(itemRecent.itemNumber.eq(itemStock.itemNumber))
@@ -25,7 +25,7 @@ public class ItemRecentRepositoryCustomImpl implements ItemRecentRepositoryCusto
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .groupBy(itemRecent.itemId)
-                .orderBy(itemRecent.id.asc())
+                .having(itemRecent.itemId.count().goe(1))
                 .fetch();
     }
 }

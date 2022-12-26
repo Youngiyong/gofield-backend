@@ -91,7 +91,7 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<ItemClassificationResponse> getUserRecentItemList(Pageable pageable){
         User user = userService.getUser();
-        List<Long> itemIdList = itemRecentRepository.findAllItemIdList(user.getId(), pageable);
+        List<Long> itemIdList = itemRecentRepository.findByUserId(user.getId(), pageable);
         if(itemIdList.isEmpty()){
             return new ArrayList<>();
         }

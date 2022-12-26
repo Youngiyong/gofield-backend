@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface ItemRecentRepositoryCustom {
 
-    List<Long> findAllItemIdList(Long userId, Pageable pageable);
+    List<Long> findByUserId(Long userId, Pageable pageable);
 }

@@ -15,6 +15,8 @@ import java.util.stream.Collectors;
 public class OrderCancelResponse {
     private Long id;
     private Long orderId;
+
+    private String cancelNumber;
     private EOrderCancelTypeFlag type;
     private EOrderCancelStatusFlag status;
     private EOrderCancelReasonFlag reason;
@@ -31,10 +33,11 @@ public class OrderCancelResponse {
     private List<OrderCancelItemResponse> cancelItems;
 
     @Builder
-    private OrderCancelResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String comment, String paymentType,
+    private OrderCancelResponse(Long id, Long orderId, String cancelNumber, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String comment, String paymentType,
                                 String refundName, String refundAccount, String refundBank, LocalDateTime createDate, LocalDateTime recalledDate, LocalDateTime refundDate, List<OrderCancelItemResponse> cancelItems){
         this.id = id;
         this.orderId = orderId;
+        this.cancelNumber = cancelNumber;
         this.type = type;
         this.status = status;
         this.reason = reason;
@@ -53,6 +56,7 @@ public class OrderCancelResponse {
         return OrderCancelResponse.builder()
                 .id(orderCancel.getId())
                 .orderId(orderCancel.getOrder().getId())
+                .cancelNumber(orderCancel.getCancelNumber())
                 .type(orderCancel.getType())
                 .status(orderCancel.getStatus())
                 .reason(orderCancel.getReason())

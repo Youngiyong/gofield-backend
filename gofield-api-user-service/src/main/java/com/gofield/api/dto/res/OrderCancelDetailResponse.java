@@ -18,24 +18,26 @@ import java.util.List;
 public class OrderCancelDetailResponse {
     private Long id;
     private Long orderId;
+    private String orderNumber;
+
+    private String cancelNumber;
     private EOrderCancelTypeFlag type;
     private EOrderCancelStatusFlag status;
     private EOrderCancelReasonFlag reason;
     private String content;
-
     private String comment;
+    private String paymentCompany;
     private String paymentType;
+    private String cardNumber;
+    private String cardType;
+    private int installmentPlanMonth;
     private int totalAmount;
     private int totalItem;
-
     private int totalDelivery;
-
     private int totalDiscount;
-
+    private int totalRefund;
     private int totalPg;
-
     private String carrier;
-
     private String trackingNumber;
     private String refundName;
     private String refundAccount;
@@ -51,22 +53,29 @@ public class OrderCancelDetailResponse {
     private List<OrderCancelItemDetailResponse> cancelItems;
 
     @Builder
-    private OrderCancelDetailResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String content, String comment,  String paymentType,
-                                      int totalAmount, int totalItem, int totalDelivery, int totalDiscount, int totalPg, String carrier, String trackingNumber,
+    private OrderCancelDetailResponse(Long id, Long orderId, String orderNumber, String cancelNumber, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String content, String comment, String paymentCompany, String paymentType,
+                                      String cardNumber, String cardType, int installmentPlanMonth, int totalAmount, int totalItem, int totalDelivery, int totalDiscount, int totalRefund, int totalPg, String carrier, String trackingNumber,
                                       String refundName, String refundAccount, String refundBank, LocalDateTime createDate, LocalDateTime recalledDate, LocalDateTime refundDate,
                                       String receiver, String receiverTel, String receiverZipCode, String receiverAddress, String receiverAddressExtra, List<OrderCancelItemDetailResponse> cancelItems){
         this.id = id;
         this.orderId = orderId;
+        this.orderNumber = orderNumber;
+        this.cancelNumber = cancelNumber;
         this.type = type;
         this.status = status;
         this.reason = reason;
         this.content = content;
         this.comment = comment;
+        this.paymentCompany = paymentCompany;
         this.paymentType = paymentType;
+        this.cardNumber = cardNumber;
+        this.cardType = cardType;
+        this.installmentPlanMonth = installmentPlanMonth;
         this.totalAmount = totalAmount;
         this.totalItem = totalItem;
         this.totalDelivery = totalDelivery;
         this.totalDiscount = totalDiscount;
+        this.totalRefund = totalRefund;
         this.totalPg = totalPg;
         this.carrier = carrier;
         this.trackingNumber = trackingNumber;
@@ -89,11 +98,17 @@ public class OrderCancelDetailResponse {
         return OrderCancelDetailResponse.builder()
                 .id(orderCancel.getId())
                 .orderId(orderCancel.getOrder().getId())
+                .orderNumber(orderCancel.getOrder().getOrderNumber())
+                .cancelNumber(orderCancel.getCancelNumber())
                 .type(orderCancel.getType())
                 .status(orderCancel.getStatus())
                 .reason(orderCancel.getReason())
                 .content(orderCancel.getOrderCancelComment().getContent())
+                .paymentCompany(orderCancel.getOrder().getPaymentCompany())
                 .paymentType(orderCancel.getOrder().getPaymentType())
+                .cardNumber(orderCancel.getOrder().getCardNumber())
+                .cardType(orderCancel.getOrder().getCardType())
+                .installmentPlanMonth(orderCancel.getOrder().getInstallmentPlanMonth())
                 .totalAmount(orderCancel.getTotalAmount())
                 .totalItem(orderCancel.getTotalItem())
                 .totalDelivery(orderCancel.getTotalDelivery())
