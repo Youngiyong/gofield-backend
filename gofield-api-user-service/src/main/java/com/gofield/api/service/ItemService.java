@@ -207,5 +207,4 @@ public class ItemService {
         }
         itemQnaRepository.delete(itemQna);
     }
-
 }
