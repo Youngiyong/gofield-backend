@@ -79,7 +79,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.id,
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
-                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat("?s=100x100&t=crop&q=60&f=webp"),
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
