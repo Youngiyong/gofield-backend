@@ -126,7 +126,7 @@ public class ItemDto {
                 .price(0)
                 .brandId(itemBundle.getBrand().getId())
                 .brandName(itemBundle.getBrand().getName())
-                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_150x150))
+                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_200x200))
                 .build();
     }
 }

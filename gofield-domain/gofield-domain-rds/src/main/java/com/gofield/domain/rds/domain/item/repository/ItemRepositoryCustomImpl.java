@@ -101,7 +101,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             itemStock.itemNumber,
                             item.name,
                             brand.name.as("brandName"),
-                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                             item.price,
                             item.deliveryPrice,
                             item.classification,
@@ -136,7 +136,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemStock.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
@@ -177,7 +177,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.itemNumber,
                             item.name,
                             brand.name.as("brandName"),
-                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                             item.price,
                             item.deliveryPrice,
                             item.classification,
@@ -211,7 +211,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
@@ -252,7 +252,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
@@ -289,7 +289,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
@@ -324,7 +324,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
@@ -358,7 +358,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         item.classification,
@@ -390,7 +390,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
@@ -424,7 +424,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         item.classification,
@@ -458,7 +458,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         userLikeItem.id.as("likeId"),
@@ -492,7 +492,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.itemNumber,
                         item.name,
                         brand.name.as("brandName"),
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         item.price,
                         item.deliveryPrice,
                         item.classification,
@@ -626,7 +626,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             brand.name.as("brandName"),
                             itemStock.sellerId,
                             item.bundle.id,
-                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                             itemDetail.description,
                             item.itemNumber,
                             item.price,
@@ -660,7 +660,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .fetchOne();
 
             List<String> images = jpaQueryFactory
-                    .select(itemImage.image.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150))
+                    .select(itemImage.image.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200))
                     .from(itemImage)
                     .where(itemImage.item.id.eq(projection.getId()))
                     .fetch();
@@ -678,7 +678,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         itemStock.sellerId,
                         item.bundle.id,
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         itemDetail.description,
                         item.itemNumber,
                         item.price,
@@ -715,7 +715,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .fetchOne();
 
         List<String> images = jpaQueryFactory
-                .select(itemImage.image.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150))
+                .select(itemImage.image.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200))
                 .from(itemImage)
                 .where(itemImage.item.id.eq(projection.getId()))
                 .fetch();
@@ -737,7 +737,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemStock.sellerId,
                         item.bundle.id,
                         itemOption.id,
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         itemStock.itemNumber,
                         item.price,
                         itemOption.price,
@@ -815,7 +815,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     itemStock.sellerId,
                     item.bundle.id,
                     itemOption.id,
-                    item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                    item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                     itemStock.itemNumber,
                     item.price,
                     itemOption.price,

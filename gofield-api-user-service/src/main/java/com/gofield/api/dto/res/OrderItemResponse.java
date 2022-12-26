@@ -63,7 +63,7 @@ public class OrderItemResponse {
                 .isReview(orderItem.getIsReview())
                 .price(orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice())
                 .qty(orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty())
-                .thumbnail(Constants.CDN_URL.concat(orderItem.getItem().getThumbnail()).concat(Constants.RESIZE_150x150))
+                .thumbnail(Constants.CDN_URL.concat(orderItem.getItem().getThumbnail()).concat(Constants.RESIZE_200x200))
                 .build();
     }
 
@@ -79,7 +79,7 @@ public class OrderItemResponse {
                 .name(name)
                 .optionName(optionName)
                 .classification(classification)
-                .thumbnail(Constants.CDN_URL.concat(thumbnail).concat(Constants.RESIZE_150x150))
+                .thumbnail(Constants.CDN_URL.concat(thumbnail).concat(Constants.RESIZE_200x200))
                 .status(status)
                 .isReview(isReview)
                 .price(price)

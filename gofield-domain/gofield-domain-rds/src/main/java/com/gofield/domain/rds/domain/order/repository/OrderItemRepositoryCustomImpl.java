@@ -5,7 +5,6 @@ import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
 import com.gofield.domain.rds.domain.order.OrderItem;
 import com.gofield.domain.rds.domain.order.projection.OrderItemProjection;
 import com.gofield.domain.rds.domain.order.projection.QOrderItemProjection;
-import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -84,7 +83,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                         seller.name,
                         item.bundle.id,
                         orderItemOption.itemOptionId,
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         orderItem.itemNumber,
                         orderItem.price,
                         orderItemOption.price,

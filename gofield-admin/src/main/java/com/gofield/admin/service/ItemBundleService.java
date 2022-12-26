@@ -47,7 +47,7 @@ public class ItemBundleService {
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
         ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemBundleDto.getId());
-        String thumbnail = itemBundleDto.getThumbnail()==null ? null : itemBundleDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_150x150, "");
+        String thumbnail = itemBundleDto.getThumbnail()==null ? null : itemBundleDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_200x200, "");
         if(!image.isEmpty() && image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
         }

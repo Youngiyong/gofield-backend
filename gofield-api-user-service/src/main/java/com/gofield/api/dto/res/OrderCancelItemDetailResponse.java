@@ -6,7 +6,6 @@ import com.gofield.api.util.ApiUtil;
 import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.Item;
 import com.gofield.domain.rds.domain.item.ItemOption;
-import com.gofield.domain.rds.domain.item.ShippingTemplate;
 import com.gofield.domain.rds.domain.order.EOrderCancelItemFlag;
 import com.gofield.domain.rds.domain.order.OrderCancelItem;
 import lombok.Builder;
@@ -61,7 +60,7 @@ public class OrderCancelItemDetailResponse {
                 .itemNumber(itemNumber)
                 .itemId(itemId)
                 .itemOptionId(itemOptionId)
-                .thumbnail(Constants.CDN_URL.concat(thumbnail).concat(Constants.RESIZE_150x150))
+                .thumbnail(Constants.CDN_URL.concat(thumbnail).concat(Constants.RESIZE_200x200))
                 .type(orderCancelItem.getType())
                 .qty(orderCancelItem.getQty())
                 .price(orderCancelItem.getPrice())

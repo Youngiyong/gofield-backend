@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.apache.tomcat.util.bcel.Const;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -35,7 +34,7 @@ public class BrandDto {
         return BrandDto.builder()
                 .id(brand.getId())
                 .name(brand.getName())
-                .thumbnail(brand.getThumbnail()==null ? null : Constants.CDN_URL.concat(brand.getThumbnail()).concat(Constants.RESIZE_150x150))
+                .thumbnail(brand.getThumbnail()==null ? null : Constants.CDN_URL.concat(brand.getThumbnail()).concat(Constants.RESIZE_200x200))
                 .isVisible(brand.getIsVisible())
                 .createDate(brand.getCreateDate().toLocalDate().toString())
                 .build();

@@ -31,7 +31,7 @@ public class UserProfileResponse {
         return UserProfileResponse.builder()
                 .name(user.getName())
                 .nickName(user.getNickName())
-                .thumbnail(user.getThumbnail()==null ? null : CDN_URL.concat(user.getThumbnail()).concat(Constants.RESIZE_150x150))
+                .thumbnail(user.getThumbnail()==null ? null : CDN_URL.concat(user.getThumbnail()).concat(Constants.RESIZE_200x200))
                 .weight(user.getWeight())
                 .height(user.getHeight())
                 .build();

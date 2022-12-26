@@ -45,7 +45,7 @@ public class ItemBundleInfoProjectionResponse {
                 .categoryName(itemBundle.getCategory().getName())
                 .brandName(itemBundle.getBrand().getName())
                 .name(itemBundle.getName())
-                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_150x150))
+                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_200x200))
                 .createDate(itemBundle.getCreateDate().toLocalDate().toString())
                 .build();
     }

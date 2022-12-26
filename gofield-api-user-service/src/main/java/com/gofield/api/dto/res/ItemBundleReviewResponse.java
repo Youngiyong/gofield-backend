@@ -64,7 +64,7 @@ public class ItemBundleReviewResponse {
                         p.getImages().isEmpty() ?
                                 new ArrayList<>() :
                                 p.getImages().stream()
-                                        .map(k -> Constants.CDN_URL.concat(k.getImage().concat(Constants.RESIZE_150x150)))
+                                        .map(k -> Constants.CDN_URL.concat(k.getImage().concat(Constants.RESIZE_200x200)))
                                         .collect(Collectors.toList())
                 ))
                 .collect(Collectors.toList());

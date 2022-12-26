@@ -1,15 +1,12 @@
 package com.gofield.admin.dto;
 
 import com.gofield.common.model.Constants;
-import com.gofield.domain.rds.domain.item.Brand;
-import com.gofield.domain.rds.domain.item.Category;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -62,7 +59,7 @@ public class ItemBundleDto {
                 .brandId(itemBundle.getBrand().getId())
                 .brandName(itemBundle.getBrand().getName())
                 .isRecommend(itemBundle.getIsRecommend())
-                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_150x150))
+                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_200x200))
                 .build();
     }
 

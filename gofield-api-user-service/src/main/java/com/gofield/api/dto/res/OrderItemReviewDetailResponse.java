@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.ItemBundleReview;
-import com.gofield.domain.rds.domain.item.ItemBundleReviewImage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -58,7 +57,7 @@ public class OrderItemReviewDetailResponse {
         return list
                 .stream()
                 .map(p -> OrderItemReviewDetailResponse.of(p.getId(), p.getName(), p.getItemNumber(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
-                            p.getThumbnail()==null ? null : Constants.CDN_URL.concat(p.getThumbnail()).concat(Constants.RESIZE_150x150), p.getQty(), p.getReviewScore(), p.getDescription(), p.getImages().stream().map(k -> Constants.CDN_URL.concat(k.getImage()).concat(Constants.RESIZE_150x150)).collect(Collectors.toList())))
+                            p.getThumbnail()==null ? null : Constants.CDN_URL.concat(p.getThumbnail()).concat(Constants.RESIZE_200x200), p.getQty(), p.getReviewScore(), p.getDescription(), p.getImages().stream().map(k -> Constants.CDN_URL.concat(k.getImage()).concat(Constants.RESIZE_200x200)).collect(Collectors.toList())))
                 .collect(Collectors.toList());
     }
 

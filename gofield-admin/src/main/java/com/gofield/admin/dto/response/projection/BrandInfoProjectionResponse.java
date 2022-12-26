@@ -48,7 +48,7 @@ public class BrandInfoProjectionResponse {
 
     public static List<BrandInfoProjectionResponse> of(List<Brand> list){
         return list.stream()
-                .map(p -> BrandInfoProjectionResponse.of(p.getId(), p.getName(), p.getThumbnail()==null ? null : Constants.CDN_URL.concat(p.getThumbnail()).concat(Constants.RESIZE_150x150), p.getIsVisible() ? "활성" : "숨김", p.getCreateDate().toLocalDate().toString()))
+                .map(p -> BrandInfoProjectionResponse.of(p.getId(), p.getName(), p.getThumbnail()==null ? null : Constants.CDN_URL.concat(p.getThumbnail()).concat(Constants.RESIZE_200x200), p.getIsVisible() ? "활성" : "숨김", p.getCreateDate().toLocalDate().toString()))
                 .collect(Collectors.toList());
     }
 }

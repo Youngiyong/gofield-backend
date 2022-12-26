@@ -4,7 +4,6 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
-import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.EItemBundleSort;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
@@ -79,7 +78,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.id,
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
-                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat("?s=100x100&t=crop&q=60&f=webp"),
+                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
@@ -102,7 +101,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemBundle.id,
                             itemBundle.name,
                             itemBundle.brand.name.as("brandName"),
-                            itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                            itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                             itemBundleAggregation.reviewCount,
                             itemBundleAggregation.reviewScore,
                             itemBundleAggregation.newLowestPrice,
@@ -122,7 +121,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemBundle.id,
                             itemBundle.name,
                             itemBundle.brand.name.as("brandName"),
-                            itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                            itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                             itemBundleAggregation.reviewCount,
                             itemBundleAggregation.reviewScore,
                             itemBundleAggregation.newLowestPrice,
@@ -145,7 +144,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.id,
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
-                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
@@ -167,7 +166,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.id,
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
-                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                        itemBundle.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
@@ -181,7 +180,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         if(bundle==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("존재하지 않는 <%s> bundleId 입니다.", bundleId) );
 
         List<String> bundleImages = jpaQueryFactory
-                .select(itemBundleImage.image.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150))
+                .select(itemBundleImage.image.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200))
                 .from(itemBundleImage)
                 .where(itemBundleImage.bundle.id.eq(bundleId))
                 .fetch();
@@ -209,7 +208,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.itemNumber,
                             item.name,
                             brand.name.as("brandName"),
-                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                             item.price,
                             item.deliveryPrice,
                             userLikeItem.id.as("likeId"),
@@ -265,7 +264,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.itemNumber,
                             item.name,
                             brand.name.as("brandName"),
-                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_150x150),
+                            item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
                             item.price,
                             item.deliveryPrice,
                             item.classification,

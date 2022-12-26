@@ -52,7 +52,7 @@ public class ItemInfoProjectionResponse {
                 .price(itemInfoProjection.getPrice())
                 .categoryName(itemInfoProjection.getCategoryName())
                 .status(itemInfoProjection.getStatus().getDescription())
-                .thumbnail(itemInfoProjection.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemInfoProjection.getThumbnail()).concat(Constants.RESIZE_150x150))
+                .thumbnail(itemInfoProjection.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemInfoProjection.getThumbnail()).concat(Constants.RESIZE_200x200))
                 .createDate(itemInfoProjection.getCreateDate().toLocalDate().toString())
                 .build();
     }
