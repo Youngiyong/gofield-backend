@@ -167,7 +167,6 @@ public class OrderService {
     @Transactional
     public CommonCodeResponse createOrderSheet(OrderRequest.OrderSheet request){
         User user = userService.getUserNotNonUser();
-
         int totalPrice = 0;
         int totalDelivery = 0;
 
