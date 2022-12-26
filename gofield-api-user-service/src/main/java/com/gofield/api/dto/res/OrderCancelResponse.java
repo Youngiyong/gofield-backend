@@ -18,6 +18,7 @@ public class OrderCancelResponse {
     private EOrderCancelTypeFlag type;
     private EOrderCancelStatusFlag status;
     private EOrderCancelReasonFlag reason;
+    private String comment;
     private String paymentType;
     private String refundName;
     private String refundAccount;
@@ -26,16 +27,18 @@ public class OrderCancelResponse {
     private LocalDateTime recalledDate;
     private LocalDateTime refundDate;
 
+
     private List<OrderCancelItemResponse> cancelItems;
 
     @Builder
-    private OrderCancelResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String paymentType,
+    private OrderCancelResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String comment, String paymentType,
                                 String refundName, String refundAccount, String refundBank, LocalDateTime createDate, LocalDateTime recalledDate, LocalDateTime refundDate, List<OrderCancelItemResponse> cancelItems){
         this.id = id;
         this.orderId = orderId;
         this.type = type;
         this.status = status;
         this.reason = reason;
+        this.comment = comment;
         this.paymentType = paymentType;
         this.refundName = refundName;
         this.refundAccount = refundAccount;

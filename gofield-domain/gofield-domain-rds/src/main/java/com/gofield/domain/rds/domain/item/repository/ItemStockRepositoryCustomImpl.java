@@ -11,6 +11,7 @@ import java.util.List;
 
 import static com.gofield.domain.rds.domain.item.QItem.item;
 import static com.gofield.domain.rds.domain.item.QItemStock.itemStock;
+import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
 
 @RequiredArgsConstructor
 public class ItemStockRepositoryCustomImpl implements ItemStockRepositoryCustom {
@@ -43,6 +44,16 @@ public class ItemStockRepositoryCustomImpl implements ItemStockRepositoryCustom 
                 .from(itemStock)
                 .where(itemStock.itemNumber.in(itemNumberList))
                 .fetch();
+    }
+
+    @Override
+    public ItemStock findShippingTemplateByItemNumberFetch(String itemNumber) {
+        return jpaQueryFactory
+                .selectFrom(itemStock)
+                .innerJoin(itemStock.item, item).fetchJoin()
+                .innerJoin(item.shippingTemplate, shippingTemplate).fetchJoin()
+                .where(itemStock.itemNumber.eq(itemNumber))
+                .fetchOne();
     }
 
 }

@@ -24,10 +24,19 @@ public class ShippingTemplateResponse {
     private int feeJeju;
     private int feeJejuBesides;
     private String shippingComment;
+    private String receiver;
+    private String receiverTel;
+    private String zipCode;
+    private String address;
+    private String addressExtra;
+    private String returnZipCode;
+    private String returnAddress;
+    private String returnAddressExtra;
 
     @Builder
     private ShippingTemplateResponse(Long id, Long sellerId, String title, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge,
-                                     Boolean isPaid, String exchangeCourierName, int exchangeCharge, int takebackCharge, Boolean isFee, int feeJeju, int feeJejuBesides, String shippingComment){
+                                     Boolean isPaid, String exchangeCourierName, int exchangeCharge, int takebackCharge, Boolean isFee, int feeJeju,
+                                     int feeJejuBesides, String shippingComment, String receiver, String receiverTel, String zipCode, String address, String addressExtra, String returnZipCode, String returnAddress, String returnAddressExtra){
         this.id = id;
         this.sellerId = sellerId;
         this.title = title;
@@ -43,6 +52,14 @@ public class ShippingTemplateResponse {
         this.feeJeju = feeJeju;
         this.feeJejuBesides = feeJejuBesides;
         this.shippingComment = shippingComment;
+        this.receiver = receiver;
+        this.receiverTel = receiverTel;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.addressExtra = addressExtra;
+        this.returnZipCode = returnZipCode;
+        this.returnAddress = returnAddress;
+        this.returnAddressExtra = returnAddressExtra;
     }
 
     public static ShippingTemplateResponse of(ShippingTemplate shippingTemplate){
@@ -61,6 +78,14 @@ public class ShippingTemplateResponse {
                 .feeJeju(shippingTemplate.getFeeJeju())
                 .feeJejuBesides(shippingTemplate.getFeeJejuBesides())
                 .shippingComment(shippingTemplate.getShippingComment())
+                .receiver(shippingTemplate.getReceiver())
+                .receiverTel(shippingTemplate.getReceiverTel())
+                .zipCode(shippingTemplate.getZipCode())
+                .address(shippingTemplate.getAddress())
+                .addressExtra(shippingTemplate.getAddressExtra())
+                .returnZipCode(shippingTemplate.getReturnZipCode())
+                .returnAddress(shippingTemplate.getReturnAddress())
+                .returnAddressExtra(shippingTemplate.getReturnAddressExtra())
                 .build();
     }
 

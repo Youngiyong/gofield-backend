@@ -10,6 +10,8 @@ import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
+import com.gofield.domain.rds.domain.seller.Seller;
+import com.gofield.domain.rds.domain.seller.SellerRepository;
 import com.gofield.domain.rds.domain.user.User;
 import com.gofield.domain.rds.domain.user.UserLikeItem;
 import com.gofield.domain.rds.domain.user.UserLikeItemRepository;
@@ -35,7 +37,8 @@ public class ItemService {
     private final UserLikeItemRepository userLikeItemRepository;
     private final ItemBundleReviewRepository itemBundleReviewRepository;
     private final ItemOptionRepository itemOptionRepository;
-
+    private final SellerRepository sellerRepository;
+    private final ItemStockRepository itemStockRepository;
     private final ItemRecentRepository itemRecentRepository;
     private final ItemOptionGroupRepository itemOptionGroupRepository;
 
@@ -158,6 +161,17 @@ public class ItemService {
         }
         List<ItemOptionProjection> itemOptionProjectionList = itemOptionRepository.findAllItemOptionByItemId(itemId);
         return ItemOptionDetailResponse.of(ItemOptionGroupResponse.of(itemOptionGroupList), ItemOptionResponse.of(itemOptionProjectionList));
+    }
+
+    @Transactional(readOnly = true)
+    public SellerShippingResponse getItemSeller(String itemNumber){
+        User user = userService.getUser();
+        ItemStock itemStock = itemStockRepository.findShippingTemplateByItemNumberFetch(itemNumber);
+        if(itemStock==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "<%s>는 존재하지 않는 상품번호입니다.");
+        }
+        Seller seller = sellerRepository.findBySellerId(itemStock.getSellerId());
+        return SellerShippingResponse.of(seller, ShippingTemplateResponse.of(itemStock.getItem().getShippingTemplate()));
     }
 
     @Transactional(readOnly = true)

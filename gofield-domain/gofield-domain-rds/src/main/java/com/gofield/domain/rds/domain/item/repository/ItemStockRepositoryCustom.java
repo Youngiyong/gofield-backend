@@ -8,4 +8,6 @@ public interface ItemStockRepositoryCustom {
     ItemStock findByItemNumber(String itemNumber);
     ItemStock findItemByItemNumber(String itemNumber);
     List<ItemStock> findAllInItemNumber(List<String> itemNumberList);
+
+    ItemStock findShippingTemplateByItemNumberFetch(String itemNumber);
 }

@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @Getter
 @NoArgsConstructor
@@ -22,6 +22,8 @@ public class OrderCancelDetailResponse {
     private EOrderCancelStatusFlag status;
     private EOrderCancelReasonFlag reason;
     private String content;
+
+    private String comment;
     private String paymentType;
     private int totalAmount;
     private int totalItem;
@@ -49,7 +51,7 @@ public class OrderCancelDetailResponse {
     private List<OrderCancelItemDetailResponse> cancelItems;
 
     @Builder
-    private OrderCancelDetailResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String content,  String paymentType,
+    private OrderCancelDetailResponse(Long id, Long orderId, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String content, String comment,  String paymentType,
                                       int totalAmount, int totalItem, int totalDelivery, int totalDiscount, int totalPg, String carrier, String trackingNumber,
                                       String refundName, String refundAccount, String refundBank, LocalDateTime createDate, LocalDateTime recalledDate, LocalDateTime refundDate,
                                       String receiver, String receiverTel, String receiverZipCode, String receiverAddress, String receiverAddressExtra, List<OrderCancelItemDetailResponse> cancelItems){
@@ -59,6 +61,7 @@ public class OrderCancelDetailResponse {
         this.status = status;
         this.reason = reason;
         this.content = content;
+        this.comment = comment;
         this.paymentType = paymentType;
         this.totalAmount = totalAmount;
         this.totalItem = totalItem;

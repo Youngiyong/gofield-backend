@@ -124,6 +124,13 @@ public class ItemController {
         return ApiResponse.success(itemService.getItemOption(itemId));
     }
 
+    @ApiOperation(value = "상품 상세 - 판매자 정보 조회")
+    @GetMapping("/v1/{itemNumber}/seller")
+    public ApiResponse<SellerShippingResponse> getItemShippingTemplate(@PathVariable String itemNumber){
+        return ApiResponse.success(itemService.getItemSeller(itemNumber));
+    }
+
+
     @ApiOperation(value = "상품 상세 - 상품 문의 리스트")
     @GetMapping("/v1/{itemId}/qna")
     public ApiResponse<ItemQnaPaginationResponse> getQnaList(@PathVariable Long itemId,

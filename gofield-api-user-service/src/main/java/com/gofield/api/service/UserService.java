@@ -46,7 +46,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class UserService {
-
     @Value("${secret.cdn.url}")
     private String CDN_URL;
 
@@ -54,7 +53,6 @@ public class UserService {
     private String SNS_CERT_TOKEN;
     @Value("${secret.gofield.token_key}")
     private String TOKEN_DECRYPT_KEY;
-
     private final UserRepository userRepository;
     private final UserSnsRepository userSnsRepository;
     private final UserTermRepository userTermRepository;
@@ -291,7 +289,6 @@ public class UserService {
     public void updateUserAlert(UserRequest.UserAlert request){
         User user = getUserNotNonUser();
         user.updateUserAlertPromotion(request.getIsAlertPromotion());
-
     }
 
 }
