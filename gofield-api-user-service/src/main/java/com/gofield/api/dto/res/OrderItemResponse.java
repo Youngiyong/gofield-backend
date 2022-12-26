@@ -19,7 +19,6 @@ public class OrderItemResponse {
     private Long id;
     private Long itemId;
     private Long itemOptionId;
-
     private String orderItemNumber;
     private String itemNumber;
     private String name;
@@ -68,13 +67,14 @@ public class OrderItemResponse {
                 .build();
     }
 
-    public static OrderItemResponse of(Long id, Long itemId, Long itemOptionId, String itemNumber,
+    public static OrderItemResponse of(Long id, Long itemId, Long itemOptionId, String orderItemNumber, String itemNumber,
                                        String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status, Boolean isReview,
                                        int price, int qty){
         return OrderItemResponse.builder()
                 .id(id)
                 .itemId(itemId)
                 .itemOptionId(itemOptionId)
+                .orderItemNumber(orderItemNumber)
                 .itemNumber(itemNumber)
                 .name(name)
                 .optionName(optionName)
@@ -91,7 +91,7 @@ public class OrderItemResponse {
         return list
                 .stream()
                 .map(p -> OrderItemResponse.of(p.getId(), p.getItem().getId(), p.getOrderItemOption()==null ? null : p.getOrderItemOption().getItemOptionId(),
-                                p.getItemNumber(), p.getName(), p.getOrderItemOption()==null ? null : ApiUtil.strToObject(p.getOrderItemOption().getName(), new TypeReference<List<String>>(){}),
+                               p.getOrderItemNumber(), p.getItemNumber(), p.getName(), p.getOrderItemOption()==null ? null : ApiUtil.strToObject(p.getOrderItemOption().getName(), new TypeReference<List<String>>(){}),
                     p.getItem().getClassification(), p.getItem().getThumbnail(), p.getStatus(), p.getIsReview(), p.getOrderItemOption()==null ? p.getPrice() :  p.getOrderItemOption().getPrice(), p.getOrderItemOption()==null ? p.getQty() : p.getOrderItemOption().getQty()))
                 .collect(Collectors.toList());
     }
