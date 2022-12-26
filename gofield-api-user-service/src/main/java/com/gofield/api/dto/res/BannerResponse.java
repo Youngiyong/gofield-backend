@@ -24,18 +24,18 @@ public class BannerResponse {
         this.thumbnail = thumbnail;
     }
 
-    public static BannerResponse of(String title, String description, String linkUrl, String thumbnail){
+    public static BannerResponse of(Banner banner){
         return BannerResponse.builder()
-                .title(title)
-                .description(description)
-                .linkUrl(linkUrl)
-                .thumbnail(thumbnail)
+                .title(banner.getTitle())
+                .description(banner.getDescription())
+                .linkUrl(banner.getLinkUrl())
+                .thumbnail(banner.getThumbnail())
                 .build();
     }
 
     public static List<BannerResponse> of(List<Banner> list){
         return list.stream()
-                .map(p -> BannerResponse.of(p.getTitle(), p.getDescription(), p.getLinkUrl(), p.getThumbnail()))
+                .map(BannerResponse::of)
                 .collect(Collectors.toList());
     }
 }

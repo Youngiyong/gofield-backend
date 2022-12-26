@@ -28,20 +28,20 @@ public class TermResponse {
         this.termDate = termDate;
     }
 
-    public static TermResponse of(Long id, String url, Boolean isEssential, ETermFlag type, LocalDateTime termDate){
+    public static TermResponse of(Term term){
         return TermResponse.builder()
-                .id(id)
-                .url(url)
-                .isEssential(isEssential)
-                .type(type)
-                .termDate(termDate)
+                .id(term.getId())
+                .url(term.getUrl())
+                .isEssential(term.getIsEssential())
+                .type(term.getType())
+                .termDate(term.getTermDate())
                 .build();
     }
 
     public static List<TermResponse> of (List<Term> list){
         return list
                 .stream()
-                .map(p -> TermResponse.of(p.getId(), p.getUrl(), p.getIsEssential(), p.getType(), p.getTermDate()))
+                .map(TermResponse::of)
                 .collect(Collectors.toList());
     }
 }

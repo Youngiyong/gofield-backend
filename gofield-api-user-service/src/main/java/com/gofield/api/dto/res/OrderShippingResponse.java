@@ -46,32 +46,27 @@ public class OrderShippingResponse {
         this.orderItems = orderItems;
     }
 
-    public static OrderShippingResponse of(Long id, String shippingNumber, EOrderShippingStatusFlag status,
-                                           String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
-                                           LocalDateTime createDate, LocalDateTime cancelDate, LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItem> orderItems){
+    public static OrderShippingResponse of(OrderShipping orderShipping){
         return OrderShippingResponse.builder()
-                .id(id)
-                .shippingNumber(shippingNumber)
-                .status(status)
-                .trackingNumber(trackingNumber)
-                .chargeType(chargeType)
-                .deliveryPrice(deliveryPrice)
-                .carrier(carrier)
-                .createDate(createDate)
-                .cancelDate(cancelDate)
-                .deliveryDate(deliveryDate)
-                .deliveredDate(deliveredDate)
-                .orderItems(OrderItemResponse.of(orderItems))
+                .id(orderShipping.getId())
+                .shippingNumber(orderShipping.getShippingNumber())
+                .status(orderShipping.getStatus())
+                .trackingNumber(orderShipping.getTrackingNumber())
+                .chargeType(orderShipping.getChargeType())
+                .deliveryPrice(orderShipping.getDeliveryPrice())
+                .carrier(orderShipping.getCarrier())
+                .createDate(orderShipping.getCreateDate())
+                .cancelDate(orderShipping.getCancelDate())
+                .deliveryDate(orderShipping.getDeliveryDate())
+                .deliveredDate(orderShipping.getDeliveredDate())
+                .orderItems(OrderItemResponse.of(orderShipping.getOrderItems()))
                 .build();
     }
 
     public static List<OrderShippingResponse> of(List<OrderShipping> list){
         return list
                 .stream()
-                .map(p ->
-                            OrderShippingResponse.of(p.getId(), p.getShippingNumber(), p.getStatus(),
-                                    p.getTrackingNumber(), p.getChargeType(), p.getDeliveryPrice(), p.getCarrier(), p.getCreateDate(), p.getCancelDate(),
-                                    p.getDeliveryDate(), p.getDeliveredDate(), p.getOrderItems()))
+                .map(OrderShippingResponse::of)
                 .collect(Collectors.toList());
     }
 }

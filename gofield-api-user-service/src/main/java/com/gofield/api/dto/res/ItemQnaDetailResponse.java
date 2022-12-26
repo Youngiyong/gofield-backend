@@ -17,7 +17,6 @@ public class ItemQnaDetailResponse {
     private String answer;
     private EItemQnaStatusFlag status;
     private Boolean isVisible;
-
     private Boolean isMe;
     private LocalDateTime answerDate;
     private LocalDateTime createDate;

@@ -69,6 +69,6 @@ public class OrderCancelResponse {
     }
 
     public static List<OrderCancelResponse> of(List<OrderCancel> list){
-        return list.stream().map(p -> OrderCancelResponse.of(p)).collect(Collectors.toList());
+        return list.stream().map(OrderCancelResponse::of).collect(Collectors.toList());
     }
 }

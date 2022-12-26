@@ -23,17 +23,17 @@ public class CodeResponse {
         this.group = group;
     }
 
-    public static CodeResponse of(String name, String code, ECodeGroup group){
+    public static CodeResponse of(Code code){
         return CodeResponse.builder()
-                .name(name)
-                .code(code)
-                .group(group)
+                .name(code.getName())
+                .code(code.getCode())
+                .group(code.getGroup())
                 .build();
     }
 
     public static List<CodeResponse> of(List<Code> list){
         return list.stream()
-                .map(p -> CodeResponse.of(p.getName(), p.getCode(), p.getGroup()))
+                .map(CodeResponse::of)
                 .collect(Collectors.toList());
     }
 }

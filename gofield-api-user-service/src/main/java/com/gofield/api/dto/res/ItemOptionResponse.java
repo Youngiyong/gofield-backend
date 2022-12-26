@@ -44,27 +44,27 @@ public class ItemOptionResponse {
         this.createDate = createDate;
     }
 
-    public static ItemOptionResponse of(Long id, Long itemId, String itemNumber, List<String> name, EItemOptionTypeFlag optionType, EItemStatusFlag status,  int price, int optionPrice, int qty, Boolean isUse, LocalDateTime createDate){
+    public static ItemOptionResponse of(ItemOptionProjection projection){
         return ItemOptionResponse
                 .builder()
-                .id(id)
-                .itemId(itemId)
-                .itemNumber(itemNumber)
-                .name(name)
-                .optionType(optionType)
-                .status(status)
-                .price(price)
-                .optionPrice(optionPrice)
-                .qty(qty)
-                .isUse(isUse)
-                .createDate(createDate)
+                .id(projection.getId())
+                .itemId(projection.getItemId())
+                .itemNumber(projection.getItemNumber())
+                .name(projection.getName()==null ? null : ApiUtil.strToObject(projection.getName(), new TypeReference<List<String>>(){}))
+                .optionType(projection.getOptionType())
+                .status(projection.getStatus())
+                .price(projection.getPrice())
+                .optionPrice(projection.getOptionPrice())
+                .qty(projection.getQty())
+                .isUse(projection.getIsUse())
+                .createDate(projection.getCreateDate())
                 .build();
     }
 
     public static List<ItemOptionResponse> of(List<ItemOptionProjection> list){
         return list
                 .stream()
-                .map(p -> ItemOptionResponse.of(p.getId(), p.getItemId(), p.getItemNumber(), p.getName()==null ? null : ApiUtil.strToObject(p.getName(), new TypeReference<List<String>>(){}), p.getOptionType(), p.getStatus(),  p.getPrice(), p.getOptionPrice(), p.getQty(), p.getIsUse(), p.getCreateDate()))
+                .map(ItemOptionResponse::of)
                 .collect(Collectors.toList());
     }
 

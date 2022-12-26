@@ -1,5 +1,6 @@
 package com.gofield.api.dto.res;
 
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.projection.ItemBundleImageProjectionResponse;
@@ -8,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -47,7 +49,7 @@ public class ItemBundleResponse {
                 .id(projection.getId())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
-                .thumbnail(projection.getThumbnail())
+                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
                 .reviewCount(projection.getReviewCount())
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())
@@ -55,7 +57,7 @@ public class ItemBundleResponse {
                 .allItemCount(projection.getAllItemCount())
                 .newItemCount(projection.getNewItemCount())
                 .usedItemCount(projection.getUsedItemCount())
-                .images(projection.getImages())
+                .images(projection.getImages().stream().map(k->CommonUtils.makeCloudFrontUrl(k)).collect(Collectors.toList()))
                 .build();
     }
 

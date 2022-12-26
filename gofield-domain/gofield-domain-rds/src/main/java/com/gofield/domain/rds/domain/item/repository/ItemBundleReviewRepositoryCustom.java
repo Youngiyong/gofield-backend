@@ -11,6 +11,6 @@ import java.util.List;
 public interface ItemBundleReviewRepositoryCustom {
     Page<ItemBundleReview> findByBundleId(Long bundleId, Pageable pageable);
     List<ItemBundleReviewScoreProjection> findAllByBundleId(Long bundleId);
-    List<ItemBundleReview> findAllByUserId(Long userId, Pageable pageable);
+    List<ItemBundleReview> findAllByUserIdFetch(Long userId, Pageable pageable);
 }
 

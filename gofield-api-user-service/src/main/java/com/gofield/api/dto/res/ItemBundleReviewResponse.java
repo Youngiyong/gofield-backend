@@ -1,6 +1,8 @@
 package com.gofield.api.dto.res;
 
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.ItemBundleReview;
 import lombok.Builder;
 import lombok.Getter;
@@ -40,33 +42,25 @@ public class ItemBundleReviewResponse {
         this.images = images;
     }
 
-    public static ItemBundleReviewResponse of(Long id, String name, String nickName, String optionName, Integer weight, Integer height, Double reviewScroe, String description, LocalDateTime createDate, List<String> images){
+    public static ItemBundleReviewResponse of(ItemBundleReview bundleReview){
         return ItemBundleReviewResponse.builder()
-                .id(id)
-                .name(name)
-                .nickName(nickName)
-                .optionName(optionName)
-                .weight(weight)
-                .height(height)
-                .reviewScroe(reviewScroe)
-                .description(description)
-                .createDate(createDate)
-                .images(images)
+                .id(bundleReview.getId())
+                .name(bundleReview.getName())
+                .nickName(bundleReview.getNickName())
+                .optionName(bundleReview.getOptionName())
+                .weight(bundleReview.getWeight())
+                .height(bundleReview.getHeight())
+                .reviewScroe(bundleReview.getReviewScore())
+                .description(bundleReview.getDescription())
+                .createDate(bundleReview.getCreateDate())
+                .images(bundleReview.getImages().isEmpty() ? new ArrayList<>() : bundleReview.getImages().stream().map(k-> CommonUtils.makeCloudFrontUrl(k.getImage())).collect(Collectors.toList()))
                 .build();
     }
 
     public static List<ItemBundleReviewResponse> of(List<ItemBundleReview> list){
         return list
                 .stream()
-                .map(p -> ItemBundleReviewResponse.of(
-                        p.getId(), p.getName(), p.getNickName(), p.getOptionName(),
-                        p.getWeight(), p.getHeight(), p.getReviewScore(), p.getDescription(), p.getCreateDate(),
-                        p.getImages().isEmpty() ?
-                                new ArrayList<>() :
-                                p.getImages().stream()
-                                        .map(k -> Constants.CDN_URL.concat(k.getImage().concat(Constants.RESIZE_200x200)))
-                                        .collect(Collectors.toList())
-                ))
+                .map(ItemBundleReviewResponse::of)
                 .collect(Collectors.toList());
     }
 

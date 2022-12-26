@@ -309,7 +309,7 @@ public class OrderService {
     @Transactional
     public OrderItemReviewDetailListResponse getOrderItemReviewDetailList(Pageable pageable){
         User user = userService.getUserNotNonUser();
-        List<ItemBundleReview> result = itemBundleReviewRepository.findAllByUserId(user.getId(), pageable);
+        List<ItemBundleReview> result = itemBundleReviewRepository.findAllByUserIdFetch(user.getId(), pageable);
         List<OrderItemReviewDetailResponse> response = OrderItemReviewDetailResponse.of(result);
         return OrderItemReviewDetailListResponse.of(response);
     }

@@ -1,5 +1,7 @@
 package com.gofield.api.dto.res;
 
+import com.gofield.api.util.ApiUtil;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.Category;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,23 +16,27 @@ public class CategoryResponse {
     private Long id;
     private String name;
 
+    private String thumbnail;
+
     @Builder
-    private CategoryResponse(Long id, String name){
+    private CategoryResponse(Long id, String name, String thumbnail){
         this.id = id;
         this.name = name;
+        this.thumbnail = thumbnail;
     }
 
-    public static CategoryResponse of(Long id, String name){
+    public static CategoryResponse of(Category category){
         return CategoryResponse.builder()
-                .id(id)
-                .name(name)
+                .id(category.getId())
+                .name(category.getName())
+                .thumbnail(CommonUtils.makeCloudFrontUrl(category.getThumbnail()))
                 .build();
     }
 
     public static List<CategoryResponse> of(List<Category> list){
         return list
                 .stream()
-                .map(p -> CategoryResponse.of(p.getId(), p.getName()))
+                .map(CategoryResponse::of)
                 .collect(Collectors.toList());
     }
 }

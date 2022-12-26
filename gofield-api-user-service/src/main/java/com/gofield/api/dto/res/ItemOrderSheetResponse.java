@@ -59,9 +59,7 @@ public class ItemOrderSheetResponse {
         this.feeJejuBesides = feeJejuBesides;
     }
 
-    /*
-    ToDo: 배송비는 우션 0원처리
-     */
+
     public static ItemOrderSheetResponse of(Long id, Long sellerId, Long bundleId, String brandName, String name, String optionName, String thumbnail,
                                             String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType,  EItemChargeFlag chargeType,  int charge, int condition, int feeJeju, int feeJejuBesides){
         return ItemOrderSheetResponse.builder()

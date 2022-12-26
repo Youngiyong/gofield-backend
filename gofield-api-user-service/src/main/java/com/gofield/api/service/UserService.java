@@ -150,7 +150,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserProfileResponse findUserProfile(){
         User user = getUserNotNonUser();
-        return UserProfileResponse.of(user, CDN_URL);
+        return UserProfileResponse.of(user);
     }
 
     @Transactional(readOnly = true)

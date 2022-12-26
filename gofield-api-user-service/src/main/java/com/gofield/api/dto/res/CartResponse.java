@@ -2,6 +2,7 @@ package com.gofield.api.dto.res;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.cart.projection.CartProjection;
 import com.gofield.domain.rds.domain.item.*;
 import lombok.Builder;
@@ -65,42 +66,37 @@ public class CartResponse {
         this.feeJejuBesides = feeJejuBesides;
     }
 
-    public static CartResponse of(Long id, String itemName, String itemNumber, Long sellerId, String sellerName,
-                                  List<String> optionName, String thumbnail, int price, int deliveryPrice,  int qty, Boolean isOrder, EItemClassificationFlag classification, EItemDeliveryFlag delivery,
-                                  EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition,
-                                  EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
+    public static CartResponse of(CartProjection cartProjection){
+        List<String> optionName = cartProjection.getOptionName()==null ? null : ApiUtil.strToObject(cartProjection.getOptionName(), new TypeReference<List<String>>(){});
         return CartResponse.builder()
-                .id(id)
-                .itemName(itemName)
-                .itemNumber(itemNumber)
-                .sellerId(sellerId)
-                .sellerName(sellerName)
+                .id(cartProjection.getId())
+                .itemName(cartProjection.getItemName())
+                .itemNumber(cartProjection.getItemNumber())
+                .sellerId(cartProjection.getSellerId())
+                .sellerName(cartProjection.getSellerName())
                 .optionName(optionName)
-                .thumbnail(thumbnail)
-                .price(price)
-                .deliveryPrice(deliveryPrice)
-                .qty(qty)
-                .isOrder(isOrder)
-                .classification(classification)
-                .delivery(delivery)
-                .spec(spec)
-                .gender(gender)
-                .isCondition(isCondition)
-                .condition(condition)
-                .chargeType(chargeType)
-                .charge(charge)
-                .feeJeju(feeJeju)
-                .feeJejuBesides(feeJejuBesides)
+                .thumbnail(CommonUtils.makeCloudFrontUrl(cartProjection.getThumbnail()))
+                .price(cartProjection.getPrice())
+                .deliveryPrice(cartProjection.getDeliveryPrice())
+                .qty(cartProjection.getQty())
+                .isOrder(cartProjection.getIsOrder())
+                .classification(cartProjection.getClassification())
+                .delivery(cartProjection.getDelivery())
+                .spec(cartProjection.getSpec())
+                .gender(cartProjection.getGender())
+                .isCondition(cartProjection.getIsCondition())
+                .condition(cartProjection.getCondition())
+                .chargeType(cartProjection.getChargeType())
+                .charge(cartProjection.getCharge())
+                .feeJeju(cartProjection.getFeeJeju())
+                .feeJejuBesides(cartProjection.getFeeJejuBesides())
                 .build();
     }
 
     public static List<CartResponse> of(List<CartProjection> list){
         return list
                 .stream()
-                .map(p -> CartResponse.of(p.getId(), p.getItemName(), p.getItemNumber(), p.getSellerId(),
-                            p.getSellerName(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
-                            p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getQty(), p.getIsOrder(), p.getClassification(), p.getDelivery(), p.getSpec(),
-                            p.getGender(), p.getIsCondition(), p.getCondition(), p.getChargeType(), p.getCharge(), p.getFeeJeju(), p.getFeeJejuBesides()))
+                .map(CartResponse::of)
                 .collect(Collectors.toList());
     }
 }

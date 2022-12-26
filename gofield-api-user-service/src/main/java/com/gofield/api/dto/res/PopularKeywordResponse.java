@@ -20,17 +20,17 @@ public class PopularKeywordResponse {
         this.keyword = keyword;
     }
 
-    public static PopularKeywordResponse of(Long id, String keyword){
+    public static PopularKeywordResponse of(PopularKeyword popularKeyword){
         return PopularKeywordResponse.builder()
-                .id(id)
-                .keyword(keyword)
+                .id(popularKeyword.getId())
+                .keyword(popularKeyword.getKeyword())
                 .build();
     }
 
     public static List<PopularKeywordResponse> of(List<PopularKeyword> list){
         return list
                 .stream()
-                .map(p -> PopularKeywordResponse.of(p.getId(), p.getKeyword()))
+                .map(PopularKeywordResponse::of)
                 .collect(Collectors.toList());
     }
 }

@@ -2,6 +2,7 @@ package com.gofield.api.dto.res;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.item.EItemGenderFlag;
@@ -49,29 +50,28 @@ public class ItemClassificationResponse {
         this.tags = tags;
     }
 
-    public static ItemClassificationResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec,  EItemDeliveryFlag delivery, EItemGenderFlag gender, List<String> tags){
+    public static ItemClassificationResponse of(ItemClassificationProjectionResponse projection){
         return ItemClassificationResponse.builder()
-                .id(id)
-                .itemNumber(itemNumber)
-                .name(name)
-                .brandName(brandName)
-                .thumbnail(thumbnail)
-                .price(price)
-                .deliveryPrice(deliveryPrice)
-                .likeId(likeId)
-                .classification(classification)
-                .spec(spec)
-                .delivery(delivery)
-                .gender(gender)
-                .tags(tags)
+                .id(projection.getId())
+                .itemNumber(projection.getItemNumber())
+                .name(projection.getName())
+                .brandName(projection.getBrandName())
+                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .price(projection.getPrice())
+                .deliveryPrice(projection.getDeliveryPrice())
+                .likeId(projection.getLikeId())
+                .classification(projection.getClassification())
+                .spec(projection.getSpec())
+                .delivery(projection.getDelivery())
+                .gender(projection.getGender())
+                .tags(projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){}))
                 .build();
     }
 
     public static  List<ItemClassificationResponse> of(List<ItemClassificationProjectionResponse> list) {
         return list
                 .stream()
-                .map(p -> ItemClassificationResponse.of(p.getId(), p.getItemNumber(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getSpec(), p.getDelivery(),  p.getGender(),
-                               p.getTags()==null ? null : ApiUtil.strToObject(p.getTags(), new TypeReference<List<String>>(){})))
+                .map(ItemClassificationResponse::of)
                 .collect(Collectors.toList());
     }
 }

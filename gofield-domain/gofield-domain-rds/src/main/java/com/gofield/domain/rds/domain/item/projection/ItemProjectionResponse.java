@@ -60,6 +60,58 @@ public class ItemProjectionResponse {
         this.shippingTemplate = shippingTemplate;
     }
 
+    public static ItemProjectionResponse of(ItemNonMemberProjection projection, ShippingTemplate shippingTemplate, List<String> images){
+        return ItemProjectionResponse.builder()
+                .id(projection.getId())
+                .name(projection.getName())
+                .brandName(projection.getBrandName())
+                .thumbnail(projection.getThumbnail())
+                .description(projection.getDescription())
+                .itemNumber(projection.getItemNumber())
+                .bundleId(projection.getBundleId())
+                .price(projection.getPrice())
+                .deliveryPrice(projection.getDeliveryPrice())
+                .qty(projection.getQty())
+                .status(projection.getStatus())
+                .isOption(projection.getIsOption())
+                .classification(projection.getClassification())
+                .spec(projection.getSpec())
+                .delivery(projection.getDelivery())
+                .gender(projection.getGender())
+                .tags(projection.getTags())
+                .option(projection.getOption())
+                .shippingTemplate(shippingTemplate)
+                .images(images)
+                .build();
+    }
+
+    public static ItemProjectionResponse of(ItemProjection projection, ShippingTemplate shippingTemplate, List<String> images){
+        return ItemProjectionResponse.builder()
+                .id(projection.getId())
+                .name(projection.getName())
+                .brandName(projection.getBrandName())
+                .thumbnail(projection.getThumbnail())
+                .description(projection.getDescription())
+                .itemNumber(projection.getItemNumber())
+                .bundleId(projection.getBundleId())
+                .price(projection.getPrice())
+                .deliveryPrice(projection.getDeliveryPrice())
+                .qty(projection.getQty())
+                .status(projection.getStatus())
+                .isOption(projection.getIsOption())
+                .classification(projection.getClassification())
+                .spec(projection.getSpec())
+                .delivery(projection.getDelivery())
+                .gender(projection.getGender())
+                .likeId(projection.getLikeId())
+                .tags(projection.getTags())
+                .option(projection.getOption())
+                .shippingTemplate(shippingTemplate)
+                .images(images)
+                .build();
+    }
+
+
     public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int deliveryPrice,  int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
         return ItemProjectionResponse.builder()
                 .id(id)

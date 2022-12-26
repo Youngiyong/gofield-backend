@@ -4,6 +4,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.Item;
 import com.gofield.domain.rds.domain.item.ItemOption;
 import com.gofield.domain.rds.domain.order.EOrderCancelItemFlag;
@@ -60,7 +61,7 @@ public class OrderCancelItemDetailResponse {
                 .itemNumber(itemNumber)
                 .itemId(itemId)
                 .itemOptionId(itemOptionId)
-                .thumbnail(Constants.CDN_URL.concat(thumbnail).concat(Constants.RESIZE_200x200))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(thumbnail))
                 .type(orderCancelItem.getType())
                 .qty(orderCancelItem.getQty())
                 .price(orderCancelItem.getPrice())

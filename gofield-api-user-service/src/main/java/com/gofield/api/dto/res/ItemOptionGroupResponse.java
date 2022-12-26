@@ -35,22 +35,21 @@ public class ItemOptionGroupResponse {
         this.createDate = createDate;
     }
 
-    public static ItemOptionGroupResponse of(Long id, String groupTitle, EItemOptionTypeFlag optionType, List<Map<String, Object>>  optionGroup, List<Integer> priceGroup, Boolean isEssential, LocalDateTime createDate){
+    public static ItemOptionGroupResponse of(ItemOptionGroup itemOptionGroup){
         return ItemOptionGroupResponse.builder()
-                .id(id)
-                .groupTitle(groupTitle)
-                .optionType(optionType)
-                .optionGroup(optionGroup)
-                .priceGroup(priceGroup)
-                .isEssential(isEssential)
-                .createDate(createDate)
+                .id(itemOptionGroup.getId())
+                .groupTitle(itemOptionGroup.getGroupTitle())
+                .optionType(itemOptionGroup.getOptionType())
+                .priceGroup(itemOptionGroup.getPriceGroup()==null ? null :  ApiUtil.strToObject(itemOptionGroup.getPriceGroup(), new TypeReference<List<Integer>>(){}))
+                .isEssential(itemOptionGroup.getIsEssential())
+                .createDate(itemOptionGroup.getCreateDate())
                 .build();
     }
 
     public static List<ItemOptionGroupResponse> of(List<ItemOptionGroup> list){
         return list
                 .stream()
-                .map(p -> ItemOptionGroupResponse.of(p.getId(), p.getGroupTitle(), p.getOptionType(), p.getOptionGroup()==null ? null : ApiUtil.strToObject(p.getOptionGroup(), new TypeReference<List<Map<String, Object>>>(){}), p.getPriceGroup()==null ? null :  ApiUtil.strToObject(p.getPriceGroup(), new TypeReference<List<Integer>>(){}),  p.getIsEssential(),  p.getCreateDate()))
+                .map(ItemOptionGroupResponse::of)
                 .collect(Collectors.toList());
     }
 }

@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.order.*;
 import lombok.Builder;
@@ -116,7 +117,7 @@ public class OrderCancelItemTempResponse {
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
-                .thumbnail(Constants.CDN_URL.concat(orderItem.getItem().getThumbnail().concat(Constants.RESIZE_200x200)))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
                 .qty(qty)
@@ -169,7 +170,7 @@ public class OrderCancelItemTempResponse {
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
-                .thumbnail(Constants.CDN_URL.concat(orderItem.getItem().getThumbnail().concat(Constants.RESIZE_200x200)))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
                 .qty(qty)

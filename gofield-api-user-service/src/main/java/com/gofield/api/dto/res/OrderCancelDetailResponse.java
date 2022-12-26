@@ -19,7 +19,6 @@ public class OrderCancelDetailResponse {
     private Long id;
     private Long orderId;
     private String orderNumber;
-
     private String cancelNumber;
     private EOrderCancelTypeFlag type;
     private EOrderCancelStatusFlag status;

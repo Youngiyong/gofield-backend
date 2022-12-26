@@ -83,7 +83,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                         seller.name,
                         item.bundle.id,
                         orderItemOption.itemOptionId,
-                        item.thumbnail.prepend(Constants.CDN_URL).concat(Constants.RESIZE_200x200),
+                        item.thumbnail,
                         orderItem.itemNumber,
                         orderItem.price,
                         orderItemOption.price,
@@ -103,7 +103,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                 .on(orderItem.sellerId.eq(seller.id))
                 .leftJoin(orderItemOption)
                 .on(orderItem.orderItemOption.id.eq(orderItemOption.id))
-                .where(order.userId.eq(userId), orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE))
+                .where(order.userId.eq(userId), orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE).or(orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(orderItem.createDate.desc())

@@ -3,6 +3,7 @@ package com.gofield.api.dto.res;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.ItemBundleReview;
 import lombok.Builder;
 import lombok.Getter;
@@ -38,26 +39,24 @@ public class OrderItemReviewDetailResponse {
         this.images = images;
     }
 
-    public static OrderItemReviewDetailResponse of(Long reviewId, String name, String itemNumber, List<String> optionName, String thumbnail,
-                                                   int qty, Double reviewScore, String description, List<String> images){
+    public static OrderItemReviewDetailResponse of(ItemBundleReview itemBundleReview){
         return OrderItemReviewDetailResponse.builder()
-                .reviewId(reviewId)
-                .name(name)
-                .itemNumber(itemNumber)
-                .optionName(optionName)
-                .thumbnail(thumbnail)
-                .qty(qty)
-                .reviewScore(reviewScore)
-                .description(description)
-                .images(images)
+                .reviewId(itemBundleReview.getId())
+                .name(itemBundleReview.getName())
+                .itemNumber(itemBundleReview.getItemNumber())
+                .optionName(itemBundleReview.getOptionName()==null ? null : ApiUtil.strToObject(itemBundleReview.getOptionName(), new TypeReference<List<String>>(){}))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(itemBundleReview.getThumbnail()))
+                .qty(itemBundleReview.getQty())
+                .reviewScore(itemBundleReview.getReviewScore())
+                .description(itemBundleReview.getDescription())
+                .images(itemBundleReview.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrl(k.getImage())).collect(Collectors.toList()))
                 .build();
     }
 
     public static List<OrderItemReviewDetailResponse> of(List<ItemBundleReview> list){
         return list
                 .stream()
-                .map(p -> OrderItemReviewDetailResponse.of(p.getId(), p.getName(), p.getItemNumber(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
-                            p.getThumbnail()==null ? null : Constants.CDN_URL.concat(p.getThumbnail()).concat(Constants.RESIZE_200x200), p.getQty(), p.getReviewScore(), p.getDescription(), p.getImages().stream().map(k -> Constants.CDN_URL.concat(k.getImage()).concat(Constants.RESIZE_200x200)).collect(Collectors.toList())))
+                .map(OrderItemReviewDetailResponse::of)
                 .collect(Collectors.toList());
     }
 

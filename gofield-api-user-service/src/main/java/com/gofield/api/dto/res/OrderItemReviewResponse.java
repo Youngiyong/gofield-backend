@@ -2,6 +2,7 @@ package com.gofield.api.dto.res;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemOptionTypeFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
@@ -53,33 +54,31 @@ public class OrderItemReviewResponse {
         this.status = status;
     }
 
-    public static OrderItemReviewResponse of(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, EOrderShippingStatusFlag status){
+    public static OrderItemReviewResponse of(OrderItemProjection projection){
         return OrderItemReviewResponse.builder()
-                .orderItemId(orderItemId)
-                .name(name)
-                .optionName(optionName)
-                .sellerId(sellerId)
-                .sellerName(sellerName)
-                .bundleId(bundleId)
-                .optionId(optionId)
-                .thumbnail(thumbnail)
-                .itemNumber(itemNumber)
-                .price(price)
-                .optionPrice(optionPrice)
-                .classification(classification)
-                .optionType(optionType)
-                .qty(qty)
-                .optionQty(optionQty)
-                .status(status)
+                .orderItemId(projection.getOrderItemId())
+                .name(projection.getName())
+                .optionName(projection.getOptionName()==null ? null :  ApiUtil.strToObject(projection.getOptionName(), new TypeReference<List<String>>(){}))
+                .sellerId(projection.getSellerId())
+                .sellerName(projection.getSellerName())
+                .bundleId(projection.getBundleId())
+                .optionId(projection.getOptionId())
+                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .itemNumber(projection.getItemNumber())
+                .price(projection.getPrice())
+                .optionPrice(projection.getOptionPrice())
+                .classification(projection.getClassification())
+                .optionType(projection.getOptionType())
+                .qty(projection.getQty())
+                .optionQty(projection.getOptionQty())
+                .status(projection.getStatus())
                 .build();
     }
 
     public static List<OrderItemReviewResponse> of(List<OrderItemProjection> list){
         return list
                 .stream()
-                .map(p -> OrderItemReviewResponse.of(p.getOrderItemId(), p.getName(), p.getOptionName()==null ? null : ApiUtil.strToObject(p.getOptionName(), new TypeReference<List<String>>(){}),
-                                p.getSellerId(), p.getSellerName(), p.getBundleId(), p.getOptionId(), p.getThumbnail(), p.getItemNumber(),
-                                p.getPrice(), p.getOptionPrice(), p.getClassification(), p.getOptionType(), p.getQty(), p.getOptionQty(), p.getStatus()))
+                .map(OrderItemReviewResponse::of)
                 .collect(Collectors.toList());
     }
 }

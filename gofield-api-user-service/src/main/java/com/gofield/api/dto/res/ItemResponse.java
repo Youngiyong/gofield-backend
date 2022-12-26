@@ -2,6 +2,7 @@ package com.gofield.api.dto.res;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.item.EItemGenderFlag;
@@ -13,6 +14,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Getter
@@ -25,7 +27,6 @@ public class ItemResponse {
     private String itemNumber;
     private Long bundleId;
     private int price;
-
     private int deliveryPrice;
     private int qty;
     private Long likeId;
@@ -69,7 +70,7 @@ public class ItemResponse {
                 .id(projection.getId())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
-                .thumbnail(projection.getThumbnail())
+                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
                 .itemNumber(projection.getItemNumber())
                 .bundleId(projection.getBundleId())
                 .price(projection.getPrice())
@@ -81,7 +82,7 @@ public class ItemResponse {
                 .spec(projection.getSpec())
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
-                .images(projection.getImages())
+                .images(projection.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrl(k)).collect(Collectors.toList()))
                 .option(projection.getOption()==null ? null : ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
                 .tags(projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){}))
                 .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))

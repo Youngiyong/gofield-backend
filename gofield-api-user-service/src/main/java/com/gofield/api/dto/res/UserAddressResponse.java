@@ -32,7 +32,6 @@ public class UserAddressResponse {
     }
 
     public static UserAddressResponse of(UserAddress userAddress) {
-        if (userAddress == null) return null;
         return UserAddressResponse.builder()
                 .id(userAddress.getId())
                 .tel(userAddress.getTel())

@@ -1,5 +1,7 @@
 package com.gofield.api.dto.res;
 
+import com.gofield.api.util.ApiUtil;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.projection.ItemBundleRecommendProjection;
 import lombok.Builder;
 import lombok.Getter;
@@ -32,23 +34,23 @@ public class ItemBundleRecommendResponse {
         this.usedLowestPrice = usedLowestPrice;
     }
 
-    public static ItemBundleRecommendResponse of(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice){
+    public static ItemBundleRecommendResponse of(ItemBundleRecommendProjection projection){
         return ItemBundleRecommendResponse.builder()
-                .id(id)
-                .name(name)
-                .brandName(brandName)
-                .thumbnail(thumbnail)
-                .reviewCount(reviewCount)
-                .reviewScore(reviewScore)
-                .newLowestPrice(newLowestPrice)
-                .usedLowestPrice(usedLowestPrice)
+                .id(projection.getId())
+                .name(projection.getName())
+                .brandName(projection.getBrandName())
+                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .reviewCount(projection.getReviewCount())
+                .reviewScore(projection.getReviewScore())
+                .newLowestPrice(projection.getNewLowestPrice())
+                .usedLowestPrice(projection.getUsedLowestPrice())
                 .build();
     }
 
     public static List<ItemBundleRecommendResponse> of(List<ItemBundleRecommendProjection> list){
         return list
                 .stream()
-                .map(p -> ItemBundleRecommendResponse.of(p.getId(), p.getName(), p.getBrandName(), p.getThumbnail(), p.getReviewCount(), p.getReviewScore(), p.getNewLowestPrice(), p.getUsedLowestPrice()))
+                .map(ItemBundleRecommendResponse::of)
                 .collect(Collectors.toList());
 
     }

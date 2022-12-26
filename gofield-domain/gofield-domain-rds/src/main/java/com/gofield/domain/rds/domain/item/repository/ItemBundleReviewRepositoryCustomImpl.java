@@ -59,7 +59,7 @@ public class ItemBundleReviewRepositoryCustomImpl implements ItemBundleReviewRep
     }
 
     @Override
-    public List<ItemBundleReview> findAllByUserId(Long userId, Pageable pageable) {
+    public List<ItemBundleReview> findAllByUserIdFetch(Long userId, Pageable pageable) {
         return jpaQueryFactory
                 .select(itemBundleReview)
                 .from(itemBundleReview)

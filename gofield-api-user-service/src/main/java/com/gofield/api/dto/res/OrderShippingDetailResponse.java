@@ -27,7 +27,6 @@ public class OrderShippingDetailResponse {
     private LocalDateTime cancelDate;
     private LocalDateTime deliveryDate;
     private LocalDateTime deliveredDate;
-
     private String tel;
     private String name;
     private String zipCode;
