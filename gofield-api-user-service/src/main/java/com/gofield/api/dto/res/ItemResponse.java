@@ -65,6 +65,17 @@ public class ItemResponse {
     }
 
     public static ItemResponse of(ItemProjectionResponse projection){
+        List<String> tags = projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
+        if(tags!=null){
+            if(projection.getClassification().equals(EItemClassificationFlag.USED)){
+                tags.add(projection.getSpec().getDescription());
+            }
+            if(projection.getDelivery().equals(EItemDeliveryFlag.FREE)){
+                tags.add(projection.getDelivery().getDescription());
+            }
+            tags.add(projection.getGender().getDescription());
+        }
+
         return ItemResponse.builder()
                 .id(projection.getId())
                 .name(projection.getName())
@@ -83,7 +94,7 @@ public class ItemResponse {
                 .gender(projection.getGender())
                 .images(projection.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrl(k)).collect(Collectors.toList()))
                 .option(projection.getOption()==null ? null : ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
-                .tags(projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){}))
+                .tags(tags)
                 .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))
                 .build();
     }
