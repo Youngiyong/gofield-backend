@@ -6,6 +6,7 @@ import com.gofield.admin.util.AdminUtil;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.common.EGofieldService;
@@ -21,6 +22,7 @@ import com.gofield.domain.rds.domain.user.UserAccountRepository;
 import com.gofield.domain.rds.domain.user.UserRepository;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentCancelResponse;
+import com.gofield.infrastructure.external.api.tracker.res.CarrierTrackResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -158,8 +160,23 @@ public class OrderService {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환처리가 완료된 주문입니다.");
         }
         orderShipping.updateAdminStatus(status);
-        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderShipping.getOrder().getUserId(), EGofieldService.GOFIELD_BACK_OFFICE, status);
-        orderShippingLogRepository.save(orderShippingLog);
+        if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+            CarrierTrackResponse trackResponse = thirdPartyService.getCarrierTrackInfo(orderShipping.getCarrier(), orderShipping.getTrackingNumber());
+            if(trackResponse!=null){
+                if(trackResponse.getState().getId().equals("delivered")){
+                    if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
+                        if(!orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+                            orderShipping.updateShippingDeliveryComplete(LocalDateTimeUtils.stringToLocalDateTime(trackResponse.getTo().getTime()));
+                            OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderShipping.getOrder().getUserId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
+                            orderShippingLogRepository.save(orderShippingLog);
+                        }
+                    }
+                }
+            }
+        } else {
+            OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderShipping.getOrder().getUserId(), EGofieldService.GOFIELD_BACK_OFFICE, orderShipping.getStatus());
+            orderShippingLogRepository.save(orderShippingLog);
+        }
     }
 
     @Transactional

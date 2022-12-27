@@ -3,6 +3,7 @@ package com.gofield.infrastructure.external.api.tracker.config;
 import com.gofield.common.exception.BadGatewayException;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.exception.InvalidException;
+import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import feign.FeignException;
@@ -32,12 +33,10 @@ public class TrackerApiFeignConfig {
         public Exception decode(String methodKey, Response response) {
             FeignException exception = FeignException.errorStatus(methodKey, response);
             switch (response.status()) {
-                case 400: case 404: case 403:
-                    throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("Tracker API 호출 중 필수 파라미터가 요청되지 않았습니다. status: (%s) message: (%s)", response.status(), response.body()));
-                 case 500:
-                    throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, String.format("Tracker API 호출 중 에러가 발생하였습니다. status: (%s) message: (%s)", response.status(), response.body()));
-                default:
-                    throw new BadGatewayException(String.format("Tracker API 호출중 에러(%s)가 발생하였습니다. message: (%s) ", response.status(), exception.getMessage()));
+                case 400: throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "잘못된 운송사 코드입니다.");
+                case 404: throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "잘못된 운송장 번호입니다.");
+                case 500: throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.NONE, String.format("Tracker API 호출 중 에러가 발생하였습니다. status: (%s) message: (%s)", response.status(), response.body()));
+                default: throw new BadGatewayException(String.format("Tracker API 호출중 에러(%s)가 발생하였습니다. message: (%s) ", response.status(), exception.getMessage()));
             }
         }
 

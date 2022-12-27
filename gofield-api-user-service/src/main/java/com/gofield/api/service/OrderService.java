@@ -1,6 +1,7 @@
 package com.gofield.api.service;
 
 
+import com.amazonaws.event.request.Progress;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.dto.enums.PaymentType;
 import com.gofield.api.dto.req.OrderRequest;
@@ -10,6 +11,7 @@ import com.gofield.common.exception.*;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.code.Code;
 import com.gofield.domain.rds.domain.code.CodeRepository;
@@ -25,6 +27,7 @@ import com.gofield.domain.rds.domain.user.UserAccount;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentCancelResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
+import com.gofield.infrastructure.external.api.tracker.res.CarrierTrackResponse;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
 import com.google.gson.Gson;
@@ -36,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -51,7 +55,6 @@ public class OrderService {
     private final ItemOptionRepository itemOptionRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final OrderRepository orderRepository;
-
     private final OrderShippingLogRepository orderShippingLogRepository;
     private final OrderSheetRepository orderSheetRepository;
     private final OrderCancelRepository orderCancelRepository;
@@ -64,6 +67,7 @@ public class OrderService {
     private final UserService userService;
     private final ThirdPartyService thirdPartyService;
     private final S3FileStorageClient s3FileStorageClient;
+
 
     private void validateOrderShippingCancelStatus(EOrderShippingStatusFlag status){
         if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
@@ -123,11 +127,26 @@ public class OrderService {
         return orderRepository.findByOrderNumberAndUserId(orderNumber, user.getId());
     }
 
-    @Transactional(readOnly = true)
-    public NextUrlResponse getOrderTrackerDeliveryUrl(String carrierId, String trackId){
-        Code code = codeRepository.findByCode(carrierId);
-        if(code==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> carrierId는 존재하지 않는 코드입니다.", carrierId));
-        return NextUrlResponse.of(makeCarrierUrl(carrierId, trackId));
+    @Transactional
+    public NextUrlResponse getOrderTrackerDeliveryUrl(String shippingNumber){
+        User user = userService.getUserNotNonUser();
+        OrderShipping orderShipping = orderShippingRepository.findByUserIdAndShippingNumberFetch(user.getId(), shippingNumber);
+        if(orderShipping==null || orderShipping.getCarrier()==null || orderShipping.getTrackingNumber()==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "운송장 번호가 존재하지 않습니다.");
+        }
+        CarrierTrackResponse trackResponse = thirdPartyService.getCarrierTrackInfo(orderShipping.getCarrier(), orderShipping.getTrackingNumber());
+        if(trackResponse!=null){
+            if(trackResponse.getState().getId().equals("delivered")){
+                if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_READY)){
+                    if(!orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+                        orderShipping.updateShippingDeliveryComplete(LocalDateTimeUtils.stringToLocalDateTime(trackResponse.getTo().getTime()));
+                        OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), user.getId(), EGofieldService.GOFIELD_API, orderShipping.getStatus());
+                        orderShippingLogRepository.save(orderShippingLog);
+                    }
+                }
+            }
+        }
+        return NextUrlResponse.of(makeCarrierUrl(orderShipping.getCarrier(), orderShipping.getTrackingNumber()));
     }
 
     @Transactional(readOnly = true)
@@ -350,7 +369,8 @@ public class OrderService {
             }
         }
         int qty = orderItem.getOrderItemOption()!=null ? orderItem.getOrderItemOption().getQty() : orderItem.getQty();
-        ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), order.getId(), orderItem.getItemNumber(), orderItem.getName(), user.getNickName(), orderItem.getOrderItemOption()==null ? null : orderItem.getOrderItemOption().getName(), orderItem.getItem().getThumbnail(), request.getWeight(), request.getHeight(), request.getReviewScore(), qty, request.getContent());
+        int price = orderItem.getOrderItemOption()!=null ? orderItem.getOrderItemOption().getPrice() : orderItem.getPrice();
+        ItemBundleReview itemBundleReview = ItemBundleReview.newInstance(orderItem.getItem().getBundle(), user.getId(), order.getId(), orderItem.getItemNumber(), orderItem.getName(), user.getNickName(), orderItem.getOrderItemOption()==null ? null : orderItem.getOrderItemOption().getName(), orderItem.getItem().getThumbnail(), request.getWeight(), request.getHeight(), request.getReviewScore(), price, qty, request.getContent());
         for(String image: imageList){
             ItemBundleReviewImage itemBundleReviewImage = ItemBundleReviewImage.newInstance(itemBundleReview, image);
             itemBundleReview.addImage(itemBundleReviewImage);

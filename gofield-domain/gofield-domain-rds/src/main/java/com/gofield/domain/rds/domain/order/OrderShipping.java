@@ -146,6 +146,12 @@ public class OrderShipping extends BaseTimeEntity {
         this.deliveredDate = LocalDateTime.now();
     }
 
+    public void updateShippingDeliveryComplete(LocalDateTime deliveryDate){
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE;
+        this.deliveryDate = deliveryDate;
+        this.deliveredDate = LocalDateTime.now();
+    }
+
     public void updateShippingComplete(){
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE;
         this.finishedDate = LocalDateTime.now();
@@ -160,6 +166,7 @@ public class OrderShipping extends BaseTimeEntity {
 
     public void updateCancelComplete(){
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE;
+        this.cancelDate = LocalDateTime.now();
     }
 
     public void updateReturn() { this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN; }
@@ -171,22 +178,10 @@ public class OrderShipping extends BaseTimeEntity {
     }
 
     public void updateAdminStatus(EOrderShippingStatusFlag status){
-        if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY)){
-            this.deliveryDate = LocalDateTime.now();
-        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+       if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
             this.deliveredDate = LocalDateTime.now();
         }
         this.status = status;
-    }
-
-    public void updateAdminCancel(){
-        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE;
-        this.cancelDate = LocalDateTime.now();
-    }
-
-    public void updateAdminReturn(){
-        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE;
-        this.cancelDate = LocalDateTime.now();
     }
 
     public void updateShippingReady(){

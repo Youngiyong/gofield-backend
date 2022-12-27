@@ -166,5 +166,14 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
                 .fetchFirst();
     }
 
+    @Override
+    public OrderShipping findByUserIdAndShippingNumberFetch(Long userId, String shippingNumber) {
+        return jpaQueryFactory
+                .selectFrom(orderShipping)
+                .innerJoin(orderShipping.order, order).fetchJoin()
+                .where(order.userId.eq(userId), orderShipping.shippingNumber.eq(shippingNumber))
+                .fetchFirst();
+    }
+
 
 }

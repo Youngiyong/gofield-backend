@@ -57,10 +57,9 @@ public class OrderController {
     }
 
     @ApiOperation(value = "배송사 추적")
-    @GetMapping("/v1/carrier/{carrierId}/track/{trackId}")
-    public ApiResponse<NextUrlResponse> getOrderTrackerDeliveryUrl(@PathVariable String carrierId,
-                                                                   @PathVariable String trackId){
-        return ApiResponse.success(orderService.getOrderTrackerDeliveryUrl(carrierId, trackId));
+    @GetMapping("/v1/{shippingNumber}/track")
+    public ApiResponse<NextUrlResponse> getOrderTrackerDeliveryUrl(@PathVariable String shippingNumber){
+        return ApiResponse.success(orderService.getOrderTrackerDeliveryUrl(shippingNumber));
     }
 
     @ApiOperation(value = "주문목록")

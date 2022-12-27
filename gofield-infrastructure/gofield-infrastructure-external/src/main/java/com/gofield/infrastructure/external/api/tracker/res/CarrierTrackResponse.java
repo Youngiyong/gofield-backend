@@ -22,7 +22,7 @@ public class CarrierTrackResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class NameTimeField {
+    public static class NameTimeField {
         private String name;
         private String time;
     }
@@ -30,7 +30,7 @@ public class CarrierTrackResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class IdTextField {
+    public static class IdTextField {
         private String id;
         private String text;
     }
@@ -38,7 +38,7 @@ public class CarrierTrackResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Progress {
+    public static class Progress {
         private String time;
         private IdTextField status;
         private Location location;
@@ -48,14 +48,14 @@ public class CarrierTrackResponse {
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Location {
+    public static class Location {
         private String name;
     }
 
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    private static class Carrier {
+    public static class Carrier {
         private String id;
         private String name;
         private String tel;

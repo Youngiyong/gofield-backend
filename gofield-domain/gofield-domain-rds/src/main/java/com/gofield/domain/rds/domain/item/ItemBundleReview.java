@@ -59,7 +59,10 @@ public class ItemBundleReview  {
     private Double reviewScore;
 
     @Column
-    private Integer qty;
+    private int price;
+
+    @Column
+    private int qty;
 
     @Column
     private String description;
@@ -72,7 +75,7 @@ public class ItemBundleReview  {
 
 
     @Builder
-    private ItemBundleReview(ItemBundle bundle, Long userId, Long orderId, String itemNumber, String name, String nickName, String optionName, String thumbnail, Integer weight, Integer height, Double reviewScore, int qty, String description){
+    private ItemBundleReview(ItemBundle bundle, Long userId, Long orderId, String itemNumber, String name, String nickName, String optionName, String thumbnail, Integer weight, Integer height, Double reviewScore, int price, int qty, String description){
         this.bundle = bundle;
         this.userId = userId;
         this.orderId = orderId;
@@ -84,11 +87,12 @@ public class ItemBundleReview  {
         this.weight = weight;
         this.height = height;
         this.reviewScore = reviewScore;
+        this.price = price;
         this.qty = qty;
         this.description = description;
     }
 
-    public static ItemBundleReview newInstance(ItemBundle bundle, Long userId, Long orderId, String itemNumber, String name, String nickName, String optionName, String thumbnail, Integer weight, Integer height, Double reviewScore, Integer qty, String description){
+    public static ItemBundleReview newInstance(ItemBundle bundle, Long userId, Long orderId, String itemNumber, String name, String nickName, String optionName, String thumbnail, Integer weight, Integer height, Double reviewScore, int price, int qty, String description){
         return ItemBundleReview.builder()
                 .bundle(bundle)
                 .userId(userId)
@@ -101,6 +105,7 @@ public class ItemBundleReview  {
                 .weight(weight)
                 .height(height)
                 .reviewScore(reviewScore)
+                .price(price)
                 .qty(qty)
                 .description(description)
                 .build();

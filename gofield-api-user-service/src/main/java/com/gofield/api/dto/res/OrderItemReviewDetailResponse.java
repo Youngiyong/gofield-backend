@@ -20,6 +20,7 @@ public class OrderItemReviewDetailResponse {
     private String itemNumber;
     private List<String> optionName;
     private String thumbnail;
+    private int price;
     private int qty;
     private Double reviewScore;
     private String description;
@@ -27,12 +28,13 @@ public class OrderItemReviewDetailResponse {
     private List<String> images;
 
     @Builder
-    private OrderItemReviewDetailResponse(Long reviewId, String name, String itemNumber,  List<String> optionName, String thumbnail, int qty, Double reviewScore, String description, List<String> images){
+    private OrderItemReviewDetailResponse(Long reviewId, String name, String itemNumber,  List<String> optionName, String thumbnail, int price, int qty, Double reviewScore, String description, List<String> images){
         this.reviewId = reviewId;
         this.name = name;
         this.itemNumber = itemNumber;
         this.optionName = optionName;
         this.thumbnail = thumbnail;
+        this.price = price;
         this.qty = qty;
         this.reviewScore = reviewScore;
         this.description = description;
@@ -46,6 +48,7 @@ public class OrderItemReviewDetailResponse {
                 .itemNumber(itemBundleReview.getItemNumber())
                 .optionName(itemBundleReview.getOptionName()==null ? null : ApiUtil.strToObject(itemBundleReview.getOptionName(), new TypeReference<List<String>>(){}))
                 .thumbnail(CommonUtils.makeCloudFrontUrl(itemBundleReview.getThumbnail()))
+                .price(itemBundleReview.getPrice())
                 .qty(itemBundleReview.getQty())
                 .reviewScore(itemBundleReview.getReviewScore())
                 .description(itemBundleReview.getDescription())

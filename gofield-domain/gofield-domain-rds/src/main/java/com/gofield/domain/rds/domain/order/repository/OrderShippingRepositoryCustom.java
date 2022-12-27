@@ -16,4 +16,6 @@ public interface OrderShippingRepositoryCustom {
     OrderShipping findAdminOrderShippingById(Long id);
     OrderShipping findByIdFetchOrder(Long id);
     OrderShipping findByIdNotFetch(Long id);
+
+    OrderShipping findByUserIdAndShippingNumberFetch(Long userId, String shippingNumber);
 }
