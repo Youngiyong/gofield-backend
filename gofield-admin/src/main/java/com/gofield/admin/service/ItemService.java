@@ -104,7 +104,7 @@ public class ItemService {
 //
     @Transactional(readOnly = true)
     public ItemDto getItem(Long id){
-        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllNotParentIdIsActiveOrderBySort());
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllChildrenIsActiveOrderBySort());
         List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
         if(id==null){
@@ -115,11 +115,90 @@ public class ItemService {
 
     @Transactional
     public void saveNewItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
-//        Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
-//        Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
-//        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
-//        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
-//        ItemDetail itemDetail = ItemDetail.newInstance(itemDto.getDescription(), null, itemDto.getGender(), itemDto.getSpec());
+        Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
+        Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
+        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
+        String thumbnail = null ;
+        if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
+            thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
+        }
+        String optionList = makeOption(itemDto);
+        ItemDetail itemDetail = ItemDetail.newInstance(
+                itemDto.getGender(),
+                itemDto.getSpec(),
+                optionList,
+                null);
+
+        Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
+        /*
+        ToDo: 셀러 관리 나오면 셀러 선택 처리
+         */
+        ShippingTemplate shippingTemplate = ShippingTemplate.newInstance(
+                1L,
+                isCondition,
+                itemDto.getShippingTemplate().getCondition(),
+                itemDto.getShippingTemplate().getChargeType(),
+                itemDto.getShippingTemplate().getCharge(),
+                itemDto.getShippingTemplate().getIsPaid(),
+                itemDto.getShippingTemplate().getExchangeCharge(),
+                itemDto.getShippingTemplate().getTakebackCharge(),
+                itemDto.getShippingTemplate().getIsFee(),
+                itemDto.getShippingTemplate().getFeeJeju(),
+                itemDto.getShippingTemplate().getFeeJejuBesides(),
+                itemDto.getShippingTemplate().getZipCode(),
+                itemDto.getShippingTemplate().getAddress(),
+                itemDto.getShippingTemplate().getAddressExtra(),
+                itemDto.getShippingTemplate().getReturnZipCode(),
+                itemDto.getShippingTemplate().getReturnAddress(),
+                itemDto.getShippingTemplate().getReturnAddressExtra());
+
+        ItemTemp itemTemp = itemTempRepository.findById(1L).get();
+
+        String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
+        Item item = Item.newNewItemInstance(
+                itemBundle,
+                brand,
+                category,
+                itemDetail,
+                shippingTemplate,
+                1L,
+                thumbnail,
+                makeItemNumber(itemTemp.getItemNumber()),
+                itemDto.getName(),
+                itemDto.getPrice(),
+                itemDto.getDeliveryPrice(),
+                itemDto.getPickup(),
+                itemDto.getDelivery(),
+                tags);
+
+        if(images!=null && !images.isEmpty()){
+            int sort = 30;
+            for(MultipartFile file: images){
+                if(!file.getOriginalFilename().equals("")) {
+                    item.addImage(ItemImage.newInstance(item, s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE), sort));
+                }
+                sort--;
+            }
+        }
+        ItemStock itemStock = ItemStock.newInstance(item, EItemStatusFlag.SALE, EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
+        ItemAggregation itemAggregation = ItemAggregation.newInstance(item);
+        itemDetailRepository.save(itemDetail);
+        shippingTemplateRepository.save(shippingTemplate);
+        itemRepository.save(item);
+        itemAggregationRepository.save(itemAggregation);
+        itemStockRepository.save(itemStock);
+        itemTemp.update();
+
+        //묶음 집계 업데이트
+        ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(item.getBundle().getId());
+        Item resultItem = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
+        Item lowestPriceItem = itemRepository.findLowestItemByBundleId(itemStock.getItem().getBundle().getId());
+        Item highestPriceItem = itemRepository.findHighestItemByBundleId(itemStock.getItem().getBundle().getId());
+        int updatePrice = resultItem == null ? item.getPrice() : resultItem.getPrice();
+        int lowestPrice = lowestPriceItem == null ? item.getPrice() : resultItem.getPrice();
+        int highestPrice = highestPriceItem == null ? item.getPrice() : resultItem.getPrice();
+        itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice, lowestPrice, highestPrice);
+        itemBundleAggregation.updateItemPlusOne();
     }
 
 

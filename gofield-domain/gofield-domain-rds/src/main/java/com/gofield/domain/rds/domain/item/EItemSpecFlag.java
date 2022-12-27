@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemSpecFlag implements EnumCodeModel {
-    BEST("최상", "B"),
-    UPPER("상", "U"),
-    MIDDLE( "중", "M"),
-    LOWER("하", "L")
+    BEST("최상급", "B"),
+    UPPER("상급", "U"),
+    MIDDLE( "중급", "M"),
+    LOWER("하급", "L")
     ;
 
     private String description;

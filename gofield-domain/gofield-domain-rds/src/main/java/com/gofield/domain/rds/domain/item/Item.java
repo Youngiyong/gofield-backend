@@ -136,6 +136,27 @@ public class Item extends BaseTimeEntity {
                 .build();
     }
 
+    public static Item newNewItemInstance(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate, Long sellerId,  String thumbnail,
+                                           String itemNumber, String name, int price, int deliveryPrice, EItemPickupFlag pickup, EItemDeliveryFlag delivery, String tags){
+        return Item.builder()
+                .itemBundle(itemBundle)
+                .brand(brand)
+                .category(category)
+                .itemDetail(itemDetail)
+                .shippingTemplate(shippingTemplate)
+                .sellerId(sellerId)
+                .itemNumber(itemNumber)
+                .name(name)
+                .price(price)
+                .deliveryPrice(deliveryPrice)
+                .pickup(pickup)
+                .delivery(delivery)
+                .classification(EItemClassificationFlag.NEW)
+                .thumbnail(thumbnail)
+                .tags(tags)
+                .build();
+    }
+
     public void addOption(ItemOption itemOption){
         this.options.add(itemOption);
     }

@@ -11,6 +11,7 @@ public enum EItemGenderFlag implements EnumCodeModel {
     FEMALE("여성", "F"),
     MALE( "남성", "M"),
     CHILDREN("어린이", "C"),
+    BOTH("남녀공용", "B"),
     ETC("기타", "N")
     ;
 

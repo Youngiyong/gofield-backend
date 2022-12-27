@@ -51,6 +51,16 @@ public class ItemClassificationResponse {
     }
 
     public static ItemClassificationResponse of(ItemClassificationProjectionResponse projection){
+        List<String> tags = projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
+        if(tags!=null){
+            if(projection.getClassification().equals(EItemClassificationFlag.USED)){
+                tags.add(projection.getSpec().getDescription());
+            }
+            if(projection.getDelivery().equals(EItemDeliveryFlag.FREE)){
+                tags.add(projection.getDelivery().getDescription());
+            }
+            tags.add(projection.getGender().getDescription());
+        }
         return ItemClassificationResponse.builder()
                 .id(projection.getId())
                 .itemNumber(projection.getItemNumber())

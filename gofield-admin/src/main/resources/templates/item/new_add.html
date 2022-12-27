@@ -73,7 +73,7 @@
                         </div>
                         <!-- /.card-header -->
                                          <!-- form start -->
-                        <form role="form" method="post" th:action="@{/item/add/used}" th:object="${item}" enctype="multipart/form-data">
+                        <form role="form" method="post" th:action="@{/item/add/new}" th:object="${item}" enctype="multipart/form-data">
                             <input th:field="*{id}" type="hidden"/>
                             <div class="card-body">
                                 <div class="form-group">
@@ -176,8 +176,8 @@
                                 </div>
                                 <div class="form-group">
                                     <label>배송방법</label>
-                                    <select th:field="*{shipping}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                        <option th:value="'SHIPPING'" th:text="택배등기"></option>
+                                    <select th:field="*{pickup}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'SHIPPING'" th:text="택배등기소포"></option>
                                         <option th:value="'DIRECT'" th:text="직접전달"></option>
                                     </select>
                                 </div>
@@ -189,7 +189,7 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label>상품별 배송비 타입</label>
+                                    <label>상품별 배송비</label>
                                     <select th:field="*{delivery}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
                                         <option th:value="'FREE'" th:text="무료배송"></option>
                                         <option th:value="'CONDITION'" th:text="조건부배송"></option>
@@ -197,9 +197,23 @@
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="deliveryPrice">상품별 배송비</label>
+                                    <label for="deliveryPrice">기본 배송비</label>
                                     <input class="form-control" id="deliveryPrice" placeholder="0"
                                            type="text" th:field="*{deliveryPrice}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="condition">배송비 조건</label>
+                                    상품 판매가 합계
+                                    <input class="form-control" id="condition" placeholder="0"
+                                           type="text" th:field="*{shippingTemplate.condition}">
+                                    원 이상 무료
+                                </div>
+                                <div class="form-group">
+                                    <label>선결제/후결제</label>
+                                    <select th:field="*{shippingTemplate.isPaid}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'true'" th:text="선결제"></option>
+                                        <option th:value="'false'" th:text="후결제"></option>
+                                    </select>
                                 </div>
                                 <div class="form-group">
                                     <label for="takebackCharge">반품비</label>
@@ -212,6 +226,13 @@
                                            type="text" th:field="*{shippingTemplate.exchangeCharge}">
                                 </div>
                                 <div class="form-group">
+                                    <label>제주/도서산간 추가 배송비</label>
+                                    <select th:field="*{shippingTemplate.isFee}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'false'" th:text="설정안함"></option>
+                                        <option th:value="'true'" th:text="설정함"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
                                     <label for="feeJeju">제주 추가 배송비</label>
                                     <input class="form-control" id="feeJeju" placeholder="제주 추가 배송"
                                            type="text" th:field="*{shippingTemplate.feeJeju}">
@@ -220,6 +241,11 @@
                                     <label for="feeJejuBesides">제주외 도서산간 추가 배송비</label>
                                     <input class="form-control" id="feeJejuBesides" placeholder="제주 외 도서산간 추가 배송비"
                                            type="text" th:field="*{shippingTemplate.feeJejuBesides}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipCode">출고지 우편번호</label>
+                                    <input class="form-control" id="zipCode" placeholder="우편번호" disabled
+                                           type="text" th:field="*{shippingTemplate.zipCode}">
                                 </div>
                                 <div class="form-group">
                                     <label for="address">출고지 주소</label>
@@ -232,9 +258,9 @@
                                            type="text" th:field="*{shippingTemplate.addressExtra}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="zipCode">출고지 우편번호</label>
-                                    <input class="form-control" id="zipCode" placeholder="우편번호" disabled
-                                           type="text" th:field="*{shippingTemplate.zipCode}">
+                                    <label for="returnZipCode">반품지 우편번호</label>
+                                    <input class="form-control" id="returnZipCode" placeholder="우편번호" disabled
+                                           type="text" th:field="*{shippingTemplate.returnZipCode}">
                                 </div>
                                 <div class="form-group">
                                     <label for="returnAddress">반품지 주소</label>
@@ -245,11 +271,6 @@
                                     <label for="returnAddressExtra">반품지 상세주소</label>
                                     <input class="form-control" id="returnAddressExtra" placeholder="상세주소"
                                            type="text" th:field="*{shippingTemplate.returnAddressExtra}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="zipCode">반품지 우편번호</label>
-                                    <input class="form-control" id="returnZipCode" placeholder="우편번호" disabled
-                                           type="text" th:field="*{shippingTemplate.returnZipCode}">
                                 </div>
                                 <div class="form-group">
                                     <label>대표이미지</label>

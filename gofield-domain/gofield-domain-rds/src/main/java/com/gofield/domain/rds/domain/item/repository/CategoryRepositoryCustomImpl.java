@@ -103,10 +103,10 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     }
 
     @Override
-    public List<Category> findAllNotParentIdIsActiveOrderBySort() {
+    public List<Category> findAllChildrenIsActiveOrderBySort() {
         return jpaQueryFactory
                 .selectFrom(category)
-                .where(category.isActive.isTrue(), category.parent.isNull())
+                .where(category.isActive.isTrue(), category.parent.isNotNull())
                 .orderBy(category.name.asc(), category.sort.desc())
                 .fetch();
     }

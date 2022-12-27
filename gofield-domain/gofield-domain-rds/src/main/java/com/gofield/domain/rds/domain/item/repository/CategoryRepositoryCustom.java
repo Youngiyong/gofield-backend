@@ -15,7 +15,7 @@ public interface CategoryRepositoryCustom {
     Category findByCategoryId(Long id);
     Category findByParentIdAndName(Long parentId, String name);
     List<Category> findAllIsActiveOrderBySort();
-    List<Category> findAllNotParentIdIsActiveOrderBySort();
+    List<Category> findAllChildrenIsActiveOrderBySort();
     Page<Category> findAllByKeyword(String keyword, Pageable pageable);
 
 }

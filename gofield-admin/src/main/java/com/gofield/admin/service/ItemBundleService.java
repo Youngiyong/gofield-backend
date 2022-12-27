@@ -63,7 +63,7 @@ public class ItemBundleService {
 
     @Transactional(readOnly = true)
     public ItemBundleDto getItemBundle(Long id){
-        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllNotParentIdIsActiveOrderBySort());
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllChildrenIsActiveOrderBySort());
         List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
         if(id==null){
             return ItemBundleDto.of(categoryDtoList, brandDtoList);
@@ -73,7 +73,7 @@ public class ItemBundleService {
 
     @Transactional(readOnly = true)
     public ItemBundleEditDto getItemBundleImage(Long id){
-        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllNotParentIdIsActiveOrderBySort());
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllChildrenIsActiveOrderBySort());
         List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
         ItemBundle itemBundle = itemBundleRepository.findByBundleIdFetchJoin(id);
         List<ItemBundleImageDto> itemBundleImages = ItemBundleImageDto.of(itemBundle.getImages());
