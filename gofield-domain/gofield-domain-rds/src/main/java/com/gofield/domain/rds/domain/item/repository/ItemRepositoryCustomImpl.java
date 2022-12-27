@@ -778,6 +778,17 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
+    public List<Item> findAllItemByBundleIdAndStatusSalesOrderByPrice(Long bundleId) {
+        return jpaQueryFactory
+                .selectFrom(item)
+                .innerJoin(itemStock)
+                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
+                .orderBy(item.price.asc())
+                .fetch();
+    }
+
+    @Override
     public Item findLowestItemByBundleId(Long bundleId) {
         return jpaQueryFactory
                 .select(item)

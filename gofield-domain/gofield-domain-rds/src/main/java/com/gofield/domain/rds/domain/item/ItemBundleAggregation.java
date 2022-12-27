@@ -65,7 +65,13 @@ public class ItemBundleAggregation extends BaseTimeEntity {
                 .build();
     }
 
-
+    public void update(int itemCount, int newLowestPrice, int usedLowestPrice, int lowestPrice, int highestPrice){
+        this.itemCount = itemCount;
+        this.newLowestPrice = newLowestPrice;
+        this.usedLowestPrice = usedLowestPrice;
+        this.lowestPrice = lowestPrice;
+        this.highestPrice = highestPrice;
+    }
 
     public void updateAggregationPrice(EItemClassificationFlag classification, int price, int lowestPrice, int highestPrice){
         if(classification.equals(EItemClassificationFlag.USED)){

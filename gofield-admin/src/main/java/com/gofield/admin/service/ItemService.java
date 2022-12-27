@@ -26,6 +26,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -191,17 +192,37 @@ public class ItemService {
 
         //묶음 집계 업데이트
         ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(item.getBundle().getId());
-        Item resultItem = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
-        Item lowestPriceItem = itemRepository.findLowestItemByBundleId(itemStock.getItem().getBundle().getId());
-        Item highestPriceItem = itemRepository.findHighestItemByBundleId(itemStock.getItem().getBundle().getId());
-        int updatePrice = resultItem == null ? item.getPrice() : resultItem.getPrice();
-        int lowestPrice = lowestPriceItem == null ? item.getPrice() : resultItem.getPrice();
-        int highestPrice = highestPriceItem == null ? item.getPrice() : resultItem.getPrice();
-        itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice, lowestPrice, highestPrice);
-        itemBundleAggregation.updateItemPlusOne();
+
+        List<Item> itemList = itemRepository.findAllItemByBundleIdAndStatusSalesOrderByPrice(itemBundle.getId());
+        List<Item> usedItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.USED)).collect(Collectors.toList());
+        List<Item> newItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.NEW)).collect(Collectors.toList());
+
+        int itemCount = 0;
+        int newLowestPrice = 0;
+        int usedLowestPrice = 0;
+        int lowestPrice = 0;
+        int highestPrice = 0;
+
+        if(itemList.isEmpty()){
+            itemBundleAggregation.update(0, 0, 0, 0, 0);
+        } else {
+            itemCount = itemList.size();
+            lowestPrice = itemList.get(0).getPrice();
+            highestPrice = itemList.get(itemList.size()-1).getPrice();
+
+            if(usedItemList.isEmpty()){
+                usedLowestPrice = 0;
+            } else {
+                usedLowestPrice = usedItemList.get(0).getPrice();
+            }
+            if(newItemList.isEmpty()){
+                newLowestPrice = 0;
+            } else {
+                newLowestPrice = newItemList.get(0).getPrice();
+            }
+            itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
+        }
     }
-
-
 
     @Transactional
     public void saveUsedItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
@@ -281,35 +302,36 @@ public class ItemService {
 
         //묶음 집계 업데이트
         ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(item.getBundle().getId());
-        Item resultItem = itemRepository.findLowestItemByBundleIdAndClassification(itemBundle.getId(), itemStock.getItem().getClassification());
-        Item lowestPriceItem = itemRepository.findLowestItemByBundleId(itemBundle.getId());
-        Item highestPriceItem = itemRepository.findHighestItemByBundleId(itemBundle.getId());
-//        int updatePrice = resultItem == null ? item.getPrice() : resultItem.getPrice();
-//        int lowestPrice = lowestPriceItem == null ? item.getPrice() : resultItem.getPrice();
-//        int highestPrice = highestPriceItem == null ? item.getPrice() : resultItem.getPrice();
-        int updatePrice = 0;
+
+        List<Item> itemList = itemRepository.findAllItemByBundleIdAndStatusSalesOrderByPrice(itemBundle.getId());
+        List<Item> usedItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.USED)).collect(Collectors.toList());
+        List<Item> newItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.NEW)).collect(Collectors.toList());
+
+        int itemCount = 0;
+        int newLowestPrice = 0;
+        int usedLowestPrice = 0;
         int lowestPrice = 0;
         int highestPrice = 0;
-        if(resultItem==null){
-            lowestPrice = item.getPrice();
-            highestPrice = item.getPrice();
-        }
 
-        updatePrice = item.getPrice();
-
-        if(lowestPriceItem==null){
-            lowestPrice = item.getPrice();
+        if(itemList.isEmpty()){
+            itemBundleAggregation.update(0, 0, 0, 0, 0);
         } else {
-            lowestPrice = lowestPriceItem.getPrice();
+            itemCount = itemList.size();
+            lowestPrice = itemList.get(0).getPrice();
+            highestPrice = itemList.get(itemList.size()-1).getPrice();
         }
-
-        if(highestPriceItem==null){
-            highestPrice = item.getPrice();
+        if(usedItemList.isEmpty()){
+            usedLowestPrice = 0;
         } else {
-            highestPrice = highestPriceItem.getPrice();
+            usedLowestPrice = usedItemList.get(0).getPrice();
         }
-        itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice, lowestPrice, highestPrice);
-        itemBundleAggregation.updateItemPlusOne();
+        if(newItemList.isEmpty()){
+            newLowestPrice = 0;
+        } else {
+            newLowestPrice = newItemList.get(0).getPrice();
+        }
+        itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
+
     }
 
 //

@@ -155,7 +155,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .where(itemBundle.isRecommend.isTrue(), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
-                .orderBy(itemBundleAggregation.reviewCount.desc())
+                .orderBy(itemBundle.sort.asc(), itemBundle.createDate.desc())
                 .fetch();
     }
 
