@@ -90,7 +90,7 @@ public class ItemService {
 
     @Transactional(readOnly = true)
     public List<ItemClassificationResponse> getUserRecentItemList(Pageable pageable){
-        User user = userService.getUser();
+        User user = userService.getUserNotNonUser();
         List<ItemClassificationProjectionResponse> result = itemRepository.findAllRecentItemByUserId(user.getId());
         return ItemClassificationResponse.of(result);
     }
@@ -154,7 +154,6 @@ public class ItemService {
                 itemRecent.update();
             }
         }
-
         return ItemResponse.of(item);
     }
 
