@@ -3,12 +3,11 @@ package com.gofield.admin.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Getter
-@Setter
 @NoArgsConstructor
 public class ItemKeyValueDto {
+
     private String key;
     private String value;
 

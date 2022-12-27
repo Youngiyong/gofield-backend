@@ -23,7 +23,9 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @Service
@@ -36,14 +38,14 @@ public class ItemService {
     private final ItemStockRepository itemStockRepository;
     private final ItemTempRepository itemTempRepository;
     private final ItemBundleRepository itemBundleRepository;
-
     private final ItemDetailRepository itemDetailRepository;
     private final ItemAggregationRepository itemAggregationRepository;
     private final ItemBundleImageRepository itemBundleImageRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
+    private final ShippingTemplateRepository shippingTemplateRepository;
     private final S3FileStorageClient s3FileStorageClient;
 
-    public List<ItemKeyValueDto> makeOption(ItemDto itemDto){
+    public String makeOption(ItemDto itemDto){
         List<ItemKeyValueDto> result = new ArrayList<>();
         if(itemDto.getManufacturer()!=null){
             result.add(ItemKeyValueDto.of("제조사", itemDto.getManufacturer()));
@@ -61,7 +63,7 @@ public class ItemService {
             String as = itemDto.getIsAs() ? "가능" : "불가능";
             result.add(ItemKeyValueDto.of("AS 가능여부", as));
         }
-        return result;
+        return AdminUtil.toJsonStr(result);
     }
 
     public String makeItemNumber(int itemTempNumber){
@@ -128,16 +130,16 @@ public class ItemService {
         Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
         ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
         String thumbnail = null ;
-        if(!image.isEmpty() && image.getOriginalFilename().equals("")){
+        if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
         }
-        List<ItemKeyValueDto> optionList = makeOption(itemDto);
+        String optionList = makeOption(itemDto);
         ItemDetail itemDetail = ItemDetail.newInstance(
-//                itemDto.getDescription(),
-                null,
-                AdminUtil.toJsonStr(optionList),
                 itemDto.getGender(),
-                itemDto.getSpec());
+                itemDto.getSpec(),
+                optionList,
+                null);
+
         Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
         /*
         ToDo: 셀러 관리 나오면 셀러 선택 처리
@@ -160,7 +162,9 @@ public class ItemService {
                         itemDto.getShippingTemplate().getReturnZipCode(),
                         itemDto.getShippingTemplate().getReturnAddress(),
                         itemDto.getShippingTemplate().getReturnAddressExtra());
+
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
+
         String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
         Item item = Item.newUsedItemInstance(
                 itemBundle,
@@ -190,18 +194,20 @@ public class ItemService {
         ItemStock itemStock = ItemStock.newInstance(item, EItemStatusFlag.SALE, EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
         ItemAggregation itemAggregation = ItemAggregation.newInstance(item);
         itemDetailRepository.save(itemDetail);
+        shippingTemplateRepository.save(shippingTemplate);
         itemRepository.save(item);
         itemAggregationRepository.save(itemAggregation);
         itemStockRepository.save(itemStock);
+        itemTemp.update();
 
         //묶음 집계 업데이트
         ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(item.getBundle().getId());
         Item resultItem = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
         Item lowestPriceItem = itemRepository.findLowestItemByBundleId(itemStock.getItem().getBundle().getId());
         Item highestPriceItem = itemRepository.findHighestItemByBundleId(itemStock.getItem().getBundle().getId());
-        int updatePrice = resultItem == null ? 0 : resultItem.getPrice();
-        int lowestPrice = lowestPriceItem == null ? 0 : resultItem.getPrice();
-        int highestPrice = highestPriceItem == null ? 0 : resultItem.getPrice();
+        int updatePrice = resultItem == null ? item.getPrice() : resultItem.getPrice();
+        int lowestPrice = lowestPriceItem == null ? item.getPrice() : resultItem.getPrice();
+        int highestPrice = highestPriceItem == null ? item.getPrice() : resultItem.getPrice();
         itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice, lowestPrice, highestPrice);
         itemBundleAggregation.updateItemPlusOne();
     }

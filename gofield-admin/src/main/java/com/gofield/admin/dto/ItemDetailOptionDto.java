@@ -5,24 +5,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
-@Setter
 @NoArgsConstructor
 public class ItemDetailOptionDto {
 
-    private String key;
-    private String value;
+    private List<ItemKeyValueDto> optionList;
 
     @Builder
-    private ItemDetailOptionDto(String key, String value){
-        this.key = key;
-        this.value = value;
+    public ItemDetailOptionDto(List<ItemKeyValueDto> optionList){
+        this.optionList = optionList;
     }
 
-    public static ItemDetailOptionDto of(String key, String value){
+    public static ItemDetailOptionDto of(List<ItemKeyValueDto> optionList){
         return ItemDetailOptionDto.builder()
-                .key(key)
-                .value(value)
+                .optionList(optionList)
                 .build();
     }
 }

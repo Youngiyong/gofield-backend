@@ -45,6 +45,7 @@ public class OrderWait {
     @Column
     @Enumerated
     private EPaymentType paymentType;
+
     @Column(name = "environment_flag")
     private EEnvironmentFlag environment;
 

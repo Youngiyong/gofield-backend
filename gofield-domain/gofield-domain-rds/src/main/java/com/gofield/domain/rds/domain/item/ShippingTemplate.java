@@ -30,7 +30,7 @@ public class ShippingTemplate extends BaseTimeEntity {
     @Column
     private Boolean isCondition;
 
-    @Column
+    @Column(name = "conditional")
     private int condition;
 
     @Column

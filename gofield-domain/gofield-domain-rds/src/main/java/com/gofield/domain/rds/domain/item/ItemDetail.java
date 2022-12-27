@@ -19,11 +19,6 @@ import javax.persistence.*;
 @Table(	name = "item_detail")
 public class ItemDetail extends BaseTimeEntity {
 
-    @Column(columnDefinition = "TEXT")
-    private String description;
-
-    @Column
-    private String option;
 
     @Column(name = "gender_flag", nullable = false)
     private EItemGenderFlag gender;
@@ -31,20 +26,26 @@ public class ItemDetail extends BaseTimeEntity {
     @Column(name = "spec_flag", nullable = false)
     private EItemSpecFlag spec;
 
+    @Column(columnDefinition = "TEXT")
+    private String itemOption;
+
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Builder
-    private ItemDetail(String description, String option, EItemGenderFlag gender, EItemSpecFlag spec){
-        this.description = description;
-        this.option = option;
+    private ItemDetail(EItemGenderFlag gender, EItemSpecFlag spec, String option, String description){
         this.gender = gender;
         this.spec = spec;
+        this.itemOption = option;
+        this.description = description;
     }
 
-    public static ItemDetail newInstance(String description, String option, EItemGenderFlag gender, EItemSpecFlag spec){
+    public static ItemDetail newInstance(EItemGenderFlag gender, EItemSpecFlag spec, String option, String description){
         return ItemDetail.builder()
-                .description(description)
-                .option(option)
                 .gender(gender)
                 .spec(spec)
+                .option(option)
+                .description(description)
                 .build();
     }
 }

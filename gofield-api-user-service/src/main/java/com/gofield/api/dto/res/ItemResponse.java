@@ -38,7 +38,6 @@ public class ItemResponse {
     private List<String> images;
     private List<Map<String, Object>> option;
     private List<String> tags;
-
     private ShippingTemplateResponse shippingTemplate;
 
     @Builder

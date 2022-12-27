@@ -243,8 +243,13 @@
                                            type="text" th:field="*{shippingTemplate.feeJejuBesides}">
                                 </div>
                                 <div class="form-group">
+                                    <label for="zipCode">출고지 우편번호</label>
+                                    <input class="form-control" id="zipCode" placeholder="우편번호" disabled
+                                           type="text" th:field="*{shippingTemplate.zipCode}">
+                                </div>
+                                <div class="form-group">
                                     <label for="address">출고지 주소</label>
-                                    <input class="form-control" id="address" name="address" placeholder="클릭" readonly
+                                    <input class="form-control" id="address" name="address" placeholder="클릭" disabled
                                            type="text" th:field="*{shippingTemplate.address}">
                                 </div>
                                 <div class="form-group">
@@ -253,24 +258,19 @@
                                            type="text" th:field="*{shippingTemplate.addressExtra}">
                                 </div>
                                 <div class="form-group">
-                                    <label for="zipCode">출고지 우편번호</label>
-                                    <input class="form-control" id="zipCode" placeholder="우편번호" disabled
-                                           type="text" th:field="*{shippingTemplate.zipCode}">
+                                    <label for="returnZipCode">반품지 우편번호</label>
+                                    <input class="form-control" id="returnZipCode" placeholder="우편번호" disabled
+                                           type="text" th:field="*{shippingTemplate.returnZipCode}">
                                 </div>
                                 <div class="form-group">
                                     <label for="returnAddress">반품지 주소</label>
-                                    <input class="form-control" id="returnAddress" name="returnAddress" placeholder="클릭" readonly
+                                    <input class="form-control" id="returnAddress" name="returnAddress" placeholder="클릭" disabled
                                            type="text" th:field="*{shippingTemplate.returnAddress}">
                                 </div>
                                 <div class="form-group">
                                     <label for="returnAddressExtra">반품지 상세주소</label>
                                     <input class="form-control" id="returnAddressExtra" placeholder="상세주소"
                                            type="text" th:field="*{shippingTemplate.returnAddressExtra}">
-                                </div>
-                                <div class="form-group">
-                                    <label for="zipCode">반품지 우편번호</label>
-                                    <input class="form-control" id="returnZipCode" placeholder="우편번호" disabled
-                                           type="text" th:field="*{shippingTemplate.returnZipCode}">
                                 </div>
                                 <div class="form-group">
                                     <label>대표이미지</label>
