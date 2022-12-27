@@ -74,7 +74,7 @@ public class ItemClassificationResponse {
                 .spec(projection.getSpec())
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
-                .tags(projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){}))
+                .tags(tags)
                 .build();
     }
 
