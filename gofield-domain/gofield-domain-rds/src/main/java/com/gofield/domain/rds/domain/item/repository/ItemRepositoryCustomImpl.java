@@ -754,11 +754,11 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         shippingTemplate.feeJejuBesides))
                 .from(itemStock)
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id), itemStock.itemNumber.eq(itemNumber))
+                .on(itemStock.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(shippingTemplate)
-                .on(itemStock.sellerId.eq(shippingTemplate.sellerId))
+                .on(item.shippingTemplate.id.eq(shippingTemplate.id))
                 .leftJoin(itemOption)
                 .on(itemStock.itemNumber.eq(itemOption.itemNumber))
                 .fetchOne();
