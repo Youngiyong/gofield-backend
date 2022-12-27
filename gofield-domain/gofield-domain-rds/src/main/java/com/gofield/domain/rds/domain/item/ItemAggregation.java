@@ -44,7 +44,7 @@ public class ItemAggregation extends BaseTimeEntity {
         this.orderCount = 0;
     }
 
-    public static ItemAggregation of(Item item){
+    public static ItemAggregation newInstance(Item item){
         return ItemAggregation.builder()
                 .item(item)
                 .build();

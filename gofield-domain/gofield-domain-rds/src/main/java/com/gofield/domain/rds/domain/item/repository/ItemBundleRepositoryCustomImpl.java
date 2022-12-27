@@ -183,6 +183,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .select(itemBundleImage.image)
                 .from(itemBundleImage)
                 .where(itemBundleImage.bundle.id.eq(bundleId))
+                .orderBy(itemBundleImage.sort.asc())
                 .fetch();
 
         List<EItemClassificationFlag> allCount = jpaQueryFactory

@@ -5,11 +5,13 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-@Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
-public enum EItemShippingFlag implements EnumCodeModel {
+@Getter
+public enum EItemPickupFlag implements EnumCodeModel {
+
     SHIPPING("택배/소포/등기", "S"),
-    DIRECT( "직접전달", "D");
+    DIRECT("직접전달", "D"),
+    ;
 
     private String description;
     private String code;
@@ -18,5 +20,4 @@ public enum EItemShippingFlag implements EnumCodeModel {
     public String getKey() {
         return name();
     }
-
 }

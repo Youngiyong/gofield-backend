@@ -30,18 +30,23 @@ public class ItemBundleImage {
     private String image;
 
     @Column
+    private Integer sort;
+
+    @Column
     private LocalDateTime createDate;
 
     @Builder
-    private ItemBundleImage(ItemBundle bundle, String image){
+    private ItemBundleImage(ItemBundle bundle, String image, Integer sort){
         this.bundle = bundle;
         this.image = image;
+        this.sort = sort;
     }
 
-    public static ItemBundleImage newInstance(ItemBundle bundle, String image){
+    public static ItemBundleImage newInstance(ItemBundle bundle, String image, Integer sort){
         return ItemBundleImage.builder()
                 .bundle(bundle)
                 .image(image)
+                .sort(sort)
                 .build();
     }
 

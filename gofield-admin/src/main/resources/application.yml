@@ -21,3 +21,8 @@ spring.data:
 spring:
   thymeleaf:
     cache: false
+
+spring.servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 100MB

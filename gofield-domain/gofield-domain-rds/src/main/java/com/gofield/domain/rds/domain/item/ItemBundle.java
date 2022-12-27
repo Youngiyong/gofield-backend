@@ -46,6 +46,8 @@ public class ItemBundle extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Item> items = new ArrayList<>();
+
+    @OrderBy("sort ASC")
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemBundleImage> images = new ArrayList<>();
 

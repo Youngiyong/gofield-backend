@@ -88,4 +88,8 @@ public class ItemBundleAggregation extends BaseTimeEntity {
             this.itemCount--;
         }
     }
+
+    public void updateItemPlusOne(){
+        this.itemCount++;
+    }
 }

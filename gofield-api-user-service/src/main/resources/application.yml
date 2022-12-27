@@ -12,9 +12,7 @@ spring.data:
     pageable:
       default-page-size: 10
       one-indexed-parameters: true
-
 server:
   port: 9090
   name: gofield-api-user
   monitoring: 고필드 사용자 api
-

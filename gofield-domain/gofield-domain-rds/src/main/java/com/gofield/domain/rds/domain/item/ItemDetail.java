@@ -22,7 +22,7 @@ public class ItemDetail extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
-    @Column(columnDefinition = "TEXT")
+    @Column
     private String option;
 
     @Column(name = "gender_flag", nullable = false)

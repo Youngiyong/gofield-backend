@@ -43,6 +43,9 @@ public class Item extends BaseTimeEntity {
     private ShippingTemplate shippingTemplate;
 
     @Column
+    private Long sellerId;
+
+    @Column
     private String name;
 
     @Column(nullable = false, length = 32)
@@ -56,6 +59,9 @@ public class Item extends BaseTimeEntity {
 
     @Column
     private int deliveryPrice;
+
+    @Column(name = "pickup_flag", nullable = false)
+    private EItemPickupFlag pickup;
 
     @Column(name = "delivery_flag", nullable = false)
     private EItemDeliveryFlag delivery;
@@ -72,6 +78,7 @@ public class Item extends BaseTimeEntity {
     @Column
     private Boolean isOption;
 
+    @OrderBy("sort ASC")
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemImage> images = new ArrayList<>();
 
@@ -88,17 +95,19 @@ public class Item extends BaseTimeEntity {
     private List<ItemHasTag> tag;
 
     @Builder
-    private Item(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate,
-                 String itemNumber, String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemClassificationFlag classification, String thumbnail, String tags, Boolean isOption){
+    private Item(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate, Long sellerId,
+                 String itemNumber, String name, int price, int deliveryPrice, EItemPickupFlag pickup, EItemDeliveryFlag delivery, EItemClassificationFlag classification, String thumbnail, String tags, Boolean isOption){
         this.bundle = itemBundle;
         this.brand = brand;
         this.category = category;
         this.detail = itemDetail;
         this.shippingTemplate = shippingTemplate;
+        this.sellerId = sellerId;
         this.itemNumber = itemNumber;
         this.name = name;
         this.price = price;
         this.deliveryPrice = deliveryPrice;
+        this.pickup = pickup;
         this.delivery = delivery;
         this.classification = classification;
         this.thumbnail = thumbnail;
@@ -106,25 +115,25 @@ public class Item extends BaseTimeEntity {
         this.isOption = isOption;
     }
 
-    public static Item usedItemInstance(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate,
-                          String itemNumber, String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, String thumbnail, String tags, Boolean isOption){
+    public static Item newUsedItemInstance(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate, Long sellerId,  String thumbnail,
+                          String itemNumber, String name, int price, int deliveryPrice, EItemPickupFlag pickup, EItemDeliveryFlag delivery, String tags){
         return Item.builder()
                 .itemBundle(itemBundle)
                 .brand(brand)
                 .category(category)
                 .itemDetail(itemDetail)
                 .shippingTemplate(shippingTemplate)
+                .sellerId(sellerId)
                 .itemNumber(itemNumber)
                 .name(name)
                 .price(price)
                 .deliveryPrice(deliveryPrice)
+                .pickup(pickup)
                 .delivery(delivery)
                 .classification(EItemClassificationFlag.USED)
                 .thumbnail(thumbnail)
                 .tags(tags)
-                .isOption(isOption)
                 .build();
-
     }
 
     public void addOption(ItemOption itemOption){

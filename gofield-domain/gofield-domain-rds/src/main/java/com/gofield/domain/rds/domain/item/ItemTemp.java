@@ -21,7 +21,7 @@ public class ItemTemp {
     private Long id;
 
     @Column
-    private Long itemNumber;
+    private int itemNumber;
 
 
     public void update(){

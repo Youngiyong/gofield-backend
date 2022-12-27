@@ -55,7 +55,7 @@ public class ItemBundleService {
         if(images!=null && !images.isEmpty()){
             for(MultipartFile file: images){
                 if(!file.getOriginalFilename().equals("")){
-                    itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
+                    itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE), null));
                 }
             }
         }
@@ -87,8 +87,10 @@ public class ItemBundleService {
         String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
         ItemBundle itemBundle = ItemBundle.newInstance(itemBundleDto.getName(), category, brand, true, itemBundleDto.getIsRecommend(), thumbnailUrl);
         if(images!=null && !images.isEmpty()){
+            int sort = 10;
             for(MultipartFile file: images){
-                itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
+                itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE), sort));
+                sort++;
             }
         }
         ItemBundleAggregation itemBundleAggregation = ItemBundleAggregation.newInstance(itemBundle);

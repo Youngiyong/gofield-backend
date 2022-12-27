@@ -51,7 +51,7 @@ public class ItemDto {
 
     private EItemSpecFlag spec;
 
-    private EItemShippingFlag shipping;
+    private EItemPickupFlag pickup;
 
     private List<ItemDetailOptionDto> options;
 
@@ -67,7 +67,7 @@ public class ItemDto {
                         String categoryName, Long brandId, String brandName, Long detailId, Long shippingTemplateId, String name, String itemNumber,
                         int price, int qty, EItemClassificationFlag classification, EItemDeliveryFlag delivery, int deliveryPrice, List<String> tags,
                         String description, String manufacturer, String origin, String itemSpec, EItemGenderFlag gender, String length,
-                        String weight, Boolean isAs, EItemSpecFlag spec, EItemShippingFlag shipping, List<ItemDetailOptionDto> options, String thumbnail, String createDate, ShippingTemplateDto shippingTemplate){
+                        String weight, Boolean isAs, EItemSpecFlag spec, EItemPickupFlag pickup, List<ItemDetailOptionDto> options, String thumbnail, String createDate, ShippingTemplateDto shippingTemplate){
         this.id = id;
         this.categoryList = categoryList;
         this.brandList = brandList;
@@ -96,7 +96,7 @@ public class ItemDto {
         this.weight = weight;
         this.isAs = isAs;
         this.spec = spec;
-        this.shipping = shipping;
+        this.pickup = pickup;
         this.options = options;
         this.thumbnail = thumbnail;
         this.createDate = createDate;

@@ -62,7 +62,7 @@ public class ItemStock extends BaseTimeEntity {
         this.qty = qty;
     }
 
-    public static ItemStock of(Item item, EItemStatusFlag status, EItemStockFlag type, String itemNumber, Long sellerId, int qty){
+    public static ItemStock newInstance(Item item, EItemStatusFlag status, EItemStockFlag type, String itemNumber, Long sellerId, int qty){
         return ItemStock.builder()
                 .item(item)
                 .status(status)

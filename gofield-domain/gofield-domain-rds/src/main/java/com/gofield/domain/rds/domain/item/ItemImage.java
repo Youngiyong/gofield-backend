@@ -28,19 +28,24 @@ public class ItemImage {
     private String image;
 
     @Column
+    private Integer sort;
+
+    @Column
     private LocalDateTime createDate;
 
     @Builder
-    private ItemImage(Item item, String image){
+    private ItemImage(Item item, String image, Integer sort){
         this.item = item;
         this.image= image;
+        this.sort = sort;
         this.createDate = LocalDateTime.now();
     }
 
-    public static ItemImage of(Item item, String image){
+    public static ItemImage newInstance(Item item, String image, Integer sort){
         return ItemImage.builder()
                 .item(item)
                 .image(image)
+                .sort(sort)
                 .build();
     }
 }
