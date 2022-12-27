@@ -8,10 +8,10 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemGenderFlag implements EnumCodeModel {
-    FEMALE("여성", "F"),
-    MALE( "남성", "M"),
-    CHILDREN("어린이", "C"),
-    BOTH("남녀공용", "B"),
+    FEMALE("여성용", "F"),
+    MALE( "남성용", "M"),
+    CHILDREN("어린이용", "C"),
+    UNISEX("남녀공용", "U"),
     ETC("기타", "N")
     ;
 

@@ -281,12 +281,33 @@ public class ItemService {
 
         //묶음 집계 업데이트
         ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(item.getBundle().getId());
-        Item resultItem = itemRepository.findLowestItemByBundleIdAndClassification(itemStock.getItem().getBundle().getId(), itemStock.getItem().getClassification());
-        Item lowestPriceItem = itemRepository.findLowestItemByBundleId(itemStock.getItem().getBundle().getId());
-        Item highestPriceItem = itemRepository.findHighestItemByBundleId(itemStock.getItem().getBundle().getId());
-        int updatePrice = resultItem == null ? item.getPrice() : resultItem.getPrice();
-        int lowestPrice = lowestPriceItem == null ? item.getPrice() : resultItem.getPrice();
-        int highestPrice = highestPriceItem == null ? item.getPrice() : resultItem.getPrice();
+        Item resultItem = itemRepository.findLowestItemByBundleIdAndClassification(itemBundle.getId(), itemStock.getItem().getClassification());
+        Item lowestPriceItem = itemRepository.findLowestItemByBundleId(itemBundle.getId());
+        Item highestPriceItem = itemRepository.findHighestItemByBundleId(itemBundle.getId());
+//        int updatePrice = resultItem == null ? item.getPrice() : resultItem.getPrice();
+//        int lowestPrice = lowestPriceItem == null ? item.getPrice() : resultItem.getPrice();
+//        int highestPrice = highestPriceItem == null ? item.getPrice() : resultItem.getPrice();
+        int updatePrice = 0;
+        int lowestPrice = 0;
+        int highestPrice = 0;
+        if(resultItem==null){
+            lowestPrice = item.getPrice();
+            highestPrice = item.getPrice();
+        }
+
+        updatePrice = item.getPrice();
+
+        if(lowestPriceItem==null){
+            lowestPrice = item.getPrice();
+        } else {
+            lowestPrice = lowestPriceItem.getPrice();
+        }
+
+        if(highestPriceItem==null){
+            highestPrice = item.getPrice();
+        } else {
+            highestPrice = highestPriceItem.getPrice();
+        }
         itemBundleAggregation.updateAggregationPrice(itemStock.getItem().getClassification(), updatePrice, lowestPrice, highestPrice);
         itemBundleAggregation.updateItemPlusOne();
     }
