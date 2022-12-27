@@ -77,6 +77,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
         return jpaQueryFactory
                 .select(new QOrderItemProjection(
                         orderItem.id,
+                        orderShipping.orderNumber,
                         orderItem.name,
                         orderItemOption.name,
                         orderItem.sellerId,
@@ -91,7 +92,8 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                         orderItemOption.optionType,
                         orderItem.qty,
                         orderItemOption.qty,
-                        orderShipping.status))
+                        orderShipping.status,
+                        orderShipping.finishedDate))
                 .from(order)
                 .innerJoin(orderItem)
                 .on(order.id.eq(orderItem.order.id))

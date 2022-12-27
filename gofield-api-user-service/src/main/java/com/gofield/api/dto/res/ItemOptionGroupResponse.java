@@ -40,6 +40,7 @@ public class ItemOptionGroupResponse {
                 .id(itemOptionGroup.getId())
                 .groupTitle(itemOptionGroup.getGroupTitle())
                 .optionType(itemOptionGroup.getOptionType())
+                .optionGroup(itemOptionGroup.getOptionGroup()==null ? null : ApiUtil.strToObject(itemOptionGroup.getOptionGroup(), new TypeReference<List<Map<String, Object>>>(){}))
                 .priceGroup(itemOptionGroup.getPriceGroup()==null ? null :  ApiUtil.strToObject(itemOptionGroup.getPriceGroup(), new TypeReference<List<Integer>>(){}))
                 .isEssential(itemOptionGroup.getIsEssential())
                 .createDate(itemOptionGroup.getCreateDate())

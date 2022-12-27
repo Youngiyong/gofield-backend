@@ -11,13 +11,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
 public class OrderItemReviewResponse {
-    private Long orderItemId;
+    private Long id;
+    private String orderNumber;
     private String name;
     private List<String> optionName;
     private Long sellerId;
@@ -34,9 +36,12 @@ public class OrderItemReviewResponse {
     private int optionQty;
     private EOrderShippingStatusFlag status;
 
+    private LocalDateTime finishedDate;
+
     @Builder
-    private OrderItemReviewResponse(Long orderItemId, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, EOrderShippingStatusFlag status){
-        this.orderItemId = orderItemId;
+    private OrderItemReviewResponse(Long id, String orderNumber, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, EOrderShippingStatusFlag status, LocalDateTime finishedDate){
+        this.id = id;
+        this.orderNumber = orderNumber;
         this.name = name;
         this.optionName = optionName;
         this.sellerId = sellerId;
@@ -52,11 +57,13 @@ public class OrderItemReviewResponse {
         this.qty = qty;
         this.optionQty = optionQty;
         this.status = status;
+        this.finishedDate = finishedDate;
     }
 
     public static OrderItemReviewResponse of(OrderItemProjection projection){
         return OrderItemReviewResponse.builder()
-                .orderItemId(projection.getOrderItemId())
+                .id(projection.getId())
+                .orderNumber(projection.getOrderNumber())
                 .name(projection.getName())
                 .optionName(projection.getOptionName()==null ? null :  ApiUtil.strToObject(projection.getOptionName(), new TypeReference<List<String>>(){}))
                 .sellerId(projection.getSellerId())
@@ -72,6 +79,7 @@ public class OrderItemReviewResponse {
                 .qty(projection.getQty())
                 .optionQty(projection.getOptionQty())
                 .status(projection.getStatus())
+                .finishedDate(projection.getFinishedDate())
                 .build();
     }
 

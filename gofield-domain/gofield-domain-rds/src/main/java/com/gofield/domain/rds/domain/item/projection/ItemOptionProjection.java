@@ -19,7 +19,6 @@ public class ItemOptionProjection {
     private final EItemOptionTypeFlag optionType;
     private final EItemStatusFlag status;
     private final int price;
-
     private final int optionPrice;
     private final int qty;
     private final Short sort;
