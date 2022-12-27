@@ -627,6 +627,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             brand.name.as("brandName"),
                             itemStock.sellerId,
                             item.bundle.id,
+                            item.shippingTemplate.id,
                             item.thumbnail,
                             itemDetail.description,
                             item.itemNumber,
@@ -657,7 +658,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
             ShippingTemplate resultShip = jpaQueryFactory
                     .select(shippingTemplate)
                     .from(shippingTemplate)
-                    .where(shippingTemplate.sellerId.eq(projection.getSellerId()))
+                    .where(shippingTemplate.id.eq(projection.getShippingTemplateId()))
                     .fetchOne();
 
             List<String> images = jpaQueryFactory
@@ -676,6 +677,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         brand.name.as("brandName"),
                         itemStock.sellerId,
                         item.bundle.id,
+                        item.shippingTemplate.id,
                         item.thumbnail,
                         itemDetail.description,
                         item.itemNumber,
@@ -709,7 +711,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         ShippingTemplate resultShip = jpaQueryFactory
                 .select(shippingTemplate)
                 .from(shippingTemplate)
-                .where(shippingTemplate.sellerId.eq(projection.getSellerId()))
+                .where(shippingTemplate.id.eq(projection.getShippingTemplateId()))
                 .fetchOne();
 
         List<String> images = jpaQueryFactory

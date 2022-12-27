@@ -103,6 +103,15 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
     }
 
     @Override
+    public List<Category> findAllNotParentIdIsActiveOrderBySort() {
+        return jpaQueryFactory
+                .selectFrom(category)
+                .where(category.isActive.isTrue(), category.parent.isNull())
+                .orderBy(category.name.asc(), category.sort.desc())
+                .fetch();
+    }
+
+    @Override
     public Page<Category> findAllByKeyword(String keyword, Pageable pageable) {
         List<Category> content = jpaQueryFactory
                 .selectFrom(category)

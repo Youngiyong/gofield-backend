@@ -104,7 +104,7 @@ public class ItemService {
 //
     @Transactional(readOnly = true)
     public ItemDto getItem(Long id){
-        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllIsActiveOrderBySort());
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllNotParentIdIsActiveOrderBySort());
         List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
         if(id==null){
