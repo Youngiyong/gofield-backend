@@ -183,12 +183,12 @@ public class ItemService {
                 tags);
 
         if(images!=null && !images.isEmpty()){
-            int sort = 10;
+            int sort = 30;
             for(MultipartFile file: images){
                 if(!file.getOriginalFilename().equals("")) {
                     item.addImage(ItemImage.newInstance(item, s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE), sort));
                 }
-                sort++;
+                sort--;
             }
         }
         ItemStock itemStock = ItemStock.newInstance(item, EItemStatusFlag.SALE, EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());

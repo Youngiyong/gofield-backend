@@ -665,6 +665,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .select(itemImage.image)
                     .from(itemImage)
                     .where(itemImage.item.id.eq(projection.getId()))
+                    .orderBy(itemImage.sort.asc())
                     .fetch();
 
             return ItemProjectionResponse.of(projection, resultShip, images);
@@ -718,6 +719,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .select(itemImage.image)
                 .from(itemImage)
                 .where(itemImage.item.id.eq(projection.getId()))
+                .orderBy(itemImage.sort.asc())
                 .fetch();
 
         return ItemProjectionResponse.of(projection, resultShip, images);

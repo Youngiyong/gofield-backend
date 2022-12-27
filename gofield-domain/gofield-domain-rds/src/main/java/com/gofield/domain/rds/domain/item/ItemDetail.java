@@ -19,7 +19,6 @@ import javax.persistence.*;
 @Table(	name = "item_detail")
 public class ItemDetail extends BaseTimeEntity {
 
-
     @Column(name = "gender_flag", nullable = false)
     private EItemGenderFlag gender;
 
