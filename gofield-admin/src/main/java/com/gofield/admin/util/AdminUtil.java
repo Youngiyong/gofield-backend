@@ -7,8 +7,11 @@ import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-        ;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+;
 
 public class AdminUtil {
 
@@ -42,6 +45,46 @@ public class AdminUtil {
 
     public static String makeItemNumber(Long itemNumber){
         return String.format("A%s", itemNumber);
+    }
+
+    public static String getIpAddress(HttpServletRequest request) {
+        String ip = request.getHeader("X-FORWARDED-FOR");
+
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getHeader("Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getHeader("WL-Proxy-Client-IP");
+        }
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getHeader("HTTP_CLIENT_IP");
+        }
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getHeader("HTTP_X_FORWARDED_FOR");
+        }
+        if (ip == null || ip.isEmpty()) {
+            ip = request.getRemoteAddr();
+        }
+        if (ip == null || ip.isEmpty()) {
+            return null;
+        }
+
+        InetAddress ipAddress = null;
+        try {
+            ipAddress = InetAddress.getByName(ip);
+        } catch (UnknownHostException e) {
+            return null;
+        }
+
+        String addr = String.valueOf(ipAddress);
+        if (addr.contains("/")) {
+            addr = addr.replaceAll("/", "");
+        }
+
+        return addr;
     }
 
 }

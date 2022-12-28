@@ -39,6 +39,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                 .select(orderItem)
                 .from(orderItem)
                 .innerJoin(orderItem.orderShipping, orderShipping).fetchJoin()
+                .innerJoin(orderItem.item, item).fetchJoin()
                 .innerJoin(order).on(orderItem.order.id.eq(order.id))
                 .where(order.userId.eq(userId), orderItem.id.eq(id))
                 .fetchFirst();

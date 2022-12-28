@@ -19,7 +19,6 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class UserController {
-
     private final UserService userService;
 
     @ApiOperation(value = "휴대폰 번호 변경 - 요청")

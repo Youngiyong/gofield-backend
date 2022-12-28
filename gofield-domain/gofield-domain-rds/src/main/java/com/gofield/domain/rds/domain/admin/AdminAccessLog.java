@@ -1,4 +1,3 @@
-
 package com.gofield.domain.rds.domain.admin;
 
 import lombok.*;
@@ -35,13 +34,19 @@ public class AdminAccessLog {
     @CreatedDate
     private LocalDateTime createDate;
 
+    @Builder
     private AdminAccessLog(Admin admin, String userAgent, String ip){
         this.ip = ip;
         this.admin = admin;
         this.userAgent = userAgent;
     }
 
-    public AdminAccessLog newInstance(Admin admin, String userAgent, String ip){
-        return new AdminAccessLog(admin, userAgent, ip);
+    public static AdminAccessLog newInstance(Admin admin, String userAgent, String ip){
+        return AdminAccessLog.builder()
+                .admin(admin)
+                .userAgent(userAgent)
+                .ip(ip)
+                .build();
+
     }
 }
