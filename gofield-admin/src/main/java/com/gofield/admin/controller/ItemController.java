@@ -54,24 +54,30 @@ public class ItemController {
 //        model.addAttribute("images", itemBundleEditDto.getImages());
         return "item/used_edit";
     }
-//
+
+    @GetMapping("/item/new/edit/{id}")
+    public String getItemNewEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
+        session.setAttribute("username", principal.getName());
+        ItemDto itemDto = itemService.getNewItem(id);
+        model.addAttribute("item", itemDto);
+//        model.addAttribute("images", itemBundleEditDto.getImages());
+        return "item/new_edit";
+    }
+
     @GetMapping("/item/delete/{id}")
     public String deleteItem(@PathVariable Long id){
         itemService.delete(id);
         return "redirect:/item";
     }
-//
-//    @GetMapping("/bundle/{id}/image/delete/{imageId}")
-//    public String deleteItemBundleImage(@PathVariable Long id,
-//                                        @PathVariable Long imageId){
-//        itemBundleService.deleteImage(id, imageId);
-//        return "redirect:/bundle/edit/"+id;
-//    }
-//
-//
     @PostMapping("/item/edit/used")
-    public String updateEditItemUsed(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
-        itemService.updateItemUsed(image, images, itemDto);
+    public String updateUsedItem(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+        itemService.updateUsedItem(image, images, itemDto);
+        return "redirect:/item";
+    }
+
+    @PostMapping("/item/edit/new")
+    public String updateNewItem(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+        itemService.updateNewItem(image, images, itemDto);
         return "redirect:/item";
     }
 
