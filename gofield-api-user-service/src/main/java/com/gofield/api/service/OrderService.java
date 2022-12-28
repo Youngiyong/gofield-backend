@@ -245,9 +245,10 @@ public class OrderService {
         }
     }
 
+    @Transactional(readOnly = true)
     public OrderItemResponse getOrderItem(String orderNumber, Long orderItemId){
         User user = userService.getUserNotNonUser();
-        OrderItem orderItem = orderItemRepository.findByOrderItemIdAndUserId(orderItemId, user.getId());
+        OrderItem orderItem = orderItemRepository.findByOrderItemIdAndUserIdFetch(orderItemId, user.getId());
         return OrderItemResponse.of(orderItem);
     }
 

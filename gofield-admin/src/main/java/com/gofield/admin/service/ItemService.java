@@ -112,6 +112,13 @@ public class ItemService {
         return ItemDto.of(categoryDtoList, brandDtoList, bundleDtoList, item);
     }
 
+    @Transactional
+    public void updateItemUsed(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
+        Item item = itemRepository.findByItemId(itemDto.getId());
+        ItemDetail itemDetail = item.getDetail();
+        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), null, itemDto.getDescription());
+    }
+
     @Transactional(readOnly = true)
     public ItemDto getItem(Long id){
         List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllChildrenIsActiveOrderBySort());

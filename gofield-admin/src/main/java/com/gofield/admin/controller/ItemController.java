@@ -69,12 +69,11 @@ public class ItemController {
 //    }
 //
 //
-//    @PostMapping("/item/add/used")
-//    public String updateEditItemBundle(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
-//        itemService.updateItemBundle(image, images, itemDto);
-//        return "redirect:/item";
-//    }
-
+    @PostMapping("/item/edit/used")
+    public String updateEditItemUsed(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+        itemService.updateItemUsed(image, images, itemDto);
+        return "redirect:/item";
+    }
 
     @GetMapping("/item/add/new")
     public String getItemNewAddPage(Model model){

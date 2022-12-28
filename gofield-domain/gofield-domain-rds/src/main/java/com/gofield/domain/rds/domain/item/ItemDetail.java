@@ -52,6 +52,12 @@ public class ItemDetail extends BaseTimeEntity {
                 .build();
     }
 
+    public void update(EItemGenderFlag gender, EItemSpecFlag spec, String itemOption, String description){
+        this.gender = gender;
+        this.spec = spec;
+        this.description = description;
+    }
+
     public void delete(){
         this.deleteDate = LocalDateTime.now();
     }
