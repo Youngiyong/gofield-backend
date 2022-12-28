@@ -1,4 +1,3 @@
-
 package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
@@ -11,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -93,6 +93,9 @@ public class Item extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "item")
     private List<ItemHasTag> tag;
+
+    @Column
+    private LocalDateTime deleteDate;
 
     @Builder
     private Item(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate, Long sellerId,

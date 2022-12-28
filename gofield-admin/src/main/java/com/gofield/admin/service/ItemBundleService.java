@@ -46,7 +46,7 @@ public class ItemBundleService {
     public void updateItemBundle(MultipartFile image, List<MultipartFile> images, ItemBundleDto itemBundleDto){
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
-        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemBundleDto.getId());
+        ItemBundle itemBundle = itemBundleRepository.findByBundleIdNotFetch(itemBundleDto.getId());
         String thumbnail = itemBundleDto.getThumbnail()==null ? null : itemBundleDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_200x200, "");
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
@@ -100,8 +100,10 @@ public class ItemBundleService {
 
     @Transactional
     public void delete(Long id){
-        ItemBundle itemBundle = itemBundleRepository.findByBundleId(id);
-        itemBundle.updateInActive();
+        ItemBundle itemBundle = itemBundleRepository.findItemBundleImagesByBundleIdFetch(id);
+        ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(itemBundle.getId());
+        itemBundle.delete();
+        itemBundleAggregationRepository.delete(itemBundleAggregation);
     }
 
     @Transactional

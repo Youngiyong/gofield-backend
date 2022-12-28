@@ -11,6 +11,7 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,11 +56,11 @@ public class ItemController {
 //        return "bundle/edit";
 //    }
 //
-//    @GetMapping("/bundle/delete/{id}")
-//    public String deleteItemBundle(@PathVariable Long id){
-//        itemBundleService.delete(id);
-//        return "redirect:/bundle";
-//    }
+    @GetMapping("/item/delete/{id}")
+    public String deleteItem(@PathVariable Long id){
+        itemService.delete(id);
+        return "redirect:/item";
+    }
 //
 //    @GetMapping("/bundle/{id}/image/delete/{imageId}")
 //    public String deleteItemBundleImage(@PathVariable Long id,
@@ -74,6 +75,8 @@ public class ItemController {
 //        itemService.updateItemBundle(image, images, itemDto);
 //        return "redirect:/item";
 //    }
+
+
     @GetMapping("/item/add/new")
     public String getItemNewAddPage(Model model){
         model.addAttribute("item",  itemService.getItem(null));

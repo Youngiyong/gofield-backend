@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -43,6 +44,9 @@ public class ItemBundle extends BaseTimeEntity {
 
     @Column
     private String thumbnail;
+
+    @Column
+    private LocalDateTime deleteDate;
 
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<Item> items = new ArrayList<>();
@@ -89,7 +93,9 @@ public class ItemBundle extends BaseTimeEntity {
         this.isRecommend = isRecommend;
         this.thumbnail = thumbnail;
     }
-    public void updateInActive(){
+    public void delete(){
         this.isActive = false;
+        this.deleteDate = LocalDateTime.now();
+        this.images.stream().forEach(i -> i.updateDeleteDate());
     }
 }

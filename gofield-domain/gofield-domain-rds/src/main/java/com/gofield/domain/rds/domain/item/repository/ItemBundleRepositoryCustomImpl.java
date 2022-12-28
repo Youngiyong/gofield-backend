@@ -56,7 +56,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         if(sort==null){
             return itemBundleAggregation.reviewCount.desc();
         } else if(sort.equals(EItemBundleSort.NEWEST)){
-            return itemBundleAggregation.registerDate.desc();
+            return itemBundleAggregation.createDate.desc();
         } else if(sort.equals(EItemBundleSort.POPULAR)){
             return itemBundleAggregation.reviewCount.desc();
         } else if(sort.equals(EItemBundleSort.LOWER_PRICE)){
@@ -86,7 +86,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                .where(itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
+                .where(itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
                 .orderBy(itemBundleAggregation.reviewCount.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -109,7 +109,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.id.eq(subCategoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
+                    .where(itemBundle.category.id.eq(subCategoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(orderByAllCategorySort(sort))
@@ -129,7 +129,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
+                    .where(itemBundle.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(orderByAllCategorySort(sort))
@@ -152,7 +152,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                .where(itemBundle.isRecommend.isTrue(), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0))
+                .where(itemBundle.isRecommend.isTrue(), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(itemBundle.sort.asc(), itemBundle.createDate.desc())
@@ -174,7 +174,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundleAggregation)
                 .innerJoin(itemBundle)
                 .on(itemBundleAggregation.bundle.id.eq(itemBundle.id))
-                .where(itemBundle.id.eq(bundleId))
+                .where(itemBundle.id.eq(bundleId), itemBundle.deleteDate.isNull())
                 .fetchOne();
 
         if(bundle==null) throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("존재하지 않는 <%s> bundleId 입니다.", bundleId) );
@@ -182,7 +182,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         List<String> bundleImages = jpaQueryFactory
                 .select(itemBundleImage.image)
                 .from(itemBundleImage)
-                .where(itemBundleImage.bundle.id.eq(bundleId))
+                .where(itemBundleImage.bundle.id.eq(bundleId), itemBundleImage.deleteDate.isNull())
                 .orderBy(itemBundleImage.sort.asc())
                 .fetch();
 
@@ -282,7 +282,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(item.bundle.id.eq(bundleId),  eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId), eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -319,7 +319,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(itemBundle)
                 .innerJoin(itemBundle.category, category).fetchJoin()
                 .innerJoin(itemBundle.brand, brand).fetchJoin()
-                .where(itemBundle.id.eq(bundleId))
+                .where(itemBundle.id.eq(bundleId), itemBundle.deleteDate.isNull())
                 .fetchOne();
     }
 
@@ -327,17 +327,26 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     public List<ItemBundle> findAllActive() {
         return jpaQueryFactory
                 .selectFrom(itemBundle)
-                .where(itemBundle.isActive.isTrue())
+                .where(itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull())
                 .orderBy(itemBundle.name.asc())
                 .fetch();
 
     }
 
     @Override
-    public ItemBundle findByBundleId(Long bundleId) {
+    public ItemBundle findByBundleIdNotFetch(Long bundleId) {
         return jpaQueryFactory
                 .selectFrom(itemBundle)
-                .where(itemBundle.id.eq(bundleId))
+                .where(itemBundle.id.eq(bundleId), itemBundle.deleteDate.isNull())
+                .fetchFirst();
+    }
+
+    @Override
+    public ItemBundle findItemBundleImagesByBundleIdFetch(Long bundleId) {
+        return jpaQueryFactory
+                .selectFrom(itemBundle)
+                .innerJoin(itemBundle.images, itemBundleImage).fetchJoin()
+                .where(itemBundle.id.eq(bundleId), itemBundle.deleteDate.isNull())
                 .fetchFirst();
     }
 
@@ -347,7 +356,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .selectFrom(itemBundle)
                 .innerJoin(itemBundle.category, category).fetchJoin()
                 .innerJoin(itemBundle.brand, brand).fetchJoin()
-                .where(containName(keyword), itemBundle.isActive.isTrue())
+                .where(containName(keyword), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull())
                 .orderBy(itemBundle.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

@@ -17,7 +17,8 @@ public interface ItemBundleRepositoryCustom {
 
     Page<ItemClassificationProjectionResponse> findAllItemByBundleIdAndClassification(Long userId, Long bundleId, EItemClassificationFlag classification, Pageable pageable);
     ItemBundleImageProjectionResponse findAggregationByBundleId(Long bundleId);
-    ItemBundle findByBundleId(Long bundleId);
+    ItemBundle findItemBundleImagesByBundleIdFetch(Long bundleId);
+    ItemBundle findByBundleIdNotFetch(Long bundleId);
     ItemBundle findByBundleIdFetchJoin(Long bundleId);
 
     List<ItemBundle> findAllActive();

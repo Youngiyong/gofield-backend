@@ -2,10 +2,8 @@ package com.gofield.domain.rds.domain.item.repository;
 
 import com.gofield.common.exception.ForbiddenException;
 import com.gofield.common.exception.NotFoundException;
-import com.gofield.common.model.Constants;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
-import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.gofield.domain.rds.domain.item.ShippingTemplate;
@@ -122,7 +120,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .where(itemStock.status.eq(EItemStatusFlag.SALE),
                             eqClassification(classification),
                             inCategoryParentId(categoryId),
-                            inSpec(spec))
+                            inSpec(spec),
+                            item.deleteDate.isNull())
                     .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -160,7 +159,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .where(itemStock.status.eq(EItemStatusFlag.SALE),
                         eqClassification(classification),
                         inCategoryParentId(categoryId),
-                        inSpec(spec))
+                        inSpec(spec),
+                        item.deleteDate.isNull())
                 .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -197,7 +197,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .where(item.bundle.id.eq(bundleId), item.id.ne(itemId),
                             itemStock.status.eq(EItemStatusFlag.SALE),
-                            eqClassification(classification))
+                            eqClassification(classification),
+                            item.deleteDate.isNull())
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -234,7 +235,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.bundle.id.eq(bundleId), item.id.ne(itemId),
                         itemStock.status.eq(EItemStatusFlag.SALE),
-                        eqClassification(classification))
+                        eqClassification(classification),
+                        item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -273,7 +275,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id))
-                .where(userLikeItem.user.id.eq(userId))
+                .where(userLikeItem.user.id.eq(userId),
+                        item.deleteDate.isNull())
                 .orderBy(userLikeItem.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -312,6 +315,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.brand.id.eq(brand.id))
                 .leftJoin(userLikeItem)
                 .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
+                .where(item.deleteDate.isNull())
                 .orderBy(itemRecent.updateDate.desc())
                 .fetch();
 
@@ -346,7 +350,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.brand.id.eq(brandId),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(userLikeItem.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -377,7 +381,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .where(item.brand.id.eq(brandId),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -412,7 +416,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.name.contains(keyword),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(userLikeItem.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -443,7 +447,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .where(item.name.contains(keyword),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -480,7 +484,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.category.id.eq(categoryId).or(category.parent.id.eq(categoryId)),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(userLikeItem.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -511,7 +515,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .where(item.category.id.eq(categoryId).or(category.parent.id.eq(categoryId)),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -578,7 +582,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .where(item.name.contains(keyword),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .fetchOne();
     }
 
@@ -594,7 +598,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.detail.id.eq(itemDetail.id))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .where(item.brand.id.eq(brandId))
                 .fetchOne();
     }
@@ -612,7 +616,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .where(item.category.id.eq(categoryId).or(category.parent.id.eq(categoryId)),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .fetchOne();
     }
 
@@ -649,6 +653,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .innerJoin(itemDetail)
                     .on(item.detail.id.eq(itemDetail.id))
+                    .where(item.deleteDate.isNull())
                     .fetchOne();
 
             if(projection==null){
@@ -703,6 +708,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.detail.id.eq(itemDetail.id))
                 .leftJoin(userLikeItem)
                 .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
+                .where(item.deleteDate.isNull())
                 .fetchOne();
 
         if(projection==null){
@@ -761,6 +767,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.shippingTemplate.id.eq(shippingTemplate.id))
                 .leftJoin(itemOption)
                 .on(itemStock.itemNumber.eq(itemOption.itemNumber))
+                .where(item.deleteDate.isNull())
                 .fetchOne();
     }
 
@@ -772,7 +779,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(itemStock)
                 .on(item.itemNumber.eq(itemStock.itemNumber))
                 .where(item.bundle.id.eq(bundleId), item.classification.eq(classification),
-                        itemStock.status.eq(EItemStatusFlag.SALE))
+                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(item.price.asc())
                 .fetchFirst();
     }
@@ -783,7 +790,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .selectFrom(item)
                 .innerJoin(itemStock)
                 .on(item.itemNumber.eq(itemStock.itemNumber))
-                .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE))
+                .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                 .orderBy(item.price.asc())
                 .fetch();
     }
@@ -795,7 +802,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .from(item)
                 .innerJoin(itemStock)
                 .on(item.itemNumber.eq(itemStock.itemNumber))
-                .where(item.bundle.id.eq(bundleId),
+                .where(item.bundle.id.eq(bundleId), item.deleteDate.isNull(),
                         itemStock.status.eq(EItemStatusFlag.SALE))
                 .orderBy(item.price.asc())
                 .fetchFirst();
@@ -808,7 +815,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .from(item)
                 .innerJoin(itemStock)
                 .on(item.itemNumber.eq(itemStock.itemNumber))
-                .where(item.bundle.id.eq(bundleId),
+                .where(item.bundle.id.eq(bundleId), item.deleteDate.isNull(),
                         itemStock.status.eq(EItemStatusFlag.SALE))
                 .orderBy(item.price.desc())
                 .fetchFirst();
@@ -838,7 +845,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(itemStock.itemNumber.eq(item.itemNumber))
                 .leftJoin(itemOption)
                 .on(itemStock.itemNumber.eq(itemOption.itemNumber))
-                .where(itemStock.itemNumber.eq(itemNumber))
+                .where(itemStock.itemNumber.eq(itemNumber), item.deleteDate.isNull())
                 .fetchOne();
     }
 
@@ -859,7 +866,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.itemNumber.eq(itemStock.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
-                .where(containName(keyword), eqStatus(status))
+                .where(containName(keyword), eqStatus(status), item.deleteDate.isNull())
                 .fetch();
     }
 
@@ -880,7 +887,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.itemNumber.eq(itemStock.itemNumber))
                 .innerJoin(category)
                 .on(item.category.id.eq(category.id))
-                .where(containName(keyword), eqStatus(status))
+                .where(containName(keyword), eqStatus(status), item.deleteDate.isNull())
                 .orderBy(item.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -917,10 +924,22 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
 
     @Override
+    public void deleteItemById(Long itemId) {
+        jpaQueryFactory
+                .delete(item)
+                .where(item.id.eq(itemId))
+                .execute();
+
+//        jpaQueryFactory
+//                .delete(itemImage)
+
+    }
+
+    @Override
     public Item findByItemId(Long itemId) {
         return jpaQueryFactory
                 .selectFrom(item)
-                .where(item.id.eq(itemId))
+                .where(item.id.eq(itemId), item.deleteDate.isNull())
                 .fetchOne();
     }
 
@@ -931,7 +950,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .selectFrom(item)
                 .innerJoin(itemStock)
                 .on(item.itemNumber.eq(itemStock.itemNumber))
-                .where(itemStock.itemNumber.eq(itemNumber))
+                .where(itemStock.itemNumber.eq(itemNumber), item.deleteDate.isNull())
                 .fetchOne();
     }
 

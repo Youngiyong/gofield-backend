@@ -73,13 +73,16 @@ public class ItemBundleAggregation extends BaseTimeEntity {
         this.highestPrice = highestPrice;
     }
 
+    public void updateRegisterDate(){
+        this.registerDate = LocalDateTime.now();
+    }
+
     public void updateAggregationPrice(EItemClassificationFlag classification, int price, int lowestPrice, int highestPrice){
         if(classification.equals(EItemClassificationFlag.USED)){
             this.usedLowestPrice = price;
         } else if(classification.equals(EItemClassificationFlag.NEW)){
             this.newLowestPrice = price;
         }
-
         this.lowestPrice = lowestPrice;
         this.highestPrice = highestPrice;
     }

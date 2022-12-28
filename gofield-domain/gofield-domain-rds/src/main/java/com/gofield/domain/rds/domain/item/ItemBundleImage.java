@@ -2,21 +2,24 @@
 
 package com.gofield.domain.rds.domain.item;
 
+import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "item_bundle_image")
-public class ItemBundleImage {
+public class ItemBundleImage extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +36,7 @@ public class ItemBundleImage {
     private Integer sort;
 
     @Column
-    private LocalDateTime createDate;
+    private LocalDateTime deleteDate;
 
     @Builder
     private ItemBundleImage(ItemBundle bundle, String image, Integer sort){
@@ -50,4 +53,7 @@ public class ItemBundleImage {
                 .build();
     }
 
+    public void updateDeleteDate(){
+        this.deleteDate = LocalDateTime.now();
+    }
 }

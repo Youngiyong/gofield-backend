@@ -118,7 +118,7 @@ public class ItemService {
     public void saveNewItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
         Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
-        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
+        ItemBundle itemBundle = itemBundleRepository.findByBundleIdNotFetch(itemDto.getBundleId());
         String thumbnail = null ;
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
@@ -221,14 +221,20 @@ public class ItemService {
                 newLowestPrice = newItemList.get(0).getPrice();
             }
             itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
+            itemBundleAggregation.updateRegisterDate();
         }
+    }
+
+    public void delete(Long id){
+        Item item = itemRepository.findByItemId(id);
+
     }
 
     @Transactional
     public void saveUsedItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
         Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
-        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemDto.getBundleId());
+        ItemBundle itemBundle = itemBundleRepository.findByBundleIdNotFetch(itemDto.getBundleId());
         String thumbnail = null ;
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
@@ -331,7 +337,7 @@ public class ItemService {
             newLowestPrice = newItemList.get(0).getPrice();
         }
         itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
-
+        itemBundleAggregation.updateRegisterDate();
     }
 
 //
