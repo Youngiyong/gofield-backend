@@ -10,6 +10,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -31,6 +32,9 @@ public class ItemDetail extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column
+    private LocalDateTime deleteDate;
+
     @Builder
     private ItemDetail(EItemGenderFlag gender, EItemSpecFlag spec, String option, String description){
         this.gender = gender;
@@ -46,5 +50,9 @@ public class ItemDetail extends BaseTimeEntity {
                 .option(option)
                 .description(description)
                 .build();
+    }
+
+    public void delete(){
+        this.deleteDate = LocalDateTime.now();
     }
 }

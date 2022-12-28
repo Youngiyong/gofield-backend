@@ -3,6 +3,7 @@ package com.gofield.api.service;
 import com.gofield.api.dto.res.ItemClassificationListResponse;
 import com.gofield.api.dto.res.ItemClassificationResponse;
 import com.gofield.api.dto.res.PopularKeywordResponse;
+import com.gofield.api.dto.res.RecentKeywordResponse;
 import com.gofield.domain.rds.domain.item.ItemRepository;
 import com.gofield.domain.rds.domain.item.projection.ItemListProjectionResponse;
 import com.gofield.domain.rds.domain.search.PopularKeywordRepository;
@@ -31,6 +32,12 @@ public class SearchService {
     @Transactional(readOnly = true)
     public List<PopularKeywordResponse> getPopularKeywordList(int size){
         return PopularKeywordResponse.of(popularKeywordRepository.findAllPopularKeywordList(size));
+    }
+
+    @Transactional(readOnly = true)
+    public List<RecentKeywordResponse> getRecentKeywordList(int size){
+        User user = userService.getUserNotNonUser();
+        return RecentKeywordResponse.of(searchLogRepository.findByUserIdLimit(user.getId(), size));
     }
 
     @Transactional

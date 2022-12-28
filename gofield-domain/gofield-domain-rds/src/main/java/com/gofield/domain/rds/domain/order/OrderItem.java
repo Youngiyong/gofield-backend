@@ -32,11 +32,11 @@ public class OrderItem extends BaseTimeEntity {
     @Column
     private Long sellerId;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "order_item_option_id")
     private OrderItemOption orderItemOption;
 

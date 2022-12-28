@@ -2,6 +2,7 @@ package com.gofield.api.controller;
 
 import com.gofield.api.dto.res.ItemClassificationListResponse;
 import com.gofield.api.dto.res.PopularKeywordResponse;
+import com.gofield.api.dto.res.RecentKeywordResponse;
 import com.gofield.api.service.SearchService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import io.swagger.annotations.ApiOperation;
@@ -22,9 +23,16 @@ public class SearchController {
 
     @ApiOperation(value = "인기 검색어 조회(임시)")
     @GetMapping("/v1/keyword")
-    public ApiResponse<List<PopularKeywordResponse>> getPopularKeywordList(@RequestParam(required = false) Integer size){
+    public ApiResponse<List<PopularKeywordResponse>> getPopularKeywordList(@RequestParam(required = false, defaultValue = "5") Integer size){
         return ApiResponse.success(searchService.getPopularKeywordList(size));
     }
+
+    @ApiOperation(value = "최근 검색어 조회(임시)")
+    @GetMapping("/v1/recent")
+    public ApiResponse<List<RecentKeywordResponse>> getRecentKeywordList(@RequestParam(required = false, defaultValue = "5") Integer size){
+        return ApiResponse.success(searchService.getRecentKeywordList(size));
+    }
+
 
     @ApiOperation(value = "검색")
     @GetMapping("/v1")
