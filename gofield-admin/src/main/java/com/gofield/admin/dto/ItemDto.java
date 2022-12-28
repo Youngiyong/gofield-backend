@@ -1,5 +1,7 @@
 package com.gofield.admin.dto;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.gofield.admin.util.AdminUtil;
 import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.*;
 import lombok.Builder;
@@ -15,7 +17,6 @@ import java.util.List;
 public class ItemDto {
     private Long id;
     private List<CategoryDto> categoryList;
-
     private List<BrandDto> brandList;
     private List<ItemBundleDto> bundleList;
     private Long bundleId;
@@ -112,21 +113,31 @@ public class ItemDto {
                 .build();
     }
 
-    public static ItemDto of(List<CategoryDto> categoryList, List<BrandDto> brandList, List<ItemBundleDto> bundleList, ItemBundle itemBundle){
-        return ItemDto.builder()
-                .id(itemBundle.getId())
-                .name(itemBundle.getName())
-                .categoryList(categoryList)
-                .brandList(brandList)
-                .bundleList(bundleList)
-                .bundleId(itemBundle.getId())
-                .categoryId(itemBundle.getCategory().getId())
-                .categoryName(itemBundle.getCategory().getName())
-                .qty(0)
-                .price(0)
-                .brandId(itemBundle.getBrand().getId())
-                .brandName(itemBundle.getBrand().getName())
-                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_200x200))
-                .build();
+
+    public static ItemDto of(List<CategoryDto> categoryList, List<BrandDto> brandList, List<ItemBundleDto> bundleList, Item item){
+       return ItemDto.builder()
+               .id(item.getId())
+               .categoryList(categoryList)
+               .brandList(brandList)
+               .bundleList(bundleList)
+               .bundleId(item.getBundle().getId())
+               .categoryId(item.getCategory().getId())
+               .categoryName(item.getCategory().getName())
+               .brandId(item.getBrand().getId())
+               .brandName(item.getBrand().getName())
+               .detailId(item.getDetail().getId())
+               .shippingTemplateId(item.getShippingTemplate().getId())
+               .name(item.getName())
+               .itemNumber(item.getItemNumber())
+               //qty
+               //price
+               .price(item.getPrice())
+               .qty(0)
+               .classification(item.getClassification())
+               .delivery(item.getDelivery())
+               .deliveryPrice(item.getDeliveryPrice())
+               .tags(item.getTags()==null ? null : AdminUtil.strToObject(item.getTags(), new TypeReference<List<String>>(){}))
+               .description(item.getDetail().getDescription())
+               .build();
     }
 }

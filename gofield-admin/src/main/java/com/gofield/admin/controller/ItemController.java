@@ -46,15 +46,14 @@ public class ItemController {
         return "item/list";
     }
 
-//    @GetMapping("/bundle/edit/{id}")
-//    public String getItemBundleEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
-//        session.setAttribute("username", principal.getName());
-//        ItemBundleEditDto itemBundleEditDto = itemBundleService.getItemBundleImage(id);
-//        model.addAttribute("bundle", itemBundleEditDto.getItemBundleDto());
+    @GetMapping("/item/used/edit/{id}")
+    public String getItemUsedEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
+        session.setAttribute("username", principal.getName());
+        ItemDto itemDto = itemService.getUsedItem(id);
+        model.addAttribute("item", itemDto);
 //        model.addAttribute("images", itemBundleEditDto.getImages());
-//
-//        return "bundle/edit";
-//    }
+        return "item/used_edit";
+    }
 //
     @GetMapping("/item/delete/{id}")
     public String deleteItem(@PathVariable Long id){

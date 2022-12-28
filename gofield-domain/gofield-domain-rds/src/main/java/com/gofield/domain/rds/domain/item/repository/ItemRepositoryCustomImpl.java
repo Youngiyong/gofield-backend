@@ -850,6 +850,15 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
+    public Item findByIdNotFetch(Long itemId) {
+        return jpaQueryFactory
+                .select(item)
+                .from(item)
+                .where(item.id.eq(itemId))
+                .fetchOne();
+    }
+
+    @Override
     public List<ItemInfoProjection> findAllByKeyword(String keyword, EItemStatusFlag status){
         return jpaQueryFactory
                 .select(new QItemInfoProjection(

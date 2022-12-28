@@ -28,6 +28,8 @@ public interface ItemRepositoryCustom {
     Item findHighestItemByBundleId(Long bundleId);
     ItemBundleOptionProjection findItemBundleOption(String itemNumber);
 
+    Item findByIdNotFetch(Long itemId);
+
     ItemInfoAdminProjectionResponse findAllByKeyword(String keyword, EItemStatusFlag status, Pageable pageable);
     List<ItemInfoProjection> findAllByKeyword(String keyword, EItemStatusFlag status);
 }

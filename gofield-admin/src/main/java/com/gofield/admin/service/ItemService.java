@@ -104,6 +104,15 @@ public class ItemService {
 //    }
 //
     @Transactional(readOnly = true)
+    public ItemDto getUsedItem(Long id){
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllChildrenIsActiveOrderBySort());
+        List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
+        List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
+        Item item = itemRepository.findByItemId(id);
+        return ItemDto.of(categoryDtoList, brandDtoList, bundleDtoList, item);
+    }
+
+    @Transactional(readOnly = true)
     public ItemDto getItem(Long id){
         List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllChildrenIsActiveOrderBySort());
         List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());

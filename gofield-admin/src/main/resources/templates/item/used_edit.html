@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>중고 상품 수정</title>
+
+    <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script src="/js/ckeditor/ckeditor.js"></script>
+    <script>
+        $(document).ready(function() {
+            CKEDITOR.replace("description", {
+                imageUploadUrl : '/upload/image',
+                font_names:
+                    '맑은 고딕/Malgun Gothic;굴림/Gulim;돋움/Dotum;바탕/Batang;궁서/Gungsuh;Arial/Arial;Comic Sans MS/Comic Sans MS;Courier New/Courier New;Georgia/Georgia;Lucida Sans Unicode/Lucida Sans Unicode;Tahoma/Tahoma;Times New Roman/Times New Roman;MS Mincho/MS Mincho;Trebuchet MS/Trebuchet MS;Verdana/Verdana',
+                font_defaultLabel: '맑은 고딕/Malgun Gothic',
+                fontSize_defaultLabel: '12',
+                skin: 'office2013',
+                language: 'ko',
+            });
+        })
+    </script>
+    <script>
+        window.onload = function() {
+            document.getElementById("address").addEventListener("click", function () {
+                new daum.Postcode({
+                    oncomplete: function (data) {
+                        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+                        // http://postcode.map.daum.net/guide 에서 예제를 활용하여 커스텀
+                        $('input[id=zipCode]').val(data.zonecode);      // 우편번호(5자리)
+                        $('input[id=address]').val(data.address + ' ' + data.buildingName);       // 기본주소
+                    }
+                }).open();
+            });
+
+            document.getElementById("returnAddress").addEventListener("click", function () {
+                new daum.Postcode({
+                    oncomplete: function (data) {
+                        // 팝업에서 검색결과 항목을 클릭했을때 실행할 코드를 작성하는 부분입니다.
+                        // http://postcode.map.daum.net/guide 에서 예제를 활용하여 커스텀
+                        $('input[id=returnZipCode]').val(data.zonecode);      // 우편번호(5자리)
+                        $('input[id=returnAddress]').val(data.address + ' ' + data.buildingName);       // 기본주소
+                    }
+                }).open();
+            });
+        }
+    </script>
+</head>
+<body>
+
+<div layout:fragment="content">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>중고 상품 수정</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-12">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">중고 상품 정보</h3>
+                        </div>
+                        <!-- /.card-header -->
+                                         <!-- form start -->
+                        <form role="form" method="post" th:action="@{/item/edit/used}" th:object="${item}" enctype="multipart/form-data">
+                            <input th:field="*{id}" type="hidden"/>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label>카테고리</label>
+                                    <select th:field="*{categoryId}" class="form-control select2bs4 select2-hidden-accessible" style="width: 100%;" data-select2-id="17" tabindex="-1" aria-hidden="true">
+                                        <div th:each="data : ${item.categoryList}">
+                                            <option th:value="${data.id}" th:text="${data.name}"></option>
+                                        </div>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>브랜드</label>
+                                    <select th:field="*{brandId}"  class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <div th:each="data : ${item.brandList}" >
+                                            <option th:value="${data.id}" th:text="${data.name}"></option>
+                                        </div>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>종목</label>
+                                    <select th:field="*{bundleId}"  class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <div th:each="data : ${item.bundleList}" >
+                                            <option th:value="${data.id}" th:text="${data.name}"></option>
+                                        </div>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">중고상품명</label>
+                                    <input class="form-control" id="name" placeholder="중고상품명" required
+                                           type="text" th:field="*{name}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">판매가</label>
+                                    <input class="form-control" id="price" placeholder="판매가" required
+                                           type="text" th:field="*{price}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">재고수량</label>
+                                    <input class="form-control" id="qty" placeholder="재고수량"
+                                           type="text" th:field="*{qty}">
+                                </div>
+                                <div class="form-group">
+                                    <label>상품상세설명</label>
+                                    <div class="col-sm-10">
+                                        <textarea name="description" class="form-control" id="description" th:field="*{description}"></textarea>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label for="manufacturer">제조사</label>
+                                    <input class="form-control" id="manufacturer" placeholder="제조사"
+                                           type="text" th:field="*{manufacturer}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="origin">원산지</label>
+                                    <input class="form-control" id="origin" placeholder="원산지"
+                                           type="text" th:field="*{origin}">
+                                </div>
+                                <div class="form-group">
+                                    <label>성별&기타</label>
+                                    <select th:field="*{gender}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'MALE'" th:text="남성용"></option>
+                                        <option th:value="'FEMALE'" th:text="여성용"></option>
+                                        <option th:value="'CHILDREN'" th:text="어린이용"></option>
+                                        <option th:value="'UNISEX'" th:text="남녀공용"></option>
+                                        <option th:value="'ETC'" th:text="기타"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="length">길이</label>
+                                    <input class="form-control" id="length" placeholder="길이"
+                                           type="text" th:field="*{length}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="weight">중량</label>
+                                    <input class="form-control" id="weight" placeholder="중량"
+                                           type="text" th:field="*{weight}">
+                                </div>
+                                <div class="form-group">
+                                    <label>AS 가능여부</label>
+                                    <select th:field="*{isAs}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'true'" th:text="가능"></option>
+                                        <option th:value="'false'" th:text="불가능"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>상품 상태</label>
+                                    <select th:field="*{spec}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'BEST'" th:text="최상"></option>
+                                        <option th:value="'UPPER'" th:text="상"></option>
+                                        <option th:value="'MIDDLE'" th:text="중"></option>
+                                        <option th:value="'LOWER'" th:text="하"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group" data-select2-id="29">
+                                    <label>상품키워드</label>
+                                    <select th:field="*{tags}" class="select2 select2-hidden-accessible" multiple="" data-placeholder="Select a State" style="width: 100%;" data-select2-id="7" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'정품'" th:text="정품"></option>
+                                        <option th:value="'병행수입'" th:text="병행수입"></option>
+                                        <option th:value="'아시안스펙'" th:text="아시안스펙"></option>
+                                        <option th:value="'US스펙'" th:text="US스펙"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>배송방법</label>
+                                    <select th:field="*{pickup}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'SHIPPING'" th:text="택배등기소포"></option>
+                                        <option th:value="'DIRECT'" th:text="직접전달"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>묶음배송</label>
+                                    <select th:field="*{shippingTemplate.chargeType}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'EACH'" th:text="불가"></option>
+                                        <option th:value="'FREE'" th:text="가능"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label>상품별 배송비</label>
+                                    <select th:field="*{delivery}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'FREE'" th:text="무료배송"></option>
+                                        <option th:value="'CONDITION'" th:text="조건부배송"></option>
+                                        <option th:value="'PAY'" th:text="유료배송"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="deliveryPrice">기본 배송비</label>
+                                    <input class="form-control" id="deliveryPrice" placeholder="0"
+                                           type="text" th:field="*{deliveryPrice}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="condition">배송비 조건</label>
+                                    상품 판매가 합계
+                                    <input class="form-control" id="condition" placeholder="0"
+                                           type="text" th:field="*{shippingTemplate.condition}">
+                                    원 이상 무료
+                                </div>
+                                <div class="form-group">
+                                    <label>선결제/후결제</label>
+                                    <select th:field="*{shippingTemplate.isPaid}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'true'" th:text="선결제"></option>
+                                        <option th:value="'false'" th:text="후결제"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="takebackCharge">반품비</label>
+                                    <input class="form-control" id="takebackCharge" placeholder="0"
+                                           type="text" th:field="*{shippingTemplate.takebackCharge}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="exchangeCharge">교환비</label>
+                                    <input class="form-control" id="exchangeCharge" placeholder="0"
+                                           type="text" th:field="*{shippingTemplate.exchangeCharge}">
+                                </div>
+                                <div class="form-group">
+                                    <label>제주/도서산간 추가 배송비</label>
+                                    <select th:field="*{shippingTemplate.isFee}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'false'" th:text="설정안함"></option>
+                                        <option th:value="'true'" th:text="설정함"></option>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="feeJeju">제주 추가 배송비</label>
+                                    <input class="form-control" id="feeJeju" placeholder="제주 추가 배송"
+                                           type="text" th:field="*{shippingTemplate.feeJeju}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="feeJejuBesides">제주외 도서산간 추가 배송비</label>
+                                    <input class="form-control" id="feeJejuBesides" placeholder="제주 외 도서산간 추가 배송비"
+                                           type="text" th:field="*{shippingTemplate.feeJejuBesides}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="zipCode">출고지 우편번호</label>
+                                    <input class="form-control" id="zipCode" placeholder="우편번호" disabled
+                                           type="text" th:field="*{shippingTemplate.zipCode}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="address">출고지 주소</label>
+                                    <input class="form-control" id="address" name="address" placeholder="클릭" readonly
+                                           type="text" th:field="*{shippingTemplate.address}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="addressExtra">출고지 상세주소</label>
+                                    <input class="form-control" id="addressExtra" placeholder="상세주소"
+                                           type="text" th:field="*{shippingTemplate.addressExtra}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="returnZipCode">반품지 우편번호</label>
+                                    <input class="form-control" id="returnZipCode" placeholder="우편번호" disabled
+                                           type="text" th:field="*{shippingTemplate.returnZipCode}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="returnAddress">반품지 주소</label>
+                                    <input class="form-control" id="returnAddress" name="returnAddress" placeholder="클릭" readonly
+                                           type="text" th:field="*{shippingTemplate.returnAddress}">
+                                </div>
+                                <div class="form-group">
+                                    <label for="returnAddressExtra">반품지 상세주소</label>
+                                    <input class="form-control" id="returnAddressExtra" placeholder="상세주소"
+                                           type="text" th:field="*{shippingTemplate.returnAddressExtra}">
+                                </div>
+                                <div class="form-group">
+                                    <label>대표이미지</label>
+                                    <br>
+                                    <input type="file" name="image" />
+                                </div>
+                                <div class="form-group">
+                                    <label>이미지</label>
+                                    <br>
+                                    <input type="file" name="images" multiple/>
+                                </div>
+
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button class="btn btn-primary" type="submit">수정</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- /.card -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+</div>
+
+</body>
+</html>
