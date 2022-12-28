@@ -13,6 +13,7 @@ public enum FileType {
     USER_IMAGE("유저 프로필 이미지", "user/", FileContentType.IMAGE),
     STORE_IMAGE("매장 이미지", "store/", FileContentType.IMAGE),
     ITEM_IMAGE("상품 이미지", "item/", FileContentType.IMAGE),
+    ITEM_CONTENT_IMAGE("상품 컨텐츠 이미지", "content/", FileContentType.IMAGE),
     BRAND_IMAGE("브랜드 이미지", "brand/", FileContentType.IMAGE),
     ITEM_BUNDLE_IMAGE("묶음상품 이미지", "bundle/", FileContentType.IMAGE),
     ITEM_BUNDLE_REVIEW_IMAGE("리뷰 이미지", "review/", FileContentType.IMAGE),

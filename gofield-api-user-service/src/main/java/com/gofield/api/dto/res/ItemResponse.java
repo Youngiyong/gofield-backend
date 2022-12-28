@@ -40,9 +40,11 @@ public class ItemResponse {
     private List<String> tags;
     private ShippingTemplateResponse shippingTemplate;
 
+    private String description;
+
     @Builder
     private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, Long bundleId,
-                         int price, int deliveryPrice, int qty, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate){
+                         int price, int deliveryPrice, int qty, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate, String description){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -62,6 +64,7 @@ public class ItemResponse {
         this.option = option;
         this.tags = tags;
         this.shippingTemplate = shippingTemplate;
+        this.description = description;
     }
 
     public static ItemResponse of(ItemProjectionResponse projection){
@@ -96,6 +99,7 @@ public class ItemResponse {
                 .option(projection.getOption()==null ? null : ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
                 .tags(tags)
                 .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))
+                .description(projection.getDescription())
                 .build();
     }
 
