@@ -128,7 +128,7 @@ public class ItemService {
                 itemDto.getGender(),
                 itemDto.getSpec(),
                 optionList,
-                null);
+                itemDto.getDescription());
 
         Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
         /*

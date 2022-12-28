@@ -35,7 +35,6 @@ public class UploadController {
             // 서버로 파일 전송 후 이미지 정보 확인을 위해 filename, uploaded, fileUrl 정보를 response 해주어야 함
             printWriter.println("{\"filename\" : \"" + upload.getName() + "\", \"uploaded\" : 1, \"url\":\"" + CommonUtils.makeCloudFrontUrl(s3FileStorageClient.uploadFile(upload, FileType.ITEM_CONTENT_IMAGE)) + "\"}");
             printWriter.flush();
-
         } catch (Exception e) {
             e.printStackTrace();
             throw new InternalServerException(ErrorCode.E500_INTERNAL_SERVER, ErrorAction.TOAST, "파일 업로드 오류");
