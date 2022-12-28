@@ -191,9 +191,14 @@ public class ItemService {
         itemTemp.update();
 
         //묶음 집계 업데이트
-        ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(item.getBundle().getId());
+        updateItemBundleAggregation(item.getBundle().getId(), true);
+    }
 
-        List<Item> itemList = itemRepository.findAllItemByBundleIdAndStatusSalesOrderByPrice(itemBundle.getId());
+    public void updateItemBundleAggregation(Long bundleId, Boolean isUpdate){
+        //묶음 집계 업데이트
+        ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(bundleId);
+
+        List<Item> itemList = itemRepository.findAllItemByBundleIdAndStatusSalesOrderByPrice(bundleId);
         List<Item> usedItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.USED)).collect(Collectors.toList());
         List<Item> newItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.NEW)).collect(Collectors.toList());
 
@@ -209,25 +214,29 @@ public class ItemService {
             itemCount = itemList.size();
             lowestPrice = itemList.get(0).getPrice();
             highestPrice = itemList.get(itemList.size()-1).getPrice();
-
-            if(usedItemList.isEmpty()){
-                usedLowestPrice = 0;
-            } else {
-                usedLowestPrice = usedItemList.get(0).getPrice();
-            }
-            if(newItemList.isEmpty()){
-                newLowestPrice = 0;
-            } else {
-                newLowestPrice = newItemList.get(0).getPrice();
-            }
-            itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
+        }
+        if(usedItemList.isEmpty()){
+            usedLowestPrice = 0;
+        } else {
+            usedLowestPrice = usedItemList.get(0).getPrice();
+        }
+        if(newItemList.isEmpty()){
+            newLowestPrice = 0;
+        } else {
+            newLowestPrice = newItemList.get(0).getPrice();
+        }
+        itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
+        if(isUpdate){
             itemBundleAggregation.updateRegisterDate();
         }
     }
 
+    @Transactional
     public void delete(Long id){
         Item item = itemRepository.findByItemId(id);
-
+        Long bundleId = item.getBundle().getId();
+        item.delete();
+        updateItemBundleAggregation(bundleId, false);
     }
 
     @Transactional
@@ -307,37 +316,7 @@ public class ItemService {
         itemTemp.update();
 
         //묶음 집계 업데이트
-        ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(item.getBundle().getId());
-
-        List<Item> itemList = itemRepository.findAllItemByBundleIdAndStatusSalesOrderByPrice(itemBundle.getId());
-        List<Item> usedItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.USED)).collect(Collectors.toList());
-        List<Item> newItemList = itemList.stream().filter(k -> k.getClassification().equals(EItemClassificationFlag.NEW)).collect(Collectors.toList());
-
-        int itemCount = 0;
-        int newLowestPrice = 0;
-        int usedLowestPrice = 0;
-        int lowestPrice = 0;
-        int highestPrice = 0;
-
-        if(itemList.isEmpty()){
-            itemBundleAggregation.update(0, 0, 0, 0, 0);
-        } else {
-            itemCount = itemList.size();
-            lowestPrice = itemList.get(0).getPrice();
-            highestPrice = itemList.get(itemList.size()-1).getPrice();
-        }
-        if(usedItemList.isEmpty()){
-            usedLowestPrice = 0;
-        } else {
-            usedLowestPrice = usedItemList.get(0).getPrice();
-        }
-        if(newItemList.isEmpty()){
-            newLowestPrice = 0;
-        } else {
-            newLowestPrice = newItemList.get(0).getPrice();
-        }
-        itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
-        itemBundleAggregation.updateRegisterDate();
+        updateItemBundleAggregation(item.getBundle().getId(), true);
     }
 
 //

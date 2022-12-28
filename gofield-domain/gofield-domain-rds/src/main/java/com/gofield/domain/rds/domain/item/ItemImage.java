@@ -1,5 +1,6 @@
 package com.gofield.domain.rds.domain.item;
 
+import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,11 +15,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "item_image")
-public class ItemImage {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class ItemImage  extends BaseTimeEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id", nullable = false)
@@ -31,14 +28,13 @@ public class ItemImage {
     private Integer sort;
 
     @Column
-    private LocalDateTime createDate;
+    private LocalDateTime deleteDate;
 
     @Builder
     private ItemImage(Item item, String image, Integer sort){
         this.item = item;
         this.image= image;
         this.sort = sort;
-        this.createDate = LocalDateTime.now();
     }
 
     public static ItemImage newInstance(Item item, String image, Integer sort){
@@ -47,5 +43,9 @@ public class ItemImage {
                 .image(image)
                 .sort(sort)
                 .build();
+    }
+
+    public void delete(){
+        this.deleteDate = LocalDateTime.now();
     }
 }

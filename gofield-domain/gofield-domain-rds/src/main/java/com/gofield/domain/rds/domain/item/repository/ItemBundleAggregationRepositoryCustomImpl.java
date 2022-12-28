@@ -20,4 +20,5 @@ public class ItemBundleAggregationRepositoryCustomImpl implements ItemBundleAggr
                 .where(itemBundleAggregation.bundle.id.eq(bundleId))
                 .fetchFirst();
     }
+
 }

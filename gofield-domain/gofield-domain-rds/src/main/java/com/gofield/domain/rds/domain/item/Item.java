@@ -168,4 +168,10 @@ public class Item extends BaseTimeEntity {
         this.images.add(itemImage);
     }
 
+    public void delete(){
+        this.deleteDate = LocalDateTime.now();
+        this.images.stream().forEach(i -> i.delete());
+        this.detail.delete();
+    }
+
 }

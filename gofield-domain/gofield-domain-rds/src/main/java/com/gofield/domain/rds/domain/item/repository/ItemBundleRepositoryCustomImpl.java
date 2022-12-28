@@ -229,7 +229,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.brand.id.eq(brand.id))
                     .leftJoin(userLikeItem)
                     .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                    .where(item.bundle.id.eq(bundleId), eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
+                    .where(item.bundle.id.eq(bundleId), eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                     .orderBy(itemStock.createDate.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
