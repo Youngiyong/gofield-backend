@@ -106,7 +106,7 @@ public class OrderItemRepositoryCustomImpl implements OrderItemRepositoryCustom 
                 .on(orderItem.sellerId.eq(seller.id))
                 .leftJoin(orderItemOption)
                 .on(orderItem.orderItemOption.id.eq(orderItemOption.id))
-                .where(order.userId.eq(userId), orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE).or(orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)))
+                .where(order.userId.eq(userId), orderItem.isReview.isFalse(), orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE).or(orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .orderBy(orderItem.createDate.desc())
