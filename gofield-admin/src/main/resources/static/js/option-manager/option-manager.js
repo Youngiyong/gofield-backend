@@ -4,9 +4,9 @@ class OptionManager {
     constructor() {
         // 예시 데이터 구조
         this.data = {
-            option_flag: 'off',
-            option_compose_type: 'multiple',
-            option_items: [
+            isOption: 'false',
+            optionType: 'COMBINATION',
+            optionItems: [
                 {
                     name: '색상',
                     value: '빨강,파랑,초록',
@@ -16,60 +16,60 @@ class OptionManager {
                     value: 's,m,l',
                 },
             ],
-            option_list: [
+            optionList: [
                 {
                     values: ['빨강', 's'],
-                    option_price: 50000,
-                    option_inventory_count: 3,
-                    option_status: 'SALE',
+                    price: 50000,
+                    qty: 3,
+                    status: 'SALE',
                 },
                 {
                     values: ['빨강', 'm'],
-                    option_price: 50001,
-                    option_inventory_count: 31,
-                    option_status: 'SALE',
+                    price: 50001,
+                    qty: 31,
+                    status: 'SALE',
                 },
                 {
                     values: ['빨강', 'l'],
-                    option_price: 50002,
-                    option_inventory_count: 32,
-                    option_status: 'SALE',
+                    price: 50002,
+                    qty: 32,
+                    status: 'SALE',
                 },
                 {
                     values: ['파랑', 's'],
-                    option_price: 50000,
-                    option_inventory_count: 3,
-                    option_status: 'SALE',
+                    price: 50000,
+                    qty: 3,
+                    status: 'SALE',
                 },
                 {
                     values: ['파랑', 'm'],
-                    option_price: 50001,
-                    option_inventory_count: 31,
-                    option_status: 'SALE',
+                    price: 50001,
+                    qty: 31,
+                    status: 'SALE',
                 },
                 {
                     values: ['파랑', 'l'],
-                    option_price: 50002,
-                    option_inventory_count: 32,
-                    option_status: 'SALE',
+                    price: 50002,
+                    qty: 32,
+                    status: 'SALE',
                 },
                 {
                     values: ['초록', 's'],
-                    option_price: 50000,
-                    option_inventory_count: 3,
-                    option_status: 'SALE',
+                    price: 50000,
+                    optionQty: 3,
+                    status: 'SALE',
                 },
                 {
                     values: ['초록', 'm'],
-                    option_price: 50001,
-                    option_inventory_count: 31,
-                    option_status: 'SALE',
+                    price: 50001,
+                    qty: 31,
+                    status: 'SALE',
                 },
                 {
                     values: ['초록', 'l'],
-                    option_price: 50002,
-                    option_inventory_count: 32,
-                    option_status: 'SALE',
+                    price: 50002,
+                    qty: 32,
+                    status: 'SALE',
                 },
             ],
         };
@@ -98,8 +98,8 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.option_flag = value;
-        if (this.data.option_flag === "on") {
+        this.data.isOption = value;
+        if (this.data.isOption === "true") {
             document.getElementById('option-detail-control-form-area').style.display = 'block';
         } else {
             document.getElementById('option-detail-control-form-area').style.display = 'none';
@@ -112,12 +112,12 @@ class OptionManager {
             return;
         }
         if (!confirm('옵션 구성 타입을 바꾸면 옵션 입력 부분과 옵션 목록 부분이 빈 값으로 초기화 됩니다. 계속 진행하시겠습니까?')) {
-            document.querySelector(`#option_compose_type_${value === "single" ? "multiple" : "single"}`).checked = true;
+            document.querySelector(`#option_compose_type_${value === "SIMPLE" ? "COMBINATION" : "SIMPLE"}`).checked = true;
             return;
         }
-        this.data.option_compose_type = value;
-        this.data.option_items = [];
-        this.data.option_list = [];
+        this.data.optionType = value;
+        this.data.optionItems = [];
+        this.data.optionList = [];
         this.render();
     }
 
@@ -125,19 +125,19 @@ class OptionManager {
         if (!confirm('해당 옵션 아이템을 삭제하시겠습니까?')) {
             return;
         }
-        this.data.option_items.splice(index, 1);
+        this.data.optionItems.splice(index, 1);
         this.render();
     }
 
     addOptionItem() {
-        if (this.data.option_compose_type === "single") {
-            if (this.data.option_items.length >= 1) {
+        if (this.data.optionType === "SIMPLE") {
+            if (this.data.optionItems.length >= 1) {
                 alert('단독형인 경우에 옵션은 1개까지만 등록 가능합니다. 옵션을 여러개 등록하기 위해선 조합형을 선택해주세요.');
                 return;
             }
         }
 
-        this.data.option_items.push({
+        this.data.optionItems.push({
             name: '',
             value: '',
         });
@@ -145,25 +145,25 @@ class OptionManager {
     }
 
     changeOptionItemName(index, target) {
-        this.data.option_items[index].name = target.value;
+        this.data.optionItems[index].name = target.value;
     }
 
     changeOptionItemValue(index, target) {
-        this.data.option_items[index].value = target.value;
+        this.data.optionItems[index].value = target.value;
     }
 
     applyOptionList() {
         if (!confirm('옵션 목록으로 적용하면 옵션 목록이 전부 초기화 됩니다. 계속 진행하시겠습니까?')) {
             return;
         }
-        const all_list_option = d3.cross(...this.data.option_items.map(item => item.value.split(',')));
+        const all_list_option = d3.cross(...this.data.optionItems.map(item => item.value.split(',')));
         // console.log('all_list_option', all_list_option);
-        this.data.option_list = all_list_option.map((item) => {
+        this.data.optionList = all_list_option.map((item) => {
             return {
                 values: item,
-                option_price: 0,
-                option_inventory_count: 0,
-                option_status: 'SALE',
+                price: 0,
+                qty: 0,
+                status: 'SALE',
             };
         });
         // this.data.option_list =
@@ -175,7 +175,7 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.option_list[index].option_price = value;
+        this.data.optionList[index].price = value;
     }
 
     changeOptionListRowInventoryCount(index, target) {
@@ -183,7 +183,7 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.option_list[index].option_inventory_count = value;
+        this.data.optionList[index].qty = value;
     }
 
     changeOptionListRowStatus(index, target) {
@@ -191,7 +191,7 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.option_list[index].option_status = value;
+        this.data.optionList[index].status = value;
     }
 
     changeOptionListAllCheck(target) {
@@ -219,7 +219,7 @@ class OptionManager {
             return;
         }
 
-        this.data.option_list = this.data.option_list.filter((x, index) => !deleteTargetIndexes.includes(index));
+        this.data.optionList = this.data.optionList.filter((x, index) => !deleteTargetIndexes.includes(index));
         this.render();
     }
 
@@ -246,9 +246,9 @@ class OptionManager {
             return;
         }
 
-        this.data.option_list.forEach((item, index) => {
+        this.data.optionList.forEach((item, index) => {
             if (changeTargetIndexes.includes(index)) {
-                item.option_status = value;
+                item.status = value;
             }
         });
         this.render();
@@ -264,16 +264,16 @@ class OptionManager {
                     </div>
                     <div class="flex flex-wrap items-start content-start" style="width: calc(100% - 140px);">
                         <div class="inline-flex items-center items-center mr-2">
-                            <input ${data.option_flag === "on" ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="on" id="option_flag_on" onchange="optionManager.changeOptionFlag(this)" />
+                            <input ${data.isOption === "true" ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="true" id="option_flag_on" onchange="optionManager.changeOptionFlag(this)" />
                             <label class="inline-flex font-normal" for="option_flag_on">&nbsp;설정함</label>
                         </div>
                         <div class="inline-flex items-center items-center">
-                            <input ${data.option_flag === "off" ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="off" id="option_flag_off" onchange="optionManager.changeOptionFlag(this)" />
+                            <input ${data.isOption === "false" ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="false" id="option_flag_off" onchange="optionManager.changeOptionFlag(this)" />
                             <label class="inline-flex font-normal" for="option_flag_off">&nbsp;설정안함</label>
                         </div>
                     </div>
                 </div>
-                <div class="w-full" id="option-detail-control-form-area" style="display: ${this.data.option_flag === 'on' ? 'block' : 'none'}">
+                <div class="w-full" id="option-detail-control-form-area" style="display: ${this.data.isOption === 'true' ? 'block' : 'none'}">
                     <div class="w-full h-px bg-slate-200 my-2"></div>
                     <div data-name="form-row" class="w-full flex flex-wrap">
                         <div class="flex flex-wrap items-start content-start" style="width: 140px;">
@@ -281,11 +281,11 @@ class OptionManager {
                         </div>
                         <div class="flex flex-wrap items-start content-start" style="width: calc(100% - 140px);">
                             <div class="inline-flex items-center items-center mr-2">
-                                <input ${data.option_compose_type === "single" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="single" id="option_compose_type_single" onchange="optionManager.changeOptionComposeType(this)" />
+                                <input ${data.optionType === "SIMPLE" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="SIMPLE" id="option_compose_type_single" onchange="optionManager.changeOptionComposeType(this)" />
                                 <label class="inline-flex font-normal" for="option_compose_type_single">&nbsp;단독형</label>
                             </div>
                             <div class="inline-flex items-center items-center">
-                                <input ${data.option_compose_type === "multiple" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="multiple" id="option_compose_type_multiple" onchange="optionManager.changeOptionComposeType(this)" />
+                                <input ${data.optionType === "COMBINATION" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="COMBINATION" id="option_compose_type_multiple" onchange="optionManager.changeOptionComposeType(this)" />
                                 <label class="inline-flex font-normal" for="option_compose_type_multiple">&nbsp;조합형</label>
                             </div>
                         </div>
@@ -314,7 +314,7 @@ class OptionManager {
                                     ${(function(){
                                         let htmlCode = '';
                                         let index = 0;
-                                        for (const item of data.option_items) {
+                                        for (const item of data.optionItems) {
                                             htmlCode += `
                                                 <tr class="option-item-row" data-index="${index}">
                                                     <td>
@@ -372,7 +372,7 @@ class OptionManager {
                                         <th rowspan="2">
                                             <input type="checkbox" name="option-list-all-check" onchange="optionManager.changeOptionListAllCheck(this)" />
                                         </th>
-                                        <th colspan="${data.option_items.length}">
+                                        <th colspan="${data.optionItems.length}">
                                             옵션명
                                         </th>
                                         <th rowspan="2">
@@ -388,7 +388,7 @@ class OptionManager {
                                     <tr>
                                         ${(function(){
                                             let ths = '';
-                                            for (const item of data.option_items) {
+                                            for (const item of data.optionItems) {
                                                 ths += `
                                                     <th>
                                                         ${item.name}
@@ -403,7 +403,7 @@ class OptionManager {
                                     ${(function(){
                                         let trs = ``;
                                         let index = 0;
-                                        for (const item of data.option_list) {
+                                        for (const item of data.optionList) {
                                             trs += `
                                                 <tr class="option-list-item-row" data-index="${index}">
                                                     <td>
@@ -421,19 +421,19 @@ class OptionManager {
                                                         return tds;
                                                     })()}
                                                     <td>
-                                                        <input ${data.option_compose_type === "single" ? "disabled " : ""}type="text" value="${item.option_price}" onchange="optionManager.changeOptionListRowPrice(${index}, this)" />
+                                                        <input ${data.optionType === "SIMPLE" ? "disabled " : ""}type="text" value="${item.price}" onchange="optionManager.changeOptionListRowPrice(${index}, this)" />
                                                     </td>
                                                     <td>
-                                                        <input type="number" value="${item.option_inventory_count}" onchange="optionManager.changeOptionListRowInventoryCount(${index}, this)" />
+                                                        <input type="number" value="${item.qty}" onchange="optionManager.changeOptionListRowInventoryCount(${index}, this)" />
                                                     </td>
                                                     <td>
                                                         <select class="select select2-blue" onchange="optionManager.changeOptionListRowStatus(${index}, this)">
-                                                            <option ${item.option_status === 'SOLD_OUT' ? 'selected ': ''}value="SOLD_OUT">품절</option>
-                                                            <option ${item.option_status === 'HIDE' ? 'selected ': ''}value="HIDE">숨김</option>
-                                                            <option ${item.option_status === 'SALE' ? 'selected ': ''}value="SALE">판매중</option>
+                                                            <option ${item.status === 'SOLD_OUT' ? 'selected ': ''}value="SOLD_OUT">품절</option>
+                                                            <option ${item.status === 'HIDE' ? 'selected ': ''}value="HIDE">숨김</option>
+                                                            <option ${item.status === 'SALE' ? 'selected ': ''}value="SALE">판매중</option>
                                                         </select>
                                                     </td>
-                                                </tr>
+                                                </tr>                                     
                                             `;
                                             index++;
                                         }
@@ -441,6 +441,7 @@ class OptionManager {
                                     })()}
                                 </tbody>
                             </table>
+                            <input name="optionInfo" value = ${JSON.stringify(data)}  type="hidden"/>
                         </div>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.util.List;
+import java.util.Map;
 
 @Getter
 @Setter
@@ -61,14 +62,15 @@ public class ItemDto {
     private String createDate;
     private ShippingTemplateDto shippingTemplate;
 
-
+    private String optionInfo;
 
     @Builder
     private ItemDto(Long id, List<CategoryDto> categoryList, List<BrandDto> brandList, List<ItemBundleDto> bundleList, Long bundleId, Long categoryId,
                         String categoryName, Long brandId, String brandName, Long detailId, Long shippingTemplateId, String name, String itemNumber,
                         int price, int qty, EItemClassificationFlag classification, EItemDeliveryFlag delivery, int deliveryPrice, List<String> tags,
                         String description, String manufacturer, String origin, String itemSpec, EItemGenderFlag gender, String length,
-                        String weight, Boolean isAs, EItemSpecFlag spec, EItemPickupFlag pickup, List<ItemDetailOptionDto> options, String thumbnail, String createDate, ShippingTemplateDto shippingTemplate){
+                        String weight, Boolean isAs, EItemSpecFlag spec, EItemPickupFlag pickup, List<ItemDetailOptionDto> options, String thumbnail, String createDate, ShippingTemplateDto shippingTemplate,
+                    String optionInfo){
         this.id = id;
         this.categoryList = categoryList;
         this.brandList = brandList;
@@ -102,6 +104,7 @@ public class ItemDto {
         this.thumbnail = thumbnail;
         this.createDate = createDate;
         this.shippingTemplate = shippingTemplate;
+        this.optionInfo = optionInfo;
     }
 
     public static ItemDto of(List<CategoryDto> categoryList, List<BrandDto> brandList, List<ItemBundleDto> bundleList){
