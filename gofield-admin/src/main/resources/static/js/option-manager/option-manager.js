@@ -21,55 +21,55 @@ class OptionManager {
                     values: ['빨강', 's'],
                     option_price: 50000,
                     option_inventory_count: 3,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['빨강', 'm'],
                     option_price: 50001,
                     option_inventory_count: 31,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['빨강', 'l'],
                     option_price: 50002,
                     option_inventory_count: 32,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['파랑', 's'],
                     option_price: 50000,
                     option_inventory_count: 3,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['파랑', 'm'],
                     option_price: 50001,
                     option_inventory_count: 31,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['파랑', 'l'],
                     option_price: 50002,
                     option_inventory_count: 32,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['초록', 's'],
                     option_price: 50000,
                     option_inventory_count: 3,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['초록', 'm'],
                     option_price: 50001,
                     option_inventory_count: 31,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
                 {
                     values: ['초록', 'l'],
                     option_price: 50002,
                     option_inventory_count: 32,
-                    option_status: 'SHOW',
+                    option_status: 'SALE',
                 },
             ],
         };
@@ -157,13 +157,13 @@ class OptionManager {
             return;
         }
         const all_list_option = d3.cross(...this.data.option_items.map(item => item.value.split(',')));
-        console.log('all_list_option', all_list_option);
+        // console.log('all_list_option', all_list_option);
         this.data.option_list = all_list_option.map((item) => {
             return {
                 values: item,
                 option_price: 0,
                 option_inventory_count: 0,
-                option_status: 'HIDE',
+                option_status: 'SALE',
             };
         });
         // this.data.option_list =
@@ -194,26 +194,64 @@ class OptionManager {
         this.data.option_list[index].option_status = value;
     }
 
-    getOptionItemElements(data) {
-        let htmlCode = '';
-        let index = 0;
-        for (const item of data.option_items) {
-            htmlCode += `
-                        <tr class="option-item-row" data-index="${index}">
-                            <td>
-                                <input name="option_name" type="text" placeholder="예시) 색상" value="${item.name}" onchange="optionManager.changeOptionItemName(${index}, this)" />
-                            </td>
-                            <td>
-                                <input name="option_values" type="text" placeholder="예시) 빨강,파랑,초록,분홍" style="width: 100%;" value="${item.value}" onchange="optionManager.changeOptionItemValue(${index}, this)" />
-                            </td>
-                            <td>
-                                <span class="text-red-600 cursor-pointer" onclick="optionManager.deleteOptionItem(${index})">삭제</span>
-                            </td>
-                        </tr>
-                    `;
-            index++;
+    changeOptionListAllCheck(target) {
+        const checked = target.checked;
+        document.querySelectorAll("tr.option-list-item-row").forEach((element) => {
+             element.querySelector("input[name=option-list-item-check]").checked = checked;
+        });
+    }
+
+    deleteSelectedOptionList() {
+        if (!confirm('선택된 옵션 리스트를 삭제하시겠습니까?')) {
+            return;
         }
-        return htmlCode;
+
+        const deleteTargetIndexes = [];
+        document.querySelectorAll("tr.option-list-item-row").forEach((element) => {
+            const index = Number(element.getAttribute("data-index"));
+            if (element.querySelector("input[name=option-list-item-check]").checked) {
+                deleteTargetIndexes.push(index);
+            }
+        });
+
+        if (deleteTargetIndexes.length === 0) {
+            alert('선택된 옵션 리스트가 없습니다.');
+            return;
+        }
+
+        this.data.option_list = this.data.option_list.filter((x, index) => !deleteTargetIndexes.includes(index));
+        this.render();
+    }
+
+    changeSelectedOptionListStatus() {
+        const target = document.getElementById('selected-status-select');
+
+        const text = target.options[target.selectedIndex].text;
+        const value = target.options[target.selectedIndex].value;
+
+        if (!confirm(`선택된 옵션 리스트의 상태를 ${text} 으로 변경하시겠습니까?`)) {
+            return;
+        }
+
+        const changeTargetIndexes = [];
+        document.querySelectorAll("tr.option-list-item-row").forEach((element) => {
+            const index = Number(element.getAttribute("data-index"));
+            if (element.querySelector("input[name=option-list-item-check]").checked) {
+                changeTargetIndexes.push(index);
+            }
+        });
+
+        if (changeTargetIndexes.length === 0) {
+            alert('선택된 옵션 리스트가 없습니다.');
+            return;
+        }
+
+        this.data.option_list.forEach((item, index) => {
+            if (changeTargetIndexes.includes(index)) {
+                item.option_status = value;
+            }
+        });
+        this.render();
     }
 
     getTableHTML(data) {
@@ -273,12 +311,32 @@ class OptionManager {
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    ${this.getOptionItemElements(data)}
+                                    ${(function(){
+                                        let htmlCode = '';
+                                        let index = 0;
+                                        for (const item of data.option_items) {
+                                            htmlCode += `
+                                                <tr class="option-item-row" data-index="${index}">
+                                                    <td>
+                                                        <input name="option_name" type="text" placeholder="예시) 색상" value="${item.name}" onchange="optionManager.changeOptionItemName(${index}, this)" />
+                                                    </td>
+                                                    <td>
+                                                        <input name="option_values" type="text" placeholder="예시) 빨강,파랑,초록,분홍" style="width: 100%;" value="${item.value}" onchange="optionManager.changeOptionItemValue(${index}, this)" />
+                                                    </td>
+                                                    <td>
+                                                        <span class="text-red-600 cursor-pointer" onclick="optionManager.deleteOptionItem(${index})">삭제</span>
+                                                    </td>
+                                                </tr>
+                                            `;
+                                            index++;
+                                        }
+                                        return htmlCode;   
+                                    })()}
                                 </tbody>
                             </table>
                             <div class="w-full">
-                                <button class="btn btn-info btn-sm mr-2" onclick="optionManager.addOptionItem()">옵션 추가</button>
-                                <button class="btn btn-dark btn-sm" onclick="optionManager.applyOptionList()">옵션 목록으로 적용</button>
+                                <a class="btn btn-info btn-sm mr-2" onclick="optionManager.addOptionItem()">옵션 추가</a>
+                                <a class="btn btn-dark btn-sm" onclick="optionManager.applyOptionList()">옵션 목록으로 적용</a>
                             </div>
                         </div>
                     </div>
@@ -288,11 +346,31 @@ class OptionManager {
                             옵션 목록
                         </div>
                         <div class="flex flex-wrap items-start content-start" style="width: calc(100% - 140px);">
+                            <div class="w-full block">
+                                <div class="inline-flex">
+                                    선택한 옵션 리스트를
+                                </div> 
+                                <div class="inline-flex flex-col">
+                                    <ul>
+                                        <li>
+                                            <a class="btn btn-danger btn-sm" onclick="optionManager.deleteSelectedOptionList()">삭제합니다.</a>
+                                        </li>
+                                        <li>
+                                            <select class="select select2-blue" id="selected-status-select">
+                                                <option value="SOLD_OUT">품절</option>
+                                                <option value="HIDE">숨김</option>
+                                                <option value="SALE">판매중</option>
+                                            </select>
+                                            <a class="btn btn-info btn-sm" onclick="optionManager.changeSelectedOptionListStatus()">으로 변경합니다.</a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
                             <table class="w-full table table-bordered table-hover dataTable dtr-inline dt-center table-valign-middle">
                                 <thead>
                                     <tr>
                                         <th rowspan="2">
-                                            <input type="checkbox" name="option-list-all-check" />
+                                            <input type="checkbox" name="option-list-all-check" onchange="optionManager.changeOptionListAllCheck(this)" />
                                         </th>
                                         <th colspan="${data.option_items.length}">
                                             옵션명
@@ -327,7 +405,7 @@ class OptionManager {
                                         let index = 0;
                                         for (const item of data.option_list) {
                                             trs += `
-                                                <tr>
+                                                <tr class="option-list-item-row" data-index="${index}">
                                                     <td>
                                                         <input type="checkbox" name="option-list-item-check" />
                                                     </td>
