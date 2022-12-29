@@ -83,7 +83,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                 .innerJoin(itemStock)
                 .on(cart.itemNumber.eq(itemStock.itemNumber))
                 .innerJoin(item)
-                .on(itemStock.itemNumber.eq(item.itemNumber))
+                .on(itemStock.item.id.eq(item.id))
                 .innerJoin(seller)
                 .on(item.sellerId.eq(seller.id))
                 .innerJoin(shippingTemplate)
@@ -92,7 +92,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                 .on(item.itemNumber.eq(itemOption.itemNumber))
                 .innerJoin(itemDetail)
                 .on(item.detail.id.eq(itemDetail.id))
-                .where(cart.userId.eq(userId))
+                .where(cart.userId.eq(userId), item.deleteDate.isNull())
                 .fetch();
     }
 
