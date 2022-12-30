@@ -56,6 +56,13 @@
         window.addEventListener('load', function() {
             window.optionManager.tryInit();
         });
+        function checkSubmit(form) {
+            const target = document.querySelector("input[name=optionInfo]");
+            const value = JSON.stringify(optionManager.getData());
+            target.value = value;
+            target.setAttribute("value", value);
+            return true;
+        }
     </script>
 </head>
 <body>
@@ -91,7 +98,7 @@
                         </div>
                         <!-- /.card-header -->
                                          <!-- form start -->
-                        <form role="form" method="post" th:action="@{/item/edit/used}" th:object="${item}" enctype="multipart/form-data">
+                        <form role="form" method="post" th:action="@{/item/edit/used}" th:object="${item}" enctype="multipart/form-data" onsubmit="return checkSubmit(this)">
                             <input th:field="*{id}" type="hidden"/>
                             <div class="card-body">
                                 <div class="form-group">
@@ -174,6 +181,7 @@
                                     <div class="w-full block" id="option-content-box">
                                         <!-- 이 부분은 js 가 알아서 채워줄 것임.. -->
                                     </div>
+                                    <input type="hidden" name="optionInfo" value="" />
                                 </div>
                                 <div class="form-group">
                                     <label>AS 가능여부</label>
