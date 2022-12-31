@@ -6,7 +6,7 @@ class OptionManager {
         this.data = {
             isOption: 'false',
             optionType: 'COMBINATION',
-            optionItems: [
+            optionGroupList: [
                 {
                     name: '색상',
                     value: '빨강,파랑,초록',
@@ -16,7 +16,7 @@ class OptionManager {
                     value: 's,m,l',
                 },
             ],
-            optionList: [
+            optionItemList: [
                 {
                     values: ['빨강', 's'],
                     price: 50000,
@@ -116,8 +116,8 @@ class OptionManager {
             return;
         }
         this.data.optionType = value;
-        this.data.optionItems = [];
-        this.data.optionList = [];
+        this.data.optionGroupList = [];
+        this.data.optionItemList = [];
         this.render();
     }
 
@@ -125,19 +125,19 @@ class OptionManager {
         if (!confirm('해당 옵션 아이템을 삭제하시겠습니까?')) {
             return;
         }
-        this.data.optionItems.splice(index, 1);
+        this.data.optionGroupList.splice(index, 1);
         this.render();
     }
 
     addOptionItem() {
         if (this.data.optionType === "SIMPLE") {
-            if (this.data.optionItems.length >= 1) {
+            if (this.data.optionGroupList.length >= 1) {
                 alert('단독형인 경우에 옵션은 1개까지만 등록 가능합니다. 옵션을 여러개 등록하기 위해선 조합형을 선택해주세요.');
                 return;
             }
         }
 
-        this.data.optionItems.push({
+        this.data.optionGroupList.push({
             name: '',
             value: '',
         });
@@ -145,20 +145,20 @@ class OptionManager {
     }
 
     changeOptionItemName(index, target) {
-        this.data.optionItems[index].name = target.value;
+        this.data.optionGroupList[index].name = target.value;
     }
 
     changeOptionItemValue(index, target) {
-        this.data.optionItems[index].value = target.value;
+        this.data.optionGroupList[index].value = target.value;
     }
 
     applyOptionList() {
         if (!confirm('옵션 목록으로 적용하면 옵션 목록이 전부 초기화 됩니다. 계속 진행하시겠습니까?')) {
             return;
         }
-        const all_list_option = d3.cross(...this.data.optionItems.map(item => item.value.split(',')));
+        const all_list_option = d3.cross(...this.data.optionGroupList.map(item => item.value.split(',')));
         // console.log('all_list_option', all_list_option);
-        this.data.optionList = all_list_option.map((item) => {
+        this.data.optionItemList = all_list_option.map((item) => {
             return {
                 values: item,
                 price: 0,
@@ -175,7 +175,7 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.optionList[index].price = value;
+        this.data.optionItemList[index].price = value;
     }
 
     changeOptionListRowInventoryCount(index, target) {
@@ -183,7 +183,7 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.optionList[index].qty = value;
+        this.data.optionItemList[index].qty = value;
     }
 
     changeOptionListRowStatus(index, target) {
@@ -191,7 +191,7 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.optionList[index].status = value;
+        this.data.optionItemList[index].status = value;
     }
 
     changeOptionListAllCheck(target) {
@@ -219,7 +219,7 @@ class OptionManager {
             return;
         }
 
-        this.data.optionList = this.data.optionList.filter((x, index) => !deleteTargetIndexes.includes(index));
+        this.data.optionItemList = this.data.optionItemList.filter((x, index) => !deleteTargetIndexes.includes(index));
         this.render();
     }
 
@@ -246,7 +246,7 @@ class OptionManager {
             return;
         }
 
-        this.data.optionList.forEach((item, index) => {
+        this.data.optionItemList.forEach((item, index) => {
             if (changeTargetIndexes.includes(index)) {
                 item.status = value;
             }
@@ -314,7 +314,7 @@ class OptionManager {
                                     ${(function(){
                                         let htmlCode = '';
                                         let index = 0;
-                                        for (const item of data.optionItems) {
+                                        for (const item of data.optionGroupList) {
                                             htmlCode += `
                                                 <tr class="option-item-row" data-index="${index}">
                                                     <td>
@@ -372,7 +372,7 @@ class OptionManager {
                                         <th rowspan="2">
                                             <input type="checkbox" name="option-list-all-check" onchange="optionManager.changeOptionListAllCheck(this)" />
                                         </th>
-                                        <th colspan="${data.optionItems.length}">
+                                        <th colspan="${data.optionGroupList.length}">
                                             옵션명
                                         </th>
                                         <th rowspan="2">
@@ -388,7 +388,7 @@ class OptionManager {
                                     <tr>
                                         ${(function(){
                                             let ths = '';
-                                            for (const item of data.optionItems) {
+                                            for (const item of data.optionGroupList) {
                                                 ths += `
                                                     <th>
                                                         ${item.name}
@@ -403,7 +403,7 @@ class OptionManager {
                                     ${(function(){
                                         let trs = ``;
                                         let index = 0;
-                                        for (const item of data.optionList) {
+                                        for (const item of data.optionItemList) {
                                             trs += `
                                                 <tr class="option-list-item-row" data-index="${index}">
                                                     <td>
@@ -441,7 +441,6 @@ class OptionManager {
                                     })()}
                                 </tbody>
                             </table>
-                            <input name="optionInfo" value = ${JSON.stringify(data)}  type="hidden"/>
                         </div>
                     </div>
                 </div>

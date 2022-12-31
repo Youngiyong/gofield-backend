@@ -1,6 +1,7 @@
 package com.gofield.admin.service;
 
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.admin.dto.*;
 import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
@@ -41,7 +42,6 @@ public class ItemService {
     private final ItemBundleRepository itemBundleRepository;
     private final ItemDetailRepository itemDetailRepository;
     private final ItemAggregationRepository itemAggregationRepository;
-    private final ItemBundleImageRepository itemBundleImageRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final ShippingTemplateRepository shippingTemplateRepository;
     private final S3FileStorageClient s3FileStorageClient;
@@ -155,6 +155,10 @@ public class ItemService {
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
         }
+
+        if(thumbnail==null){
+            thumbnail = itemBundle.getThumbnail();
+        }
         String optionList = makeOption(itemDto);
         ItemDetail itemDetail = ItemDetail.newInstance(
                 itemDto.getGender(),
@@ -188,6 +192,15 @@ public class ItemService {
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
 
         String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
+
+        Boolean isOption = false;
+        ItemOptionManagerDto optionManager = null;
+
+        if(itemDto.getOptionInfo()!=null){
+            isOption = true;
+            optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
+        }
+
         Item item = Item.newNewItemInstance(
                 itemBundle,
                 brand,
@@ -202,7 +215,8 @@ public class ItemService {
                 itemDto.getDeliveryPrice(),
                 itemDto.getPickup(),
                 itemDto.getDelivery(),
-                tags);
+                tags,
+                isOption);
 
         if(images!=null && !images.isEmpty()){
             int sort = 10;
@@ -215,15 +229,15 @@ public class ItemService {
         }
         ItemStock itemStock = ItemStock.newInstance(item, EItemStatusFlag.SALE, EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
         ItemAggregation itemAggregation = ItemAggregation.newInstance(item);
-        itemDetailRepository.save(itemDetail);
-        shippingTemplateRepository.save(shippingTemplate);
-        itemRepository.save(item);
-        itemAggregationRepository.save(itemAggregation);
-        itemStockRepository.save(itemStock);
-        itemTemp.update();
+//        itemDetailRepository.save(itemDetail);
+//        shippingTemplateRepository.save(shippingTemplate);
+//        itemRepository.save(item);
+//        itemAggregationRepository.save(itemAggregation);
+//        itemStockRepository.save(itemStock);
+//        itemTemp.update();
 
         //묶음 집계 업데이트
-        updateItemBundleAggregation(item.getBundle().getId(), true);
+//        updateItemBundleAggregation(item.getBundle().getId(), true);
     }
 
     public void updateItemBundleAggregation(Long bundleId, Boolean isUpdate){

@@ -2,11 +2,10 @@ package com.gofield.api.controller;
 
 import com.gofield.api.dto.enums.TermType;
 import com.gofield.api.dto.req.UserRequest;
-import com.gofield.api.dto.res.TermResponse;
-import com.gofield.api.dto.res.UserAlertResponse;
-import com.gofield.api.dto.res.UserProfileResponse;
+import com.gofield.api.dto.res.*;
 import com.gofield.api.service.UserService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -51,8 +50,14 @@ public class UserController {
 
     @ApiOperation(value = "환불 계좌 조회")
     @GetMapping("/v1/account")
-    public ApiResponse getAccountInfo(){
-        return ApiResponse.success(userService.findUserAccount());
+    public ApiResponse<UserAccountResponse> getAccountInfo(){
+        return ApiResponse.success(userService.getUserAccount());
+    }
+
+    @ApiOperation(value = "사용자 휴대폰 번호 조회")
+    @GetMapping("/v1/tel")
+    public ApiResponse<UserTelResponse> getUserTel(){
+        return ApiResponse.success(userService.getUserTel());
     }
 
     @ApiOperation(value = "환불 계좌 업데이트")

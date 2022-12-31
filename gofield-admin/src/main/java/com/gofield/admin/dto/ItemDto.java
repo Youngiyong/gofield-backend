@@ -61,7 +61,6 @@ public class ItemDto {
 
     private String createDate;
     private ShippingTemplateDto shippingTemplate;
-
     private String optionInfo;
 
     @Builder

@@ -140,7 +140,7 @@ public class Item extends BaseTimeEntity {
     }
 
     public static Item newNewItemInstance(ItemBundle itemBundle, Brand brand, Category category, ItemDetail itemDetail, ShippingTemplate shippingTemplate, Long sellerId,  String thumbnail,
-                                           String itemNumber, String name, int price, int deliveryPrice, EItemPickupFlag pickup, EItemDeliveryFlag delivery, String tags){
+                                           String itemNumber, String name, int price, int deliveryPrice, EItemPickupFlag pickup, EItemDeliveryFlag delivery, String tags, Boolean isOption){
         return Item.builder()
                 .itemBundle(itemBundle)
                 .brand(brand)
@@ -157,6 +157,7 @@ public class Item extends BaseTimeEntity {
                 .classification(EItemClassificationFlag.NEW)
                 .thumbnail(thumbnail)
                 .tags(tags)
+                .isOption(isOption)
                 .build();
     }
 

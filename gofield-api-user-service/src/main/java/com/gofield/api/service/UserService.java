@@ -154,10 +154,16 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserAccountResponse findUserAccount(){
+    public UserAccountResponse getUserAccount(){
         User user = getUserNotNonUser();
         UserAccount userAccount = userAccountRepository.findByUserId(user.getId());
         return UserAccountResponse.of(userAccount);
+    }
+
+    @Transactional(readOnly = true)
+    public UserTelResponse getUserTel(){
+        User user = getUserNotNonUser();
+        return UserTelResponse.of(user);
     }
 
     @Transactional
