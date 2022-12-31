@@ -117,7 +117,7 @@ public class OrderCancelItemTempResponse {
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
-                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
                 .qty(qty)

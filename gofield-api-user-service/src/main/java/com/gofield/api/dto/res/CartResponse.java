@@ -75,7 +75,7 @@ public class CartResponse {
                 .sellerId(cartProjection.getSellerId())
                 .sellerName(cartProjection.getSellerName())
                 .optionName(optionName)
-                .thumbnail(CommonUtils.makeCloudFrontUrl(cartProjection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(cartProjection.getThumbnail()))
                 .price(cartProjection.getPrice())
                 .deliveryPrice(cartProjection.getDeliveryPrice())
                 .qty(cartProjection.getQty())

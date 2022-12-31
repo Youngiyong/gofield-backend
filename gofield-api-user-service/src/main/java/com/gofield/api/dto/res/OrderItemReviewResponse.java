@@ -70,7 +70,7 @@ public class OrderItemReviewResponse {
                 .sellerName(projection.getSellerName())
                 .bundleId(projection.getBundleId())
                 .optionId(projection.getOptionId())
-                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(projection.getThumbnail()))
                 .itemNumber(projection.getItemNumber())
                 .price(projection.getPrice())
                 .optionPrice(projection.getOptionPrice())

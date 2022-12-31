@@ -47,7 +47,7 @@ public class OrderItemReviewDetailResponse {
                 .name(itemBundleReview.getName())
                 .itemNumber(itemBundleReview.getItemNumber())
                 .optionName(itemBundleReview.getOptionName())
-                .thumbnail(CommonUtils.makeCloudFrontUrl(itemBundleReview.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(itemBundleReview.getThumbnail()))
                 .price(itemBundleReview.getPrice())
                 .qty(itemBundleReview.getQty())
                 .reviewScore(itemBundleReview.getReviewScore())
