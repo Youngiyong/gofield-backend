@@ -64,7 +64,7 @@ public class OrderItemResponse {
                 .isReview(orderItem.getIsReview())
                 .price(orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice())
                 .qty(orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty())
-                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
                 .build();
     }
 
