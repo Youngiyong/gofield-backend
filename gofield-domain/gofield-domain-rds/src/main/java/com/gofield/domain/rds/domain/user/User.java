@@ -84,11 +84,10 @@ public class User extends BaseTimeEntity {
         return new User(uuid, name, email, nickName);
     }
 
-    public void updateProfile(String name, String nickName, String thumbnail, Boolean isAlertPromotion, Integer weight, Integer height){
+    public void updateProfile(String name, String nickName, String thumbnail, Integer weight, Integer height){
         this.name = name != null ? name : this.name;
         this.nickName = nickName;
         this.thumbnail = thumbnail;
-        this.isAlertPromotion = isAlertPromotion;
         this.weight = weight;
         this.height = height;
 

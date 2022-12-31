@@ -50,11 +50,16 @@ public enum ErrorCode {
      */
     E409_CONFLICT_EXCEPTION("C4900", 409, "이미 존재하는 리소스입니다."),
 
+    /**
+     * 413 Unsupported media type (너무 큰 페이로드)
+     */
+    E415_UNSUPPORTED_MEDIA_TYPE("U4500", 415, "요청 엔티티가 서버에서 제한보다 큽니다."),
+
 
     /**
      * 415 Unsupported media type (지원하지 않는 미디어 타입)
      */
-    E415_UNSUPPORTED_MEDIA_TYPE("U4500", 415, "지원하지 않는 미디어 타입입니다."),
+    E413_PAYLOAD_TOO_LARGE("U4130", 413, "지원하지 않는 미디어 타입입니다."),
 
 
     /**

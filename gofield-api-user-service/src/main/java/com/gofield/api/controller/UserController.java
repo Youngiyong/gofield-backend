@@ -42,7 +42,7 @@ public class UserController {
 
     @ApiOperation(value = "사용자 프로필 업데이트")
     @PutMapping("/v1/profile")
-    public ApiResponse uploadProfile(@RequestPart(value = "user") UserRequest.UserProfile request,
+    public ApiResponse uploadProfile(@RequestPart(value = "user", required = false) UserRequest.UserProfile request,
                                      @RequestPart(value = "image", required = false) MultipartFile image){
         userService.updateProfile(request, image);
         return ApiResponse.SUCCESS;

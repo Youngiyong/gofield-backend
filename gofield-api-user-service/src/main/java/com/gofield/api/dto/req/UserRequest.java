@@ -97,6 +97,5 @@ public class UserRequest {
         private String nickName;
         private Integer weight;
         private Integer height;
-        private Boolean isAlertPromotion;
     }
 }

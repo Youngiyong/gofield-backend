@@ -173,7 +173,7 @@ public class UserService {
             thumbnail = s3FileStorageClient.uploadFile(file, FileType.USER_IMAGE);
         }
         User user = getUserNotNonUser();
-        user.updateProfile(request.getName(), request.getNickName(), thumbnail,  request.getIsAlertPromotion(), request.getWeight(), request.getHeight());
+        user.updateProfile(request.getName(), request.getNickName(), thumbnail, request.getWeight(), request.getHeight());
     }
 
     @Transactional

@@ -18,6 +18,7 @@ import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MaxUploadSizeExceededException;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.Objects;
@@ -167,6 +168,23 @@ public class RestControllerAdvice {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .action(ErrorAction.NONE)
                 .code(e.getErrorCode().getCode())
+                .message(e.getMessage())
+                .build();
+
+        return ApiResponse.error(errorResponse);
+    }
+
+    /**
+     * 415 UnSupported Media Type
+     */
+    @ResponseStatus(HttpStatus.PAYLOAD_TOO_LARGE)
+    @ExceptionHandler(MaxUploadSizeExceededException.class)
+    protected ApiResponse<Object> handleHttpMediaTypeException(final MaxUploadSizeExceededException e) {
+        ErrorCode errorCode = ErrorCode.E413_PAYLOAD_TOO_LARGE;
+
+        ErrorResponse errorResponse = ErrorResponse.builder()
+                .action(ErrorAction.NONE)
+                .code(errorCode.getCode())
                 .message(e.getMessage())
                 .build();
 
