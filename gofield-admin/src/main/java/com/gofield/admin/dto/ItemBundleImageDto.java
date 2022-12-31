@@ -1,6 +1,7 @@
 package com.gofield.admin.dto;
 
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.ItemBundleImage;
 import lombok.*;
 
@@ -27,7 +28,7 @@ public class ItemBundleImageDto {
     public static ItemBundleImageDto of(ItemBundleImage itemBundleImage){
         return ItemBundleImageDto.builder()
                 .id(itemBundleImage.getId())
-                .image(Constants.CDN_URL.concat(itemBundleImage.getImage()).concat(Constants.RESIZE_200x200))
+                .image(CommonUtils.makeCloudFrontUrl(itemBundleImage.getImage()))
                 .createDate(itemBundleImage.getCreateDate().toLocalDate().toString())
                 .build();
     }

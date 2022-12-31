@@ -4,6 +4,7 @@ import com.gofield.common.excel.annotation.ExcelColumn;
 import com.gofield.common.excel.annotation.ExcelColumnStyle;
 import com.gofield.common.excel.style.DefaultExcelCellStyle;
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.projection.ItemInfoProjection;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,7 +53,7 @@ public class ItemInfoProjectionResponse {
                 .price(itemInfoProjection.getPrice())
                 .categoryName(itemInfoProjection.getCategoryName())
                 .status(itemInfoProjection.getStatus().getDescription())
-                .thumbnail(itemInfoProjection.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemInfoProjection.getThumbnail()).concat(Constants.RESIZE_200x200))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(itemInfoProjection.getThumbnail()))
                 .createDate(itemInfoProjection.getCreateDate().toLocalDate().toString())
                 .build();
     }

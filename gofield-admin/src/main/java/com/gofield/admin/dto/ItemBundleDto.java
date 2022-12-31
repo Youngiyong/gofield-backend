@@ -1,6 +1,7 @@
 package com.gofield.admin.dto;
 
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import lombok.Builder;
 import lombok.Getter;
@@ -59,7 +60,7 @@ public class ItemBundleDto {
                 .brandId(itemBundle.getBrand().getId())
                 .brandName(itemBundle.getBrand().getName())
                 .isRecommend(itemBundle.getIsRecommend())
-                .thumbnail(itemBundle.getThumbnail()==null ? null : Constants.CDN_URL.concat(itemBundle.getThumbnail()).concat(Constants.RESIZE_200x200))
+                .thumbnail(itemBundle.getThumbnail()==null ? null : CommonUtils.makeCloudFrontUrlResize(itemBundle.getThumbnail()))
                 .build();
     }
 

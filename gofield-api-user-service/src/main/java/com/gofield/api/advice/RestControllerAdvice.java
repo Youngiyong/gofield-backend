@@ -185,7 +185,7 @@ public class RestControllerAdvice {
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .action(ErrorAction.NONE)
                 .code(errorCode.getCode())
-                .message(e.getMessage())
+                .message(errorCode.getMessage())
                 .build();
 
         return ApiResponse.error(errorResponse);
