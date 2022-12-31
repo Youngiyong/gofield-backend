@@ -23,7 +23,6 @@ public class CartResponse {
     private List<String> optionName;
     private String thumbnail;
     private int price;
-
     private int deliveryPrice;
     private int qty;
     private Boolean isOrder;

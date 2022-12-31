@@ -24,7 +24,6 @@ public class OrderItemReviewDetailResponse {
     private int qty;
     private Double reviewScore;
     private String description;
-
     private List<String> images;
 
     @Builder
@@ -52,7 +51,7 @@ public class OrderItemReviewDetailResponse {
                 .qty(itemBundleReview.getQty())
                 .reviewScore(itemBundleReview.getReviewScore())
                 .description(itemBundleReview.getDescription())
-                .images(itemBundleReview.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrl(k.getImage())).collect(Collectors.toList()))
+                .images(itemBundleReview.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrlResize(k.getImage())).collect(Collectors.toList()))
                 .build();
     }
 

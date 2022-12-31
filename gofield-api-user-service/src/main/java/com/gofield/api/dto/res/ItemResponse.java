@@ -39,7 +39,6 @@ public class ItemResponse {
     private List<Map<String, Object>> option;
     private List<String> tags;
     private ShippingTemplateResponse shippingTemplate;
-
     private String description;
 
     @Builder
@@ -83,7 +82,7 @@ public class ItemResponse {
                 .id(projection.getId())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
-                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(projection.getThumbnail()))
                 .itemNumber(projection.getItemNumber())
                 .bundleId(projection.getBundleId())
                 .price(projection.getPrice())
@@ -95,7 +94,7 @@ public class ItemResponse {
                 .spec(projection.getSpec())
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
-                .images(projection.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrl(k)).collect(Collectors.toList()))
+                .images(projection.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrlResize460(k)).collect(Collectors.toList()))
                 .option(projection.getOption()==null ? null : ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
                 .tags(tags)
                 .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))

@@ -32,7 +32,7 @@ public class UserProfileResponse {
         return UserProfileResponse.builder()
                 .name(user.getName())
                 .nickName(user.getNickName())
-                .thumbnail(CommonUtils.makeCloudFrontUrl(user.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(user.getThumbnail()))
                 .weight(user.getWeight())
                 .height(user.getHeight())
                 .build();

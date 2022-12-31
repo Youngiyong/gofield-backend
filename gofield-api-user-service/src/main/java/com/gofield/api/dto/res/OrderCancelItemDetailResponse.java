@@ -61,7 +61,7 @@ public class OrderCancelItemDetailResponse {
                 .itemNumber(itemNumber)
                 .itemId(itemId)
                 .itemOptionId(itemOptionId)
-                .thumbnail(CommonUtils.makeCloudFrontUrl(thumbnail))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize(thumbnail))
                 .type(orderCancelItem.getType())
                 .qty(orderCancelItem.getQty())
                 .price(orderCancelItem.getPrice())

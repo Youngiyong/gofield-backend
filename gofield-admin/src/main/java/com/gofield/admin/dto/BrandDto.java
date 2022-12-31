@@ -1,6 +1,7 @@
 package com.gofield.admin.dto;
 
 import com.gofield.common.model.Constants;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.Brand;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,7 +35,7 @@ public class BrandDto {
         return BrandDto.builder()
                 .id(brand.getId())
                 .name(brand.getName())
-                .thumbnail(brand.getThumbnail()==null ? null : Constants.CDN_URL.concat(brand.getThumbnail()).concat(Constants.RESIZE_200x200))
+                .thumbnail(brand.getThumbnail()==null ? null : CommonUtils.makeCloudFrontUrlResize260(brand.getThumbnail()))
                 .isVisible(brand.getIsVisible())
                 .createDate(brand.getCreateDate().toLocalDate().toString())
                 .build();

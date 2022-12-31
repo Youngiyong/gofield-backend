@@ -5,6 +5,8 @@ public class Constants {
     public static final String BASE_PACKAGE = "com.gofield";
     public static final String TOKEN_ISSUER = "service.gofield.shop";
     public static final String CDN_URL = "https://d22b51gh5o1q1e.cloudfront.net/";
-    public static final String RESIZE_200x200 = "?s=200x200&t=crop&q=60&f=webp";
+    public static final String RESIZE_120x120 = "?s=120x120&q=80&f=webp";
+    public static final String RESIZE_260x260 = "?s=260x260&q=80&f=webp";
+    public static final String RESIZE_460x460 = "?s=460x460&q=80&f=webp";
     public static final String TRACKER_DELIVERY_URL = "https://tracker.delivery/#/%s/%s";
 }

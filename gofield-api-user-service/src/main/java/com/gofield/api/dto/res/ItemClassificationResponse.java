@@ -66,7 +66,7 @@ public class ItemClassificationResponse {
                 .itemNumber(projection.getItemNumber())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(projection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize260(projection.getThumbnail()))
                 .price(projection.getPrice())
                 .deliveryPrice(projection.getDeliveryPrice())
                 .likeId(projection.getLikeId())

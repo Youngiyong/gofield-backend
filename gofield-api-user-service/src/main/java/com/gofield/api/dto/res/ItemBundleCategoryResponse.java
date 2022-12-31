@@ -39,7 +39,7 @@ public class ItemBundleCategoryResponse {
                 .id(projection.getId())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
-                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize260(projection.getThumbnail()))
                 .reviewCount(projection.getReviewCount())
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())

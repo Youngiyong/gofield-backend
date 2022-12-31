@@ -49,7 +49,7 @@ public class ItemBundleResponse {
                 .id(projection.getId())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
-                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrlResize260(projection.getThumbnail()))
                 .reviewCount(projection.getReviewCount())
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())
@@ -57,7 +57,7 @@ public class ItemBundleResponse {
                 .allItemCount(projection.getAllItemCount())
                 .newItemCount(projection.getNewItemCount())
                 .usedItemCount(projection.getUsedItemCount())
-                .images(projection.getImages().stream().map(k->CommonUtils.makeCloudFrontUrl(k)).collect(Collectors.toList()))
+                .images(projection.getImages().stream().map(k->CommonUtils.makeCloudFrontUrlResize460(k)).collect(Collectors.toList()))
                 .build();
     }
 

@@ -35,7 +35,6 @@ public class OrderItemReviewResponse {
     private int qty;
     private int optionQty;
     private EOrderShippingStatusFlag status;
-
     private LocalDateTime finishedDate;
 
     @Builder

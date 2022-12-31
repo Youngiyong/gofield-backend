@@ -53,7 +53,7 @@ public class ItemBundleReviewResponse {
                 .reviewScroe(bundleReview.getReviewScore())
                 .description(bundleReview.getDescription())
                 .createDate(bundleReview.getCreateDate())
-                .images(bundleReview.getImages().isEmpty() ? new ArrayList<>() : bundleReview.getImages().stream().map(k-> CommonUtils.makeCloudFrontUrl(k.getImage())).collect(Collectors.toList()))
+                .images(bundleReview.getImages().isEmpty() ? new ArrayList<>() : bundleReview.getImages().stream().map(k-> CommonUtils.makeCloudFrontUrlResize(k.getImage())).collect(Collectors.toList()))
                 .build();
     }
 
