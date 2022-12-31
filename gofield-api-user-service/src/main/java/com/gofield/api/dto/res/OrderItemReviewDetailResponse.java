@@ -18,7 +18,7 @@ public class OrderItemReviewDetailResponse {
     private Long reviewId;
     private String name;
     private String itemNumber;
-    private List<String> optionName;
+    private String optionName;
     private String thumbnail;
     private int price;
     private int qty;
@@ -28,7 +28,7 @@ public class OrderItemReviewDetailResponse {
     private List<String> images;
 
     @Builder
-    private OrderItemReviewDetailResponse(Long reviewId, String name, String itemNumber,  List<String> optionName, String thumbnail, int price, int qty, Double reviewScore, String description, List<String> images){
+    private OrderItemReviewDetailResponse(Long reviewId, String name, String itemNumber,  String optionName, String thumbnail, int price, int qty, Double reviewScore, String description, List<String> images){
         this.reviewId = reviewId;
         this.name = name;
         this.itemNumber = itemNumber;
@@ -46,7 +46,7 @@ public class OrderItemReviewDetailResponse {
                 .reviewId(itemBundleReview.getId())
                 .name(itemBundleReview.getName())
                 .itemNumber(itemBundleReview.getItemNumber())
-                .optionName(itemBundleReview.getOptionName()==null ? null : ApiUtil.strToObject(itemBundleReview.getOptionName(), new TypeReference<List<String>>(){}))
+                .optionName(itemBundleReview.getOptionName())
                 .thumbnail(CommonUtils.makeCloudFrontUrl(itemBundleReview.getThumbnail()))
                 .price(itemBundleReview.getPrice())
                 .qty(itemBundleReview.getQty())
