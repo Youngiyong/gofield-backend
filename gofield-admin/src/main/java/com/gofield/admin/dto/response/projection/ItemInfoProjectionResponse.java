@@ -53,7 +53,7 @@ public class ItemInfoProjectionResponse {
                 .price(itemInfoProjection.getPrice())
                 .categoryName(itemInfoProjection.getCategoryName())
                 .status(itemInfoProjection.getStatus().getDescription())
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(itemInfoProjection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontAdminUrl(itemInfoProjection.getThumbnail()))
                 .createDate(itemInfoProjection.getCreateDate().toLocalDate().toString())
                 .build();
     }

@@ -68,7 +68,6 @@ public class OrderService {
     private final ThirdPartyService thirdPartyService;
     private final S3FileStorageClient s3FileStorageClient;
 
-
     private void validateOrderShippingCancelStatus(EOrderShippingStatusFlag status){
         if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 주문 취소가 접수된 상품입니다.");
@@ -220,7 +219,7 @@ public class OrderService {
 
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
-            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), price, sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
+            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getViewName(), itemStock.getThumbnail(), itemStock.getItemNumber(), price, sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
         }
         if(request.getTotalPrice()!=totalPrice){

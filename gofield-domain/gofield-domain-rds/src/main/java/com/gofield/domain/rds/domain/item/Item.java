@@ -88,6 +88,9 @@ public class Item extends BaseTimeEntity {
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<ItemOption> options = new ArrayList<>();
 
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<ItemOptionGroup> optionGroups = new ArrayList<>();
+
     @OneToMany(mappedBy = "item")
     private List<UserLikeItem> user;
 
@@ -169,10 +172,22 @@ public class Item extends BaseTimeEntity {
         this.images.add(itemImage);
     }
 
+    public void addOptionGroup(ItemOptionGroup optionGroup){
+        this.optionGroups.add(optionGroup);
+    }
+
+    public void addStock(ItemStock itemStock){
+        this.stocks.add(itemStock);
+    }
+
     public void delete(){
         this.deleteDate = LocalDateTime.now();
         this.images.stream().forEach(i -> i.delete());
         this.detail.delete();
+    }
+
+    public void updateOption(){
+        this.isOption = true;
     }
 
 }

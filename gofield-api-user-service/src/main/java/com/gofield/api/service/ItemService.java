@@ -143,7 +143,6 @@ public class ItemService {
         if(item==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", itemNumber));
         }
-
         //비회원 분기처리
         if(user.getId()!=null){
             ItemRecent itemRecent = itemRecentRepository.findByItemNumberAndUserId(item.getItemNumber(), user.getId());

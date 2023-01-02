@@ -21,6 +21,8 @@ public class ItemOrderSheetResponse {
     private String brandName;
     private String name;
     private List<String> optionName;
+
+    private String viewName;
     private String thumbnail;
     private String itemNumber;
     private int price;
@@ -37,7 +39,7 @@ public class ItemOrderSheetResponse {
 
 
     @Builder
-    private ItemOrderSheetResponse(Long id, Long sellerId, Long bundleId, String brandName, String name, List<String> optionName, String thumbnail,
+    private ItemOrderSheetResponse(Long id, Long sellerId, Long bundleId, String brandName, String name, List<String> optionName, String viewName, String thumbnail,
                                    String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType, EItemChargeFlag chargeType, int charge, int condition, int feeJeju, int feeJejuBesides){
         this.id = id;
         this.sellerId = sellerId;
@@ -45,6 +47,7 @@ public class ItemOrderSheetResponse {
         this.brandName = brandName;
         this.name = name;
         this.optionName = optionName;
+        this.viewName = viewName;
         this.thumbnail = thumbnail;
         this.itemNumber = itemNumber;
         this.price = price;
@@ -61,7 +64,7 @@ public class ItemOrderSheetResponse {
     }
 
 
-    public static ItemOrderSheetResponse of(Long id, Long sellerId, Long bundleId, String brandName, String name, String optionName, String thumbnail,
+    public static ItemOrderSheetResponse of(Long id, Long sellerId, Long bundleId, String brandName, String name, String optionName, String viewName, String thumbnail,
                                             String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType,  EItemChargeFlag chargeType,  int charge, int condition, int feeJeju, int feeJejuBesides){
         return ItemOrderSheetResponse.builder()
                 .id(id)
@@ -70,6 +73,7 @@ public class ItemOrderSheetResponse {
                 .brandName(brandName)
                 .name(name)
                 .optionName(optionName==null ? null : ApiUtil.strToObject(optionName, new TypeReference<List<String>>(){}))
+                .viewName(viewName)
                 .thumbnail(CommonUtils.makeCloudFrontUrlResize(thumbnail))
                 .itemNumber(itemNumber)
                 .price(price)

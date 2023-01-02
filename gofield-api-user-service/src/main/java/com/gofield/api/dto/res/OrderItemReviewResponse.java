@@ -21,7 +21,7 @@ public class OrderItemReviewResponse {
     private Long id;
     private String orderNumber;
     private String name;
-    private List<String> optionName;
+    private String optionName;
     private Long sellerId;
     private String sellerName;
     private Long bundleId;
@@ -38,7 +38,7 @@ public class OrderItemReviewResponse {
     private LocalDateTime finishedDate;
 
     @Builder
-    private OrderItemReviewResponse(Long id, String orderNumber, String name, List<String> optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, EOrderShippingStatusFlag status, LocalDateTime finishedDate){
+    private OrderItemReviewResponse(Long id, String orderNumber, String name, String optionName, Long sellerId, String sellerName, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemClassificationFlag classification, EItemOptionTypeFlag optionType, int qty, int optionQty, EOrderShippingStatusFlag status, LocalDateTime finishedDate){
         this.id = id;
         this.orderNumber = orderNumber;
         this.name = name;
@@ -64,7 +64,7 @@ public class OrderItemReviewResponse {
                 .id(projection.getId())
                 .orderNumber(projection.getOrderNumber())
                 .name(projection.getName())
-                .optionName(projection.getOptionName()==null ? null :  ApiUtil.strToObject(projection.getOptionName(), new TypeReference<List<String>>(){}))
+                .optionName(projection.getOptionName())
                 .sellerId(projection.getSellerId())
                 .sellerName(projection.getSellerName())
                 .bundleId(projection.getBundleId())

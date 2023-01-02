@@ -15,11 +15,11 @@ import java.util.Map;
 public class ItemOptionManagerDto {
     private Boolean isOption;
     private EItemOptionTypeFlag optionType;
-    private List<ItemOptionGroupDto> optionGroupList;
+    private List<ItemNameValueDto> optionGroupList;
     private List<Map<String, Object>> optionItemList;
 
     @Builder
-    private ItemOptionManagerDto(Boolean isOption, EItemOptionTypeFlag optionType, List<ItemOptionGroupDto> optionGroupList, List<Map<String, Object>> optionItemList){
+    private ItemOptionManagerDto(Boolean isOption, EItemOptionTypeFlag optionType, List<ItemNameValueDto> optionGroupList, List<Map<String, Object>> optionItemList){
         this.isOption = isOption;
         this.optionType = optionType;
         this.optionGroupList = optionGroupList;

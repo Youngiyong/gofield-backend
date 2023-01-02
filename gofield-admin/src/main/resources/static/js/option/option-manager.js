@@ -9,7 +9,7 @@ class OptionManager {
             optionGroupList: [
                 {
                     name: '색상',
-                    value: '빨강,파랑,초록',
+                    value: '빨강,파랑,블랙',
                 },
                 {
                     name: '사이즈',
@@ -20,7 +20,7 @@ class OptionManager {
                 {
                     values: ['빨강', 's'],
                     price: 50000,
-                    qty: 3,
+                    qty: 30,
                     status: 'SALE',
                 },
                 {
@@ -38,37 +38,37 @@ class OptionManager {
                 {
                     values: ['파랑', 's'],
                     price: 50000,
-                    qty: 3,
+                    qty: 40,
                     status: 'SALE',
                 },
                 {
                     values: ['파랑', 'm'],
                     price: 50001,
-                    qty: 31,
+                    qty: 41,
                     status: 'SALE',
                 },
                 {
                     values: ['파랑', 'l'],
                     price: 50002,
-                    qty: 32,
+                    qty: 42,
                     status: 'SALE',
                 },
                 {
-                    values: ['초록', 's'],
+                    values: ['블랙', 's'],
                     price: 50000,
-                    optionQty: 3,
+                    qty: 43,
                     status: 'SALE',
                 },
                 {
-                    values: ['초록', 'm'],
+                    values: ['블랙', 'm'],
                     price: 50001,
-                    qty: 31,
+                    qty: 44,
                     status: 'SALE',
                 },
                 {
-                    values: ['초록', 'l'],
+                    values: ['블랙', 'l'],
                     price: 50002,
-                    qty: 32,
+                    qty: 50,
                     status: 'SALE',
                 },
             ],
@@ -321,7 +321,7 @@ class OptionManager {
                                                         <input name="option_name" type="text" placeholder="예시) 색상" value="${item.name}" onchange="optionManager.changeOptionItemName(${index}, this)" />
                                                     </td>
                                                     <td>
-                                                        <input name="option_values" type="text" placeholder="예시) 빨강,파랑,초록,분홍" style="width: 100%;" value="${item.value}" onchange="optionManager.changeOptionItemValue(${index}, this)" />
+                                                        <input name="option_values" type="text" placeholder="예시) 빨강,파랑,블랙,분홍" style="width: 100%;" value="${item.value}" onchange="optionManager.changeOptionItemValue(${index}, this)" />
                                                     </td>
                                                     <td>
                                                         <span class="text-red-600 cursor-pointer" onclick="optionManager.deleteOptionItem(${index})">삭제</span>
@@ -421,10 +421,10 @@ class OptionManager {
                                                         return tds;
                                                     })()}
                                                     <td>
-                                                        <input ${data.optionType === "SIMPLE" ? "disabled " : ""}type="text" value="${item.price}" onchange="optionManager.changeOptionListRowPrice(${index}, this)" />
+                                                        <input ${data.optionType === "SIMPLE" ? "disabled " : ""} type="number" name="price" value="${item.price}" onchange="optionManager.changeOptionListRowPrice(${index}, this)" />
                                                     </td>
                                                     <td>
-                                                        <input type="number" value="${item.qty}" onchange="optionManager.changeOptionListRowInventoryCount(${index}, this)" />
+                                                        <input type="number" name="qty" value="${item.qty}" onchange="optionManager.changeOptionListRowInventoryCount(${index}, this)" />
                                                     </td>
                                                     <td>
                                                         <select class="select select2-blue" onchange="optionManager.changeOptionListRowStatus(${index}, this)">

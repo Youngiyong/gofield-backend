@@ -46,7 +46,7 @@ public class ItemBundleInfoProjectionResponse {
                 .categoryName(itemBundle.getCategory().getName())
                 .brandName(itemBundle.getBrand().getName())
                 .name(itemBundle.getName())
-                .thumbnail(itemBundle.getThumbnail()==null ? null : CommonUtils.makeCloudFrontUrlResize(itemBundle.getThumbnail()))
+                .thumbnail(itemBundle.getThumbnail()==null ? null : CommonUtils.makeCloudFrontAdminUrl(itemBundle.getThumbnail()))
                 .createDate(itemBundle.getCreateDate().toLocalDate().toString())
                 .build();
     }

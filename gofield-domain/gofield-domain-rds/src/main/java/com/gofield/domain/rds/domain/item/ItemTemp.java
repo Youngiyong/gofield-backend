@@ -28,4 +28,8 @@ public class ItemTemp {
         this.itemNumber += 1;
     }
 
+    public void updateCount(int count){
+        this.itemNumber = itemNumber + count + 1;
+    }
+
 }

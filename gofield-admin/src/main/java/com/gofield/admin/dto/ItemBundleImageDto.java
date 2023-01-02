@@ -28,7 +28,7 @@ public class ItemBundleImageDto {
     public static ItemBundleImageDto of(ItemBundleImage itemBundleImage){
         return ItemBundleImageDto.builder()
                 .id(itemBundleImage.getId())
-                .image(CommonUtils.makeCloudFrontUrl(itemBundleImage.getImage()))
+                .image(CommonUtils.makeCloudFrontAdminUrl(itemBundleImage.getImage()))
                 .createDate(itemBundleImage.getCreateDate().toLocalDate().toString())
                 .build();
     }

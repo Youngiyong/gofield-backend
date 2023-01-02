@@ -20,4 +20,10 @@ public class CommonUtils {
         if(image==null) return null;
         return Constants.CDN_URL.concat(image);
     }
+
+    public static String makeCloudFrontAdminUrl(String image){
+        if(image==null) return null;
+        return Constants.CDN_URL.concat(image).concat(Constants.RESIZE_ADMIN);
+
+    }
 }

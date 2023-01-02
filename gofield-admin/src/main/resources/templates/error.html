@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html layout:decorate="~{shared/layout}"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>관리자 리스트</title>
+</head>
+<body>
+
+
+<div layout:fragment="content">
+
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>에러 페이지</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" th:text="${errorCode.getStatusCode()}"></li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="error-page">
+            <h2 class="headline text-danger" th:text="${errorCode.statusCode}"></h2>
+            <div class="error-content">
+                <h3><i class="fas fa-exclamation-triangle text-danger"></i> Oops! Something went wrong.</h3>
+                <p th:text="${errorCode.message}">
+                </p>
+            </div>
+        </div>
+
+    </section>
+    <!-- Main content -->
+
+
+</div>
+
+
+<th:block layout:fragment="script">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+</th:block>
+
+</body>
+</html>

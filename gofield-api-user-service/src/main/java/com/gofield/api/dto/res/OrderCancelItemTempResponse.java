@@ -22,7 +22,7 @@ public class OrderCancelItemTempResponse {
     private Long shippingTemplateId;
     private String itemNumber;
     private String name;
-    private List<String> optionName;
+    private String optionName;
     private String thumbnail;
     private EOrderItemStatusFlag status;
     private Boolean isOption;
@@ -50,7 +50,7 @@ public class OrderCancelItemTempResponse {
 
     @Builder
     private OrderCancelItemTempResponse(Long id, Long orderId, Long itemId, Long itemOptionId, Long shippingTemplateId, String itemNumber,
-                                        String name, List<String> optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
+                                        String name, String optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
                                         int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int refundPrice, String paymentCompany,
                                         String paymentType, String cardNumber, String cardType, int installmentPlanMonth,
                                         String refundName, String refundAccount, String refundBank, String userTel, String username, String zipCode, String address, String addressExtra){
@@ -116,7 +116,7 @@ public class OrderCancelItemTempResponse {
                 .shippingTemplateId(orderItem.getItem().getShippingTemplate()==null ? null : orderItem.getItem().getShippingTemplate().getId())
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
-                .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
+                .optionName(orderItem.getOrderItemOption()==null ? null :orderItem.getOrderItemOption().getName())
                 .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
@@ -169,7 +169,7 @@ public class OrderCancelItemTempResponse {
                 .shippingTemplateId(orderItem.getItem().getShippingTemplate()==null ? null : orderItem.getItem().getShippingTemplate().getId())
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
-                .optionName(orderItem.getOrderItemOption()==null ? null : ApiUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
+                .optionName(orderItem.getOrderItemOption()==null ? null :orderItem.getOrderItemOption().getName())
                 .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)

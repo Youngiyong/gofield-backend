@@ -60,7 +60,7 @@ public class ItemBundleDto {
                 .brandId(itemBundle.getBrand().getId())
                 .brandName(itemBundle.getBrand().getName())
                 .isRecommend(itemBundle.getIsRecommend())
-                .thumbnail(itemBundle.getThumbnail()==null ? null : CommonUtils.makeCloudFrontUrlResize(itemBundle.getThumbnail()))
+                .thumbnail(itemBundle.getThumbnail()==null ? null : CommonUtils.makeCloudFrontAdminUrl(itemBundle.getThumbnail()))
                 .build();
     }
 
@@ -70,7 +70,7 @@ public class ItemBundleDto {
                 .name(name)
                 .categoryId(categoryId)
                 .brandId(brandId)
-                .thumbnail(thumbnail==null ? null : Constants.CDN_URL.concat(thumbnail))
+                .thumbnail(CommonUtils.makeCloudFrontAdminUrl(thumbnail))
                 .isRecommend(isRecommend)
                 .createDate(createDate)
                 .build();

@@ -25,7 +25,6 @@ public class ItemBundleService {
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
     private final ItemBundleRepository itemBundleRepository;
-
     private final ItemBundleImageRepository itemBundleImageRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final S3FileStorageClient s3FileStorageClient;
@@ -47,7 +46,7 @@ public class ItemBundleService {
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
         ItemBundle itemBundle = itemBundleRepository.findByBundleIdNotFetch(itemBundleDto.getId());
-        String thumbnail = itemBundleDto.getThumbnail()==null ? null : itemBundleDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_120x120, "");
+        String thumbnail = itemBundleDto.getThumbnail()==null ? null : itemBundleDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
         }

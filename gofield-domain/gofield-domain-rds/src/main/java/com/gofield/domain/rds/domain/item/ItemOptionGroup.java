@@ -2,6 +2,7 @@ package com.gofield.domain.rds.domain.item;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
@@ -33,4 +34,25 @@ public class ItemOptionGroup extends BaseTimeEntity {
 
     @Column
     private Boolean isEssential;
+
+    @Builder
+    private ItemOptionGroup(Item item, EItemOptionTypeFlag optionType, String groupTitle, String optionGroup, String priceGroup, Boolean isEssential){
+        this.item = item;
+        this.optionType = optionType;
+        this.groupTitle = groupTitle;
+        this.optionGroup = optionGroup;
+        this.priceGroup = priceGroup;
+        this.isEssential = isEssential;
+    }
+
+    public static ItemOptionGroup newInstance(Item item, EItemOptionTypeFlag optionType, String groupTitle, String optionGroup, String priceGroup){
+        return ItemOptionGroup
+                .builder()
+                .item(item)
+                .optionType(optionType)
+                .groupTitle(groupTitle)
+                .optionGroup(optionGroup)
+                .isEssential(true)
+                .build();
+    }
 }
