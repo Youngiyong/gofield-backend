@@ -2,7 +2,6 @@ package com.gofield.admin.dto;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.admin.util.AdminUtil;
-import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.order.*;
@@ -122,7 +121,7 @@ public class OrderCancelItemTempDto {
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null : AdminUtil.strToObject(orderItem.getOrderItemOption().getName(), new TypeReference<List<String>>(){}))
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
                 .qty(qty)

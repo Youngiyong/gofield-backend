@@ -1,16 +1,11 @@
 package com.gofield.api.dto.res;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.gofield.api.util.ApiUtil;
-import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
 import com.gofield.domain.rds.domain.order.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.util.List;
 
 @Getter
 @NoArgsConstructor
@@ -117,7 +112,7 @@ public class OrderCancelItemTempResponse {
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null :orderItem.getOrderItemOption().getName())
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
                 .qty(qty)
@@ -170,7 +165,7 @@ public class OrderCancelItemTempResponse {
                 .itemNumber(orderItem.getItemNumber())
                 .name(orderItem.getName())
                 .optionName(orderItem.getOrderItemOption()==null ? null :orderItem.getOrderItemOption().getName())
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
                 .status(orderItem.getStatus())
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
                 .qty(qty)

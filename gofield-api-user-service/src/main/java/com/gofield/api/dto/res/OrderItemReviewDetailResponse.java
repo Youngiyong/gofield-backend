@@ -1,8 +1,5 @@
 package com.gofield.api.dto.res;
 
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.gofield.api.util.ApiUtil;
-import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.ItemBundleReview;
 import lombok.Builder;
@@ -46,12 +43,12 @@ public class OrderItemReviewDetailResponse {
                 .name(itemBundleReview.getName())
                 .itemNumber(itemBundleReview.getItemNumber())
                 .optionName(itemBundleReview.getOptionName())
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(itemBundleReview.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(itemBundleReview.getThumbnail()))
                 .price(itemBundleReview.getPrice())
                 .qty(itemBundleReview.getQty())
                 .reviewScore(itemBundleReview.getReviewScore())
                 .description(itemBundleReview.getDescription())
-                .images(itemBundleReview.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrlResize(k.getImage())).collect(Collectors.toList()))
+                .images(itemBundleReview.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrl(k.getImage())).collect(Collectors.toList()))
                 .build();
     }
 

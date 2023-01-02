@@ -2,7 +2,6 @@ package com.gofield.api.dto.res;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.util.ApiUtil;
-import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.order.EOrderItemStatusFlag;
@@ -64,7 +63,7 @@ public class OrderItemResponse {
                 .isReview(orderItem.getIsReview())
                 .price(orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice())
                 .qty(orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty())
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(orderItem.getItem().getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
                 .build();
     }
 

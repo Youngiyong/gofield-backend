@@ -70,7 +70,7 @@ public class ItemOrderSheetResponse {
                 .brandName(brandName)
                 .name(name)
                 .optionName(optionName==null ? null : ApiUtil.strToObject(optionName, new TypeReference<List<String>>(){}))
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(thumbnail))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(thumbnail))
                 .itemNumber(itemNumber)
                 .price(price)
                 .qty(qty)

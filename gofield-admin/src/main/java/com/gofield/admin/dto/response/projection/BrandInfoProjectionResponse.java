@@ -3,7 +3,6 @@ package com.gofield.admin.dto.response.projection;
 import com.gofield.common.excel.annotation.ExcelColumn;
 import com.gofield.common.excel.annotation.ExcelColumnStyle;
 import com.gofield.common.excel.style.DefaultExcelCellStyle;
-import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.Brand;
 import lombok.Builder;
@@ -49,7 +48,7 @@ public class BrandInfoProjectionResponse {
 
     public static List<BrandInfoProjectionResponse> of(List<Brand> list){
         return list.stream()
-                .map(p -> BrandInfoProjectionResponse.of(p.getId(), p.getName(), p.getThumbnail()==null ? null : CommonUtils.makeCloudFrontUrlResize(p.getThumbnail()),  p.getIsVisible() ? "활성" : "숨김", p.getCreateDate().toLocalDate().toString()))
+                .map(p -> BrandInfoProjectionResponse.of(p.getId(), p.getName(), p.getThumbnail()==null ? null : CommonUtils.makeCloudFrontUrl(p.getThumbnail()),  p.getIsVisible() ? "활성" : "숨김", p.getCreateDate().toLocalDate().toString()))
                 .collect(Collectors.toList());
     }
 }

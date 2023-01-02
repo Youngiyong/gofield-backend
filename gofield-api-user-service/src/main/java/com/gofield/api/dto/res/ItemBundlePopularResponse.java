@@ -1,6 +1,5 @@
 package com.gofield.api.dto.res;
 
-import com.gofield.api.util.ApiUtil;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.projection.ItemBundlePopularProjection;
 import lombok.Builder;
@@ -39,7 +38,7 @@ public class ItemBundlePopularResponse {
                 .id(projection.getId())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
-                .thumbnail(CommonUtils.makeCloudFrontUrlResize(projection.getThumbnail()))
+                .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
                 .reviewCount(projection.getReviewCount())
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())
