@@ -12,22 +12,22 @@ import java.util.Map;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ItemOptionManagerDto {
+public class ItemOptionManagerEditDto {
     private Boolean isOption;
     private EItemOptionTypeFlag optionType;
     private List<ItemNameValueDto> optionGroupList;
-    private List<Map<String, Object>> optionItemList;
+    private List<ItemOptionItemDto> optionItemList;
 
     @Builder
-    private ItemOptionManagerDto(Boolean isOption, EItemOptionTypeFlag optionType, List<ItemNameValueDto> optionGroupList, List<Map<String, Object>> optionItemList){
+    private ItemOptionManagerEditDto(Boolean isOption, EItemOptionTypeFlag optionType, List<ItemNameValueDto> optionGroupList, List<ItemOptionItemDto> optionItemList){
         this.isOption = isOption;
         this.optionType = optionType;
         this.optionGroupList = optionGroupList;
         this.optionItemList = optionItemList;
     }
 
-    public static ItemOptionManagerDto of(Boolean isOption, EItemOptionTypeFlag optionType, List<ItemNameValueDto> optionGroupList, List<Map<String, Object>> optionItemList){
-        return ItemOptionManagerDto.builder()
+    public static ItemOptionManagerEditDto of(Boolean isOption, EItemOptionTypeFlag optionType, List<ItemNameValueDto> optionGroupList, List<ItemOptionItemDto> optionItemList){
+        return ItemOptionManagerEditDto.builder()
                 .isOption(isOption)
                 .optionType(optionType)
                 .optionGroupList(optionGroupList)

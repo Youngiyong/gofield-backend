@@ -124,8 +124,14 @@ public class ItemDto {
         }
 
         ItemOptionGroupDto itemOptionGroupDto = null;
-        ItemOptionItemDto itemOptionItemDto = null;
-
+        List<ItemNameValueDto> itemNameValueDtoList = null;
+        List<ItemOptionItemDto> itemOptionItemDtoList = null;
+        ItemOptionManagerEditDto itemOptionManagerEditDto = null;
+        if(optionList!=null){
+            itemNameValueDtoList = ItemNameValueDto.ofList(item.getOptionGroups());
+            itemOptionItemDtoList = ItemOptionItemDto.ofList(optionList);
+            itemOptionManagerEditDto = ItemOptionManagerEditDto.of(item.getIsOption(), optionList.get(0).getOptionType(), itemNameValueDtoList, itemOptionItemDtoList);
+        }
 
        return ItemDto.builder()
                .id(item.getId())
@@ -155,6 +161,7 @@ public class ItemDto {
                .status(itemStock.getStatus())
                .createDate(itemStock.getCreateDate().toString())
                .shippingTemplate(shippingTemplateDto)
+               .optionInfo(AdminUtil.toJsonStr(itemOptionManagerEditDto))
                .build();
     }
 }

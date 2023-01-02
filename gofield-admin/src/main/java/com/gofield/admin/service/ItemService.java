@@ -258,6 +258,7 @@ public class ItemService {
         shippingTemplateRepository.save(shippingTemplate);
         itemRepository.save(item);
         itemAggregationRepository.save(itemAggregation);
+
 //        묶음 집계 업데이트
         updateItemBundleAggregation(item.getBundle().getId(), true);
     }
