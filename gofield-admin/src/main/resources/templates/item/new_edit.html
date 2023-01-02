@@ -69,7 +69,7 @@
 
 <div layout:fragment="content">
     <!-- Content Header (Page header) -->
-    <input type="hidden" name="option-manager-init-data" id="option-manager-init-data" value="" />
+    <input type="hidden" name="option-manager-init-data" id="option-manager-init-data" th:field="*{item.optionInfo}" />
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
@@ -165,7 +165,7 @@
                                     <div class="w-full block" id="option-content-box">
                                         <!-- 이 부분은 js 가 알아서 채워줄 것임.. -->
                                     </div>
-                                    <input type="hidden" name="optionInfo" th:field="*{optionInfo}" />
+                                    <input type="hidden" name="optionInfo" value="" />
                                 </div>
                                 <div class="form-group">
                                     <label>AS 가능여부</label>
