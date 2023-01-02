@@ -13,6 +13,7 @@ import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemInfoAdminProjectionResponse;
 import com.gofield.domain.rds.domain.item.projection.ItemInfoProjection;
+import com.gofield.domain.rds.domain.item.projection.ItemOptionProjection;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
 import lombok.RequiredArgsConstructor;
@@ -50,26 +51,7 @@ public class ItemService {
     private final ShippingTemplateRepository shippingTemplateRepository;
     private final S3FileStorageClient s3FileStorageClient;
 
-    public String makeOption(ItemDto itemDto){
-        List<ItemKeyValueDto> result = new ArrayList<>();
-        if(itemDto.getManufacturer()!=null){
-            result.add(ItemKeyValueDto.of("제조사", itemDto.getManufacturer()));
-        }
-        if(itemDto.getOrigin()!=null){
-            result.add(ItemKeyValueDto.of("원산지", itemDto.getOrigin()));
-        }
-        if(itemDto.getLength()!=null){
-            result.add(ItemKeyValueDto.of("길이", itemDto.getLength()));
-        }
-        if(itemDto.getWeight()!=null){
-            result.add(ItemKeyValueDto.of("중량", itemDto.getWeight()));
-        }
-        if(itemDto.getIsAs()!=null){
-            String as = itemDto.getIsAs() ? "가능" : "불가능";
-            result.add(ItemKeyValueDto.of("AS 가능여부", as));
-        }
-        return AdminUtil.toJsonStr(result);
-    }
+
 
     public String makeItemNumber(int itemTempNumber){
         return "G" + itemTempNumber;
@@ -112,7 +94,11 @@ public class ItemService {
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
         Item item = itemRepository.findByItemId(id);
         ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
-        return ItemDto.of(bundleDtoList, item, itemStock);
+        List<ItemOptionProjection> itemOptionList = null;
+        if(item.getIsOption()){
+            itemOptionList = itemOptionRepository.findAllItemOptionByItemId(item.getId());
+        }
+        return ItemDto.of(bundleDtoList, item, itemStock, itemOptionList);
     }
 
     @Transactional(readOnly = true)
@@ -120,7 +106,11 @@ public class ItemService {
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
         Item item = itemRepository.findByItemId(id);
         ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
-        return ItemDto.of(bundleDtoList, item, itemStock);
+        List<ItemOptionProjection> itemOptionList = null;
+        if(item.getIsOption()){
+            itemOptionList = itemOptionRepository.findAllItemOptionByItemId(item.getId());
+        }
+        return ItemDto.of(bundleDtoList, item, itemStock, itemOptionList);
     }
 
     @Transactional
@@ -159,7 +149,7 @@ public class ItemService {
         if(thumbnail==null){
             thumbnail = itemBundle.getThumbnail();
         }
-        String optionList = makeOption(itemDto);
+        String optionList = AdminUtil.makeOption(itemDto);
         ItemDetail itemDetail = ItemDetail.newInstance(
                 itemDto.getGender(),
                 itemDto.getSpec(),
@@ -326,7 +316,7 @@ public class ItemService {
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
         }
-        String optionList = makeOption(itemDto);
+        String optionList = AdminUtil.makeOption(itemDto);
 
         ItemDetail itemDetail = ItemDetail.newInstance(
                 itemDto.getGender(),

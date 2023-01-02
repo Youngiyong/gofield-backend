@@ -50,7 +50,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class OrderService {
-    private final CodeRepository codeRepository;
     private final ItemRepository itemRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final OrderWaitRepository orderWaitRepository;
@@ -216,10 +215,9 @@ public class OrderService {
                     deliveryPrice = itemStock.getCharge();
                 }
             }
-
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
-            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getViewName(), itemStock.getThumbnail(), itemStock.getItemNumber(), price, sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(),itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
+            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), price, sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(), itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
         }
         if(request.getTotalPrice()!=totalPrice){
@@ -267,17 +265,6 @@ public class OrderService {
         orderWaitRepository.save(orderWait);
         return NextUrlResponse.of(response.getCheckout().getUrl());
     }
-
-    public void cancelPayment(String orderNumber)  {
-        Order order = orderRepository.findByOrderNumber(orderNumber);
-        TossPaymentRequest.PaymentCancel request = TossPaymentRequest.PaymentCancel.builder()
-                .cancelAmount(order.getTotalAmount()+order.getTotalDelivery())
-                .cancelReason("취소 사유입니다.")
-                .build();
-
-        TossPaymentCancelResponse response = thirdPartyService.cancelPayment(order.getPaymentKey(), request);
-    }
-
 
     @Transactional
     public void deleteOrderShipping(String orderNumber, String shippingNumber){

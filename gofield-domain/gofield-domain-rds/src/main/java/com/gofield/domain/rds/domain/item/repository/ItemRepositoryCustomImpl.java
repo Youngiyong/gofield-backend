@@ -738,7 +738,6 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.id,
                         item.brand.name,
                         item.name,
-                        itemOption.name,
                         itemOption.viewName,
                         itemStock.sellerId,
                         item.bundle.id,

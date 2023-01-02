@@ -8,12 +8,10 @@ import lombok.ToString;
 @ToString
 @Getter
 public class ItemOrderSheetProjection {
-
     private final Long id;
     private final String brandName;
     private final String name;
     private final String optionName;
-    private final String viewName;
     private final Long sellerId;
     private final Long bundleId;
     private final Long optionId;
@@ -35,12 +33,11 @@ public class ItemOrderSheetProjection {
     private final int feeJejuBesides;
 
     @QueryProjection
-    public ItemOrderSheetProjection(Long id, String brandName, String name, String optionName, String viewName, Long sellerId, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemDeliveryFlag delivery, int deliveryPrice, EItemOptionTypeFlag optionType, int qty, Boolean isOption, EItemStatusFlag status, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides) {
+    public ItemOrderSheetProjection(Long id, String brandName, String name, String optionName, Long sellerId, Long bundleId, Long optionId, String thumbnail, String itemNumber, int price, int optionPrice, EItemDeliveryFlag delivery, int deliveryPrice, EItemOptionTypeFlag optionType, int qty, Boolean isOption, EItemStatusFlag status, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides) {
         this.id = id;
         this.brandName = brandName;
         this.name = name;
         this.optionName = optionName;
-        this.viewName = viewName;
         this.sellerId = sellerId;
         this.bundleId = bundleId;
         this.optionId = optionId;

@@ -1,6 +1,8 @@
 package com.gofield.admin.dto;
 
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
+import com.gofield.domain.rds.domain.item.ItemOption;
+import com.gofield.domain.rds.domain.item.projection.ItemOptionProjection;
 import lombok.*;
 
 import java.util.List;
@@ -38,4 +40,9 @@ public class ItemOptionItemDto {
                 .map(p -> ItemOptionItemDto.of((List<String>) p.get("values"), Integer.parseInt(String.valueOf(p.get("price"))), Integer.parseInt(String.valueOf( p.get("qty"))), EItemStatusFlag.valueOf(String.valueOf(p.get("status")))))
                 .collect(Collectors.toList());
     }
+
+//    public static List<ItemOptionItemDto> of(List<ItemOptionProjection> optionList){
+//        return optionList.stream()
+//                .map(p -> ItemOptionItemDto.of())
+//    }
 }

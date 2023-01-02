@@ -21,7 +21,6 @@ public class CartProjection {
     private final int qty;
     private final Boolean isOrder;
     private final EItemClassificationFlag classification;
-
     private final EItemDeliveryFlag delivery;
     private final EItemSpecFlag spec;
     private final EItemGenderFlag gender;

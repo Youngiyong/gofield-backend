@@ -22,13 +22,13 @@ public class OrderCancelItemResponse {
     private Long itemOptionId;
     private String itemNumber;
     private String name;
-    private String optionName;
+    private List<String> optionName;
     private EOrderCancelItemFlag type;
     private int qty;
     private int price;
 
     @Builder
-    private OrderCancelItemResponse(Long id, Long itemId, Long itemOptionId, String itemNumber, String name, String optionName, EOrderCancelItemFlag type, int qty, int price){
+    private OrderCancelItemResponse(Long id, Long itemId, Long itemOptionId, String itemNumber, String name, List<String> optionName, EOrderCancelItemFlag type, int qty, int price){
         this.id = id;
         this.itemId = itemId;
         this.itemOptionId = itemOptionId;
@@ -49,7 +49,7 @@ public class OrderCancelItemResponse {
                 .itemOptionId(itemOption==null ? null : itemOption.getId())
                 .itemNumber(item!=null ? item.getItemNumber() : itemOption.getItemNumber())
                 .name(orderCancelItem.getName())
-                .optionName(orderCancelItem.getOptionName()==null ? null : orderCancelItem.getOptionName())
+                .optionName(orderCancelItem.getOptionName()==null ? null : ApiUtil.strToObject(orderCancelItem.getOptionName(), new TypeReference<List<String>>(){}))
                 .type(orderCancelItem.getType())
                 .qty(orderCancelItem.getQty())
                 .price(orderCancelItem.getPrice())

@@ -63,7 +63,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                         cart.itemNumber,
                         itemStock.sellerId,
                         seller.name,
-                        itemOption.name,
+                        itemOption.viewName,
                         item.thumbnail,
                         cart.price,
                         item.deliveryPrice,

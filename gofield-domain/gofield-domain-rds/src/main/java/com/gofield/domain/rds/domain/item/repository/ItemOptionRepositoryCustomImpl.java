@@ -24,6 +24,7 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
                         itemOption.item.id.as("itemId"),
                         itemOption.itemNumber,
                         itemOption.name,
+                        itemOption.viewName,
                         itemOption.optionType,
                         itemStock.status,
                         itemOption.price,
