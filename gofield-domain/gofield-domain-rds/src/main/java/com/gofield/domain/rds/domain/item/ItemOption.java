@@ -6,11 +6,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Getter
 @DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "item_option")
@@ -69,4 +71,11 @@ public class ItemOption extends BaseTimeEntity {
                 .build();
     }
 
+    public void update(EItemOptionTypeFlag optionType, String name, String viewName, int price, int optionPrice){
+        this.optionType = optionType;
+        this.name = name;
+        this.viewName = viewName;
+        this.price = price;
+        this.optionPrice = optionPrice;
+    }
 }

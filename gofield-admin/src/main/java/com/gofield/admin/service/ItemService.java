@@ -42,10 +42,9 @@ public class ItemService {
     private final ItemTempRepository itemTempRepository;
     private final ItemBundleRepository itemBundleRepository;
     private final ItemDetailRepository itemDetailRepository;
-
     private final ItemOptionGroupRepository itemOptionGroupRepository;
-
     private final ItemOptionRepository itemOptionRepository;
+    private final ItemImageRepository itemImageRepository;
     private final ItemAggregationRepository itemAggregationRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final ShippingTemplateRepository shippingTemplateRepository;
@@ -90,7 +89,7 @@ public class ItemService {
 //    }
 //
     @Transactional(readOnly = true)
-    public ItemDto getUsedItem(Long id){
+    public ItemEditDto getUsedItem(Long id){
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
         Item item = itemRepository.findByItemId(id);
         ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
@@ -98,11 +97,14 @@ public class ItemService {
         if(item.getIsOption()){
             itemOptionList = itemOptionRepository.findAllItemOptionByItemId(item.getId());
         }
-        return ItemDto.of(bundleDtoList, item, itemStock, itemOptionList);
+
+        ItemDto itemDto = ItemDto.of(bundleDtoList, item, itemStock, itemOptionList);
+        List<ItemImageDto> itemImageDto = ItemImageDto.of(item.getImages());
+        return ItemEditDto.of(itemDto, itemImageDto);
     }
 
     @Transactional(readOnly = true)
-    public ItemDto getNewItem(Long id){
+    public ItemEditDto getNewItem(Long id){
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
         Item item = itemRepository.findByItemId(id);
         ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
@@ -110,7 +112,9 @@ public class ItemService {
         if(item.getIsOption()){
             itemOptionList = itemOptionRepository.findAllItemOptionByItemId(item.getId());
         }
-        return ItemDto.of(bundleDtoList, item, itemStock, itemOptionList);
+        ItemDto itemDto = ItemDto.of(bundleDtoList, item, itemStock, itemOptionList);
+        List<ItemImageDto> itemImageDto = ItemImageDto.of(item.getImages());
+        return ItemEditDto.of(itemDto, itemImageDto);
     }
 
     @Transactional
@@ -153,7 +157,7 @@ public class ItemService {
         if(images!=null && !images.isEmpty()){
             for(MultipartFile file: images){
                 if(!file.getOriginalFilename().equals("")){
-                    item.addImage(ItemImage.newInstance(item, s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE), null));
+                    item.addImage(ItemImage.newInstance(item, s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE), 10));
                 }
             }
         }
@@ -167,7 +171,7 @@ public class ItemService {
         ItemDetail itemDetail = item.getDetail();
         ShippingTemplate shippingTemplate = item.getShippingTemplate();
         String optionList = AdminUtil.makeOption(itemDto);
-        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), itemDto.getDescription(), optionList);
+        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), optionList, itemDto.getDescription());
         Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
         shippingTemplate.update(
                 isCondition,
@@ -194,62 +198,107 @@ public class ItemService {
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
         ItemOptionManagerDto optionManager = null;
 
-        if(itemDto.getOptionInfo()!=null){
-            optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
-            List<ItemOptionItemDto> optionItemList = ItemOptionItemDto.ofEdit(optionManager.getOptionItemList());
-            List<ItemNameValueDto> optionNameValueList = optionManager.getOptionGroupList();
-            List<ItemOptionGroupDto> optionGroupDtoList = null;
+        //기존의 옵션 상품일 경우
+        if(item.getIsOption()){
+            //옵션 없음 선택시
+            if(!isOption){
+                List<ItemOption> itemOptionList = item.getOptions();
+                itemOptionList.stream().forEach(itemOption -> itemOptionRepository.delete(itemOption));
+                ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
+                //임시 판매중 처리
+                itemStock.update(EItemStatusFlag.SALE, EItemStockFlag.COMMON, itemDto.getQty());
+                item.updateOptionFalse();
+            } else {
+                //조합형, 단독형 케이스
+                if(itemDto.getOptionInfo()!=null){
+                    optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
+                    List<ItemOptionItemDto> optionItemList = ItemOptionItemDto.ofEdit(optionManager.getOptionItemList());
+                    List<ItemNameValueDto> optionNameValueList = optionManager.getOptionGroupList();
+                    List<ItemOptionGroupDto> optionGroupDtoList = ItemOptionGroupDto.of(optionManager.getOptionGroupList());
 
-            //groupTitle 생성
-            for(ItemNameValueDto optionGroup: optionNameValueList) {
-                ItemOptionGroupDto optionGroupDto = ItemOptionGroupDto.ofOption(optionGroup);
-                if(optionGroup.getId()==null){
-                    ItemOptionGroup itemOptionGroup = ItemOptionGroup.newInstance(item, optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()), null);
-                    item.addOptionGroup(itemOptionGroup);
-                } else {
-                    ItemOptionGroup itemOptionGroup = itemOptionGroupRepository.findByGroupIdAndItemId(optionGroup.getId(), item.getId());
-                    itemOptionGroup.update(optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()));
-                }
-            }
-
-            for(ItemOptionItemDto optionItem: optionItemList) {
-                //새로추가 되는것들
-                if(optionItem.getItemNumber().equals("")){
-                    List<String> optionNameList = optionItem.getValues().stream().collect(Collectors.toList());
-                    List<String> viewName = new ArrayList<>();
-                    for (int i = 0; i < optionNameList.size(); i++) {
-                        if (i == 0) {
-                            viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                    //옵션 그룹 생성 및 수정
+                    for(ItemNameValueDto optionGroup: optionNameValueList) {
+                        ItemOptionGroupDto optionGroupDto = ItemOptionGroupDto.ofOption(optionGroup);
+                        if(optionGroup.getId()==0){
+                            ItemOptionGroup itemOptionGroup = ItemOptionGroup.newInstance(item, optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()), null);
+                            item.addOptionGroup(itemOptionGroup);
                         } else {
-                            viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                            ItemOptionGroup itemOptionGroup = itemOptionGroupRepository.findByGroupIdAndItemId(optionGroup.getId(), item.getId());
+                            itemOptionGroup.update(optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()));
                         }
                     }
-                    ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice(), optionItem.getPrice());
 
-                    int qty = optionItem.getQty();
-                    if (optionManager.getOptionGroupList().equals(EItemOptionTypeFlag.SIMPLE)) {
-                        //단독형은 999개로 임시로 넣기
-                        qty = 999;
+                    List<Long> optionGroupIdList = optionManager.getOptionGroupDeleteIds();
+
+                    //옵션 그룹 삭제
+                    if(!optionGroupIdList.isEmpty()){
+                        List<ItemOptionGroup> itemOptionGroupList = itemOptionGroupRepository.findAllByItemIdAndInIdList(optionGroupIdList, item.getId());
+                        itemOptionGroupList.stream().forEach(itemOptionGroup -> itemOptionGroupRepository.delete(itemOptionGroup));
                     }
-                    ItemStock itemStock = ItemStock.newInstance(item, optionItem.getStatus(), EItemStockFlag.OPTION, itemOption.getItemNumber(), 1L, qty);
-                    item.addOption(itemOption);
-                    itemTemp.update();
-                    item.addStock(itemStock);
-                } else {
 
+                    //옵션 추가 및 수정
+                    for(ItemOptionItemDto optionItem: optionItemList) {
+                        List<String> optionNameList = optionItem.getValues().stream().collect(Collectors.toList());
+                        List<String> viewName = new ArrayList<>();
+
+                        for (int i = 0; i < optionNameList.size(); i++) {
+                            if (i == 0) {
+                                viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                            } else {
+                                viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                            }
+                        }
+
+                        //새로추가 되는것들
+                        if(optionItem.getItemNumber().equals("")){
+                            ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice(), optionItem.getPrice());
+                            int qty = optionItem.getQty();
+                            if (optionManager.getOptionGroupList().equals(EItemOptionTypeFlag.SIMPLE)) {
+                                //단독형은 999개로 임시로 넣기
+                                qty = 999;
+                            }
+                            ItemStock itemStock = ItemStock.newInstance(item, optionItem.getStatus(), EItemStockFlag.OPTION, itemOption.getItemNumber(), 1L, qty);
+                            item.addOption(itemOption);
+                            itemTemp.update();
+                            item.addStock(itemStock);
+                        } else {
+                            ItemOption itemOption = itemOptionRepository.findByItemIdAndItemNumber(item.getId(), optionItem.getItemNumber());
+                            ItemStock itemStock = itemStockRepository.findByItemNumber(optionItem.getItemNumber());
+                            itemStock.update(optionItem.getStatus(), EItemStockFlag.OPTION, optionItem.getQty());
+                            itemOption.update(optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice()+optionItem.getPrice(), optionItem.getPrice());
+                        }
+                    }
+
+                    List<String> optionIdList = optionManager.getOptionItemListDeleteItemNumbers();
+                    // 상품 옵션 삭제
+                    if(!optionIdList.isEmpty()){
+                        List<ItemOption> itemOptionList = itemOptionRepository.findAllByItemIdAndInItemNumber(item.getId(), optionIdList);
+                        itemOptionList.stream().forEach(itemOption -> itemOptionRepository.delete(itemOption));
+                        List<String> itemNumberList = itemOptionList.stream().map(p->p.getItemNumber()).collect(Collectors.toList());
+                        List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
+                        itemStockList.stream().forEach(itemStock -> itemStockRepository.delete(itemStock));
+                    }
                 }
-
             }
-            item.updateOption();
-        } else {
-            ItemStock itemStock = ItemStock.newInstance(item, itemDto.getStatus(), EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
-            item.addStock(itemStock);
-            itemTemp.update();
-            item.updateOption();
         }
+        String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
+        if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
+            thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
+        }
+        item.updateThumbnail(thumbnail);
+        if(images!=null && !images.isEmpty()){
+            for(MultipartFile file: images){
+                if(!file.getOriginalFilename().equals("")){
+                    item.addImage(ItemImage.newInstance(item, s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE), 10));
+                }
+            }
+        }
+    }
 
-
-
+    @Transactional
+    public void deleteImage(Long itemId, Long imageId){
+        ItemImage itemImage = itemImageRepository.findByIdAndItemId(imageId, itemId);
+        itemImageRepository.delete(itemImage);
     }
 
     @Transactional(readOnly = true)
@@ -381,7 +430,7 @@ public class ItemService {
         itemRepository.save(item);
         itemAggregationRepository.save(itemAggregation);
 
-//        묶음 집계 업데이트
+//      묶음 집계 업데이트
         updateItemBundleAggregation(item.getBundle().getId(), true);
     }
 
@@ -511,41 +560,4 @@ public class ItemService {
         updateItemBundleAggregation(item.getBundle().getId(), true);
     }
 
-//
-//    @Transactional(readOnly = true)
-//    public ItemBundleEditDto getItemBundleImage(Long id){
-//        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllIsActiveOrderBySort());
-//        List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
-//        ItemBundle itemBundle = itemBundleRepository.findByBundleIdFetchJoin(id);
-//        List<ItemBundleImageDto> itemBundleImages = ItemBundleImageDto.of(itemBundle.getImages());
-//        ItemBundleDto itemBundleDto = ItemBundleDto.of(categoryDtoList, brandDtoList, itemBundle);
-//        return ItemBundleEditDto.of(itemBundleDto, itemBundleImages);
-//    }
-//    @Transactional
-//    public void save(MultipartFile image, List<MultipartFile> images, ItemBundleDto itemBundleDto){
-//        Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
-//        Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
-//        String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
-//        ItemBundle itemBundle = ItemBundle.newInstance(itemBundleDto.getName(), category, brand, true, itemBundleDto.getIsRecommend(), thumbnailUrl);
-//        if(images!=null && !images.isEmpty()){
-//            for(MultipartFile file: images){
-//                itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
-//            }
-//        }
-//        ItemBundleAggregation itemBundleAggregation = ItemBundleAggregation.newInstance(itemBundle);
-//        itemBundleRepository.save(itemBundle);
-//        itemBundleAggregationRepository.save(itemBundleAggregation);
-//    }
-//
-//    @Transactional
-//    public void delete(Long id){
-//        ItemBundle itemBundle = itemBundleRepository.findByBundleId(id);
-//        itemBundle.updateInActive();
-//    }
-//
-//    @Transactional
-//    public void deleteImage(Long id, Long imageId){
-//        ItemBundleImage itemBundleImage = itemBundleImageRepository.findItemBundleImageById(imageId);
-//        itemBundleImageRepository.delete(itemBundleImage);
-//    }
 }

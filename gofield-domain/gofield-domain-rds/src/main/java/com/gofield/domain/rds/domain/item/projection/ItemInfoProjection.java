@@ -18,10 +18,12 @@ public class ItemInfoProjection {
     private final String categoryName;
     private final EItemStatusFlag status;
     private final String thumbnail;
+
+    private final Boolean isOption;
     private final LocalDateTime createDate;
 
     @QueryProjection
-    public ItemInfoProjection(Long id, String name, EItemClassificationFlag classification, int price, String categoryName, EItemStatusFlag status, String thumbnail, LocalDateTime createDate) {
+    public ItemInfoProjection(Long id, String name, EItemClassificationFlag classification, int price, String categoryName, EItemStatusFlag status, String thumbnail, Boolean isOption, LocalDateTime createDate) {
         this.id = id;
         this.name = name;
         this.classification = classification;
@@ -29,6 +31,7 @@ public class ItemInfoProjection {
         this.categoryName = categoryName;
         this.status = status;
         this.thumbnail = thumbnail;
+        this.isOption = isOption;
         this.createDate = createDate;
     }
 }

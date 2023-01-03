@@ -1,6 +1,7 @@
 package com.gofield.admin.controller;
 
 import com.gofield.admin.dto.ItemDto;
+import com.gofield.admin.dto.ItemEditDto;
 import com.gofield.admin.dto.ItemListDto;
 import com.gofield.admin.service.ItemService;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
@@ -49,18 +50,18 @@ public class ItemController {
     @GetMapping("/item/used/edit/{id}")
     public String getItemUsedEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
         session.setAttribute("username", principal.getName());
-        ItemDto itemDto = itemService.getUsedItem(id);
-        model.addAttribute("item", itemDto);
-//        model.addAttribute("images", itemBundleEditDto.getImages());
+        ItemEditDto itemDto = itemService.getUsedItem(id);
+        model.addAttribute("item", itemDto.getItemDto());
+        model.addAttribute("images", itemDto.getImages());
         return "item/used_edit";
     }
 
     @GetMapping("/item/new/edit/{id}")
     public String getItemNewEditPage(@PathVariable Long id, HttpSession session, Model model, Principal principal){
         session.setAttribute("username", principal.getName());
-        ItemDto itemDto = itemService.getNewItem(id);
-        model.addAttribute("item", itemDto);
-//        model.addAttribute("images", itemBundleEditDto.getImages());
+        ItemEditDto itemDto = itemService.getNewItem(id);
+        model.addAttribute("item", itemDto.getItemDto());
+        model.addAttribute("images", itemDto.getImages());
         return "item/new_edit";
     }
 
@@ -103,6 +104,20 @@ public class ItemController {
     public String addItemUsed(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
         itemService.saveUsedItem(image, images, itemDto);
         return "redirect:/item";
+    }
+
+    @GetMapping("/item/{id}/used/image/delete/{imageId}")
+    public String deleteItemUsedImage(@PathVariable Long id,
+                                   @PathVariable Long imageId){
+        itemService.deleteImage(id, imageId);
+        return "redirect:/item/used/edit/"+id;
+    }
+
+    @GetMapping("/item/{id}/new/image/delete/{imageId}")
+    public String deleteItemNewImage(@PathVariable Long id,
+                                     @PathVariable Long imageId){
+        itemService.deleteImage(id, imageId);
+        return "redirect:/item/new/edit/"+id;
     }
 
 }

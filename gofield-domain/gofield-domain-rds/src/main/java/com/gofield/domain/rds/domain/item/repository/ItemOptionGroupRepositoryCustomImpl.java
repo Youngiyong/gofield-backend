@@ -29,4 +29,12 @@ public class ItemOptionGroupRepositoryCustomImpl implements ItemOptionGroupRepos
                 .fetchOne();
     }
 
+    @Override
+    public List<ItemOptionGroup> findAllByItemIdAndInIdList(List<Long> idList, Long itemId) {
+        return jpaQueryFactory
+                .selectFrom(itemOptionGroup)
+                .where(itemOptionGroup.id.in(idList), itemOptionGroup.item.id.eq(itemId))
+                .fetch();
+    }
+
 }

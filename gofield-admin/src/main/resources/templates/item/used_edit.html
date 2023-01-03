@@ -284,17 +284,34 @@
                                     <input class="form-control" id="returnAddressExtra" placeholder="상세주소"
                                            type="text" th:field="*{shippingTemplate.returnAddressExtra}">
                                 </div>
+                                <input th:field="*{thumbnail}" type="hidden"/>
+                                <div class="form-group">
+                                    <label>대표이미지</label>
+                                    <br>
+                                    <img id="imgId" th:src="${item.thumbnail}" alt="대표이미지" th:if="${item.thumbnail != null}" />
+                                </div>
+                                <div class="form-group">
+                                    <label>상품 이미지</label>
+                                    <br>
+                                    <div th:each="data : ${images}">
+                                        <img th:src="${data.image}" alt="묶음상품 이미지" th:if="${data.image != null}" />
+                                        <a class="btn btn-danger btn-sm" th:href="${'/item/'+ item.id +'/used/image/delete/'+data.id}">
+                                            <i class="fas fa-trash">
+                                            </i>
+                                            삭제
+                                        </a>
+                                    </div>
+                                </div>
                                 <div class="form-group">
                                     <label>대표이미지</label>
                                     <br>
                                     <input type="file" name="image" />
                                 </div>
                                 <div class="form-group">
-                                    <label>이미지</label>
+                                    <label>상품 이미지 업로드(다중 선택 가능)</label>
                                     <br>
                                     <input type="file" name="images" multiple/>
                                 </div>
-
                             </div>
                             <!-- /.card-body -->
 

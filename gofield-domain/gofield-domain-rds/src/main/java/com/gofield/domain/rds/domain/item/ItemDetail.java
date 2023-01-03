@@ -55,6 +55,7 @@ public class ItemDetail extends BaseTimeEntity {
     public void update(EItemGenderFlag gender, EItemSpecFlag spec, String itemOption, String description){
         this.gender = gender;
         this.spec = spec;
+        this.itemOption = itemOption;
         this.description = description;
     }
 

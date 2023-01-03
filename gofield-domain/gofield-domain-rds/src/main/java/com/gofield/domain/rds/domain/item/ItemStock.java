@@ -7,11 +7,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
 @Getter
 @DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(	name = "item_stock")
@@ -36,21 +38,6 @@ public class ItemStock extends BaseTimeEntity {
     @Column
     private int qty;
 
-    public void updateOrderApprove(int qty){
-        this.qty -= qty;
-        if(this.qty<0 || this.qty==0){
-            this.qty = 0;
-            this.status = EItemStatusFlag.SOLD_OUT;
-        }
-    }
-
-    public void updateOrderCancel(int qty){
-        this.qty += qty;
-    }
-
-    public boolean isSale(){
-        return this.status.equals(EItemStatusFlag.SALE) ? true : false;
-    }
 
     @Builder
     private ItemStock(Item item, EItemStatusFlag status, EItemStockFlag type, String itemNumber, Long sellerId, int qty){
@@ -73,7 +60,29 @@ public class ItemStock extends BaseTimeEntity {
                 .build();
     }
 
+    public void update(EItemStatusFlag status, EItemStockFlag type, int qty){
+        this.status = status;
+        this.type = type;
+        this.qty  =qty;
+    }
+
     public void updateOrderCancel(){
         this.qty += 1;
+    }
+
+    public void updateOrderApprove(int qty){
+        this.qty -= qty;
+        if(this.qty<0 || this.qty==0){
+            this.qty = 0;
+            this.status = EItemStatusFlag.SOLD_OUT;
+        }
+    }
+
+    public void updateOrderCancel(int qty){
+        this.qty += qty;
+    }
+
+    public boolean isSale(){
+        return this.status.equals(EItemStatusFlag.SALE) ? true : false;
     }
 }

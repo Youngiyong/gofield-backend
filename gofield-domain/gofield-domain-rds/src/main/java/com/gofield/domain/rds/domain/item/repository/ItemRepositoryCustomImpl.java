@@ -869,6 +869,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.category.name,
                         itemStock.status,
                         item.thumbnail,
+                        item.isOption,
                         item.createDate))
                 .from(item)
                 .innerJoin(itemStock)
@@ -890,6 +891,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.category.name,
                         itemStock.status,
                         item.thumbnail,
+                        item.isOption,
                         item.createDate))
                 .from(item)
                 .innerJoin(itemStock)

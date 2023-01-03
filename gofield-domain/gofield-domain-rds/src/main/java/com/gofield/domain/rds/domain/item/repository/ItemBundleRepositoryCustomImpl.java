@@ -220,7 +220,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.tags))
                     .from(item)
                     .innerJoin(itemStock)
-                    .on(item.itemNumber.eq(itemStock.itemNumber))
+                    .on(item.id.eq(itemStock.item.id))
                     .innerJoin(category)
                     .on(item.category.id.eq(category.id))
                     .innerJoin(itemDetail)
@@ -231,6 +231,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                     .where(item.bundle.id.eq(bundleId), eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
                     .orderBy(itemStock.createDate.desc())
+                    .groupBy(itemStock.item.id)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -275,7 +276,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.tags))
                     .from(item)
                     .innerJoin(itemStock)
-                    .on(item.itemNumber.eq(itemStock.itemNumber))
+                    .on(item.id.eq(itemStock.item.id))
                     .innerJoin(category)
                     .on(item.category.id.eq(category.id))
                     .innerJoin(itemDetail)
@@ -284,6 +285,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .on(item.brand.id.eq(brand.id))
                     .where(item.bundle.id.eq(bundleId), eqClassification(classification), itemStock.status.eq(EItemStatusFlag.SALE))
                     .orderBy(itemStock.createDate.desc())
+                    .groupBy(itemStock.item.id)
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();

@@ -1,6 +1,7 @@
 package com.gofield.domain.rds.domain.item.repository;
 
 import com.gofield.domain.rds.domain.item.ItemOption;
+import com.gofield.domain.rds.domain.item.ItemOptionGroup;
 import com.gofield.domain.rds.domain.item.projection.ItemOptionProjection;
 import com.gofield.domain.rds.domain.item.projection.QItemOptionProjection;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -46,6 +47,22 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
                 .selectFrom(itemOption)
                 .where(itemOption.itemNumber.eq(itemNumber))
                 .fetchFirst();
+    }
+
+    @Override
+    public ItemOption findByItemIdAndItemNumber(Long itemId, String itemNumber) {
+        return jpaQueryFactory
+                .selectFrom(itemOption)
+                .where(itemOption.item.id.eq(itemId), itemOption.itemNumber.eq(itemNumber))
+                .fetchOne();
+    }
+
+    @Override
+    public List<ItemOption> findAllByItemIdAndInItemNumber(Long itemId, List<String> itemNumber) {
+        return jpaQueryFactory
+                .selectFrom(itemOption)
+                .where(itemOption.item.id.eq(itemId), itemOption.itemNumber.in(itemNumber))
+                .fetch();
     }
 
     @Override

@@ -28,21 +28,13 @@ public class ShippingTemplateDto {
     private int feeJeju;
     private int feeJejuBesides;
     private String shippingComment;
-
     private String zipCode;
-
     private String address;
-
     private String addressExtra;
-
     private String returnZipCode;
-
     private String receiver;
-
     private String receiverTel;
-
     private String returnAddress;
-
     private String returnAddressExtra;
 
     @Builder

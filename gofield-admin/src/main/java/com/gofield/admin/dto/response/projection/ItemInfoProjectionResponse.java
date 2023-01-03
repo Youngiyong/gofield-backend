@@ -52,7 +52,7 @@ public class ItemInfoProjectionResponse {
                 .classification(itemInfoProjection.getClassification().getDescription())
                 .price(itemInfoProjection.getPrice())
                 .categoryName(itemInfoProjection.getCategoryName())
-                .status(itemInfoProjection.getStatus().getDescription())
+                .status(itemInfoProjection.getIsOption() ? "옵션 상품(상세확인)" : itemInfoProjection.getStatus().getDescription())
                 .thumbnail(CommonUtils.makeCloudFrontAdminUrl(itemInfoProjection.getThumbnail()))
                 .createDate(itemInfoProjection.getCreateDate().toLocalDate().toString())
                 .build();
