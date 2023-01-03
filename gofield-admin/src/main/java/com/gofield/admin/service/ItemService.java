@@ -146,8 +146,6 @@ public class ItemService {
         Boolean isOption = itemDto.getOptionInfo()==null ? false : true;
         item.update(itemDto.getName(), item.getPrice(), item.getDeliveryPrice(), item.getDelivery(), item.getPickup(), tags, isOption);
 
-
-
         String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
@@ -169,11 +167,8 @@ public class ItemService {
         ItemDetail itemDetail = item.getDetail();
         ShippingTemplate shippingTemplate = item.getShippingTemplate();
         String optionList = AdminUtil.makeOption(itemDto);
-
         itemDetail.update(itemDto.getGender(), itemDto.getSpec(), itemDto.getDescription(), optionList);
-
         Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
-
         shippingTemplate.update(
                 isCondition,
                 itemDto.getShippingTemplate().getCondition(),

@@ -64,7 +64,7 @@ public class ItemOptionItemDto {
     public static List<ItemOptionItemDto> ofList(List<ItemOptionProjection> optionList){
         return optionList.stream()
                 .map(p -> ItemOptionItemDto.of(p.getOptionName()==null ? null : AdminUtil.strToObject(p.getName(), new TypeReference<List<String>>(){}),
-                        p.getItemNumber(), p.getPrice(), p.getQty(), p.getStatus()))
+                        p.getItemNumber(), p.getOptionPrice(), p.getQty(), p.getStatus()))
                 .collect(Collectors.toList());
     }
 }
