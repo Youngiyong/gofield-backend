@@ -161,13 +161,18 @@ public class ItemService {
                 }
             }
         }
-
         item.updateThumbnail(thumbnail);
+
+        updateItemBundleAggregation(item.getBundle().getId(), true);
     }
 
     @Transactional
     public void updateNewItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
+        Boolean aggregationUpdate = false;
         Item item = itemRepository.findByItemId(itemDto.getId());
+        if(item.getPrice()!=itemDto.getPrice()){
+            aggregationUpdate = true;
+        }
         ItemDetail itemDetail = item.getDetail();
         ShippingTemplate shippingTemplate = item.getShippingTemplate();
         String optionList = AdminUtil.makeOption(itemDto);
@@ -204,9 +209,9 @@ public class ItemService {
             if(!isOption){
                 List<ItemOption> itemOptionList = item.getOptions();
                 itemOptionList.stream().forEach(itemOption -> itemOptionRepository.delete(itemOption));
-                ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
-                //임시 판매중 처리
-                itemStock.update(EItemStatusFlag.SALE, EItemStockFlag.COMMON, itemDto.getQty());
+                List<String> itemNumberList = itemOptionList.stream().map(p->p.getItemNumber()).collect(Collectors.toList());
+                List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
+                itemStockList.stream().forEach(itemStock -> itemStockRepository.delete(itemStock));
                 item.updateOptionFalse();
             } else {
                 //조합형, 단독형 케이스
@@ -264,6 +269,9 @@ public class ItemService {
                         } else {
                             ItemOption itemOption = itemOptionRepository.findByItemIdAndItemNumber(item.getId(), optionItem.getItemNumber());
                             ItemStock itemStock = itemStockRepository.findByItemNumber(optionItem.getItemNumber());
+                            if(optionItem.getStatus().equals(EItemStatusFlag.SOLD_OUT)){
+                                aggregationUpdate = true;
+                            }
                             itemStock.update(optionItem.getStatus(), EItemStockFlag.OPTION, optionItem.getQty());
                             itemOption.update(optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice()+optionItem.getPrice(), optionItem.getPrice());
                         }
@@ -292,6 +300,9 @@ public class ItemService {
                     item.addImage(ItemImage.newInstance(item, s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE), 10));
                 }
             }
+        }
+        if(aggregationUpdate){
+            updateItemBundleAggregation(item.getBundle().getId(), true);
         }
     }
 
