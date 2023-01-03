@@ -247,11 +247,7 @@ public class ItemService {
                         List<String> viewName = new ArrayList<>();
 
                         for (int i = 0; i < optionNameList.size(); i++) {
-                            if (i == 0) {
-                                viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)).trim());
-                            } else {
-                                viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)).trim());
-                            }
+                            viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)));
                         }
 
                         //새로추가 되는것들
