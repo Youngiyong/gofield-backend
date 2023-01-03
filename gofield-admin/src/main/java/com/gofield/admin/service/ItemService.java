@@ -248,9 +248,9 @@ public class ItemService {
 
                         for (int i = 0; i < optionNameList.size(); i++) {
                             if (i == 0) {
-                                viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                                viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)).trim());
                             } else {
-                                viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                                viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)).trim());
                             }
                         }
 
@@ -410,11 +410,7 @@ public class ItemService {
                 List<String> optionNameList = optionItem.getValues().stream().collect(Collectors.toList());
                 List<String> viewName = new ArrayList<>();
                 for (int i = 0; i < optionNameList.size(); i++) {
-                    if (i == 0) {
-                        viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
-                    } else {
-                        viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
-                    }
+                    viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
                 }
                 ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice(), optionItem.getPrice());
 

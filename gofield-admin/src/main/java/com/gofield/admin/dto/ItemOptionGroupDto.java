@@ -51,8 +51,8 @@ public class ItemOptionGroupDto {
     public static List<ItemOptionGroupDto> of(List<ItemNameValueDto> optionGroupList){
         List<ItemOptionGroupDto> result = new ArrayList<>();
         for(ItemNameValueDto option :optionGroupList){
-            String groupTitle = option.getName();
-            String optionGroupStr = option.getValue();
+            String groupTitle = option.getName().trim();
+            String optionGroupStr = option.getValue().trim();
             String[] optionStrList = optionGroupStr.split(",");
             List<ItemNamePriceDto> optionItem = new ArrayList<>();
             for(String str: optionStrList){

@@ -190,8 +190,9 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .select(item.classification)
                 .from(item)
                 .innerJoin(itemStock)
-                .on(item.itemNumber.eq(itemStock.itemNumber))
+                .on(item.id.eq(itemStock.item.id))
                 .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
+                .groupBy(item.id)
                 .fetch();
 
         Long newItemCount = allCount.stream().filter(p -> p.equals(EItemClassificationFlag.NEW)).collect(Collectors.counting());
