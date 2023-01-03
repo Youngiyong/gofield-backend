@@ -4,7 +4,11 @@ class OptionManager {
 
     constructor() {
         // 예시 데이터 구조
-        this.data = {
+        this.data = this.getEmptyData();
+    }
+
+    getEmptyData() {
+        return {
             isOption: false,
             optionType: 'COMBINATION',
             optionGroupList: [
@@ -53,6 +57,8 @@ class OptionManager {
             this.data = { ...json };
             this.render();
         } catch (e) {
+            this.initData = this.getEmptyData();
+            this.data = this.getEmptyData();
             console.error('e', e);
             this.render();
         }
@@ -81,25 +87,30 @@ class OptionManager {
     }
 
     checkSubmit(form) {
-        if (this.isOptionGroupChanged()) {
-            if (!this.isOptionListChanged()) {
-                alert('옵션입력 부분의 변경이 감지되었습니다. 옵션 목록으로 적용 버튼 클릭 후 옵션가, 재고수량, 판매상태 정보 입력 후 다시 시도해주세요.');
-                return false;
+        try {
+            if (this.isOptionGroupChanged()) {
+                if (!this.isOptionListChanged()) {
+                    alert('옵션입력 부분의 변경이 감지되었습니다. 옵션 목록으로 적용 버튼 클릭 후 옵션가, 재고수량, 판매상태 정보 입력 후 다시 시도해주세요.');
+                    return false;
+                }
             }
-        }
 
-        if (this.data.isOption) {
-            if (this.data.optionGroupList.length === 0 || this.data.optionItemList.length === 0) {
-                alert('옵션선택을 "설정함"으로 선택했을 경우 옵션입력 부분과 옵션 목록 부분이 입력되어 있어야합니다.');
-                return false;
+            if (this.data.isOption) {
+                if (this.data.optionGroupList.length === 0 || this.data.optionItemList.length === 0) {
+                    alert('옵션선택을 "설정함"으로 선택했을 경우 옵션입력 부분과 옵션 목록 부분이 입력되어 있어야합니다.');
+                    return false;
+                }
             }
-        }
 
-        const target = document.querySelector("input[name=optionInfo]");
-        const value = JSON.stringify(optionManager.getData());
-        target.value = value;
-        // target.setAttribute("value", value);
-        return true;
+            const target = document.querySelector("input[name=optionInfo]");
+            const value = JSON.stringify(optionManager.getData());
+            target.value = value;
+            target.setAttribute("value", value);
+            return true;
+        } catch (e) {
+            console.error('error =>', e);
+            return false;
+        }
     }
 
     changeOptionFlag(target) {

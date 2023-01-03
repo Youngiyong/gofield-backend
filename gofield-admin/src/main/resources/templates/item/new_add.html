@@ -55,27 +55,6 @@
         window.addEventListener('load', function() {
             window.optionManager.tryInit();
         });
-        function checkSubmit(form) {
-            if (optionManager.isOptionGroupChanged()) {
-                if (!optionManager.isOptionListChanged()) {
-                    alert('옵션입력 부분의 변경이 감지되었습니다. 옵션 목록으로 적용 버튼 클릭 후 옵션가, 재고수량, 판매상태 정보 입력 후 다시 시도해주세요.');
-                    return false;
-                }
-            }
-
-            if (optionManager.data.isOption) {
-                if (optionManager.data.optionGroupList.length === 0 || this.data.optionItemList.length === 0) {
-                    alert('옵션선택을 "설정함"으로 선택했을 경우 옵션입력 부분과 옵션 목록 부분이 입력되어 있어야합니다.');
-                    return false;
-                }
-            }
-
-            const target = document.querySelector("input[name=optionInfo]");
-            const value = JSON.stringify(optionManager.getData());
-            target.value = value;
-            // target.setAttribute("value", value);
-            return true;
-        }
     </script>
     <style>
         label {
@@ -117,7 +96,7 @@
                         </div>
                         <!-- /.card-header -->
                                          <!-- form start -->
-                        <form role="form" method="post" th:action="@{/item/add/new}" th:object="${item}" enctype="multipart/form-data" onsubmit="return checkSubmit(this)">
+                        <form role="form" method="post" th:action="@{/item/add/new}" th:object="${item}" enctype="multipart/form-data" onsubmit="return optionManager.checkSubmit(this)">
                             <input th:field="*{id}" type="hidden"/>
                             <div class="card-body">
                                 <div class="form-group">
