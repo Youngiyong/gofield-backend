@@ -1,78 +1,42 @@
 class OptionManager {
     data;
+    initData;
 
     constructor() {
         // 예시 데이터 구조
         this.data = {
-            isOption: 'false',
+            isOption: false,
             optionType: 'COMBINATION',
             optionGroupList: [
-                {
-                    name: '색상',
-                    value: '빨강,파랑,블랙',
-                },
-                {
-                    name: '사이즈',
-                    value: 's,m,l',
-                },
+                // {
+                //     id: 1,
+                //     name: '색상',
+                //     value: '빨강,파랑,블랙',
+                // },
+                // ...
             ],
+            optionGroupDeleteIds: [],
+            optionItemListDeleteItemNumbers: [],
             optionItemList: [
-                {
-                    values: ['빨강', 's'],
-                    price: 50000,
-                    qty: 30,
-                    status: 'SALE',
-                },
-                {
-                    values: ['빨강', 'm'],
-                    price: 50001,
-                    qty: 31,
-                    status: 'SALE',
-                },
-                {
-                    values: ['빨강', 'l'],
-                    price: 50002,
-                    qty: 32,
-                    status: 'SALE',
-                },
-                {
-                    values: ['파랑', 's'],
-                    price: 50000,
-                    qty: 40,
-                    status: 'SALE',
-                },
-                {
-                    values: ['파랑', 'm'],
-                    price: 50001,
-                    qty: 41,
-                    status: 'SALE',
-                },
-                {
-                    values: ['파랑', 'l'],
-                    price: 50002,
-                    qty: 42,
-                    status: 'SALE',
-                },
-                {
-                    values: ['블랙', 's'],
-                    price: 50000,
-                    qty: 43,
-                    status: 'SALE',
-                },
-                {
-                    values: ['블랙', 'm'],
-                    price: 50001,
-                    qty: 44,
-                    status: 'SALE',
-                },
-                {
-                    values: ['블랙', 'l'],
-                    price: 50002,
-                    qty: 50,
-                    status: 'SALE',
-                },
+                // {
+                //     itemNumber: '',
+                //     values: ['빨강', 's'],
+                //     price: 50000,
+                //     qty: 30,
+                //     status: 'SALE',
+                // },
+                // ...
             ],
         };
+    }
+
+    isSameArray(values1, values2, isLengthMatched) {
+        if (isLengthMatched === true) {
+            if (values1.length !== values2.length) {
+                return false;
+            }
+        }
+        return values1.every(values1Item => values2.includes(values1Item));
     }
 
     tryInit() {
@@ -84,12 +48,57 @@ class OptionManager {
 
         try {
             const json = JSON.parse(jsonString);
-            this.data = json;
+            this.initData = { ...json };
+            this.data = { ...json };
             this.render();
         } catch (e) {
             console.error('e', e);
             this.render();
         }
+    }
+
+    getDeletedOptionGroupIds() {
+        const currentDisplayedOptionGroupIds = this.data.optionGroupList.map(y => y.id);
+        console.log('@currentDisplayedOptionGroupIds', currentDisplayedOptionGroupIds);
+
+        return this.initData.optionGroupList.filter(x => {
+            console.log(`currentDisplayedOptionGroupIds.includes(${x.id})`);
+            return !currentDisplayedOptionGroupIds.includes(x.id);
+        }).map(x => x.id);
+    }
+
+    getDeletedOptionItemListItemNumbers() {
+        return this.initData.optionItemList.filter(x => !this.data.optionItemList.map(y => y.itemNumber).includes(x.itemNumber)).map(x => x.itemNumber);
+    }
+
+    isOptionGroupChanged() {
+        return JSON.stringify(this.initData.optionGroupList) !== JSON.stringify(this.data.optionGroupList);
+    }
+
+    isOptionListChanged() {
+        return JSON.stringify(this.initData.optionItemList) !== JSON.stringify(this.data.optionItemList);
+    }
+
+    checkSubmit(form) {
+        if (this.isOptionGroupChanged()) {
+            if (!this.isOptionListChanged()) {
+                alert('옵션입력 부분의 변경이 감지되었습니다. 옵션 목록으로 적용 버튼 클릭 후 옵션가, 재고수량, 판매상태 정보 입력 후 다시 시도해주세요.');
+                return false;
+            }
+        }
+
+        if (this.data.isOption) {
+            if (this.data.optionGroupList.length === 0 || this.data.optionItemList.length === 0) {
+                alert('옵션선택을 "설정함"으로 선택했을 경우 옵션입력 부분과 옵션 목록 부분이 입력되어 있어야합니다.');
+                return false;
+            }
+        }
+
+        const target = document.querySelector("input[name=optionInfo]");
+        const value = JSON.stringify(optionManager.getData());
+        target.value = value;
+        target.setAttribute("value", value);
+        return true;
     }
 
     changeOptionFlag(target) {
@@ -98,8 +107,8 @@ class OptionManager {
         if (typeof value !== 'string') {
             return;
         }
-        this.data.isOption = value;
-        if (this.data.isOption === "true") {
+        this.data.isOption = value === "true";
+        if (this.data.isOption) {
             document.getElementById('option-detail-control-form-area').style.display = 'block';
         } else {
             document.getElementById('option-detail-control-form-area').style.display = 'none';
@@ -137,10 +146,12 @@ class OptionManager {
             }
         }
 
-        this.data.optionGroupList.push({
+        const newArray = [ ...this.data.optionGroupList ].concat({
+            id: 0,
             name: '',
             value: '',
         });
+        this.data.optionGroupList = newArray;
         this.render();
     }
 
@@ -153,21 +164,60 @@ class OptionManager {
     }
 
     applyOptionList() {
+        if (this.data.optionGroupList.find(x => x.name.trim() === '') !== undefined) {
+            alert('옵션 그룹명이 공백인 것이 존재합니다. 옵션 그룹명을 확인해주세요.');
+            return;
+        }
+
+        if (this.data.optionGroupList.find(x => x.value.trim() === '') !== undefined) {
+            alert('옵션 그룹 값이 공백인 것이 존재합니다. 옵션 그룹 값을 확인해주세요.');
+            return;
+        }
+
         if (!confirm('옵션 목록으로 적용하면 옵션 목록이 전부 초기화 됩니다. 계속 진행하시겠습니까?')) {
             return;
         }
         const all_list_option = d3.cross(...this.data.optionGroupList.map(item => item.value.split(',')));
         // console.log('all_list_option', all_list_option);
         this.data.optionItemList = all_list_option.map((item) => {
+            // const targetItem = this.getInitDataMatchedOptionItem(item);
             return {
+                itemNumber: this.getItemNumber(item),
                 values: item,
+                // price: targetItem !== undefined ? targetItem.price : 0,
                 price: 0,
+                // qty: targetItem !== undefined ? targetItem.qty : 0,
                 qty: 0,
-                status: 'SALE',
+                // status: targetItem !== undefined ? targetItem.status : 'SALE',
+                status: 'SALE'
             };
         });
         // this.data.option_list =
         this.render();
+    }
+
+    getInitDataMatchedOptionItem(optionNames, isLengthMatched) {
+        const target = this.initData.optionItemList.find(x => {
+            return this.isSameArray(x.values, optionNames, isLengthMatched);
+        });
+        return target;
+    }
+
+    getItemNumber(values) {
+        if (!Array.isArray((values))) {
+            return '';
+        }
+
+        if (values.length === 0) {
+            return '';
+        }
+
+        const target = this.getInitDataMatchedOptionItem(values, true);
+        if (target === undefined) {
+            return '';
+        }
+
+        return target.itemNumber;
     }
 
     changeOptionListRowPrice(index, target) {
@@ -264,16 +314,16 @@ class OptionManager {
                     </div>
                     <div class="flex flex-wrap items-start content-start" style="width: calc(100% - 140px);">
                         <div class="inline-flex items-center items-center mr-2">
-                            <input ${data.isOption === "true" ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="true" id="option_flag_on" onchange="optionManager.changeOptionFlag(this)" />
+                            <input ${data.isOption === true ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="true" id="option_flag_on" onchange="optionManager.changeOptionFlag(this)" />
                             <label class="inline-flex font-normal" for="option_flag_on">&nbsp;설정함</label>
                         </div>
                         <div class="inline-flex items-center items-center">
-                            <input ${data.isOption === "false" ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="false" id="option_flag_off" onchange="optionManager.changeOptionFlag(this)" />
+                            <input ${data.isOption === false ? "checked " : ""}class="inline-flex" type="radio" name="option_flag" value="false" id="option_flag_off" onchange="optionManager.changeOptionFlag(this)" />
                             <label class="inline-flex font-normal" for="option_flag_off">&nbsp;설정안함</label>
                         </div>
                     </div>
                 </div>
-                <div class="w-full" id="option-detail-control-form-area" style="display: ${this.data.isOption === 'true' ? 'block' : 'none'}">
+                <div class="w-full" id="option-detail-control-form-area" style="display: ${this.data.isOption ? 'block' : 'none'}">
                     <div class="w-full h-px bg-slate-200 my-2"></div>
                     <div data-name="form-row" class="w-full flex flex-wrap">
                         <div class="flex flex-wrap items-start content-start" style="width: 140px;">
@@ -281,12 +331,12 @@ class OptionManager {
                         </div>
                         <div class="flex flex-wrap items-start content-start" style="width: calc(100% - 140px);">
                             <div class="inline-flex items-center items-center mr-2">
-                                <input ${data.optionType === "SIMPLE" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="SIMPLE" id="option_compose_type_single" onchange="optionManager.changeOptionComposeType(this)" />
-                                <label class="inline-flex font-normal" for="option_compose_type_single">&nbsp;단독형</label>
+                                <input ${data.optionType === "SIMPLE" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="SIMPLE" id="option_compose_type_SIMPLE" onchange="optionManager.changeOptionComposeType(this)" />
+                                <label class="inline-flex font-normal" for="option_compose_type_SIMPLE">&nbsp;단독형</label>
                             </div>
                             <div class="inline-flex items-center items-center">
-                                <input ${data.optionType === "COMBINATION" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="COMBINATION" id="option_compose_type_multiple" onchange="optionManager.changeOptionComposeType(this)" />
-                                <label class="inline-flex font-normal" for="option_compose_type_multiple">&nbsp;조합형</label>
+                                <input ${data.optionType === "COMBINATION" ? "checked " : ""}class="inline-flex" type="radio" name="option_compose_type" value="COMBINATION" id="option_compose_type_COMBINATION" onchange="optionManager.changeOptionComposeType(this)" />
+                                <label class="inline-flex font-normal" for="option_compose_type_COMBINATION">&nbsp;조합형</label>
                             </div>
                         </div>
                     </div>
@@ -316,7 +366,7 @@ class OptionManager {
                                         let index = 0;
                                         for (const item of data.optionGroupList) {
                                             htmlCode += `
-                                                <tr class="option-item-row" data-index="${index}">
+                                                <tr class="option-item-row" data-index="${index}" data-option-group-id="${item.id}">
                                                     <td>
                                                         <input name="option_name" type="text" placeholder="예시) 색상" value="${item.name}" onchange="optionManager.changeOptionItemName(${index}, this)" />
                                                     </td>
@@ -405,7 +455,7 @@ class OptionManager {
                                         let index = 0;
                                         for (const item of data.optionItemList) {
                                             trs += `
-                                                <tr class="option-list-item-row" data-index="${index}">
+                                                <tr class="option-list-item-row" data-index="${index}" data-option-item-number="${item.itemNumber}">
                                                     <td>
                                                         <input type="checkbox" name="option-list-item-check" />
                                                     </td>
@@ -461,6 +511,15 @@ class OptionManager {
     }
 
     getData() {
+        const deletedOptionGroupIds = this.getDeletedOptionGroupIds();
+        const deletedOptionItemListItemNumbers = this.getDeletedOptionItemListItemNumbers();
+
+        // console.log('deletedOptionGroupIds', deletedOptionGroupIds);
+        // console.log('deletedOptionItemListItemNumbers', deletedOptionItemListItemNumbers);
+        this.data.optionGroupDeleteIds = deletedOptionGroupIds;
+        this.data.optionItemListDeleteItemNumbers = deletedOptionItemListItemNumbers;
+
+        console.log('@getData().data', this.data);
         return this.data;
     }
 }

@@ -56,13 +56,6 @@
         window.addEventListener('load', function() {
             window.optionManager.tryInit();
         });
-        function checkSubmit(form) {
-            const target = document.querySelector("input[name=optionInfo]");
-            const value = JSON.stringify(optionManager.getData());
-            target.value = value;
-            target.setAttribute("value", value);
-            return true;
-        }
     </script>
 </head>
 <body>
@@ -98,7 +91,7 @@
                         </div>
                         <!-- /.card-header -->
                                          <!-- form start -->
-                        <form role="form" method="post" th:action="@{/item/edit/new}" th:object="${item}" enctype="multipart/form-data" onsubmit="return checkSubmit(this)">
+                        <form role="form" method="post" th:action="@{/item/edit/new}" th:object="${item}" enctype="multipart/form-data" onsubmit="return optionManager.checkSubmit(this)">
                             <input th:field="*{id}" type="hidden"/>
                             <div class="card-body">
                                 <div class="form-group">
