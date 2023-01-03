@@ -56,4 +56,12 @@ public class ItemStockRepositoryCustomImpl implements ItemStockRepositoryCustom 
                 .fetchOne();
     }
 
+    @Override
+    public void deleteIdList(List<Long> idList, Long itemId) {
+        jpaQueryFactory
+                .delete(itemStock)
+                .where(itemStock.id.in(idList), itemStock.item.id.eq(itemId))
+                .execute();
+    }
+
 }

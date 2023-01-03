@@ -78,4 +78,8 @@ public class ItemOption extends BaseTimeEntity {
         this.price = price;
         this.optionPrice = optionPrice;
     }
+
+    public void remove(){
+        this.item = null;
+    }
 }

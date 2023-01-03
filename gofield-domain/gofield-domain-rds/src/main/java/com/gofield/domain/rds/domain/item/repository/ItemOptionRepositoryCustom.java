@@ -14,4 +14,6 @@ public interface ItemOptionRepositoryCustom {
     List<ItemOption> findAllByItemIdAndInItemNumber(Long itemId, List<String> itemNumber);
     ItemOption findByOptionId(Long id);
 
+    void deleteByItemIdAndInIdList(Long itemId, List<Long> idList);
+
 }

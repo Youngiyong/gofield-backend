@@ -9,4 +9,5 @@ public interface ItemStockRepositoryCustom {
     ItemStock findItemByItemNumber(String itemNumber);
     List<ItemStock> findAllInItemNumber(List<String> itemNumberList);
     ItemStock findShippingTemplateByItemNumberFetch(String itemNumber);
+    void deleteIdList(List<Long> idList, Long itemId);
 }

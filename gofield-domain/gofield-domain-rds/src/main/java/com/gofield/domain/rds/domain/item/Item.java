@@ -80,16 +80,16 @@ public class Item extends BaseTimeEntity {
 
     @OrderBy("sort ASC")
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ItemImage> images = new ArrayList<>();
+    private List<ItemImage> images = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ItemStock> stocks = new ArrayList<>();
+    private List<ItemStock> stocks = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ItemOption> options = new ArrayList<>();
+    private List<ItemOption> options = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<ItemOptionGroup> optionGroups = new ArrayList<>();
+    private List<ItemOptionGroup> optionGroups = new ArrayList<>();
 
     @OneToMany(mappedBy = "item")
     private List<UserLikeItem> user;
@@ -179,6 +179,14 @@ public class Item extends BaseTimeEntity {
 
     public void addStock(ItemStock itemStock){
         this.stocks.add(itemStock);
+    }
+
+    public void removeAllOptions(List<ItemOption> options){
+        options.removeAll(options);
+    }
+
+    public void removeAllOptionGroups(List<ItemOptionGroup> optionGroups){
+        optionGroups.removeAll(optionGroups);
     }
 
     public void delete(){

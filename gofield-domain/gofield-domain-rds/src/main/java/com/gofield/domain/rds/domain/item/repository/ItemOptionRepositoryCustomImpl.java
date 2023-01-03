@@ -72,4 +72,12 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
                 .where(itemOption.id.eq(id))
                 .fetchFirst();
     }
+
+    @Override
+    public void deleteByItemIdAndInIdList(Long itemId, List<Long> idList) {
+        jpaQueryFactory
+                .delete(itemOption)
+                .where(itemOption.id.in(idList), itemOption.item.id.eq(itemId))
+                .execute();
+    }
 }

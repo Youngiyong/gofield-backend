@@ -85,4 +85,11 @@ public class ItemStock extends BaseTimeEntity {
     public boolean isSale(){
         return this.status.equals(EItemStatusFlag.SALE) ? true : false;
     }
+
+    public void updateSale(int qty){
+        if(qty>0){
+            this.qty = qty;
+            this.status = EItemStatusFlag.SALE;
+        }
+    }
 }

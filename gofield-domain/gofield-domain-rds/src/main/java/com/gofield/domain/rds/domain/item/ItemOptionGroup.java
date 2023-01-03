@@ -62,4 +62,8 @@ public class ItemOptionGroup extends BaseTimeEntity {
         this.groupTitle = groupTitle;
         this.optionGroup = optionGroup;
     }
+
+    public void remove(){
+        this.item = null;
+    }
 }
