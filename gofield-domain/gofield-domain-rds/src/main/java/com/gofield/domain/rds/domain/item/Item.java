@@ -139,6 +139,7 @@ public class Item extends BaseTimeEntity {
                 .classification(EItemClassificationFlag.USED)
                 .thumbnail(thumbnail)
                 .tags(tags)
+                .isOption(false)
                 .build();
     }
 
@@ -190,4 +191,17 @@ public class Item extends BaseTimeEntity {
         this.isOption = true;
     }
 
+    public void update(String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags, Boolean isOption){
+        this.name = name;
+        this.price = price;
+        this.deliveryPrice = deliveryPrice;
+        this.delivery = delivery;
+        this.pickup = pickup;
+        this.tags = tags;
+        this.isOption = isOption;
+    }
+
+    public void updateThumbnail(String thumbnail){
+        this.thumbnail = thumbnail;
+    }
 }

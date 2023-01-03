@@ -16,7 +16,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 public class ItemOptionItemDto {
     private List<String> values;
-
     private String itemNumber;
     private Integer price;
     private Integer qty;
@@ -53,6 +52,12 @@ public class ItemOptionItemDto {
     public static List<ItemOptionItemDto> of(List<Map<String, Object>> optionItemList){
         return optionItemList.stream()
                 .map(p -> ItemOptionItemDto.of((List<String>) p.get("values"), Integer.parseInt(String.valueOf(p.get("price"))), Integer.parseInt(String.valueOf( p.get("qty"))), EItemStatusFlag.valueOf(String.valueOf(p.get("status")))))
+                .collect(Collectors.toList());
+    }
+
+    public static List<ItemOptionItemDto> ofEdit(List<Map<String, Object>> optionItemList){
+        return optionItemList.stream()
+                .map(p -> ItemOptionItemDto.of((List<String>) p.get("values"), String.valueOf(p.get("itemNumber")), Integer.parseInt(String.valueOf(p.get("price"))), Integer.parseInt(String.valueOf( p.get("qty"))), EItemStatusFlag.valueOf(String.valueOf(p.get("status")))))
                 .collect(Collectors.toList());
     }
 

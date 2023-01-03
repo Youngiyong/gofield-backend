@@ -35,6 +35,19 @@ public class ItemOptionGroupDto {
                 .build();
     }
 
+    public static ItemOptionGroupDto ofOption(ItemNameValueDto itemNameValueDto){
+        String[] optionStrList = itemNameValueDto.getValue().split(",");
+        List<ItemNamePriceDto> optionItem = new ArrayList<>();
+        for(String str: optionStrList){
+            optionItem.add(ItemNamePriceDto.of(str, 0));
+        }
+        return ItemOptionGroupDto.builder()
+                .groupTitle(itemNameValueDto.getName())
+                .optionGroupStr(itemNameValueDto.getValue())
+                .optionGroupList(optionItem)
+                .build();
+    }
+
     public static List<ItemOptionGroupDto> of(List<ItemNameValueDto> optionGroupList){
         List<ItemOptionGroupDto> result = new ArrayList<>();
         for(ItemNameValueDto option :optionGroupList){

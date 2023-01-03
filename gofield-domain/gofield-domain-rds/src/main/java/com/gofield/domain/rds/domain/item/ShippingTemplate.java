@@ -168,4 +168,24 @@ public class ShippingTemplate extends BaseTimeEntity {
                 .returnAddressExtra(returnAddressExtra)
                 .build();
     }
+
+    public void update(Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, Boolean isPaid, int exchangeCharge, int takebackCharge, Boolean isFee, int feeJeju, int feeJejuBesides,
+                       String zipCode, String address, String addressExtra, String returnZipCode, String returnAddress, String returnAddressExtra){
+        this.isCondition = isCondition;
+        this.condition = condition;
+        this.chargeType = chargeType;
+        this.charge = charge;
+        this.isPaid = isPaid;
+        this.exchangeCharge = exchangeCharge;
+        this.takebackCharge = takebackCharge;
+        this.isFee = isFee;
+        this.feeJeju = feeJeju;
+        this.feeJejuBesides = feeJejuBesides;
+        this.zipCode = zipCode;
+        this.address = address;
+        this.addressExtra = addressExtra;
+        this.returnZipCode = returnZipCode;
+        this.returnAddress = returnAddress;
+        this.returnAddressExtra = returnAddressExtra;
+    }
 }

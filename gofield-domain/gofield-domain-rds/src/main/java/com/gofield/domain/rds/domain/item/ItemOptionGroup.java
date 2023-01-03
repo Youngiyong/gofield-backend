@@ -55,4 +55,9 @@ public class ItemOptionGroup extends BaseTimeEntity {
                 .isEssential(true)
                 .build();
     }
+    public void update(EItemOptionTypeFlag optionType, String groupTitle, String optionGroup){
+        this.optionType = optionType;
+        this.groupTitle = groupTitle;
+        this.optionGroup = optionGroup;
+    }
 }

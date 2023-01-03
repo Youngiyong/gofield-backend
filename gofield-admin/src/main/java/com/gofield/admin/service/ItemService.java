@@ -117,14 +117,144 @@ public class ItemService {
     public void updateUsedItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
         Item item = itemRepository.findByItemId(itemDto.getId());
         ItemDetail itemDetail = item.getDetail();
-        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), null, itemDto.getDescription());
+        ShippingTemplate shippingTemplate = item.getShippingTemplate();
+        String optionList = AdminUtil.makeOption(itemDto);
+
+        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), itemDto.getDescription(), optionList);
+
+        Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
+
+        shippingTemplate.update(
+                isCondition,
+                itemDto.getShippingTemplate().getCondition(),
+                itemDto.getShippingTemplate().getChargeType(),
+                itemDto.getShippingTemplate().getCharge(),
+                itemDto.getShippingTemplate().getIsPaid(),
+                itemDto.getShippingTemplate().getExchangeCharge(),
+                itemDto.getShippingTemplate().getTakebackCharge(),
+                itemDto.getShippingTemplate().getIsFee(),
+                itemDto.getShippingTemplate().getFeeJeju(),
+                itemDto.getShippingTemplate().getFeeJejuBesides(),
+                itemDto.getShippingTemplate().getZipCode(),
+                itemDto.getShippingTemplate().getAddress(),
+                itemDto.getShippingTemplate().getAddressExtra(),
+                itemDto.getShippingTemplate().getReturnZipCode(),
+                itemDto.getShippingTemplate().getReturnAddress(),
+                itemDto.getShippingTemplate().getReturnAddressExtra());
+
+        String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
+        Boolean isOption = itemDto.getOptionInfo()==null ? false : true;
+        item.update(itemDto.getName(), item.getPrice(), item.getDeliveryPrice(), item.getDelivery(), item.getPickup(), tags, isOption);
+
+
+
+        String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
+        if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
+            thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
+        }
+        if(images!=null && !images.isEmpty()){
+            for(MultipartFile file: images){
+                if(!file.getOriginalFilename().equals("")){
+                    item.addImage(ItemImage.newInstance(item, s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE), null));
+                }
+            }
+        }
+
+        item.updateThumbnail(thumbnail);
     }
 
     @Transactional
     public void updateNewItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
         Item item = itemRepository.findByItemId(itemDto.getId());
         ItemDetail itemDetail = item.getDetail();
-        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), null, itemDto.getDescription());
+        ShippingTemplate shippingTemplate = item.getShippingTemplate();
+        String optionList = AdminUtil.makeOption(itemDto);
+
+        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), itemDto.getDescription(), optionList);
+
+        Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
+
+        shippingTemplate.update(
+                isCondition,
+                itemDto.getShippingTemplate().getCondition(),
+                itemDto.getShippingTemplate().getChargeType(),
+                itemDto.getShippingTemplate().getCharge(),
+                itemDto.getShippingTemplate().getIsPaid(),
+                itemDto.getShippingTemplate().getExchangeCharge(),
+                itemDto.getShippingTemplate().getTakebackCharge(),
+                itemDto.getShippingTemplate().getIsFee(),
+                itemDto.getShippingTemplate().getFeeJeju(),
+                itemDto.getShippingTemplate().getFeeJejuBesides(),
+                itemDto.getShippingTemplate().getZipCode(),
+                itemDto.getShippingTemplate().getAddress(),
+                itemDto.getShippingTemplate().getAddressExtra(),
+                itemDto.getShippingTemplate().getReturnZipCode(),
+                itemDto.getShippingTemplate().getReturnAddress(),
+                itemDto.getShippingTemplate().getReturnAddressExtra());
+
+        String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
+        Boolean isOption = itemDto.getOptionInfo()==null ? false : true;
+        item.update(itemDto.getName(), item.getPrice(), item.getDeliveryPrice(), item.getDelivery(), item.getPickup(), tags, isOption);
+
+        ItemTemp itemTemp = itemTempRepository.findById(1L).get();
+        ItemOptionManagerDto optionManager = null;
+
+        if(itemDto.getOptionInfo()!=null){
+            optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
+            List<ItemOptionItemDto> optionItemList = ItemOptionItemDto.ofEdit(optionManager.getOptionItemList());
+            List<ItemNameValueDto> optionNameValueList = optionManager.getOptionGroupList();
+            List<ItemOptionGroupDto> optionGroupDtoList = null;
+
+            //groupTitle 생성
+            for(ItemNameValueDto optionGroup: optionNameValueList) {
+                ItemOptionGroupDto optionGroupDto = ItemOptionGroupDto.ofOption(optionGroup);
+                if(optionGroup.getId()==null){
+                    ItemOptionGroup itemOptionGroup = ItemOptionGroup.newInstance(item, optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()), null);
+                    item.addOptionGroup(itemOptionGroup);
+                } else {
+                    ItemOptionGroup itemOptionGroup = itemOptionGroupRepository.findByGroupIdAndItemId(optionGroup.getId(), item.getId());
+                    itemOptionGroup.update(optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()));
+                }
+            }
+
+            for(ItemOptionItemDto optionItem: optionItemList) {
+                //새로추가 되는것들
+                if(optionItem.getItemNumber().equals("")){
+                    List<String> optionNameList = optionItem.getValues().stream().collect(Collectors.toList());
+                    List<String> viewName = new ArrayList<>();
+                    for (int i = 0; i < optionNameList.size(); i++) {
+                        if (i == 0) {
+                            viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                        } else {
+                            viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
+                        }
+                    }
+                    ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice(), optionItem.getPrice());
+
+                    int qty = optionItem.getQty();
+                    if (optionManager.getOptionGroupList().equals(EItemOptionTypeFlag.SIMPLE)) {
+                        //단독형은 999개로 임시로 넣기
+                        qty = 999;
+                    }
+                    ItemStock itemStock = ItemStock.newInstance(item, optionItem.getStatus(), EItemStockFlag.OPTION, itemOption.getItemNumber(), 1L, qty);
+                    item.addOption(itemOption);
+                    itemTemp.update();
+                    item.addStock(itemStock);
+                } else {
+
+                }
+
+            }
+            item.updateOption();
+        } else {
+            ItemStock itemStock = ItemStock.newInstance(item, itemDto.getStatus(), EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
+            item.addStock(itemStock);
+            itemTemp.update();
+            item.updateOption();
+        }
+
+
+
     }
 
     @Transactional(readOnly = true)
@@ -223,19 +353,16 @@ public class ItemService {
             }
             for(ItemOptionItemDto optionItem: optionItemList) {
                 List<String> optionNameList = optionItem.getValues().stream().collect(Collectors.toList());
-                StringBuilder viewName = new StringBuilder();
+                List<String> viewName = new ArrayList<>();
                 for (int i = 0; i < optionNameList.size(); i++) {
                     if (i == 0) {
-                        viewName.append(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)));
+                        viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
                     } else {
-                        viewName.append(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)));
+                        viewName.add(String.format(", %s(%s)", optionGroupDtoList.get(i).getGroupTitle().trim(), optionNameList.get(i).trim()));
                     }
                 }
-                ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), viewName.toString(), item.getPrice(), optionItem.getPrice());
+                ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice(), optionItem.getPrice());
 
-                    /*
-                        ToDo: SellerId 추후 변경
-                     */
                 int qty = optionItem.getQty();
                 if (optionManager.getOptionGroupList().equals(EItemOptionTypeFlag.SIMPLE)) {
                     //단독형은 999개로 임시로 넣기

@@ -13,7 +13,6 @@ public class ItemOptionGroupRepositoryCustomImpl implements ItemOptionGroupRepos
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
     public List<ItemOptionGroup> findAllItemOptionGroupByItemId(Long itemId) {
         return jpaQueryFactory
@@ -21,4 +20,13 @@ public class ItemOptionGroupRepositoryCustomImpl implements ItemOptionGroupRepos
                 .where(itemOptionGroup.item.id.eq(itemId))
                 .fetch();
     }
+
+    @Override
+    public ItemOptionGroup findByGroupIdAndItemId(Long id, Long itemId) {
+        return jpaQueryFactory
+                .selectFrom(itemOptionGroup)
+                .where(itemOptionGroup.id.eq(id), itemOptionGroup.item.id.eq(itemId))
+                .fetchOne();
+    }
+
 }
