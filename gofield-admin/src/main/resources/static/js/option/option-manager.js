@@ -42,6 +42,7 @@ class OptionManager {
     tryInit() {
         const jsonString = document.getElementById('option-manager-init-data').value;
         if (typeof jsonString !== 'string' || jsonString === '') {
+            this.initData = { ...this.data };
             this.render();
             return;
         }
@@ -97,7 +98,7 @@ class OptionManager {
         const target = document.querySelector("input[name=optionInfo]");
         const value = JSON.stringify(optionManager.getData());
         target.value = value;
-        target.setAttribute("value", value);
+        // target.setAttribute("value", value);
         return true;
     }
 
