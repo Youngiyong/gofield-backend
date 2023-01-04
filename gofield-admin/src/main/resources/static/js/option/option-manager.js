@@ -107,7 +107,7 @@ class OptionManager {
             // console.log('optionManager.getData()', optionManager.getData());
             target.value = value;
             target.setAttribute("value", value);
-            return false;
+            return true;
         } catch (e) {
             console.error('error =>', e);
             return false;

@@ -28,9 +28,11 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
         List<Long> cartList = jpaQueryFactory
                 .select(cart.id)
                 .from(cart)
-                .innerJoin(user)
-                .on(cart.userId.eq(user.id))
-                .where(user.id.eq(userId))
+                .innerJoin(itemStock)
+                .on(cart.itemNumber.eq(itemStock.itemNumber))
+                .innerJoin(item)
+                .on(itemStock.item.id.eq(item.id))
+                .where(cart.userId.eq(userId))
                 .fetch();
 
         return cartList.size();
