@@ -104,9 +104,10 @@ class OptionManager {
 
             const target = document.querySelector("input[name=optionInfo]");
             const value = JSON.stringify(optionManager.getData());
+            // console.log('optionManager.getData()', optionManager.getData());
             target.value = value;
             target.setAttribute("value", value);
-            return true;
+            return false;
         } catch (e) {
             console.error('error =>', e);
             return false;
@@ -146,7 +147,9 @@ class OptionManager {
         if (!confirm('해당 옵션 아이템을 삭제하시겠습니까?')) {
             return;
         }
-        this.data.optionGroupList.splice(index, 1);
+        const copyOptionGroupList = [ ...this.data.optionGroupList ];
+        copyOptionGroupList.splice(index, 1);
+        this.data.optionGroupList = copyOptionGroupList;
         this.render();
     }
 
