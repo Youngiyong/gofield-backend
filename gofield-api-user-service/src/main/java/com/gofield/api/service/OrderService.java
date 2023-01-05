@@ -205,7 +205,7 @@ public class OrderService {
             if(sheetItem.getQty()>itemStock.getQty()){
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 판매 상품 갯수가 초과된 상품입니다.", sheetItem.getItemNumber()));
             }
-            int price = itemStock.getIsOption() ? itemStock.getOptionPrice() : itemStock.getPrice();
+            int price = itemStock.getIsOption() ? itemStock.getOptionPrice()+itemStock.getPrice() : itemStock.getPrice();
             int deliveryPrice = 0;
 
             if(itemStock.getDelivery().equals(EItemDeliveryFlag.PAY)){

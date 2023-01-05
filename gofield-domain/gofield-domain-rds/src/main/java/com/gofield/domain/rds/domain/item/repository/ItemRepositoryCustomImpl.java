@@ -745,7 +745,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.thumbnail,
                         itemStock.itemNumber,
                         item.price,
-                        itemOption.price,
+                        itemOption.optionPrice,
                         item.delivery,
                         item.deliveryPrice,
                         itemOption.optionType,
