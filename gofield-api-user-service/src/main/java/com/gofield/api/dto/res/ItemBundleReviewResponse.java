@@ -1,5 +1,7 @@
 package com.gofield.api.dto.res;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.gofield.api.util.ApiUtil;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.ItemBundleReview;
 import lombok.Builder;
@@ -18,7 +20,7 @@ public class ItemBundleReviewResponse {
     private Long id;
     private String name;
     private String nickName;
-    private String optionName;
+    private List<String> optionName;
     private Integer weight;
     private Integer height;
     private Double reviewScroe;
@@ -27,7 +29,7 @@ public class ItemBundleReviewResponse {
     private List<String> images;
 
     @Builder
-    public ItemBundleReviewResponse(Long id, String name, String nickName, String optionName, Integer weight, Integer height, Double reviewScroe, String description, LocalDateTime createDate, List<String> images) {
+    public ItemBundleReviewResponse(Long id, String name, String nickName, List<String> optionName, Integer weight, Integer height, Double reviewScroe, String description, LocalDateTime createDate, List<String> images) {
         this.id = id;
         this.name = name;
         this.nickName = nickName;
@@ -45,7 +47,7 @@ public class ItemBundleReviewResponse {
                 .id(bundleReview.getId())
                 .name(bundleReview.getName())
                 .nickName(bundleReview.getNickName())
-                .optionName(bundleReview.getOptionName())
+                .optionName(ApiUtil.strToObject(bundleReview.getOptionName(),new TypeReference<List<String>>(){}))
                 .weight(bundleReview.getWeight())
                 .height(bundleReview.getHeight())
                 .reviewScroe(bundleReview.getReviewScore())
