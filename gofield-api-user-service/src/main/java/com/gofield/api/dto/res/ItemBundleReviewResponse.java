@@ -47,7 +47,7 @@ public class ItemBundleReviewResponse {
                 .id(bundleReview.getId())
                 .name(bundleReview.getName())
                 .nickName(bundleReview.getNickName())
-                .optionName(ApiUtil.strToObject(bundleReview.getOptionName(),new TypeReference<List<String>>(){}))
+                .optionName(bundleReview.getOptionName()==null ? null : ApiUtil.strToObject(bundleReview.getOptionName(),new TypeReference<List<String>>(){}))
                 .weight(bundleReview.getWeight())
                 .height(bundleReview.getHeight())
                 .reviewScroe(bundleReview.getReviewScore())
