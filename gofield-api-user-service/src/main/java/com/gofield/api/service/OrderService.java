@@ -207,6 +207,7 @@ public class OrderService {
             }
             int price = itemStock.getIsOption() ? itemStock.getOptionPrice()+itemStock.getPrice() : itemStock.getPrice();
             int deliveryPrice = 0;
+
             if(itemStock.getDelivery().equals(EItemDeliveryFlag.PAY)){
                 deliveryPrice = itemStock.getDeliveryPrice();
             } else if(itemStock.getDelivery().equals(EItemDeliveryFlag.CONDITION)){
