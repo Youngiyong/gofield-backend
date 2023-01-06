@@ -764,14 +764,14 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .leftJoin(cart)
                 .on(itemStock.itemNumber.eq(cart.itemNumber))
                 .innerJoin(item)
-                .on(itemStock.itemNumber.eq(item.itemNumber))
+                .on(itemStock.item.id.eq(item.id))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(shippingTemplate)
                 .on(item.shippingTemplate.id.eq(shippingTemplate.id))
                 .leftJoin(itemOption)
                 .on(itemStock.itemNumber.eq(itemOption.itemNumber))
-                .where(item.deleteDate.isNull(), item.itemNumber.eq(itemNumber))
+                .where(item.deleteDate.isNull(), itemStock.itemNumber.eq(itemNumber))
                 .fetchOne();
     }
 
