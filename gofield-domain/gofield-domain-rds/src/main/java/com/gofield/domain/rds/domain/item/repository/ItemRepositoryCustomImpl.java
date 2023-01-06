@@ -746,6 +746,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.thumbnail,
                         itemStock.itemNumber,
                         cart.price,
+                        item.price,
+                        itemOption.optionPrice,
                         item.delivery,
                         item.deliveryPrice,
                         itemOption.optionType,
@@ -758,9 +760,9 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         shippingTemplate.charge,
                         shippingTemplate.feeJeju,
                         shippingTemplate.feeJejuBesides))
-                .from(cart)
-                .innerJoin(itemStock)
-                .on(cart.itemNumber.eq(itemStock.itemNumber), cart.itemNumber.eq(itemNumber))
+                .from(itemStock)
+                .leftJoin(cart)
+                .on(itemStock.itemNumber.eq(cart.itemNumber), itemStock.itemNumber.eq(itemNumber))
                 .innerJoin(item)
                 .on(itemStock.item.id.eq(item.id))
                 .innerJoin(brand)

@@ -64,87 +64,140 @@
 
                         </div>
                         <!-- /.card-header -->
+
                         <div class="card-body p-0">
                             <table class="table table-hover">
                                 <tbody th:each="data : ${list}">
-                               <tr th:if="${data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">
-                                    <td th:text="${data.name}" class="border-0"></td>
-                                   <td style="text-align: right">
-                                       <a th:href="${'/category/edit/'+data.id}">
-                                           수정
-                                       </a>
-                                       &nbsp;
-                                       <a style="color: red" th:href="${'/category/delete/'+data.id}">
-                                           삭제
-                                       </a>
-                                   </td>
-                                </tr>
-
-                               <tr th:if="${!data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">
-                                   <td th:text="${data.name}">
-                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                   </td>
-                                   <td style="text-align: right">
-                                        <a th:href="${'/category/edit/'+data.id}">
-                                           수정
-                                       </a>
-                                       &nbsp;
-                                       <a style="color: red" th:href="${'/category/delete/'+data.id}">
-                                         삭제
-                                       </a>
-                                   </td>
-                               </tr>
-                               <tr th:if="${!data.children.isEmpty()}" class="expandable-body">
-                                   <td>
-                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
-                                           <table class="table table-hover">
-                                               <tbody th:each="children : ${data.children}">
-                                               <tr data-widget="expandable-table" aria-expanded="false">
-                                                   <td th:text="${children.name}" >
-                                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                   </td>
-                                                   <td style="text-align: right">
-                                                       <a th:href="${'/category/edit/'+children.id}">
-                                                           수정
-                                                       </a>
-                                                       &nbsp;
-                                                       <a style="color: red" th:href="${'/category/delete/'+children.id}">
-                                                           삭제
-                                                       </a>
-                                                   </td>
-                                               </tr>
-                                               <tr th:if="${!children.children.isEmpty()}" class="expandable-body">
-                                                   <td>
-                                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
-                                                           <table class="table table-hover">
-                                                               <tbody th:each="subChildren : ${children.children}">
-                                                               <tr data-widget="expandable-table" aria-expanded="false">
-                                                                   <td th:text="${subChildren.name}" >
-                                                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
-                                                                   </td>
-                                                                   <td style="text-align: right">
-                                                                       <a th:href="${'/category/edit/'+subChildren.id}">
-                                                                           수정
-                                                                       </a>
-                                                                       &nbsp;
-                                                                       <a style="color: red" th:href="${'/category/delete/'+subChildren.id}">
-                                                                            삭제
-                                                                       </a>
-                                                                   </td>
-                                                               </tr>
-                                                               <tbody/>
-                                                           </table>
-                                                       </div>
-                                                   </td>
-                                               </tr>
-                                             <tbody/>
-                                           </table>
-                                       </div>
+                                <tr th:if="${data.children.isEmpty()}">
+                                    <td th:text="${data.name}" class="border-0">
                                     </td>
-                               </tr>
+                                </tr>
+                                <tr th:if="${!data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="true">
+                                    <td th:text="${data.name}">
+                                    </td>
+                                </tr>
+                                <tr th:if="${!data.children.isEmpty()}" class="expandable-body">
+                                    <td>
+                                        <div class="p-0" style="">
+                                            <table class="table table-hover">
+                                                <tbody th:each="children : ${data.children}">
+                                                <tr th:if="${children.children.isEmpty()}" data-widget="expandable-table" aria-expanded="true">
+                                                    <td th:text="${children.name}>
+                                                    </td>
+                                                </tr>
+                                                <tr th:if="${!children.children.isEmpty()}" data-widget="expandable-table" aria-expanded="true">
+                                                    <td>
+                                                        <button type="button" class="btn btn-primary p-0">
+                                                            <i th:text="${children.name}" class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                        </button>
+
+                                                    </td>
+                                                </tr>
+                                                <tr class="expandable-body d-none">
+                                                    <td>
+                                                        <div class="p-0" style="display: none;">
+                                                            <table class="table table-hover">
+                                                                <tbody th:each="subChildren : ${children.children}">
+                                                                <tr data-widget="expandable-table" aria-expanded="false">
+                                                                    <td th:text="${subChildren.name}" >
+                                                                        <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>
+                                                                    </td>
+                                                                </tr>
+                                                                <tbody/>
+                                                            </table>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </td>
+                                </tr>
                                 </tbody>
                             </table>
                         </div>
+
+<!--                        <div class="card-body p-0">-->
+<!--                            <table class="table table-hover">-->
+<!--                                <tbody th:each="data : ${list}">-->
+<!--                               <tr th:if="${data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">-->
+<!--                                    <td th:text="${data.name}" class="border-0"></td>-->
+<!--                                   <td style="text-align: right">-->
+<!--                                       <a th:href="${'/category/edit/'+data.id}">-->
+<!--                                           수정-->
+<!--                                       </a>-->
+<!--                                       &nbsp;-->
+<!--                                       <a style="color: red" th:href="${'/category/delete/'+data.id}">-->
+<!--                                           삭제-->
+<!--                                       </a>-->
+<!--                                   </td>-->
+<!--                                </tr>-->
+
+<!--                               <tr th:if="${!data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">-->
+<!--                                   <td th:text="${data.name}">-->
+<!--                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>-->
+<!--                                   </td>-->
+<!--                                   <td style="text-align: right">-->
+<!--                                        <a th:href="${'/category/edit/'+data.id}">-->
+<!--                                           수정-->
+<!--                                       </a>-->
+<!--                                       &nbsp;-->
+<!--                                       <a style="color: red" th:href="${'/category/delete/'+data.id}">-->
+<!--                                         삭제-->
+<!--                                       </a>-->
+<!--                                   </td>-->
+<!--                               </tr>-->
+<!--                               <tr th:if="${!data.children.isEmpty()}" class="expandable-body">-->
+<!--                                   <td>-->
+<!--                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">-->
+<!--                                           <table class="table table-hover">-->
+<!--                                               <tbody th:each="children : ${data.children}">-->
+<!--                                               <tr data-widget="expandable-table" aria-expanded="false">-->
+<!--                                                   <td th:text="${children.name}" >-->
+<!--                                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>-->
+<!--                                                   </td>-->
+<!--                                                   <td style="text-align: right">-->
+<!--                                                       <a th:href="${'/category/edit/'+children.id}">-->
+<!--                                                           수정-->
+<!--                                                       </a>-->
+<!--                                                       &nbsp;-->
+<!--                                                       <a style="color: red" th:href="${'/category/delete/'+children.id}">-->
+<!--                                                           삭제-->
+<!--                                                       </a>-->
+<!--                                                   </td>-->
+<!--                                               </tr>-->
+<!--                                               <tr th:if="${!children.children.isEmpty()}" class="expandable-body">-->
+<!--                                                   <td>-->
+<!--                                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">-->
+<!--                                                           <table class="table table-hover">-->
+<!--                                                               <tbody th:each="subChildren : ${children.children}">-->
+<!--                                                               <tr data-widget="expandable-table" aria-expanded="false">-->
+<!--                                                                   <td th:text="${subChildren.name}" >-->
+<!--                                                                       <i class="expandable-table-caret fas fa-caret-right fa-fw"></i>-->
+<!--                                                                   </td>-->
+<!--                                                                   <td style="text-align: right">-->
+<!--                                                                       <a th:href="${'/category/edit/'+subChildren.id}">-->
+<!--                                                                           수정-->
+<!--                                                                       </a>-->
+<!--                                                                       &nbsp;-->
+<!--                                                                       <a style="color: red" th:href="${'/category/delete/'+subChildren.id}">-->
+<!--                                                                            삭제-->
+<!--                                                                       </a>-->
+<!--                                                                   </td>-->
+<!--                                                               </tr>-->
+<!--                                                               <tbody/>-->
+<!--                                                           </table>-->
+<!--                                                       </div>-->
+<!--                                                   </td>-->
+<!--                                               </tr>-->
+<!--                                             <tbody/>-->
+<!--                                           </table>-->
+<!--                                       </div>-->
+<!--                                    </td>-->
+<!--                               </tr>-->
+<!--                                </tbody>-->
+<!--                            </table>-->
+<!--                        </div>-->
                     </div>
 
                     <!-- /.card -->
