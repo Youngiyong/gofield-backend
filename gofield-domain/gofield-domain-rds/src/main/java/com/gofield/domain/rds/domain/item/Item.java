@@ -89,6 +89,9 @@ public class Item extends BaseTimeEntity {
     private List<ItemOption> options = new ArrayList<>();
 
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<ItemQna> qnas = new ArrayList<>();
+
+    @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemOptionGroup> optionGroups = new ArrayList<>();
 
     @OneToMany(mappedBy = "item")
@@ -180,6 +183,8 @@ public class Item extends BaseTimeEntity {
     public void addStock(ItemStock itemStock){
         this.stocks.add(itemStock);
     }
+
+    public void addQna(ItemQna itemQna) { this.qnas.add(itemQna); }
 
     public void removeAllOptions(List<ItemOption> options){
         options.removeAll(options);

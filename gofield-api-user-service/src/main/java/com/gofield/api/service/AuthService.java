@@ -89,6 +89,12 @@ public class AuthService {
             isSign = false;
         }
 
+        if(userSns.getUser().getStatus().equals(EStatusFlag.DELETE)){
+            throw new InternalRuleException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, "삭제처리된 사용자입니다.");
+        } else if(userSns.getUser().getStatus().equals(EStatusFlag.BLACK)){
+            throw new InternalRuleException(ErrorCode.E403_FORBIDDEN_EXCEPTION, ErrorAction.TOAST, "접근이 제한된 사용자입니다.");
+        }
+
         Authentication authentication = Authentication.of(userSns.getUser().getUuid(), userSns.getUser().getId() , Constants.TOKEN_ISSUER);
         TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity(), isSign, request.getSocial().getKey());
         LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());

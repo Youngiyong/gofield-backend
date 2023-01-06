@@ -66,6 +66,7 @@ public class UserRequest {
         private String addressExtra;
         @NotNull(message = "배송 코멘트 코드는 필수값입니다.")
         private String shippingCode;
+        @NotNull(message = "배송 요청 사항을 선택해주세요.")
         private String shippingComment;
     }
 

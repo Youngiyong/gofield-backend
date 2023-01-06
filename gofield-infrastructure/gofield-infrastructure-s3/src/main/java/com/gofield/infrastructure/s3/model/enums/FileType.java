@@ -11,6 +11,8 @@ import lombok.Getter;
 public enum FileType {
 
     USER_IMAGE("유저 프로필 이미지", "user/", FileContentType.IMAGE),
+
+    BANNER_IMAGE("배너 이미지", "banner/", FileContentType.IMAGE),
     STORE_IMAGE("매장 이미지", "store/", FileContentType.IMAGE),
     ITEM_IMAGE("상품 이미지", "item/", FileContentType.IMAGE),
     ITEM_CONTENT_IMAGE("상품 컨텐츠 이미지", "content/", FileContentType.IMAGE),

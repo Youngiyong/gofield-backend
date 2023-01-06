@@ -1,5 +1,6 @@
 package com.gofield.api.dto.res;
 
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.banner.Banner;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +30,7 @@ public class BannerResponse {
                 .title(banner.getTitle())
                 .description(banner.getDescription())
                 .linkUrl(banner.getLinkUrl())
-                .thumbnail(banner.getThumbnail())
+                .thumbnail(CommonUtils.makeCloudFrontUrl(banner.getThumbnail()))
                 .build();
     }
 

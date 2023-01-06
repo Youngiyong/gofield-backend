@@ -18,6 +18,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.gofield.domain.rds.domain.cart.QCart.cart;
 import static com.gofield.domain.rds.domain.item.QBrand.brand;
 import static com.gofield.domain.rds.domain.item.QItemRecent.itemRecent;
 import static com.gofield.domain.rds.domain.item.QShippingTemplate.shippingTemplate;
@@ -744,8 +745,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemOption.id,
                         item.thumbnail,
                         itemStock.itemNumber,
-                        item.price,
-                        itemOption.optionPrice,
+                        cart.price,
                         item.delivery,
                         item.deliveryPrice,
                         itemOption.optionType,
@@ -758,9 +758,11 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         shippingTemplate.charge,
                         shippingTemplate.feeJeju,
                         shippingTemplate.feeJejuBesides))
-                .from(itemStock)
+                .from(cart)
+                .innerJoin(itemStock)
+                .on(cart.itemNumber.eq(itemStock.itemNumber), cart.itemNumber.eq(itemNumber))
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id), itemStock.itemNumber.eq(itemNumber))
+                .on(itemStock.item.id.eq(item.id))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(shippingTemplate)

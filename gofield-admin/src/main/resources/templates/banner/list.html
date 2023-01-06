@@ -4,7 +4,7 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>문의 리스트</title>
+    <title>배너 리스트</title>
 </head>
 <body>
 
@@ -16,12 +16,12 @@
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>문의 관리</h1>
+                    <h1>배너 관리</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active">문의 리스트</li>
+                        <li class="breadcrumb-item active">배너 리스트</li>
                     </ol>
                 </div>
             </div>
@@ -35,44 +35,57 @@
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
+<!--                            <h3 class="card-title">Bordered Table></h3>-->
                             <div class="row">
                                 <div class="col-md-8 offset-md-2">
                                 </div>
+                                <a class="btn btn-app float-right"  href="/banner/add">
+                                    <i class="fas fa-edit"></i> 배너 추가
+                                </a>
+<!--                                <a class="btn btn-app float-right"  th:if="${keyword == null || keyword == ''}" th:href="${'/excel/brand'}"><i class="fas fa-edit"></i> 엑셀 다운</a>-->
+<!--                                <a class="btn btn-app float-right"  th:if="${keyword != null}" th:href="${'/excel/brand?keyword='+keyword}"><i class="fas fa-edit"></i> 엑셀 다운</a>-->
                             </div>
+<!--                            <form th:action="@{/tutorials}" id="searchForm">-->
+<!--                                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"-->
+<!--                                       placeholder="Enter keyword">-->
+
+
+<!--                            </form>-->
                         </div>
                         <!-- /.card-header -->
                         <div class="card-body">
                             <table class="table table-bordered table-hover dataTable dtr-inline" aria-describedby="example2_info">
                                 <tr>
                                     <th class="text-center">id</th>
-                                    <th class="text-center">문의제목</th>
-                                    <th class="text-center">문의자</th>
-                                    <th class="text-center">답변상태</th>
-                                    <th class="text-center">상품이미지</th>
-                                    <th class="text-center">접수날짜</th>
-                                    <th class="text-center">작업</th>
+                                    <th class="text-center">배너제목</th>
+                                    <th class="text-center">배너타입</th>
+                                    <th class="text-center">배너링크</th>
+                                    <th class="text-center">배너이미지</th>
+                                    <th class="text-center">배너순서</th>
+                                    <th class="text-center">등록날짜</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 <tr th:each="data : ${list}">
                                     <td class="text-center" th:text="${data.id}"></td>
                                     <td class="text-center" th:text="${data.title}"></td>
-                                    <td class="text-center" th:text="${data.name}"></td>
-                                    <td class="text-center" th:text="${data.status}"></td>
+                                    <td class="text-center" th:text="${data.type.getDescription()}"></td>
+                                    <td class="text-center" th:text="${data.linkUrl}"></td>
                                     <td>
                                         <div style="text-align: center">
                                             <img th:src="${data.thumbnail}" alt="묶음상품 이미지" th:if="${data.thumbnail != null}" />
                                         </div>
                                     </td>
+                                    <td class="text-center" th:text="${data.sort}"></td>
                                     <td class="text-center" th:text="${data.createDate}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm" th:if="${data.status.equals('접수')}" th:href="${'/qna/edit/'+data.id}">
+                                        <a class="btn btn-info btn-sm" th:href="${'/banner/edit/'+data.id}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             수정
                                         </a>
-                                            <a class="btn btn-danger btn-sm" th:href="${'/qna/delete/'+data.id}">
+                                            <a class="btn btn-danger btn-sm" th:href="${'/banner/delete/'+data.id}">
                                                 <i class="fas fa-trash">
                                                 </i>
                                                 삭제
@@ -90,37 +103,53 @@
                         <nav aria-label="Pagination" th:if="${totalPages > 0}">
                             <ul class="pagination justify-content-center">
                                 <li class="page-item" th:classappend="${currentPage == 1} ? 'disabled'">
-                                    <a th:replace="fragments/qnaPaging :: paging(1, '<<', 'First Page')"></a>
+                                    <a th:replace="fragments/bannerPaging :: paging(1, '<<', 'First Page')"></a>
                                 </li>
                                 <li class="page-item font-weight-bold" th:classappend="${currentPage == 1} ? 'disabled'">
-                                    <a th:replace="fragments/qnaPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
+                                    <a th:replace="fragments/bannerPaging :: paging(${currentPage - 1}, 'Prev', 'Previous Page')"></a>
                                 </li>
                                 <li class="page-item disabled" th:if="${currentPage - 2 > 1}">
                                     <a class="page-link" href="#">...</a>
                                 </li>
                                 <li class="page-item" th:classappend="${page == currentPage} ? 'active'"
                                     th:each="page : ${#numbers.sequence(currentPage > 2 ? currentPage - 2 : 1, currentPage + 2 < totalPages ? currentPage + 2 : totalPages)}">
-                                    <a th:replace="fragments/qnaPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
+                                    <a th:replace="fragments/bannerPaging :: paging(${page}, ${page}, 'Page ' + ${page})"></a>
                                 </li>
                                 <li class="page-item disabled" th:if="${currentPage + 2 < totalPages}">
                                     <a class="page-link" href="#">...</a>
                                 </li>
                                 <li class="page-item font-weight-bold" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                                    <a th:replace="fragments/qnaPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
+                                    <a th:replace="fragments/bannerPaging :: paging(${currentPage + 1},'Next', 'Next Page')"></a>
                                 </li>
                                 <li class="page-item" th:classappend="${currentPage == totalPages} ? 'disabled'">
-                                    <a th:replace="fragments/qnaPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
+                                    <a th:replace="fragments/bannerPaging :: paging(${totalPages}, '>>', 'Last Page')"></a>
                                 </li>
                             </ul>
                         </nav>
                     </div>
+
                     <!-- /.card -->
                 </div>
             </div>
         </div>
     </section>
     <!-- Main content -->
+
+
 </div>
+
+
+<th:block layout:fragment="script">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+
+
+        });
+    </script>
+</th:block>
 
 </body>
 </html>

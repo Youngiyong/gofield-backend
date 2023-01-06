@@ -1,5 +1,6 @@
 package com.gofield.api.controller;
 
+import com.gofield.api.dto.res.BannerListResponse;
 import com.gofield.api.dto.res.BannerResponse;
 import com.gofield.api.dto.res.MainResponse;
 import com.gofield.api.service.MainService;
@@ -23,6 +24,12 @@ public class MainController {
     @GetMapping("/v1/banner")
     public ApiResponse<List<BannerResponse>> getBannerList(){
         return ApiResponse.success(mainService.getBannerList());
+    }
+
+    @ApiOperation(value = "메인 배너 조회 v2")
+    @GetMapping("/v2/banner")
+    public ApiResponse<BannerListResponse> getBannerListV2(){
+        return ApiResponse.success(mainService.getBannerListV2());
     }
 
     @ApiOperation(value = "메인 상품 조회")

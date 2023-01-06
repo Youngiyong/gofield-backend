@@ -109,12 +109,12 @@
                                     <td style="color: orangered" class="text-center" th:text="${data.status}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('취소처리실패') && !data.status.equals('취소완료')  }" th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_COMPLETE'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ data.status.equals('취소신청') }" th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_COMPLETE'}">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             취소승인
                                         </a>
-                                        <a class="btn btn-info btn-sm" th:if="${ !data.status.equals('취소처리실패') && !data.status.equals('취소완료')  }"  th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_DENIED'}">
+                                        <a class="btn btn-info btn-sm" th:if="${ data.status.equals('취소신청') }"  th:href="${'/order/cancel/'+data.id+'?status=ORDER_CANCEL_DENIED'}">
                                             <i class="fas fa-inbox">
                                             </i>
                                             취소거절

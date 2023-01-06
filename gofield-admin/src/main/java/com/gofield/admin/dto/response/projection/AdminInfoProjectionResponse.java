@@ -17,7 +17,6 @@ import java.util.stream.Collectors;
 public class AdminInfoProjectionResponse {
     @ExcelColumn(headerName = "id", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private Long id;
-
     @ExcelColumn(headerName = "이름", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String name;
 

@@ -67,24 +67,6 @@ public class OrderService {
     private final ThirdPartyService thirdPartyService;
     private final S3FileStorageClient s3FileStorageClient;
 
-    private void validateOrderShippingCancelStatus(EOrderShippingStatusFlag status){
-        if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 주문 취소가 접수된 상품입니다.");
-        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL_COMPLETE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 주문 취소가 완료된 상품입니다.");
-        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품이 진행중인 상품입니다.");
-        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 반품이 완료된 상품입니다.");
-        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환 신청이 진행중인 상품입니다.");
-        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 교환이 완료된 상품입니다.");
-        } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "배송이 완료된 상품은 교환/반품 진행이 가능합니다.");
-        }
-    }
-
     private void validateOrderShippingReturnAndChangeStatus(EOrderShippingStatusFlag status){
         if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
         } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE)){
@@ -189,7 +171,6 @@ public class OrderService {
         User user = userService.getUserNotNonUser();
         int totalPrice = 0;
         int totalDelivery = 0;
-
         List<ItemOrderSheetResponse> result = new ArrayList<>();
         /*
         ToDo: 배송비 정책 정해지면 배송비 반영해서 가격 계산
@@ -205,7 +186,7 @@ public class OrderService {
             if(sheetItem.getQty()>itemStock.getQty()){
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 판매 상품 갯수가 초과된 상품입니다.", sheetItem.getItemNumber()));
             }
-            int price = itemStock.getIsOption() ? itemStock.getOptionPrice()+itemStock.getPrice() : itemStock.getPrice();
+            int price = itemStock.getPrice();
             int deliveryPrice = 0;
 
             if(itemStock.getDelivery().equals(EItemDeliveryFlag.PAY)){
@@ -412,7 +393,7 @@ public class OrderService {
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
-        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : ApiUtil.toJsonStr(orderItemInfo.getOptionName()), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
+        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : orderItemInfo.getOptionName(), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
         orderCancel.addOrderCancelItem(orderCancelItem);
         orderCancelRepository.save(orderCancel);
         orderItem.getOrderShipping().updateChange();
@@ -445,7 +426,7 @@ public class OrderService {
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
-        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : ApiUtil.toJsonStr(orderItemInfo.getOptionName()), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
+        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : orderItemInfo.getOptionName(), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
         orderCancel.addOrderCancelItem(orderCancelItem);
         orderCancelRepository.save(orderCancel);
         orderItem.getOrderShipping().updateReturn();
@@ -477,7 +458,7 @@ public class OrderService {
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;
-        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : ApiUtil.toJsonStr(orderItemInfo.getOptionName()), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
+        OrderCancelItem orderCancelItem = OrderCancelItem.newInstance(orderCancel, item, itemOption, orderItemInfo.getName(), orderItemInfo.getOptionName()==null ? null : orderItemInfo.getOptionName(), itemType, orderItemInfo.getQty(), orderItemInfo.getItemPrice());
         orderCancel.addOrderCancelItem(orderCancelItem);
         orderCancelRepository.save(orderCancel);
         orderItem.getOrderShipping().updateCancel();

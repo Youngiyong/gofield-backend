@@ -8,6 +8,8 @@ import java.util.List;
 
 public interface ItemQnaRepositoryCustom {
     Page<ItemQna> findAllByItemIdAndUserId(Long itemId, Long userId, Pageable pageable);
+    Page<ItemQna> findAllPaging(Pageable pageable);
+    ItemQna findByQnaId(Long qnaId);
     ItemQna findByQnaIdAndItemId(Long qnaId, Long itemId);
     ItemQna findByQnaIdAndUserId(Long qnaId, Long userId);
 }

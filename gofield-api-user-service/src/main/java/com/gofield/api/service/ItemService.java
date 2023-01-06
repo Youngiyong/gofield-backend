@@ -198,7 +198,7 @@ public class ItemService {
         User user = userService.getUser();
         Item item = itemRepository.findByItemId(itemId);
         ItemQna qna = ItemQna.newInstance(item, user, user.getNickName()==null ? user.getName() : user.getNickName(), request.getTitle(), request.getDescription(), request.getIsVisible() == null ? true : request.getIsVisible());
-        itemQnaRepository.save(qna);
+        item.addQna(qna);
     }
 
     @Transactional

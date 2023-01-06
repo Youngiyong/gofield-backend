@@ -10,8 +10,9 @@ import lombok.Getter;
 @Getter
 public enum EBannerTypeFlag implements EnumCodeModel {
 
-    MAIN("메인 배너", "M"),
-    POPUP("팝업 배너", "P")
+    TOP("상단", "T"),
+    MIDDLE("중앙", "M"),
+    LOWER("하단", "L")
     ;
 
     private String description;

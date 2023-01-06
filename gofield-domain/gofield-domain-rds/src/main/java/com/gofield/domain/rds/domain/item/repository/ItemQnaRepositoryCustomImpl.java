@@ -38,7 +38,7 @@ public class ItemQnaRepositoryCustomImpl implements ItemQnaRepositoryCustom {
         List<ItemQna> result =  jpaQueryFactory
                 .select(itemQna)
                 .from(itemQna)
-                .where(itemQna.item.id.eq(itemId),
+                .where(itemQna.item.id.eq(itemId), itemQna.deleteDate.isNull(),
                         eqUserId(userId))
                 .orderBy(itemQna.id.desc())
                 .limit(pageable.getPageSize())
@@ -52,7 +52,7 @@ public class ItemQnaRepositoryCustomImpl implements ItemQnaRepositoryCustom {
         List<Long> totalCount = jpaQueryFactory
                 .select(itemQna.id)
                 .from(itemQna)
-                .where(itemQna.item.id.eq(itemId),
+                .where(itemQna.item.id.eq(itemId), itemQna.deleteDate.isNull(),
                         eqUserId(userId))
                 .fetch();
 
@@ -60,11 +60,38 @@ public class ItemQnaRepositoryCustomImpl implements ItemQnaRepositoryCustom {
     }
 
     @Override
+    public Page<ItemQna> findAllPaging(Pageable pageable) {
+        List<ItemQna> result =  jpaQueryFactory
+                .selectFrom(itemQna)
+                .where(itemQna.deleteDate.isNull())
+                .orderBy(itemQna.status.desc(), itemQna.id.desc())
+                .limit(pageable.getPageSize())
+                .offset(pageable.getOffset())
+                .fetch();
+
+        List<Long> totalCount = jpaQueryFactory
+                .select(itemQna.id)
+                .from(itemQna)
+                .where(itemQna.deleteDate.isNull())
+                .fetch();
+
+        return new PageImpl<>(result, pageable, totalCount.size());
+    }
+
+    @Override
+    public ItemQna findByQnaId(Long qnaId) {
+        return jpaQueryFactory
+                .selectFrom(itemQna)
+                .where(itemQna.id.eq(qnaId), itemQna.deleteDate.isNull())
+                .fetchFirst();
+    }
+
+    @Override
     public ItemQna findByQnaIdAndItemId(Long qnaId, Long itemId) {
         return jpaQueryFactory
                 .select(itemQna)
                 .from(itemQna)
-                .where(itemQna.id.eq(qnaId),
+                .where(itemQna.id.eq(qnaId), itemQna.deleteDate.isNull(),
                         itemQna.item.id.eq(itemId))
                 .fetchOne();
     }
@@ -73,7 +100,7 @@ public class ItemQnaRepositoryCustomImpl implements ItemQnaRepositoryCustom {
     public ItemQna findByQnaIdAndUserId(Long qnaId, Long userId) {
         return jpaQueryFactory
                 .selectFrom(itemQna)
-                .where(itemQna.id.eq(qnaId),
+                .where(itemQna.id.eq(qnaId), itemQna.deleteDate.isNull(),
                         itemQna.user.id.eq(userId))
                 .fetchOne();
     }

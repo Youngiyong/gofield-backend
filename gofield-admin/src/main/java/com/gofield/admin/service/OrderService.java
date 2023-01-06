@@ -38,15 +38,15 @@ import java.util.Locale;
 @RequiredArgsConstructor
 public class OrderService {
     private final CodeRepository codeRepository;
+    private final UserRepository userRepository;
+    private final UserAccountRepository userAccountRepository;
+    private final ItemRepository itemRepository;
+    private final ItemStockRepository itemStockRepository;
+    private final ItemOptionRepository itemOptionRepository;
+    private final OrderItemRepository orderItemRepository;
     private final OrderCancelRepository orderCancelRepository;
     private final OrderShippingRepository orderShippingRepository;
     private final OrderShippingLogRepository orderShippingLogRepository;
-    private final UserRepository userRepository;
-    private final UserAccountRepository userAccountRepository;
-    private final OrderItemRepository orderItemRepository;
-    private final ItemRepository itemRepository;
-    private final ItemOptionRepository itemOptionRepository;
-    private final ItemStockRepository itemStockRepository;
     private final OrderCancelCommentRepository orderCancelCommentRepository;
     private final PurchaseCancelRepository purchaseCancelRepository;
     private final ThirdPartyService thirdPartyService;

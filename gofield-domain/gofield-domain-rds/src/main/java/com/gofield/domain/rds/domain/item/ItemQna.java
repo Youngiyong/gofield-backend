@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
 @Table(	name = "item_qna")
 public class ItemQna extends BaseTimeEntity {
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "item_id")
     private Item item;
 
@@ -49,6 +49,9 @@ public class ItemQna extends BaseTimeEntity {
     @Column
     private LocalDateTime answerDate;
 
+    @Column
+    private LocalDateTime deleteDate;
+
 
     private ItemQna(Item item, User user, String name, String title, String description, Boolean isVisible){
         this.item = item;
@@ -68,5 +71,9 @@ public class ItemQna extends BaseTimeEntity {
         this.answer = answer;
         this.answerDate = LocalDateTime.now();
         this.status = EItemQnaStatusFlag.COMPLETE;
+    }
+
+    public void delete(){
+        this.deleteDate = LocalDateTime.now();
     }
 }
