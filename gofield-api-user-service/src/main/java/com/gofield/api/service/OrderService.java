@@ -192,9 +192,9 @@ public class OrderService {
                 price = itemStock.getCartPrice();
             } else {
                 if(itemStock.getIsOption()){
-                    price = itemStock.getItmePrice() + itemStock.getOptionPrice();
+                    price = itemStock.getItemPrice() + itemStock.getOptionPrice();
                 } else {
-                    price = itemStock.getItmePrice();
+                    price = itemStock.getItemPrice();
                 }
             }
 
