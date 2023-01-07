@@ -136,7 +136,7 @@ public class ItemService {
 
         if(aggregationUpdate){
             updateItemBundleAggregation(item.getBundle().getId(), false);
-            cartRepository.deleteByItemNumber(itemDto.getItemNumber());
+            cartRepository.deleteByItemNumber(item.getItemNumber());
         }
     }
 
