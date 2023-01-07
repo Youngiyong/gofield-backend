@@ -8,6 +8,7 @@ import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
 import com.gofield.admin.util.AdminUtil;
 import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
+import com.gofield.domain.rds.domain.cart.CartRepository;
 import com.gofield.domain.rds.domain.code.CodeRepository;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.item.*;
@@ -49,6 +50,8 @@ public class ItemService {
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final ShippingTemplateRepository shippingTemplateRepository;
     private final S3FileStorageClient s3FileStorageClient;
+
+    private final CartRepository cartRepository;
 
 
 
@@ -146,6 +149,7 @@ public class ItemService {
 
         if(aggregationUpdate){
             updateItemBundleAggregation(item.getBundle().getId(), false);
+            cartRepository.deleteByItemNumber(itemDto.getItemNumber());
         }
     }
 
@@ -209,6 +213,7 @@ public class ItemService {
                     if(aggregationUpdate){
                         updateItemBundleAggregation(item.getBundle().getId(), false);
                     }
+                    cartRepository.deleteInItemNumber(itemNumberList);
                     return;
                 }
             }
@@ -279,6 +284,7 @@ public class ItemService {
                     itemOptionList.stream().forEach(itemOption -> itemOptionRepository.delete(itemOption));
                     List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
                     itemStockList.stream().forEach(itemStock -> itemStockRepository.delete(itemStock));
+                    cartRepository.deleteInItemNumber(itemNumberList);
                 }
             }
             item.updateOption();

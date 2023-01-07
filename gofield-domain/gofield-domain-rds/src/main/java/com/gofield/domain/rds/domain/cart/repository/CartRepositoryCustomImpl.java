@@ -22,7 +22,6 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
     public int getCartCount(Long userId) {
         List<Long> cartList = jpaQueryFactory
@@ -112,6 +111,22 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
         jpaQueryFactory
                 .delete(cart)
                 .where(cart.id.in(cartIdList))
+                .execute();
+    }
+
+    @Override
+    public void deleteByItemNumber(String itemNumber) {
+        jpaQueryFactory
+                .delete(cart)
+                .where(cart.itemNumber.eq(itemNumber))
+                .execute();
+    }
+
+    @Override
+    public void deleteInItemNumber(List<String> itemNumberList) {
+        jpaQueryFactory
+                .delete(cart)
+                .where(cart.itemNumber.in(itemNumberList))
                 .execute();
     }
 }

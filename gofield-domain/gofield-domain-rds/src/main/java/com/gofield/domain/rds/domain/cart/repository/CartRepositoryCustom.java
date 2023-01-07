@@ -13,4 +13,6 @@ public interface CartRepositoryCustom {
     List<CartProjection> findAllByUserId(Long userId);
     List<Long> findAllInCartIdList(List<Long> cartIdList, Long userId);
     void deleteByCartIdList(List<Long> cartIdList);
+    void deleteByItemNumber(String itemNumber);
+    void deleteInItemNumber(List<String> itemNumberList);
 }
