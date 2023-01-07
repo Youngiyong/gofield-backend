@@ -42,17 +42,13 @@ public class OrderCancelItemResponse {
 
     public static OrderCancelItemResponse of(OrderCancelItem orderCancelItem){
         Item item = orderCancelItem.getItem();
-        ItemOption itemOption = orderCancelItem.getItemOption();
         String itemNumber = null;
-        if(item.getItemNumber()!=null){
+        if(item!=null){
             itemNumber = item.getItemNumber();
-        } else if(itemOption.getItemNumber()!=null){
-            itemNumber = itemOption.getItemNumber();
         }
         return OrderCancelItemResponse.builder()
                 .id(orderCancelItem.getId())
                 .itemId(item==null ? null : item.getId())
-                .itemOptionId(itemOption==null ? null : itemOption.getId())
                 .itemNumber(itemNumber)
                 .name(orderCancelItem.getName())
                 .optionName(orderCancelItem.getOptionName()==null ? null : ApiUtil.strToObject(orderCancelItem.getOptionName(), new TypeReference<List<String>>(){}))
