@@ -27,7 +27,7 @@ public class Faq extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String answer;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "type_flag")
     private EFaqTypeFlag type;
 
     @Column

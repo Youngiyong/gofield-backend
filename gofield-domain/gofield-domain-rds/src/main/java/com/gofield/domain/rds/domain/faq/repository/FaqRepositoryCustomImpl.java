@@ -1,7 +1,6 @@
 package com.gofield.domain.rds.domain.faq.repository;
 
 import com.gofield.domain.rds.domain.faq.Faq;
-import com.gofield.domain.rds.domain.item.ItemBundleReview;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -27,16 +26,11 @@ public class FaqRepositoryCustomImpl implements FaqRepositoryCustom {
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public List<Faq> findAllOrderBySort() {
-        return null;
-    }
-
-    @Override
     public Page<Faq> findAllPaging(Pageable pageable, Boolean isUse) {
         List<Faq> result = jpaQueryFactory
                 .selectFrom(faq)
                 .from(faq)
-                .where(eqUse(isUse))
+                .where(eqUse(isUse), faq.deleteDate.isNull())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(faq.id.desc())
@@ -45,13 +39,17 @@ public class FaqRepositoryCustomImpl implements FaqRepositoryCustom {
         List<Long> totalCount = jpaQueryFactory
                 .select(faq.id)
                 .from(faq)
+                .where(eqUse(isUse), faq.deleteDate.isNull())
                 .fetch();
 
         return new PageImpl<>(result, pageable, totalCount.size());
     }
 
     @Override
-    public Faq findByNoticeId(Long noticeId) {
-        return null;
+    public Faq findByFaqId(Long faqId) {
+        return jpaQueryFactory
+                .selectFrom(faq)
+                .where(faq.id.eq(faqId), faq.deleteDate.isNull())
+                .fetchFirst();
     }
 }

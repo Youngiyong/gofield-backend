@@ -1,6 +1,5 @@
 package com.gofield.domain.rds.domain.notice.repository;
 
-import com.gofield.domain.rds.domain.faq.Faq;
 import com.gofield.domain.rds.domain.notice.Notice;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -25,16 +24,11 @@ public class NoticeRepositoryCustomImpl implements NoticeRepositoryCustom {
         return null;
     }
     @Override
-    public List<Notice> findAllOrderBySort() {
-        return null;
-    }
-
-    @Override
     public Page<Notice> findAllPaging(Pageable pageable, Boolean isVisible) {
         List<Notice> result = jpaQueryFactory
                 .selectFrom(notice)
                 .from(notice)
-                .where(eqVisible(isVisible))
+                .where(eqVisible(isVisible), notice.deleteDate.isNull())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(notice.id.desc())
@@ -43,7 +37,7 @@ public class NoticeRepositoryCustomImpl implements NoticeRepositoryCustom {
         List<Long> totalCount = jpaQueryFactory
                 .select(notice.id)
                 .from(notice)
-                .where(eqVisible(isVisible))
+                .where(eqVisible(isVisible), notice.deleteDate.isNull())
                 .fetch();
 
         return new PageImpl<>(result, pageable, totalCount.size());
@@ -51,6 +45,9 @@ public class NoticeRepositoryCustomImpl implements NoticeRepositoryCustom {
 
     @Override
     public Notice findByNoticeId(Long noticeId) {
-        return null;
+        return jpaQueryFactory
+                .selectFrom(notice)
+                .where(notice.id.eq(noticeId), notice.deleteDate.isNull())
+                .fetchFirst();
     }
 }

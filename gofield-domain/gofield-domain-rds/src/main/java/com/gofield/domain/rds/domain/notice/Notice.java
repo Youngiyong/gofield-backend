@@ -27,7 +27,7 @@ public class Notice extends BaseTimeEntity {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
-    @Column(nullable = false)
+    @Column(nullable = false, name = "type_flag")
     private ENoticeTypeFlag type;
 
     @Column
