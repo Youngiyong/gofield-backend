@@ -200,7 +200,7 @@ public class Item extends BaseTimeEntity {
         this.detail.delete();
     }
 
-    public void updateOption(){
+    public void updateOptionTrue(){
         this.isOption = true;
     }
 
@@ -208,7 +208,11 @@ public class Item extends BaseTimeEntity {
         this.isOption = false;
     }
 
-    public void update(String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags, Boolean isOption){
+    public void update(Boolean isOption){
+        this.isOption = isOption;
+    }
+
+    public void update(String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags, Boolean isOption, String thumbnail){
         this.name = name;
         this.price = price;
         this.deliveryPrice = deliveryPrice;
@@ -216,6 +220,16 @@ public class Item extends BaseTimeEntity {
         this.pickup = pickup;
         this.tags = tags;
         this.isOption = isOption;
+        this.thumbnail = thumbnail;
+    }
+
+    public void update(String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags){
+        this.name = name;
+        this.price = price;
+        this.deliveryPrice = deliveryPrice;
+        this.delivery = delivery;
+        this.pickup = pickup;
+        this.tags = tags;
     }
 
     public void updateThumbnail(String thumbnail){

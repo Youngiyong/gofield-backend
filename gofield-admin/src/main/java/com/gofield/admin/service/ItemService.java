@@ -3,32 +3,24 @@ package com.gofield.admin.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.admin.dto.*;
-import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
 import com.gofield.admin.util.AdminUtil;
 import com.gofield.common.model.Constants;
-import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.cart.CartRepository;
-import com.gofield.domain.rds.domain.code.CodeRepository;
-import com.gofield.domain.rds.domain.code.ECodeGroup;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemInfoAdminProjectionResponse;
-import com.gofield.domain.rds.domain.item.projection.ItemInfoProjection;
 import com.gofield.domain.rds.domain.item.projection.ItemOptionProjection;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
 import com.gofield.infrastructure.s3.model.enums.FileType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -50,10 +42,7 @@ public class ItemService {
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final ShippingTemplateRepository shippingTemplateRepository;
     private final S3FileStorageClient s3FileStorageClient;
-
     private final CartRepository cartRepository;
-
-
 
     public String makeItemNumber(int itemTempNumber){
         return "G" + itemTempNumber;
@@ -131,9 +120,7 @@ public class ItemService {
                 itemDto.getShippingTemplate().getReturnAddressExtra());
 
         String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
-        Boolean isOption = itemDto.getOptionInfo()==null ? false : true;
         Boolean aggregationUpdate = itemDto.getPrice()==item.getPrice() ? false : true;
-        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, isOption);
         String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
@@ -145,7 +132,7 @@ public class ItemService {
                 }
             }
         }
-        item.updateThumbnail(thumbnail);
+        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, false, thumbnail);
 
         if(aggregationUpdate){
             updateItemBundleAggregation(item.getBundle().getId(), false);
@@ -181,13 +168,11 @@ public class ItemService {
 
         String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
         Boolean aggregationUpdate = itemDto.getPrice()==item.getPrice() ? false : true;
-        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, itemDto.getOptionInfo()==null ? false : itemDto.getIsOption());
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
-        ItemOptionManagerDto optionManager = null;
+        ItemOptionManagerDto optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
 
-        if(itemDto.getOptionInfo()!=null && !itemDto.getOptionInfo().equals("")){
-            optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
-
+        //옵션 상품 업데이트
+        if(!optionManager.getOptionItemList().isEmpty()){
             if(item.getIsOption()) {
                 //옵션 없음 선택시
                 if (!optionManager.getIsOption()) {
@@ -197,7 +182,6 @@ public class ItemService {
                     itemStockRepository.deleteIdList(itemStockIdList, item.getId());
                     item.removeAllOptions(item.getOptions());
                     item.removeAllOptionGroups(item.getOptionGroups());
-                    item.updateOptionFalse();
                     String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
                     if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
                         thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
@@ -287,14 +271,14 @@ public class ItemService {
                     cartRepository.deleteInItemNumber(itemNumberList);
                 }
             }
-            item.updateOption();
         }
 
         String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
         }
-        item.updateThumbnail(thumbnail);
+        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, optionManager.getIsOption(), thumbnail);
+
         if(images!=null && !images.isEmpty()){
             for(MultipartFile file: images){
                 if(!file.getOriginalFilename().equals("")){
@@ -305,6 +289,12 @@ public class ItemService {
 
         if(aggregationUpdate){
             updateItemBundleAggregation(item.getBundle().getId(), false);
+            if(optionManager.getIsOption()){
+                List<String> itemNumberList = item.getOptions().stream().map(p -> p.getItemNumber()).collect(Collectors.toList());
+                cartRepository.deleteInItemNumber(itemNumberList);
+            } else {
+                cartRepository.deleteByItemNumber(item.getItemNumber());
+            }
         }
         if(!item.getIsOption()){
             if(itemDto.getStatus().equals(EItemStatusFlag.SOLD_OUT)){
@@ -375,8 +365,9 @@ public class ItemService {
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
 
         String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
+        ItemOptionManagerDto optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
 
-        ItemOptionManagerDto optionManager = null;
+        //옵션 상품 업데이트
 
         Item item = Item.newNewItemInstance(
                 itemBundle,
@@ -405,8 +396,7 @@ public class ItemService {
             }
         }
 
-        if(itemDto.getOptionInfo()!=null){
-            optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
+        if(!optionManager.getOptionItemList().isEmpty()){
             List<ItemOptionItemDto> optionItemList = ItemOptionItemDto.of(optionManager.getOptionItemList());
             List<ItemOptionGroupDto> optionGroupDtoList = ItemOptionGroupDto.of(optionManager.getOptionGroupList());
 
@@ -432,12 +422,10 @@ public class ItemService {
                 itemTemp.update();
                 item.addStock(itemStock);
             }
-            item.updateOption();
         } else {
             ItemStock itemStock = ItemStock.newInstance(item, itemDto.getStatus(), EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
             item.addStock(itemStock);
             itemTemp.update();
-            item.updateOption();
         }
         ItemAggregation itemAggregation = ItemAggregation.newInstance(item);
         itemDetailRepository.save(itemDetail);
@@ -446,6 +434,7 @@ public class ItemService {
         itemAggregationRepository.save(itemAggregation);
 
 //      묶음 집계 업데이트
+        item.update(optionManager.getIsOption());
         updateItemBundleAggregation(item.getBundle().getId(), true);
     }
 
@@ -492,6 +481,7 @@ public class ItemService {
         Long bundleId = item.getBundle().getId();
         item.delete();
         updateItemBundleAggregation(bundleId, false);
+        cartRepository.deleteByItemNumber(item.getItemNumber());
     }
 
     @Transactional
