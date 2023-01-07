@@ -69,25 +69,6 @@ public class ItemService {
         return ItemInfoProjectionResponse.of(itemRepository.findAllByKeyword(keyword, status));
     }
 
-//    @Transactional
-//    public void updateItemBundle(MultipartFile image, List<MultipartFile> images, ItemBundleDto itemBundleDto){
-//        Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
-//        Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
-//        ItemBundle itemBundle = itemBundleRepository.findByBundleId(itemBundleDto.getId());
-//        String thumbnail = itemBundleDto.getThumbnail()==null ? null : itemBundleDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_150x150, "");
-//        if(!image.isEmpty() && image.getOriginalFilename().equals("")){
-//            thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
-//        }
-//        itemBundle.update(brand, category, itemBundleDto.getName(), itemBundleDto.getIsRecommend(), thumbnail);
-//        if(images!=null && !images.isEmpty()){
-//            for(MultipartFile file: images){
-//                if(!file.getOriginalFilename().equals("")){
-//                    itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE)));
-//                }
-//            }
-//        }
-//    }
-//
     @Transactional(readOnly = true)
     public ItemEditDto getUsedItem(Long id){
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
@@ -148,8 +129,8 @@ public class ItemService {
 
         String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
         Boolean isOption = itemDto.getOptionInfo()==null ? false : true;
-        item.update(itemDto.getName(), item.getPrice(), item.getDeliveryPrice(), item.getDelivery(), item.getPickup(), tags, isOption);
-
+        Boolean aggregationUpdate = itemDto.getPrice()==item.getPrice() ? false : true;
+        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, isOption);
         String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
@@ -163,16 +144,14 @@ public class ItemService {
         }
         item.updateThumbnail(thumbnail);
 
-        updateItemBundleAggregation(item.getBundle().getId(), true);
+        if(aggregationUpdate){
+            updateItemBundleAggregation(item.getBundle().getId(), false);
+        }
     }
 
     @Transactional
     public void updateNewItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
-        Boolean aggregationUpdate = false;
         Item item = itemRepository.findByItemId(itemDto.getId());
-        if(item.getPrice()!=itemDto.getPrice()){
-            aggregationUpdate = true;
-        }
         ItemDetail itemDetail = item.getDetail();
         ShippingTemplate shippingTemplate = item.getShippingTemplate();
         String optionList = AdminUtil.makeOption(itemDto);
@@ -197,7 +176,8 @@ public class ItemService {
                 itemDto.getShippingTemplate().getReturnAddressExtra());
 
         String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
-        item.update(itemDto.getName(), item.getPrice(), item.getDeliveryPrice(), item.getDelivery(), item.getPickup(), tags, itemDto.getOptionInfo()==null ? false : item.getIsOption());
+        Boolean aggregationUpdate = itemDto.getPrice()==item.getPrice() ? false : true;
+        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, itemDto.getOptionInfo()==null ? false : itemDto.getIsOption());
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
         ItemOptionManagerDto optionManager = null;
 
@@ -227,7 +207,7 @@ public class ItemService {
                         }
                     }
                     if(aggregationUpdate){
-                        updateItemBundleAggregation(item.getBundle().getId(), true);
+                        updateItemBundleAggregation(item.getBundle().getId(), false);
                     }
                     return;
                 }
@@ -316,10 +296,10 @@ public class ItemService {
                 }
             }
         }
-        if(aggregationUpdate){
-            updateItemBundleAggregation(item.getBundle().getId(), true);
-        }
 
+        if(aggregationUpdate){
+            updateItemBundleAggregation(item.getBundle().getId(), false);
+        }
         if(!item.getIsOption()){
             if(itemDto.getStatus().equals(EItemStatusFlag.SOLD_OUT)){
                 ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
@@ -463,7 +443,7 @@ public class ItemService {
         updateItemBundleAggregation(item.getBundle().getId(), true);
     }
 
-    public void updateItemBundleAggregation(Long bundleId, Boolean isUpdate){
+    public void updateItemBundleAggregation(Long bundleId, Boolean isRegister){
         //묶음 집계 업데이트
         ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(bundleId);
 
@@ -495,7 +475,7 @@ public class ItemService {
             newLowestPrice = newItemList.get(0).getPrice();
         }
         itemBundleAggregation.update(itemCount, newLowestPrice, usedLowestPrice, lowestPrice, highestPrice);
-        if(isUpdate){
+        if(isRegister){
             itemBundleAggregation.updateRegisterDate();
         }
     }
@@ -588,5 +568,4 @@ public class ItemService {
         //묶음 집계 업데이트
         updateItemBundleAggregation(item.getBundle().getId(), true);
     }
-
 }
