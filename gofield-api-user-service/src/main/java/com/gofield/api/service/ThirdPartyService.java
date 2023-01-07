@@ -2,15 +2,18 @@ package com.gofield.api.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.dto.SocialAuthentication;
+import com.gofield.api.dto.enums.SlackChannelType;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.ItemOrderSheetListResponse;
 import com.gofield.api.dto.res.ItemOrderSheetResponse;
 import com.gofield.api.dto.res.OrderSheetContentResponse;
 import com.gofield.api.util.ApiUtil;
+import com.gofield.api.util.SlackUtil;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.gofield.common.utils.HttpUtils;
+import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.common.utils.RandomUtils;
 import com.gofield.domain.rds.domain.cart.CartRepository;
 import com.gofield.domain.rds.domain.code.Code;
@@ -19,9 +22,7 @@ import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.common.EGofieldService;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.order.*;
-import com.gofield.domain.rds.domain.user.ESocialFlag;
-import com.gofield.domain.rds.domain.user.StateLog;
-import com.gofield.domain.rds.domain.user.StateLogRepository;
+import com.gofield.domain.rds.domain.user.*;
 import com.gofield.infrastructure.external.api.kakao.KaKaoAuthApiClient;
 import com.gofield.infrastructure.external.api.kakao.KaKaoProfileApiClient;
 import com.gofield.infrastructure.external.api.kakao.dto.req.KaKaoTokenRequest;
@@ -32,6 +33,7 @@ import com.gofield.infrastructure.external.api.naver.NaverProfileApiClient;
 import com.gofield.infrastructure.external.api.naver.dto.req.NaverTokenRequest;
 import com.gofield.infrastructure.external.api.naver.dto.res.NaverProfileResponse;
 import com.gofield.infrastructure.external.api.naver.dto.res.NaverTokenResponse;
+import com.gofield.infrastructure.external.api.slack.SlackWebhookApiClient;
 import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentApproveResponse;
@@ -41,10 +43,14 @@ import com.gofield.infrastructure.external.api.tracker.TrackerApiClient;
 import com.gofield.infrastructure.external.api.tracker.res.CarrierTrackResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -114,6 +120,7 @@ public class ThirdPartyService {
     private final KaKaoAuthApiClient kaKaoAuthApiClient;
     private final KaKaoProfileApiClient kaKaoProfileApiClient;
     private final NaverProfileApiClient naverProfileApiClient;
+    private final SlackWebhookApiClient slackWebhookApiClient;
     private final StateLogRepository stateLogRepository;
     private final PurchaseRepository purchaseRepository;
     private final PurchaseFailRepository purchaseFailRepository;
@@ -121,6 +128,8 @@ public class ThirdPartyService {
     private final ItemRepository itemRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final CartRepository cartRepository;
+
+    private final UserRepository userRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final CodeRepository codeRepository;
@@ -144,6 +153,23 @@ public class ThirdPartyService {
         StringBuilder cancelNumber =  new StringBuilder(String.valueOf(Calendar.getInstance(Locale.KOREA).getTimeInMillis()));
         cancelNumber.setCharAt(0, '9');
         return cancelNumber.toString();
+    }
+
+    public void sendOrderSlackNotification(SlackChannelType channel, String username, String userTel, String orderNumber, String orderDate, String orderName, String comment, int totalAmount) {
+        JSONObject request = SlackUtil.makeOrder(username, userTel, orderNumber, orderDate, orderName, totalAmount);
+        slackWebhookApiClient.sendOrderNotification(request);
+
+    }
+
+    public void sendCancelSlackNotification(SlackChannelType channel, String username, String userTel, String orderNumber, String orderDate, String comment, String itemName, String optionName, String thumbnail, int totalAmount) {
+        JSONObject request = SlackUtil.makeCancel(username, userTel, orderNumber, orderDate, comment, itemName, optionName, thumbnail, totalAmount);
+        if(channel.equals(SlackChannelType.CANCEL)){
+            slackWebhookApiClient.sendCancelNotification(request);
+        }else if(channel.equals(SlackChannelType.RETURN)){
+            slackWebhookApiClient.sendReturnNotification(request);
+        } else if(channel.equals(SlackChannelType.CHANGE)){
+            slackWebhookApiClient.sendChangeNotification(request);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -186,7 +212,6 @@ public class ThirdPartyService {
         OrderWait orderWait = orderWaitRepository.findByOid(orderId);
         OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
         TossPaymentApproveResponse response = tossPaymentApiClient.approvePayment(TOSS_PAYMENT_CLIENT_SECRET, TossPaymentRequest.PaymentApprove.of(amount, orderId, paymentKey));
-
         String paymentCompany = null;
         String cardNumber = null;
         String cardType = null;
@@ -278,8 +303,9 @@ public class ThirdPartyService {
         if(cartIdList!=null && !cartIdList.isEmpty()){
             cartRepository.deleteByCartIdList(cartIdList);
         }
-
         orderWaitRepository.delete(orderWait);
+        sendOrderSlackNotification(SlackChannelType.ORDER, shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), order.getCreateDate().toString(), response.getOrderName(), null, order.getTotalAmount());
+
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
         } else {

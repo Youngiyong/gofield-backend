@@ -37,7 +37,7 @@ public class ItemOptionRepositoryCustomImpl implements ItemOptionRepositoryCusto
                 .from(itemOption)
                 .innerJoin(itemStock)
                 .on(itemOption.itemNumber.eq(itemStock.itemNumber))
-                .where(itemOption.item.id.eq(itemId))
+                .where(itemOption.item.id.eq(itemId), itemOption.deleteDate.isNull())
                 .fetch();
     }
 

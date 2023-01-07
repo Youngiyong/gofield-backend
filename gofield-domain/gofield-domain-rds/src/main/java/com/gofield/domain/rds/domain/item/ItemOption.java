@@ -9,6 +9,7 @@ import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Getter
 @DynamicInsert
@@ -46,6 +47,9 @@ public class ItemOption extends BaseTimeEntity {
     @Column
     private Boolean isUse;
 
+    @Column
+    private LocalDateTime deleteDate;
+
     @Builder
     private ItemOption(Item item, String itemNumber, EItemOptionTypeFlag optionType, String name, String viewName, int price, int optionPrice, Short sort, Boolean isUse){
         this.item = item;
@@ -81,5 +85,9 @@ public class ItemOption extends BaseTimeEntity {
 
     public void remove(){
         this.item = null;
+    }
+
+    public void delete(){
+        this.deleteDate = LocalDateTime.now();
     }
 }

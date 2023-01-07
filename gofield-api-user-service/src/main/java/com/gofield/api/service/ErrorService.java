@@ -24,7 +24,7 @@ public class ErrorService {
 
     public void sendSlackNotification(String exception, String message) {
         HttpServletRequest servletRequest = ((ServletRequestAttributes) RequestContextHolder.currentRequestAttributes()).getRequest();
-        JSONObject request = SlackUtil.makeError(SERVER_MONITORING_NAME, servletRequest.getRequestURI(), exception, LocalDateTimeUtils.LocalDateTimeToString(), message);
-        slackWebhookApiClient.sendNotificationMessage(request);
+        JSONObject request = SlackUtil.makeError(SERVER_MONITORING_NAME, servletRequest.getRequestURI(), exception, LocalDateTimeUtils.LocalDateTimeToString(), message, null);
+        slackWebhookApiClient.sendExceptionNotification(request);
     }
 }

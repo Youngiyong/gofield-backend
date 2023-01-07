@@ -27,7 +27,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ItemService {
-
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
@@ -180,7 +179,7 @@ public class ItemService {
                     List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
                     List<Long> itemStockIdList = itemStockList.stream().map(p -> p.getId()).collect(Collectors.toList());
                     itemStockRepository.deleteIdList(itemStockIdList, item.getId());
-                    item.removeAllOptions(item.getOptions());
+                    item.deleteAllOptions();
                     item.removeAllOptionGroups(item.getOptionGroups());
                     String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
                     if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
@@ -198,6 +197,7 @@ public class ItemService {
                         updateItemBundleAggregation(item.getBundle().getId(), false);
                     }
                     cartRepository.deleteInItemNumber(itemNumberList);
+                    item.updateOptionFalse();
                     return;
                 }
             }
@@ -265,7 +265,7 @@ public class ItemService {
                 if(!optionIdList.isEmpty()){
                     List<ItemOption> itemOptionList = itemOptionRepository.findAllByItemIdAndInItemNumber(item.getId(), optionIdList);
                     List<String> itemNumberList = itemOptionList.stream().map(p->p.getItemNumber()).collect(Collectors.toList());
-                    itemOptionList.stream().forEach(itemOption -> itemOptionRepository.delete(itemOption));
+                    itemOptionList.stream().forEach(itemOption -> itemOption.delete());
                     List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
                     itemStockList.stream().forEach(itemStock -> itemStockRepository.delete(itemStock));
                     cartRepository.deleteInItemNumber(itemNumberList);

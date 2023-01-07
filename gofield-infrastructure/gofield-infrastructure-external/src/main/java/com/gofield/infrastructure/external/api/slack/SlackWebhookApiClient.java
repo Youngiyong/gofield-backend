@@ -14,7 +14,20 @@ import org.springframework.web.bind.annotation.RequestBody;
 )
 public interface SlackWebhookApiClient {
 
-    @PostMapping(value = "${external.client.slack.webhook.url}", produces = "application/json")
-    void sendNotificationMessage(@RequestBody JSONObject request);
+    @PostMapping(value = "${external.client.slack.webhook.exception-url}", produces = "application/json")
+    void sendExceptionNotification(@RequestBody JSONObject request);
+    @PostMapping(value = "${external.client.slack.webhook.order-url}", produces = "application/json")
+    void sendOrderNotification(@RequestBody JSONObject request);
 
+    @PostMapping(value = "${external.client.slack.webhook.cancel-url}", produces = "application/json")
+    void sendCancelNotification(@RequestBody JSONObject request);
+
+    @PostMapping(value = "${external.client.slack.webhook.return-url}", produces = "application/json")
+    void sendReturnNotification(@RequestBody JSONObject request);
+
+    @PostMapping(value = "${external.client.slack.webhook.change-url}", produces = "application/json")
+    void sendChangeNotification(@RequestBody JSONObject request);
+
+    @PostMapping(value = "${external.client.slack.webhook.qna-url}", produces = "application/json")
+    void sendQnaNotification(@RequestBody JSONObject request);
 }

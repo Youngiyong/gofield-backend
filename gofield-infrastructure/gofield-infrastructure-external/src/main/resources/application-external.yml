@@ -30,7 +30,12 @@ external:
     slack:
       webhook:
         base-url: https://hooks.slack.com/services/
-        url: ${secret.slack.token}
+        exception-url: ${secret.slack.exception-token}
+        order-url: ${secret.slack.order-token}
+        cancel-url: ${secret.slack.cancel-token}
+        return-url: ${secret.slack.return-token}
+        change-url: ${secret.slack.change-token}
+        qna-url: ${secret.slack.qna-token}
     toss:
       payment:
         base-url: https://api.tosspayments.com

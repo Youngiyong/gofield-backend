@@ -186,8 +186,8 @@ public class Item extends BaseTimeEntity {
 
     public void addQna(ItemQna itemQna) { this.qnas.add(itemQna); }
 
-    public void removeAllOptions(List<ItemOption> options){
-        options.removeAll(options);
+    public void deleteAllOptions(){
+        this.options.stream().forEach(itemOption -> itemOption.delete());
     }
 
     public void removeAllOptionGroups(List<ItemOptionGroup> optionGroups){
