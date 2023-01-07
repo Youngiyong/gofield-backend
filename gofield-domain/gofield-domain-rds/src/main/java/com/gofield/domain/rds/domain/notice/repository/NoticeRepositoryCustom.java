@@ -9,6 +9,6 @@ import java.util.List;
 public interface NoticeRepositoryCustom {
 
     List<Notice> findAllOrderBySort();
-    Page<Notice> findAllPaging(Pageable pageable);
+    Page<Notice> findAllPaging(Pageable pageable, Boolean isVisible);
     Notice findByNoticeId(Long noticeId);
 }

@@ -8,7 +8,6 @@ import org.springframework.data.domain.Page;
 @Getter
 @NoArgsConstructor
 public class PaginationResponse {
-
     private int page;
     private int size;
     private int totalPages;

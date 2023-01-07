@@ -20,7 +20,6 @@ public class ItemBundleReviewRepositoryCustomImpl implements ItemBundleReviewRep
 
     private final JPAQueryFactory jpaQueryFactory;
 
-
     @Override
     public Page<ItemBundleReview> findByBundleId(Long bundleId, Pageable pageable) {
         List<ItemBundleReview> result = jpaQueryFactory

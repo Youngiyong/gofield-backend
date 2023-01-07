@@ -9,6 +9,6 @@ import java.util.List;
 public interface FaqRepositoryCustom {
 
     List<Faq> findAllOrderBySort();
-    Page<Faq> findAllPaging(Pageable pageable);
+    Page<Faq> findAllPaging(Pageable pageable, Boolean isUse);
     Faq findByNoticeId(Long noticeId);
 }

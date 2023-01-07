@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(	name = "notice")
+@Table(	name = "faq")
 public class Faq extends BaseTimeEntity {
 
     @Column(length = 500, nullable = false)

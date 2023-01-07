@@ -1,13 +1,15 @@
 package com.gofield.api.controller;
 
 
-import com.gofield.api.dto.res.CategoryResponse;
-import com.gofield.api.dto.res.CodeResponse;
+import com.gofield.api.dto.res.*;
 import com.gofield.api.service.CommonService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -38,4 +40,15 @@ public class CommonController {
         return ApiResponse.success(commonService.getSubCategoryList(categoryId));
     }
 
+    @ApiOperation(value = "공지사항 리스트")
+    @GetMapping("/v1/notice")
+    public ApiResponse<NoticeListResponse> getNoticeList(@PageableDefault(sort="id", direction = Sort.Direction.DESC) Pageable pageable){
+        return ApiResponse.success(commonService.getNoticeList(pageable));
+    }
+
+    @ApiOperation(value = "자주 묻는 질문 리스트")
+    @GetMapping("/v1/faq")
+    public ApiResponse<FaqListResponse> getFaqList(@PageableDefault(sort="id", direction = Sort.Direction.DESC) Pageable pageable){
+        return ApiResponse.success(commonService.getFaqList(pageable));
+    }
 }
