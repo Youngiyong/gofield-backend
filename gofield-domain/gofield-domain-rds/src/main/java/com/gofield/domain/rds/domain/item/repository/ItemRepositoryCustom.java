@@ -21,7 +21,7 @@ public interface ItemRepositoryCustom {
     List<ItemClassificationProjectionResponse> findAllRecentItemByUserId(Long userId);
     ItemListProjectionResponse findAllClassificationItemByKeyword(String keyword, Long userId, Pageable pageable);
     ItemProjectionResponse findByItemNumberAndUserId(String itemNumber, Long userId);
-    ItemOrderSheetProjection findItemOrderSheetByItemNumber(String itemNumber);
+    ItemOrderSheetProjection findItemOrderSheetByItemNumber(Long userId, Boolean isCart, String itemNumber);
     Item findLowestItemByBundleIdAndClassification(Long bundleId, EItemClassificationFlag classification);
     List<Item> findAllItemByBundleIdAndStatusSalesOrderByPrice(Long bundleId);
     Item findLowestItemByBundleId(Long bundleId);

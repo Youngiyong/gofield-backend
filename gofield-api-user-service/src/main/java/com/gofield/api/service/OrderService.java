@@ -176,7 +176,7 @@ public class OrderService {
         ToDo: 배송비 정책 정해지면 배송비 반영해서 가격 계산
          */
         for(OrderRequest.OrderSheet.OrderSheetItem sheetItem: request.getItems()){
-            ItemOrderSheetProjection itemStock = itemRepository.findItemOrderSheetByItemNumber(sheetItem.getItemNumber());
+            ItemOrderSheetProjection itemStock = itemRepository.findItemOrderSheetByItemNumber(user.getId(), request.getIsCart(), sheetItem.getItemNumber());
             if(itemStock==null){
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", sheetItem.getItemNumber()));
             }
@@ -188,14 +188,10 @@ public class OrderService {
             }
             int price = 0;
 
-            if(request.getIsCart()){
-                price = itemStock.getCartPrice();
+            if(itemStock.getIsOption()){
+                price = itemStock.getItemPrice() + itemStock.getOptionPrice();
             } else {
-                if(itemStock.getIsOption()){
-                    price = itemStock.getItemPrice() + itemStock.getOptionPrice();
-                } else {
-                    price = itemStock.getItemPrice();
-                }
+                price = itemStock.getItemPrice();
             }
 
             int deliveryPrice = 0;

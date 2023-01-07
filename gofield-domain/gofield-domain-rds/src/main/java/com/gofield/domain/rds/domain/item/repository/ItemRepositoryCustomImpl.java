@@ -733,11 +733,52 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public ItemOrderSheetProjection findItemOrderSheetByItemNumber(String itemNumber) {
+    public ItemOrderSheetProjection findItemOrderSheetByItemNumber(Long userId, Boolean isCart, String itemNumber) {
+        if(isCart){
+            return jpaQueryFactory
+                    .select(new QItemOrderSheetProjection(
+                            item.id,
+                            brand.name,
+                            item.name,
+                            itemOption.viewName,
+                            itemStock.sellerId,
+                            item.bundle.id,
+                            itemOption.id,
+                            item.thumbnail,
+                            itemStock.itemNumber,
+                            cart.price,
+                            itemOption.optionPrice,
+                            item.delivery,
+                            item.deliveryPrice,
+                            itemOption.optionType,
+                            itemStock.qty,
+                            item.isOption,
+                            itemStock.status,
+                            shippingTemplate.isCondition,
+                            shippingTemplate.condition,
+                            shippingTemplate.chargeType,
+                            shippingTemplate.charge,
+                            shippingTemplate.feeJeju,
+                            shippingTemplate.feeJejuBesides))
+                    .from(itemStock)
+                    .innerJoin(cart)
+                    .on(itemStock.itemNumber.eq(cart.itemNumber), cart.itemNumber.eq(itemNumber), cart.userId.eq(userId))
+                    .innerJoin(item)
+                    .on(itemStock.item.id.eq(item.id))
+                    .innerJoin(brand)
+                    .on(item.brand.id.eq(brand.id))
+                    .innerJoin(shippingTemplate)
+                    .on(item.shippingTemplate.id.eq(shippingTemplate.id))
+                    .leftJoin(itemOption)
+                    .on(itemStock.itemNumber.eq(itemOption.itemNumber))
+                    .where(item.deleteDate.isNull())
+                    .fetchOne();
+        }
+
         return jpaQueryFactory
                 .select(new QItemOrderSheetProjection(
                         item.id,
-                        item.brand.name,
+                        brand.name,
                         item.name,
                         itemOption.viewName,
                         itemStock.sellerId,
@@ -745,7 +786,6 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemOption.id,
                         item.thumbnail,
                         itemStock.itemNumber,
-                        cart.price,
                         item.price,
                         itemOption.optionPrice,
                         item.delivery,
@@ -761,17 +801,15 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         shippingTemplate.feeJeju,
                         shippingTemplate.feeJejuBesides))
                 .from(itemStock)
-                .leftJoin(cart)
-                .on(itemStock.itemNumber.eq(cart.itemNumber))
                 .innerJoin(item)
-                .on(itemStock.item.id.eq(item.id))
+                .on(itemStock.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .innerJoin(shippingTemplate)
                 .on(item.shippingTemplate.id.eq(shippingTemplate.id))
                 .leftJoin(itemOption)
                 .on(itemStock.itemNumber.eq(itemOption.itemNumber))
-                .where(item.deleteDate.isNull(), itemStock.itemNumber.eq(itemNumber))
+                .where(item.deleteDate.isNull())
                 .fetchOne();
     }
 
