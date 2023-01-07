@@ -10,6 +10,7 @@ import com.gofield.common.exception.*;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.domain.rds.domain.common.EGofieldService;
 import com.gofield.domain.rds.domain.common.PaginationResponse;
@@ -405,7 +406,7 @@ public class OrderService {
         OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderItem.getOrderShipping().getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE);
         String thumbnail = orderItemInfo.getIsOption() ? itemOption.getItem().getThumbnail() : item.getThumbnail();
         orderShippingLogRepository.save(orderShippingLog);
-        thirdPartyService.sendCancelSlackNotification(SlackChannelType.CHANGE, orderCancelComment.getName(), orderCancelComment.getTel(), orderCancel.getOrder().getOrderNumber(), orderCancel.getCreateDate().toString(), orderCancelComment.getContent(), orderCancelItem.getName(), orderCancelItem.getOptionName(), thumbnail, orderCancel.getTotalAmount());
+        thirdPartyService.sendCancelSlackNotification(SlackChannelType.CHANGE, orderCancelComment.getName(), orderCancelComment.getTel(), orderCancel.getOrder().getOrderNumber(), orderCancel.getCreateDate().toString(), orderCancelComment.getContent(), orderCancelItem.getName(), orderCancelItem.getOptionName(), CommonUtils.makeCloudFrontAdminUrl(thumbnail), orderCancel.getTotalAmount());
     }
 
 
@@ -440,7 +441,7 @@ public class OrderService {
         OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderItem.getOrderShipping().getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN);
         orderShippingLogRepository.save(orderShippingLog);
         String thumbnail = orderItemInfo.getIsOption() ? itemOption.getItem().getThumbnail() : item.getThumbnail();
-        thirdPartyService.sendCancelSlackNotification(SlackChannelType.RETURN, orderCancelComment.getName(), orderCancelComment.getTel(), orderCancel.getOrder().getOrderNumber(), orderCancel.getCreateDate().toString(), orderCancelComment.getContent(), orderCancelItem.getName(), orderCancelItem.getOptionName(), thumbnail, orderCancel.getTotalAmount());
+        thirdPartyService.sendCancelSlackNotification(SlackChannelType.RETURN, orderCancelComment.getName(), orderCancelComment.getTel(), orderCancel.getOrder().getOrderNumber(), orderCancel.getCreateDate().toString(), orderCancelComment.getContent(), orderCancelItem.getName(), orderCancelItem.getOptionName(), CommonUtils.makeCloudFrontAdminUrl(thumbnail), orderCancel.getTotalAmount());
     }
 
     @Transactional
@@ -474,7 +475,7 @@ public class OrderService {
         OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderItem.getOrderShipping().getId(), user.getId(), EGofieldService.GOFIELD_API, EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL);
         orderShippingLogRepository.save(orderShippingLog);
         String thumbnail = orderItemInfo.getIsOption() ? itemOption.getItem().getThumbnail() : item.getThumbnail();
-        thirdPartyService.sendCancelSlackNotification(SlackChannelType.CANCEL, orderCancelComment.getName(), orderCancelComment.getTel(), orderCancel.getOrder().getOrderNumber(), orderCancel.getCreateDate().toString(), orderCancelComment.getContent(), orderCancelItem.getName(), orderCancelItem.getOptionName(), thumbnail, orderCancel.getTotalAmount());
+        thirdPartyService.sendCancelSlackNotification(SlackChannelType.CANCEL, orderCancelComment.getName(), orderCancelComment.getTel(), orderCancel.getOrder().getOrderNumber(), orderCancel.getCreateDate().toString(), orderCancelComment.getContent(), orderCancelItem.getName(), orderCancelItem.getOptionName(), CommonUtils.makeCloudFrontAdminUrl(thumbnail), orderCancel.getTotalAmount());
     }
 
     @Transactional(readOnly = true)

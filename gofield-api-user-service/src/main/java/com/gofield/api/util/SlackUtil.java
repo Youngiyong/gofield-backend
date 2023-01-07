@@ -24,7 +24,7 @@ public class SlackUtil {
         JSONObject field = new JSONObject();
         List<JSONObject> list = new ArrayList<>();
         field.put("type", "mrkdwn");
-        field.put("text", String.format("*%s:*\n%s", section, data));
+        field.put("text", String.format("*%s*\n%s", section, data));
         list.add(field);
         result.put("type", "section");
         result.put("fields", list);
@@ -36,7 +36,7 @@ public class SlackUtil {
         JSONObject field = new JSONObject();
         List<JSONObject> list = new ArrayList<>();
         field.put("type", "mrkdwn");
-        field.put("text", String.format("*%s:*\n%s", section, data));
+        field.put("text", String.format("*%s*\n%s", section, data));
         list.add(field);
         result.put("type", "section");
         result.put("fields", list);

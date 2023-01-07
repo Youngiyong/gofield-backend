@@ -19,7 +19,6 @@ public class ItemProjection {
     private final String description;
     private final String itemNumber;
     private final int price;
-
     private final int deliveryPrice;
     private final int qty;
     private final EItemStatusFlag status;

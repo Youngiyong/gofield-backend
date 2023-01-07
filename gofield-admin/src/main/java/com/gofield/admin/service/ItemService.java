@@ -145,7 +145,7 @@ public class ItemService {
         ItemDetail itemDetail = item.getDetail();
         ShippingTemplate shippingTemplate = item.getShippingTemplate();
         String optionList = AdminUtil.makeOption(itemDto);
-        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), optionList, itemDto.getDescription());
+        itemDetail.update(itemDto.getGender(), itemDto.getSpec(), itemDto.getDescription(), optionList);
         Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
         shippingTemplate.update(
                 isCondition,
@@ -179,7 +179,7 @@ public class ItemService {
                     List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
                     List<Long> itemStockIdList = itemStockList.stream().map(p -> p.getId()).collect(Collectors.toList());
                     itemStockRepository.deleteIdList(itemStockIdList, item.getId());
-                    item.deleteAllOptions();
+                    item.deleteAllOptions(item.getOptions());
                     item.removeAllOptionGroups(item.getOptionGroups());
                     String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
                     if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
@@ -239,7 +239,7 @@ public class ItemService {
 
                     //새로추가 되는것들
                     if(optionItem.getItemNumber().equals("")){
-                        ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice(), optionItem.getPrice());
+                        ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice()+optionItem.getPrice(), optionItem.getPrice());
                         int qty = optionItem.getQty();
                         if (optionManager.getOptionGroupList().equals(EItemOptionTypeFlag.SIMPLE)) {
                             //단독형은 999개로 임시로 넣기

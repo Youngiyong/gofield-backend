@@ -14,7 +14,6 @@ public class ItemNonMemberProjection {
     private final String brandName;
     private final Long sellerId;
     private final Long bundleId;
-
     private final Long shippingTemplateId;
     private final String thumbnail;
     private final String description;

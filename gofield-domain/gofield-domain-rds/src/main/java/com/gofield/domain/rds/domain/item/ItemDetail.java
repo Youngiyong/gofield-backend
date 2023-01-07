@@ -52,11 +52,11 @@ public class ItemDetail extends BaseTimeEntity {
                 .build();
     }
 
-    public void update(EItemGenderFlag gender, EItemSpecFlag spec, String itemOption, String description){
+    public void update(EItemGenderFlag gender, EItemSpecFlag spec, String description, String itemOption){
         this.gender = gender;
         this.spec = spec;
-        this.itemOption = itemOption;
         this.description = description;
+        this.itemOption = itemOption;
     }
 
     public void delete(){

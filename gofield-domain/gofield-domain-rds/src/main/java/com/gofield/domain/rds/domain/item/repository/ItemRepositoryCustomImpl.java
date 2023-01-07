@@ -686,7 +686,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.bundle.id,
                         item.shippingTemplate.id,
                         item.thumbnail,
-                        itemDetail.description,
+                        itemDetail.description.as("description"),
                         item.itemNumber,
                         item.price,
                         item.deliveryPrice,
@@ -699,7 +699,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
-                        itemDetail.itemOption))
+                        itemDetail.itemOption.as("option")))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))

@@ -32,7 +32,6 @@ public class ItemProjectionResponse {
     private List<String> images;
     private String tags;
     private String option;
-
     private ShippingTemplate shippingTemplate;
 
     @Builder
