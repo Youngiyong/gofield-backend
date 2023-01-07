@@ -1,8 +1,10 @@
 package com.gofield.api.config.enummapper;
 
 import com.gofield.common.utils.EnumMapper;
+import com.gofield.domain.rds.domain.faq.EFaqTypeFlag;
 import com.gofield.domain.rds.domain.item.EItemBundleSort;
 import com.gofield.domain.rds.domain.item.EItemSort;
+import com.gofield.domain.rds.domain.notice.ENoticeTypeFlag;
 import com.gofield.domain.rds.domain.order.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -25,6 +27,8 @@ public class EnumMapperFactoryConfig {
         enumMapperFactory.putEnumModel("ORDER_CHANGE_REASON", EOrderChangeClientReason.class);
         enumMapperFactory.putEnumModel("ITEM_BUNDLE_SORT", EItemBundleSort.class);
         enumMapperFactory.putEnumModel("ITEM_SORT", EItemSort.class);
+        enumMapperFactory.putEnumCodeModel("FAQ_TYPE", EFaqTypeFlag.class);
+        enumMapperFactory.putEnumCodeModel("NOTICE_TYPE", ENoticeTypeFlag.class);
         return enumMapperFactory;
     }
 
