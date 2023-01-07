@@ -188,10 +188,14 @@ public class OrderService {
             }
             int price = 0;
 
-            if(itemStock.getIsOption()){
-                price = itemStock.getItemPrice() + itemStock.getOptionPrice();
-            } else {
+            if(request.getIsCart()){
                 price = itemStock.getItemPrice();
+            } else {
+                if(itemStock.getIsOption()){
+                    price = itemStock.getItemPrice() + itemStock.getOptionPrice();
+                } else {
+                    price = itemStock.getItemPrice();
+                }
             }
 
             int deliveryPrice = 0;
