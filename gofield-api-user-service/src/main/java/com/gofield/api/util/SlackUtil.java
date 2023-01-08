@@ -91,7 +91,7 @@ public class SlackUtil {
         JSONObject header = makeHeader(String.format("주문번호: %s", orderNumber));
         JSONObject usernameSection = makeSection("이름", username);
         JSONObject userTelSection = makeSection("전화번호", userTel);
-        JSONObject orderDateSection = makeSection("주문시간", orderDate);
+        JSONObject orderDateSection = makeSection("신청날짜", orderDate);
         JSONObject totalAmountSection = makeSection("금액", String.valueOf(totalAmount));
         JSONObject commentSection = makeSection("사유", comment);
         JSONObject itemInfoSection = makeItemImageSection(itemName, optionName, thumbnail);
@@ -112,7 +112,7 @@ public class SlackUtil {
         JSONObject header = makeHeader(String.format("주문번호: %s", orderNumber));
         JSONObject usernameSection = makeSection("이름", username);
         JSONObject userTelSection = makeSection("전화번호", userTel);
-        JSONObject orderDateSection = makeSection("주문시간", orderDate);
+        JSONObject orderDateSection = makeSection("주문날짜", orderDate);
         JSONObject totalAmountSection = makeSection("금액", String.valueOf(totalAmount));
         JSONObject orderNameSection = makeSection("주문명", orderName);
         blocks.add(header);
@@ -132,7 +132,7 @@ public class SlackUtil {
         JSONObject header = makeHeader(String.format("상품번호: %s", itemNumber));
         JSONObject usernameSection = makeSection("이름", username);
         JSONObject titleSection = makeSection("제목", title);
-        JSONObject createDateSection = makeSection("문의시간", createDate);
+        JSONObject createDateSection = makeSection("문의날짜", createDate);
         JSONObject itemInfoSection = makeItemImageSection(itemName, null, thumbnail);
         blocks.add(header);
         blocks.add(usernameSection);
