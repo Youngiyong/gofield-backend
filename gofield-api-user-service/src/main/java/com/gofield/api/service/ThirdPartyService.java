@@ -310,7 +310,7 @@ public class ThirdPartyService {
             cartRepository.deleteByCartIdList(cartIdList);
         }
         orderWaitRepository.delete(orderWait);
-        sendOrderSlackNotification(SlackChannelType.ORDER, shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), order.getCreateDate().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)), response.getOrderName(), null, order.getTotalAmount());
+        sendOrderSlackNotification(SlackChannelType.ORDER, shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), order.getCreateDate().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")), response.getOrderName(), null, order.getTotalAmount());
 
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
