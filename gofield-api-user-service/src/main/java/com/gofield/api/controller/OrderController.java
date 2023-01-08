@@ -64,7 +64,7 @@ public class OrderController {
 
     @ApiOperation(value = "주문목록")
     @GetMapping("/v1")
-    public ApiResponse<OrderListResponse> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable,
+    public ApiResponse<OrderListResponse> getOrderList(@PageableDefault(sort="createDate", direction = Sort.Direction.DESC) Pageable pageable,
                                                        @RequestParam(required = false) EOrderShippingStatusFlag status){
         return ApiResponse.success(orderService.getOrderList(status, pageable));
     }
@@ -105,13 +105,13 @@ public class OrderController {
 
     @ApiOperation(value = "리뷰 관리 - 리뷰 작성 가능 내역")
     @GetMapping("/v1/review/item")
-    public ApiResponse<OrderItemReviewListResponse> getOrderItemReviewList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+    public ApiResponse<OrderItemReviewListResponse> getOrderItemReviewList(@PageableDefault(sort="createDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ApiResponse.success(orderService.getOrderItemReviewList(pageable));
     }
 
     @ApiOperation(value = "리뷰 내역")
     @GetMapping("/v1/review")
-    public ApiResponse<OrderItemReviewDetailListResponse> gerOrderItemReviewHistoryList(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+    public ApiResponse<OrderItemReviewDetailListResponse> gerOrderItemReviewHistoryList(@PageableDefault(sort="createDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ApiResponse.success(orderService.getOrderItemReviewDetailList(pageable));
     }
 
@@ -123,7 +123,7 @@ public class OrderController {
 
     @ApiOperation(value = "취소/반품/교환 리스트")
     @GetMapping("/v1/cancel")
-    public ApiResponse<OrderCancelListResponse> createOrderCancel(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+    public ApiResponse<OrderCancelListResponse> createOrderCancel(@PageableDefault(sort="createDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ApiResponse.success(orderService.getOrderCancelList(pageable));
     }
 

@@ -56,7 +56,7 @@ public class SlackUtil {
         if(optionName==null){
             field.put("text", String.format("*상품명:*\n%s", itemName));
         } else {
-            field.put("text", String.format("*상품명:*\n%s(%s)", itemName, optionName));
+            field.put("text", String.format("*상품명*\n%s\n%s)", itemName, optionName));
         }
         list.add(field);
         result.put("type", "section");

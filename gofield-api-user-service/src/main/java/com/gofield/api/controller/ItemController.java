@@ -108,7 +108,7 @@ public class ItemController {
     @ApiOperation(value = "묶음 상품 - 리뷰 조회")
     @GetMapping("/v1/bundle/{bundleId}/review")
     public ApiResponse<ItemBundleReviewListResponse> getBundleItemReviewList(@PathVariable Long bundleId,
-                                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+                                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ApiResponse.success(itemService.getBundleItemReviewList(bundleId, pageable));
     }
 
@@ -135,7 +135,7 @@ public class ItemController {
     @GetMapping("/v1/{itemId}/qna")
     public ApiResponse<ItemQnaPaginationResponse> getQnaList(@PathVariable Long itemId,
                                                              @RequestParam(required = false, defaultValue = "false") Boolean isMe,
-                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+                                                             @PageableDefault(sort="createDate", direction = Sort.Direction.DESC) Pageable pageable){
         return ApiResponse.success(itemService.getQnaList(itemId, isMe, pageable));
     }
 

@@ -1,6 +1,5 @@
 package com.gofield.api.controller;
 
-
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.CommonService;
 import com.gofield.common.api.core.common.dto.response.ApiResponse;
@@ -14,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/api/code")
+@RequestMapping("/api/common")
 @RestController
 @RequiredArgsConstructor
 public class CommonController {
