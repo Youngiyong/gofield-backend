@@ -170,6 +170,8 @@ public class ItemService {
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
         ItemOptionManagerDto optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
 
+        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, optionManager.getIsOption());
+
         //옵션 상품 업데이트
         if(!optionManager.getOptionItemList().isEmpty()){
             if(item.getIsOption()) {
@@ -277,8 +279,7 @@ public class ItemService {
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
         }
-        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, optionManager.getIsOption(), thumbnail);
-
+        item.updateThumbnail(thumbnail);
         if(images!=null && !images.isEmpty()){
             for(MultipartFile file: images){
                 if(!file.getOriginalFilename().equals("")){
