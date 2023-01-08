@@ -126,4 +126,22 @@ public class SlackUtil {
         return result;
     }
 
+
+    public static JSONObject makeQna(String username, String itemNumber, String itemName, String thumbnail, String title, String createDate) {
+        List<JSONObject> blocks = new ArrayList<>();
+        JSONObject header = makeHeader(String.format("상품번호: %s", itemNumber));
+        JSONObject usernameSection = makeSection("이름", username);
+        JSONObject titleSection = makeSection("제목", title);
+        JSONObject createDateSection = makeSection("문의시간", createDate);
+        JSONObject itemInfoSection = makeItemImageSection(itemName, null, thumbnail);
+        blocks.add(header);
+        blocks.add(usernameSection);
+        blocks.add(titleSection);
+        blocks.add(itemInfoSection);
+        blocks.add(createDateSection);
+        JSONObject result = new JSONObject();
+        result.put("blocks", blocks);
+        return result;
+    }
+
 }

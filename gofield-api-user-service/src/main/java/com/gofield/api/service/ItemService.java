@@ -7,6 +7,7 @@ import com.gofield.common.exception.InvalidException;
 import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
@@ -41,6 +42,7 @@ public class ItemService {
     private final ItemStockRepository itemStockRepository;
     private final ItemRecentRepository itemRecentRepository;
     private final ItemOptionGroupRepository itemOptionGroupRepository;
+    private final ThirdPartyService thirdPartyService;
 
     @Transactional
     public void userLikeItem(Long itemId, ItemRequest.ItemLike request){
@@ -199,6 +201,7 @@ public class ItemService {
         Item item = itemRepository.findByItemId(itemId);
         ItemQna qna = ItemQna.newInstance(item, user, user.getNickName()==null ? user.getName() : user.getNickName(), request.getTitle(), request.getDescription(), request.getIsVisible() == null ? true : request.getIsVisible());
         item.addQna(qna);
+        thirdPartyService.sendItemQnaNotification(user.getName()==null ? user.getNickName() : user.getName(), item.getItemNumber(), item.getName(), CommonUtils.makeCloudFrontAdminUrl(item.getThumbnail()), qna.getTitle(), qna.getCreateDate().toString());
     }
 
     @Transactional

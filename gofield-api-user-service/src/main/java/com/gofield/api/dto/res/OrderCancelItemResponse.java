@@ -43,9 +43,11 @@ public class OrderCancelItemResponse {
     public static OrderCancelItemResponse of(OrderCancelItem orderCancelItem){
         Item item = orderCancelItem.getItem();
         ItemOption itemOption = orderCancelItem.getOptionName()!=null ? orderCancelItem.getItemOption() : null;
-        String itemNumber = item.getItemNumber();
+        String itemNumber = null;
         if(orderCancelItem.getItemOption()!=null){
             itemNumber = itemOption.getItemNumber();
+        } else {
+            itemNumber = item.getItemNumber();
         }
         return OrderCancelItemResponse.builder()
                 .id(orderCancelItem.getId())

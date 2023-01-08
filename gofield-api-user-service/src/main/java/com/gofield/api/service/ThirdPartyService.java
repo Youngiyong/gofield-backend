@@ -158,7 +158,11 @@ public class ThirdPartyService {
     public void sendOrderSlackNotification(SlackChannelType channel, String username, String userTel, String orderNumber, String orderDate, String orderName, String comment, int totalAmount) {
         JSONObject request = SlackUtil.makeOrder(username, userTel, orderNumber, orderDate, orderName, totalAmount);
         slackWebhookApiClient.sendOrderNotification(request);
+    }
 
+    public void sendItemQnaNotification(String username, String itemNumber, String itemName, String thumbnail, String question, String createDate) {
+        JSONObject request = SlackUtil.makeQna(username, itemNumber, itemName, thumbnail, question, createDate);
+        slackWebhookApiClient.sendOrderNotification(request);
     }
 
     public void sendCancelSlackNotification(SlackChannelType channel, String username, String userTel, String orderNumber, String orderDate, String comment, String itemName, String optionName, String thumbnail, int totalAmount) {
