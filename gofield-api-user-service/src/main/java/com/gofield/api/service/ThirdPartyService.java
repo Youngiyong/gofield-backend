@@ -51,6 +51,8 @@ import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -308,7 +310,7 @@ public class ThirdPartyService {
             cartRepository.deleteByCartIdList(cartIdList);
         }
         orderWaitRepository.delete(orderWait);
-        sendOrderSlackNotification(SlackChannelType.ORDER, shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), order.getCreateDate().toString(), response.getOrderName(), null, order.getTotalAmount());
+        sendOrderSlackNotification(SlackChannelType.ORDER, shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), order.getCreateDate().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)), response.getOrderName(), null, order.getTotalAmount());
 
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;

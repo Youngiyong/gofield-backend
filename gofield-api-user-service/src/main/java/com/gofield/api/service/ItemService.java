@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -202,7 +204,7 @@ public class ItemService {
         Item item = itemRepository.findByItemId(itemId);
         ItemQna qna = ItemQna.newInstance(item, user, user.getNickName()==null ? user.getName() : user.getNickName(), request.getTitle(), request.getDescription(), request.getIsVisible() == null ? true : request.getIsVisible());
         item.addQna(qna);
-        thirdPartyService.sendItemQnaNotification(user.getName()==null ? user.getNickName() : user.getName(), item.getItemNumber(), item.getName(), CommonUtils.makeCloudFrontAdminUrl(item.getThumbnail()), qna.getTitle(), LocalDateTime.now().toString());
+        thirdPartyService.sendItemQnaNotification(user.getName()==null ? user.getNickName() : user.getName(), item.getItemNumber(), item.getName(), CommonUtils.makeCloudFrontAdminUrl(item.getThumbnail()), qna.getTitle(), LocalDateTime.now().format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.LONG)));
     }
 
     @Transactional
