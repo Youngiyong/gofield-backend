@@ -87,7 +87,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
                 .where(itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
-                .orderBy(itemBundleAggregation.reviewCount.desc())
+                .orderBy(itemBundleAggregation.reviewCount.desc(), itemBundleAggregation.reviewScore.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
