@@ -170,7 +170,7 @@ public class ItemService {
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
         ItemOptionManagerDto optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
 
-        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, optionManager.getIsOption());
+        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags);
 
         //옵션 상품 업데이트
         if(!optionManager.getOptionItemList().isEmpty()){
@@ -204,75 +204,73 @@ public class ItemService {
                 }
             }
 
-            //조합형, 단독형 케이스
-            if(itemDto.getOptionInfo()!=null){
-                List<ItemOptionItemDto> optionItemList = ItemOptionItemDto.ofEdit(optionManager.getOptionItemList());
-                List<ItemNameValueDto> optionNameValueList = optionManager.getOptionGroupList();
-                List<ItemOptionGroupDto> optionGroupDtoList = ItemOptionGroupDto.of(optionManager.getOptionGroupList());
+            List<ItemOptionItemDto> optionItemList = ItemOptionItemDto.ofEdit(optionManager.getOptionItemList());
+            List<ItemNameValueDto> optionNameValueList = optionManager.getOptionGroupList();
+            List<ItemOptionGroupDto> optionGroupDtoList = ItemOptionGroupDto.of(optionManager.getOptionGroupList());
 
-                //옵션 그룹 생성 및 수정
-                for(ItemNameValueDto optionGroup: optionNameValueList) {
-                    ItemOptionGroupDto optionGroupDto = ItemOptionGroupDto.ofOption(optionGroup);
-                    if(optionGroup.getId()==0){
-                        ItemOptionGroup itemOptionGroup = ItemOptionGroup.newInstance(item, optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()), null);
-                        item.addOptionGroup(itemOptionGroup);
-                    } else {
-                        ItemOptionGroup itemOptionGroup = itemOptionGroupRepository.findByGroupIdAndItemId(optionGroup.getId(), item.getId());
-                        itemOptionGroup.update(optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()));
-                    }
-                }
-
-                List<Long> optionGroupIdList = optionManager.getOptionGroupDeleteIds();
-
-                //옵션 그룹 삭제
-                if(!optionGroupIdList.isEmpty()){
-                    List<ItemOptionGroup> itemOptionGroupList = itemOptionGroupRepository.findAllByItemIdAndInIdList(optionGroupIdList, item.getId());
-                    itemOptionGroupList.stream().forEach(itemOptionGroup -> itemOptionGroupRepository.delete(itemOptionGroup));
-                }
-
-                //옵션 추가 및 수정
-                for(ItemOptionItemDto optionItem: optionItemList) {
-                    List<String> optionNameList = optionItem.getValues().stream().collect(Collectors.toList());
-                    List<String> viewName = new ArrayList<>();
-
-                    for (int i = 0; i < optionNameList.size(); i++) {
-                        viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)));
-                    }
-
-                    //새로추가 되는것들
-                    if(optionItem.getItemNumber().equals("")){
-                        ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice()+optionItem.getPrice(), optionItem.getPrice());
-                        int qty = optionItem.getQty();
-                        if (optionManager.getOptionGroupList().equals(EItemOptionTypeFlag.SIMPLE)) {
-                            //단독형은 999개로 임시로 넣기
-                            qty = 999;
-                        }
-                        ItemStock itemStock = ItemStock.newInstance(item, optionItem.getStatus(), EItemStockFlag.OPTION, itemOption.getItemNumber(), 1L, qty);
-                        item.addOption(itemOption);
-                        itemTemp.update();
-                        item.addStock(itemStock);
-                    } else {
-                        ItemOption itemOption = itemOptionRepository.findByItemIdAndItemNumber(item.getId(), optionItem.getItemNumber());
-                        ItemStock itemStock = itemStockRepository.findByItemNumber(optionItem.getItemNumber());
-                        if(optionItem.getStatus().equals(EItemStatusFlag.SOLD_OUT)){
-                            aggregationUpdate = true;
-                        }
-                        itemStock.update(optionItem.getStatus(), EItemStockFlag.OPTION, optionItem.getQty());
-                        itemOption.update(optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice()+optionItem.getPrice(), optionItem.getPrice());
-                    }
-                }
-
-                List<String> optionIdList = optionManager.getOptionItemListDeleteItemNumbers();
-                // 상품 옵션 삭제
-                if(!optionIdList.isEmpty()){
-                    List<ItemOption> itemOptionList = itemOptionRepository.findAllByItemIdAndInItemNumber(item.getId(), optionIdList);
-                    List<String> itemNumberList = itemOptionList.stream().map(p->p.getItemNumber()).collect(Collectors.toList());
-                    itemOptionList.stream().forEach(itemOption -> itemOption.delete());
-                    List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
-                    itemStockList.stream().forEach(itemStock -> itemStockRepository.delete(itemStock));
-                    cartRepository.deleteInItemNumber(itemNumberList);
+            //옵션 그룹 생성 및 수정
+            for(ItemNameValueDto optionGroup: optionNameValueList) {
+                ItemOptionGroupDto optionGroupDto = ItemOptionGroupDto.ofOption(optionGroup);
+                if(optionGroup.getId()==0){
+                    ItemOptionGroup itemOptionGroup = ItemOptionGroup.newInstance(item, optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()), null);
+                    item.addOptionGroup(itemOptionGroup);
+                } else {
+                    ItemOptionGroup itemOptionGroup = itemOptionGroupRepository.findByGroupIdAndItemId(optionGroup.getId(), item.getId());
+                    itemOptionGroup.update(optionManager.getOptionType(), optionGroupDto.getGroupTitle(), AdminUtil.toJsonStr(optionGroupDto.getOptionGroupList()));
                 }
             }
+
+            List<Long> optionGroupIdList = optionManager.getOptionGroupDeleteIds();
+
+            //옵션 그룹 삭제
+            if(!optionGroupIdList.isEmpty()){
+                List<ItemOptionGroup> itemOptionGroupList = itemOptionGroupRepository.findAllByItemIdAndInIdList(optionGroupIdList, item.getId());
+                itemOptionGroupList.stream().forEach(itemOptionGroup -> itemOptionGroupRepository.delete(itemOptionGroup));
+            }
+
+            //옵션 추가 및 수정
+            for(ItemOptionItemDto optionItem: optionItemList) {
+                List<String> optionNameList = optionItem.getValues().stream().collect(Collectors.toList());
+                List<String> viewName = new ArrayList<>();
+
+                for (int i = 0; i < optionNameList.size(); i++) {
+                    viewName.add(String.format("%s(%s)", optionGroupDtoList.get(i).getGroupTitle(), optionNameList.get(i)));
+                }
+
+                //새로추가 되는것들
+                if(optionItem.getItemNumber().equals("")){
+                    ItemOption itemOption = ItemOption.newInstance(item, makeItemNumber(itemTemp.getItemNumber()), optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice()+optionItem.getPrice(), optionItem.getPrice());
+                    int qty = optionItem.getQty();
+                    if (optionManager.getOptionGroupList().equals(EItemOptionTypeFlag.SIMPLE)) {
+                        //단독형은 999개로 임시로 넣기
+                        qty = 999;
+                    }
+                    ItemStock itemStock = ItemStock.newInstance(item, optionItem.getStatus(), EItemStockFlag.OPTION, itemOption.getItemNumber(), 1L, qty);
+                    item.addOption(itemOption);
+                    itemTemp.update();
+                    item.addStock(itemStock);
+                } else {
+                    ItemOption itemOption = itemOptionRepository.findByItemIdAndItemNumber(item.getId(), optionItem.getItemNumber());
+                    ItemStock itemStock = itemStockRepository.findByItemNumber(optionItem.getItemNumber());
+                    if(optionItem.getStatus().equals(EItemStatusFlag.SOLD_OUT)){
+                        aggregationUpdate = true;
+                    }
+                    itemStock.update(optionItem.getStatus(), EItemStockFlag.OPTION, optionItem.getQty());
+                    itemOption.update(optionManager.getOptionType(), AdminUtil.toJsonStr(optionItem.getValues()), AdminUtil.toJsonStr(viewName), item.getPrice()+optionItem.getPrice(), optionItem.getPrice());
+                }
+            }
+
+            List<String> optionIdList = optionManager.getOptionItemListDeleteItemNumbers();
+            // 상품 옵션 삭제
+            if(!optionIdList.isEmpty()){
+                List<ItemOption> itemOptionList = itemOptionRepository.findAllByItemIdAndInItemNumber(item.getId(), optionIdList);
+                List<String> itemNumberList = itemOptionList.stream().map(p->p.getItemNumber()).collect(Collectors.toList());
+                itemOptionList.stream().forEach(itemOption -> itemOption.delete());
+                List<ItemStock> itemStockList = itemStockRepository.findAllInItemNumber(itemNumberList);
+                itemStockList.stream().forEach(itemStock -> itemStockRepository.delete(itemStock));
+                cartRepository.deleteInItemNumber(itemNumberList);
+            }
+            item.updateOptionTrue();
         }
 
         String thumbnail = itemDto.getThumbnail()==null ? null : itemDto.getThumbnail().replace(Constants.CDN_URL, "").replace(Constants.RESIZE_ADMIN, "");
