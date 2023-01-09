@@ -82,7 +82,7 @@
                                             <table class="table table-hover">
                                                 <tbody th:each="children : ${data.children}">
                                                 <tr th:if="${children.children.isEmpty()}" data-widget="expandable-table" aria-expanded="true">
-                                                    <td th:text="${children.name}>
+                                                    <td th:text="${children.name}">
                                                     </td>
                                                 </tr>
                                                 <tr th:if="${!children.children.isEmpty()}" data-widget="expandable-table" aria-expanded="true">
@@ -90,7 +90,6 @@
                                                         <button type="button" class="btn btn-primary p-0">
                                                             <i th:text="${children.name}" class="expandable-table-caret fas fa-caret-right fa-fw"></i>
                                                         </button>
-
                                                     </td>
                                                 </tr>
                                                 <tr class="expandable-body d-none">

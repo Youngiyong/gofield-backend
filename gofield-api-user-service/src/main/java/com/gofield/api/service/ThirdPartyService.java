@@ -130,8 +130,6 @@ public class ThirdPartyService {
     private final ItemRepository itemRepository;
     private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final CartRepository cartRepository;
-
-    private final UserRepository userRepository;
     private final OrderWaitRepository orderWaitRepository;
     private final ItemOptionRepository itemOptionRepository;
     private final CodeRepository codeRepository;

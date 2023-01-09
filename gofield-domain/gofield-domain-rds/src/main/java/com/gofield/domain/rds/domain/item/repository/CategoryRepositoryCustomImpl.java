@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -52,12 +53,25 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
     @Override
     public List<Category> findAllSubCategoryByCategoryId(Long categoryId) {
-        return jpaQueryFactory
+        List<Category> list =  jpaQueryFactory
                 .selectFrom(category)
                 .where(category.parent.id.eq(categoryId),
                         category.isActive.isTrue())
                 .orderBy(category.sort.asc())
                 .fetch();
+
+        List<Category> result = new ArrayList<>();
+        for(Category cat : list){
+            List<Category> childrenList = cat.getChildren();
+            if(!childrenList.isEmpty()){
+                for(Category subCat: childrenList){
+                    result.add(subCat);
+                }
+            } else {
+                result.add(cat);
+            }
+        }
+        return result;
     }
 
     @Override

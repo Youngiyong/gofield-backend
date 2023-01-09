@@ -33,7 +33,7 @@ public class CategoryController {
         model.addAttribute("totalItems", result.getPage().getTotalElements());
         model.addAttribute("totalPages", result.getPage().getTotalPages());
         model.addAttribute("pageSize", pageable.getPageSize());
-        return "category/list";
+        return "category/list2";
     }
 
     @GetMapping("/category/edit/{id}")
