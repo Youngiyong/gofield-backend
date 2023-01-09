@@ -32,4 +32,8 @@ public class LocalDateTimeUtils {
     public static String LocalDateTimeToString(){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
+
+    public static String LocalDateTimeToString(LocalDateTime localDateTime){
+        return localDateTime.format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
+    }
 }

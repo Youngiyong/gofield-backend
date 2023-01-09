@@ -47,7 +47,7 @@ public class CommonController {
 
     @ApiOperation(value = "자주 묻는 질문 리스트")
     @GetMapping("/v1/faq")
-    public ApiResponse<FaqListResponse> getFaqList(@PageableDefault(sort="id", direction = Sort.Direction.DESC) Pageable pageable){
-        return ApiResponse.success(commonService.getFaqList(pageable));
+    public ApiResponse<FaqListResponse> getFaqList(@RequestParam(required = false) String keyword, @PageableDefault(sort="id", direction = Sort.Direction.DESC) Pageable pageable){
+        return ApiResponse.success(commonService.getFaqList(keyword, pageable));
     }
 }

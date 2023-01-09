@@ -23,14 +23,21 @@ public class FaqRepositoryCustomImpl implements FaqRepositoryCustom {
         return null;
     }
 
+    private BooleanExpression containsKeyword(String keyword){
+        if (keyword == null) {
+            return null;
+        }
+        return faq.question.contains(keyword);
+    }
+
     private final JPAQueryFactory jpaQueryFactory;
 
     @Override
-    public Page<Faq> findAllPaging(Pageable pageable, Boolean isUse) {
+    public Page<Faq> findAllPaging(String keyword, Pageable pageable, Boolean isUse) {
         List<Faq> result = jpaQueryFactory
                 .selectFrom(faq)
                 .from(faq)
-                .where(eqUse(isUse), faq.deleteDate.isNull())
+                .where(containsKeyword(keyword), eqUse(isUse), faq.deleteDate.isNull())
                 .limit(pageable.getPageSize())
                 .offset(pageable.getOffset())
                 .orderBy(faq.id.desc())
@@ -39,7 +46,7 @@ public class FaqRepositoryCustomImpl implements FaqRepositoryCustom {
         List<Long> totalCount = jpaQueryFactory
                 .select(faq.id)
                 .from(faq)
-                .where(eqUse(isUse), faq.deleteDate.isNull())
+                .where(containsKeyword(keyword), eqUse(isUse), faq.deleteDate.isNull())
                 .fetch();
 
         return new PageImpl<>(result, pageable, totalCount.size());

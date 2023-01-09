@@ -5,6 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
 public interface FaqRepositoryCustom {
-    Page<Faq> findAllPaging(Pageable pageable, Boolean isUse);
+    Page<Faq> findAllPaging(String keyword, Pageable pageable, Boolean isUse);
     Faq findByFaqId(Long faqId);
 }

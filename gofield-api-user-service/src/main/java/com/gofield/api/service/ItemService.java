@@ -8,6 +8,7 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.gofield.common.utils.CommonUtils;
+import com.gofield.common.utils.LocalDateTimeUtils;
 import com.gofield.domain.rds.domain.common.PaginationResponse;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
@@ -204,7 +205,7 @@ public class ItemService {
         Item item = itemRepository.findByItemId(itemId);
         ItemQna qna = ItemQna.newInstance(item, user, user.getNickName()==null ? user.getName() : user.getNickName(), request.getTitle(), request.getDescription(), request.getIsVisible() == null ? true : request.getIsVisible());
         item.addQna(qna);
-        thirdPartyService.sendItemQnaNotification(user.getName()==null ? user.getNickName() : user.getName(), item.getItemNumber(), item.getName(), CommonUtils.makeCloudFrontAdminUrl(item.getThumbnail()), qna.getTitle(), LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")));
+        thirdPartyService.sendItemQnaNotification(user.getName()==null ? user.getNickName() : user.getName(), item.getItemNumber(), item.getName(), CommonUtils.makeCloudFrontAdminUrl(item.getThumbnail()), qna.getTitle(), LocalDateTimeUtils.LocalDateTimeToString());
     }
 
     @Transactional

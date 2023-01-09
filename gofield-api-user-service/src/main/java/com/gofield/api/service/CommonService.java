@@ -51,8 +51,8 @@ public class CommonService {
     }
 
     @Transactional(readOnly = true)
-    public FaqListResponse getFaqList(Pageable pageable){
-        Page<Faq> result = faqRepository.findAllPaging(pageable, true);
+    public FaqListResponse getFaqList(String keyword, Pageable pageable){
+        Page<Faq> result = faqRepository.findAllPaging(keyword, pageable, true);
         List<FaqResponse> list = FaqResponse.of(result.getContent());
         return FaqListResponse.of(list, PaginationResponse.of(result));
     }
