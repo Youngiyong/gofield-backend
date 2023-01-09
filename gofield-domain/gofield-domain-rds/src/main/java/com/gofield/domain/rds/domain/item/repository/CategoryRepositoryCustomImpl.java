@@ -154,4 +154,12 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
         return new PageImpl<>(content, pageable, totalCount.size());
     }
+
+    @Override
+    public List<Category> findAllByKeyword(String keyword) {
+        return jpaQueryFactory
+                .selectFrom(category)
+                .where(containKeyword(keyword))
+                .fetch();
+    }
 }

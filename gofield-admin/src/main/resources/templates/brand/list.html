@@ -52,8 +52,8 @@
                                 <a class="btn btn-app float-right"  href="/brand/add">
                                     <i class="fas fa-edit"></i> 브랜드 추가
                                 </a>
-<!--                                <a class="btn btn-app float-right"  th:if="${keyword == null || keyword == ''}" th:href="${'/excel/brand'}"><i class="fas fa-edit"></i> 엑셀 다운</a>-->
-<!--                                <a class="btn btn-app float-right"  th:if="${keyword != null}" th:href="${'/excel/brand?keyword='+keyword}"><i class="fas fa-edit"></i> 엑셀 다운</a>-->
+                                <a class="btn btn-app float-right"  th:if="${keyword == null || keyword == ''}" th:href="${'/excel/brand'}"><i class="fas fa-edit"></i> 엑셀 다운</a>
+                                <a class="btn btn-app float-right"  th:if="${keyword != null}" th:href="${'/excel/brand?keyword='+keyword}"><i class="fas fa-edit"></i> 엑셀 다운</a>
                             </div>
 <!--                            <form th:action="@{/tutorials}" id="searchForm">-->
 <!--                                <input id="keyword" type="search" name="keyword" th:value="${keyword}" required class="form-control"-->
@@ -81,7 +81,7 @@
                                     <td class="text-center" th:text="${data.createDate}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                        <a class="btn btn-info btn-sm" th:href="${'/brand/edit/'+data.id}">
+                                        <a class="btn btn-info btn-sm" th:href="${'/brand/edit/'+data.id}" onclick="return confirm('수정하시겠습니까?');">
                                             <i class="fas fa-pencil-alt">
                                             </i>
                                             수정

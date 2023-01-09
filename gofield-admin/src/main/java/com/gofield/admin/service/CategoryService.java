@@ -2,6 +2,8 @@ package com.gofield.admin.service;
 
 import com.gofield.admin.dto.CategoryDto;
 import com.gofield.admin.dto.CategoryListDto;
+import com.gofield.admin.dto.response.projection.BrandInfoProjectionResponse;
+import com.gofield.admin.dto.response.projection.CategoryInfoProjectionResponse;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
@@ -67,6 +69,11 @@ public class CategoryService {
     public void delete(Long id){
         Category category = categoryRepository.findByCategoryId(id);
         categoryRepository.delete(category);
+    }
+
+    @Transactional(readOnly = true)
+    public List<CategoryInfoProjectionResponse> downloadCategories(String keyword){
+        return CategoryInfoProjectionResponse.of(categoryRepository.findAllByKeyword(keyword));
     }
 
 }

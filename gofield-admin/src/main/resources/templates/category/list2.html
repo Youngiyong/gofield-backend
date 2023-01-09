@@ -60,24 +60,17 @@
                                 <a class="btn btn-app float-right"  href="/category/add">
                                     <i class="fas fa-edit"></i> 카테고리 추가
                                 </a>
+                                <a class="btn btn-app float-right" th:if="${keyword == null || keyword == ''}" th:href="${'/excel/category'}"><i class="fas fa-edit"></i> 엑셀 다운</a>
+                                <a class="btn btn-app float-right" th:if="${keyword != null}" th:href="${'/excel/category?keyword='+keyword}"><i class="fas fa-edit"></i> 엑셀 다운</a>
                             </div>
 
                         </div>
                         <!-- /.card-header -->
-                        <div class="card-body p-0">
-                            <table class="table table-hover">
+                        <div class="card-body p-0" >
+                            <table class="table table-hover" >
                                 <tbody th:each="data : ${list}">
                                <tr th:if="${data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">
                                     <td th:text="${data.name}" class="border-0"></td>
-                                   <td style="text-align: right">
-                                       <a th:href="${'/category/edit/'+data.id}">
-                                           수정
-                                       </a>
-                                       &nbsp;
-                                       <a style="color: red" th:href="${'/category/delete/'+data.id}">
-                                           삭제
-                                       </a>
-                                   </td>
                                 </tr>
 
                                <tr th:if="${!data.children.isEmpty()}" data-widget="expandable-table" aria-expanded="false">
@@ -96,7 +89,7 @@
                                </tr>
                                <tr th:if="${!data.children.isEmpty()}" class="expandable-body">
                                    <td>
-                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+                                       <div class="p-0" style="height: 250px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
                                            <table class="table table-hover">
                                                <tbody th:each="children : ${data.children}">
                                                <tr data-widget="expandable-table" aria-expanded="false">
@@ -115,7 +108,7 @@
                                                </tr>
                                                <tr th:if="${!children.children.isEmpty()}" class="expandable-body">
                                                    <td>
-                                                       <div class="p-0" style="height: 500px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
+                                                       <div class="p-0" style="height: 250px; padding-top: 0px; margin-top: 0px; padding-bottom: 0px; margin-bottom: 0px;">
                                                            <table class="table table-hover">
                                                                <tbody th:each="subChildren : ${children.children}">
                                                                <tr data-widget="expandable-table" aria-expanded="false">

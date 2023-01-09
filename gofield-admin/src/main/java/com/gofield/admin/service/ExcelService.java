@@ -5,10 +5,7 @@ import com.gofield.admin.dto.OrderCancelDto;
 import com.gofield.admin.dto.OrderChangeDto;
 import com.gofield.admin.dto.OrderReturnDto;
 import com.gofield.admin.dto.OrderShippingDto;
-import com.gofield.admin.dto.response.projection.AdminInfoProjectionResponse;
-import com.gofield.admin.dto.response.projection.BrandInfoProjectionResponse;
-import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
-import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
+import com.gofield.admin.dto.response.projection.*;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderCancelStatusFlag;
 import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
@@ -22,11 +19,10 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ExcelService {
-
     private final ItemService itemService;
     private final BrandService brandService;
     private final ItemBundleService itemBundleService;
-
+    private final CategoryService categoryService;
     private final OrderService orderService;
 
     public List<BrandInfoProjectionResponse> downloadBrands(String keyword){
@@ -55,5 +51,9 @@ public class ExcelService {
 
     public List<OrderReturnDto> downloadOrderReturns(String keyword, EOrderCancelStatusFlag status){
         return orderService.downloadOrderReturns(keyword, status);
+    }
+
+    public List<CategoryInfoProjectionResponse> downloadCategories(String keyword){
+        return categoryService.downloadCategories(keyword);
     }
 }

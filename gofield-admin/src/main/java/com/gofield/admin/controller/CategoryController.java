@@ -29,11 +29,12 @@ public class CategoryController {
         CategoryListDto result = categoryService.getCategoryList(keyword, pageable);
         session.setAttribute("username", principal.getName());
         model.addAttribute("list", result.getList());
+        model.addAttribute("keyword", keyword);
         model.addAttribute("currentPage", result.getPage().getNumber() + 1);
         model.addAttribute("totalItems", result.getPage().getTotalElements());
         model.addAttribute("totalPages", result.getPage().getTotalPages());
         model.addAttribute("pageSize", pageable.getPageSize());
-        return "category/list2";
+        return "category/list";
     }
 
     @GetMapping("/category/edit/{id}")

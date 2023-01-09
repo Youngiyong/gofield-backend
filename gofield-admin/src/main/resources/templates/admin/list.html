@@ -81,12 +81,12 @@
                                     <td style="color: orangered" class="text-center" th:text="${data.role}"></td>
                                     <td>
                                         <div style="text-align: center">
-                                            <a class="btn btn-info btn-sm" th:href="${'/admin/edit/'+data.id}">
+                                            <a class="btn btn-info btn-sm" th:href="${'/admin/edit/'+data.id}" onclick="return confirm('수정하시겠습니까?');">
                                                 <i class="fas fa-pencil-alt">
                                                 </i>
                                                 수정
                                             </a>
-                                            <a class="btn btn-danger btn-sm" th:href="${'/admin/delete/'+data.id}">
+                                            <a class="btn btn-danger btn-sm" th:href="${'/admin/delete/'+data.id}" onclick="return confirm('삭제하시겠습니까?');">
                                                 <i class="fas fa-trash">
                                                 </i>
                                                 삭제

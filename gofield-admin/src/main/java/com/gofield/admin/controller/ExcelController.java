@@ -5,6 +5,7 @@ import com.gofield.admin.dto.OrderChangeDto;
 import com.gofield.admin.dto.OrderReturnDto;
 import com.gofield.admin.dto.OrderShippingDto;
 import com.gofield.admin.dto.response.projection.BrandInfoProjectionResponse;
+import com.gofield.admin.dto.response.projection.CategoryInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
 import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
 import com.gofield.admin.service.ExcelService;
@@ -34,6 +35,16 @@ public class ExcelController {
         response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
         List<BrandInfoProjectionResponse> result = excelService.downloadBrands(keyword);
         ExcelFile excelFile = new PoiSheetExcelFile(result, BrandInfoProjectionResponse.class);
+        excelFile.write(response.getOutputStream());
+    }
+
+    @GetMapping("/category")
+    public void downloadCategoryListExcel(@RequestParam(required = false) String keyword,
+                                          HttpServletResponse response) throws IOException {
+        response.setContentType("application/vnd.openxmlformats-officedocument.spreadsheetml.sheet");
+        response.setHeader("Content-Disposition", "attachment;filename=excelFile.xlsx");
+        List<CategoryInfoProjectionResponse> result = excelService.downloadCategories(keyword);
+        ExcelFile excelFile = new PoiSheetExcelFile(result, CategoryInfoProjectionResponse.class);
         excelFile.write(response.getOutputStream());
     }
 

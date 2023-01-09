@@ -18,4 +18,6 @@ public interface CategoryRepositoryCustom {
     List<Category> findAllChildrenIsActiveOrderBySort();
     Page<Category> findAllByKeyword(String keyword, Pageable pageable);
 
+    List<Category> findAllByKeyword(String keyword);
+
 }
