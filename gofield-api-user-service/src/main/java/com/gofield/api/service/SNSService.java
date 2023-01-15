@@ -30,4 +30,5 @@ public class SNSService {
     public void sendSlack(SlackChannel channel, JSONObject json){
         messagingTemplate.convertAndSend(SQS_SLACK_TOPIC, SlackRequest.of(json, channel));
     }
+
 }
