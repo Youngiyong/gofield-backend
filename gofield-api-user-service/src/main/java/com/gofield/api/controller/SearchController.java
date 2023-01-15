@@ -4,7 +4,7 @@ import com.gofield.api.dto.res.ItemClassificationListResponse;
 import com.gofield.api.dto.res.PopularKeywordResponse;
 import com.gofield.api.dto.res.RecentKeywordResponse;
 import com.gofield.api.service.SearchService;
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;

@@ -16,7 +16,6 @@ jar {
 
 dependencies {
     implementation project(':gofield-common')
-    implementation project(":gofield-api-core:gofield-api-core-common")
     implementation project(":gofield-domain:gofield-domain-rds")
     implementation project(':gofield-infrastructure:gofield-infrastructure-external')
     implementation project(':gofield-infrastructure:gofield-infrastructure-internal')

@@ -2,7 +2,7 @@ package com.gofield.api.controller;
 
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.CommonService;
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
 import com.gofield.domain.rds.domain.code.ECodeGroup;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;

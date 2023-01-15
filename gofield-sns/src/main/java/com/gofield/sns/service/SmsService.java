@@ -5,7 +5,7 @@ import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.gofield.infrastructure.external.api.naver.NaverSnsApiClient;
 import com.gofield.infrastructure.external.api.naver.dto.req.NaverSmsRequest;
-import com.gofield.sns.model.request.SmsRequest;
+import com.gofield.sns.dto.req.SmsRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
@@ -71,7 +71,7 @@ public class SmsService {
                 .append(NAVER_CLIENT_ID)
                 .toString();
 
-        System.out.println("message:"+message+"\n");
+        log.info("message:"+message+"\n");
         String encode = "";
         try {
             SecretKeySpec signingKey = new SecretKeySpec(NAVER_CLIENT_SECRET.getBytes("UTF-8"), "HmacSHA256");

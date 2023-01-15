@@ -9,13 +9,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class FileUtils {
 
-    /**
-     * 파일의 확장자를 반환합니다.
-     * 잘못된 파일의 확장자인경우 throws ValidationException
-     *
-     * @param fileName ex) image.png
-     * @return ex) .png
-     */
     public static String getFileExtension(String fileName) {
         try {
             String extension = fileName.substring(fileName.lastIndexOf("."));

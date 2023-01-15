@@ -20,6 +20,8 @@ public enum ErrorCode {
     E400_INVALID_SMS_ACCOUNT_MAX("I4007", 400, "하루 문자 인증 최대 횟수가 넘었습니다. 다음날에 이용해주세요."),
     E400_INVALID_FILE_FORMAT("I4008", 400,  "지원하지 않는 파일 포맷입니다."),
     E400_INVALID_UPLOAD_FILE_EXTENSION("I4009", 400, "잘못된 확장자 형식의 파일입니다."),
+
+    E400_INVALID_CONTACTS_NUMBER_FORMAT("I4010", 400, "잘못된 형식의 연락처입니다."),
     /**
      * 401 UnAuthorized (토큰 만료)
      */
@@ -90,7 +92,8 @@ public enum ErrorCode {
     /**
      * 503 Service UnAvailable
      */
-    E503_SERVICE_UNAVAILABLE("B5300", 503,  "사용할 수 없는 기능입니다");
+    E503_SERVICE_UNAVAILABLE("B5300", 503,  "사용할 수 없는 기능입니다"),
+    ;
 
 
     private final String code;

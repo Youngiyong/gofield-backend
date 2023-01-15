@@ -1,7 +1,7 @@
 package com.gofield.api.config.security.exception;
 
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
-import com.gofield.common.api.core.common.dto.response.ErrorResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
+import com.gofield.common.model.dto.res.ErrorResponse;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
 import com.google.gson.Gson;

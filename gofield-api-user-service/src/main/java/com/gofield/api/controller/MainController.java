@@ -4,7 +4,7 @@ import com.gofield.api.dto.res.BannerListResponse;
 import com.gofield.api.dto.res.BannerResponse;
 import com.gofield.api.dto.res.MainResponse;
 import com.gofield.api.service.MainService;
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

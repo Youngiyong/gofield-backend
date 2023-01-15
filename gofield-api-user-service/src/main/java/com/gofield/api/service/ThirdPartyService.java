@@ -2,7 +2,7 @@ package com.gofield.api.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.dto.SocialAuthentication;
-import com.gofield.api.dto.enums.SlackChannelType;
+import com.gofield.common.model.SlackChannel;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.ItemOrderSheetListResponse;
 import com.gofield.api.dto.res.ItemOrderSheetResponse;
@@ -28,11 +28,8 @@ import com.gofield.infrastructure.external.api.kakao.KaKaoProfileApiClient;
 import com.gofield.infrastructure.external.api.kakao.dto.req.KaKaoTokenRequest;
 import com.gofield.infrastructure.external.api.kakao.dto.res.KaKaoProfileResponse;
 import com.gofield.infrastructure.external.api.kakao.dto.res.KaKaoTokenResponse;
-import com.gofield.infrastructure.external.api.naver.NaverAuthApiClient;
 import com.gofield.infrastructure.external.api.naver.NaverProfileApiClient;
-import com.gofield.infrastructure.external.api.naver.dto.req.NaverTokenRequest;
 import com.gofield.infrastructure.external.api.naver.dto.res.NaverProfileResponse;
-import com.gofield.infrastructure.external.api.naver.dto.res.NaverTokenResponse;
 import com.gofield.infrastructure.external.api.slack.SlackWebhookApiClient;
 import com.gofield.infrastructure.external.api.toss.TossPaymentApiClient;
 import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
@@ -47,12 +44,7 @@ import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import java.time.format.DateTimeFormatter;
-import java.time.format.FormatStyle;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -141,6 +133,8 @@ public class ThirdPartyService {
     private final OrderShippingLogRepository orderShippingLogRepository;
     private final OrderShippingAddressRepository orderShippingAddressRepository;
 
+    private final SNSService snsService;
+
     public CarrierTrackResponse getCarrierTrackInfo(String carrierId, String trackId){
         return trackerApiClient.getCarrierTrackInfo(carrierId, trackId);
     }
@@ -155,24 +149,24 @@ public class ThirdPartyService {
         return cancelNumber.toString();
     }
 
-    public void sendOrderSlackNotification(SlackChannelType channel, String username, String userTel, String orderNumber, String orderDate, String orderName, String comment, int totalAmount) {
+    public void sendOrderSlackNotification(String username, String userTel, String orderNumber, String orderDate, String orderName, String comment, int totalAmount) {
         JSONObject request = SlackUtil.makeOrder(username, userTel, orderNumber, orderDate, orderName, totalAmount);
-        slackWebhookApiClient.sendOrderNotification(request);
+        snsService.sendSlack(SlackChannel.ORDER, request);
     }
 
     public void sendItemQnaNotification(String username, String itemNumber, String itemName, String thumbnail, String question, String createDate) {
         JSONObject request = SlackUtil.makeQna(username, itemNumber, itemName, thumbnail, question, createDate);
-        slackWebhookApiClient.sendQnaNotification(request);
+        snsService.sendSlack(SlackChannel.QNA, request);
     }
 
-    public void sendCancelSlackNotification(SlackChannelType channel, String username, String userTel, String orderNumber, String orderDate, String comment, String itemName, String optionName, String thumbnail, int totalAmount) {
+    public void sendCancelSlackNotification(SlackChannel channel, String username, String userTel, String orderNumber, String orderDate, String comment, String itemName, String optionName, String thumbnail, int totalAmount) {
         JSONObject request = SlackUtil.makeCancel(username, userTel, orderNumber, orderDate, comment, itemName, optionName, thumbnail, totalAmount);
-        if(channel.equals(SlackChannelType.CANCEL)){
-            slackWebhookApiClient.sendCancelNotification(request);
-        }else if(channel.equals(SlackChannelType.RETURN)){
-            slackWebhookApiClient.sendReturnNotification(request);
-        } else if(channel.equals(SlackChannelType.CHANGE)){
-            slackWebhookApiClient.sendChangeNotification(request);
+        if(channel.equals(SlackChannel.CANCEL)){
+            snsService.sendSlack(SlackChannel.CANCEL, request);
+        }else if(channel.equals(SlackChannel.RETURN)){
+            snsService.sendSlack(SlackChannel.RETURN, request);
+        } else if(channel.equals(SlackChannel.CHANGE)){
+            snsService.sendSlack(SlackChannel.CHANGE, request);
         }
     }
 
@@ -308,7 +302,7 @@ public class ThirdPartyService {
             cartRepository.deleteByCartIdList(cartIdList);
         }
         orderWaitRepository.delete(orderWait);
-        sendOrderSlackNotification(SlackChannelType.ORDER, shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), LocalDateTimeUtils.LocalDateTimeToString(order.getCreateDate()), response.getOrderName(), null, order.getTotalAmount());
+        sendOrderSlackNotification(shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), LocalDateTimeUtils.LocalDateTimeToString(order.getCreateDate()), response.getOrderName(), null, order.getTotalAmount());
 
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;

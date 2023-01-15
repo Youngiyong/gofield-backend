@@ -1,10 +1,10 @@
-package com.gofield.api.dto.enums;
+package com.gofield.common.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
 @NoArgsConstructor
-public enum SlackChannelType {
+public enum SlackChannel {
     EXCEPTION, ORDER, CHANGE, RETURN, CANCEL, QNA
 }

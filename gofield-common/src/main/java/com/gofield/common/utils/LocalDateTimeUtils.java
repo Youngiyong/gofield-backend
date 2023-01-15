@@ -29,7 +29,7 @@ public class LocalDateTimeUtils {
 
     public static LocalDateTime tomorrowMinTime() { return LocalDateTime.now().plusDays(1).with(LocalTime.MIN); }
 
-    public static String LocalDateTimeToString(){
+    public static String LocalDateTimeNowToString(){
         return LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"));
     }
 

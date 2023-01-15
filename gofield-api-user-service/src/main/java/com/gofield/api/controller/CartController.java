@@ -4,7 +4,7 @@ import com.gofield.api.dto.req.CartRequest;
 import com.gofield.api.dto.res.CartResponse;
 import com.gofield.api.dto.res.CountResponse;
 import com.gofield.api.service.CartService;
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -51,5 +51,4 @@ public class CartController {
         cartService.deleteCart(cartId);
         return ApiResponse.SUCCESS;
     }
-
 }

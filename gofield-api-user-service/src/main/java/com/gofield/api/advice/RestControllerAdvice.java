@@ -1,10 +1,9 @@
 package com.gofield.api.advice;
 
-
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
 import com.gofield.api.service.ErrorService;
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
-import com.gofield.common.api.core.common.dto.response.ErrorResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
+import com.gofield.common.model.dto.res.ErrorResponse;
 import com.gofield.common.exception.*;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
@@ -38,7 +37,6 @@ public class RestControllerAdvice {
     @ExceptionHandler(BindException.class)
     protected ApiResponse<Object> handleBadRequest(BindException e) {
         log.error(e.getMessage(), e);
-        errorService.sendSlackNotification(BindException.class.getSimpleName(), e.getMessage());
 
         ErrorCode errorCode = ErrorCode.E400_INVALID_EXCEPTION;
 
@@ -59,7 +57,6 @@ public class RestControllerAdvice {
     })
     protected ApiResponse<Object> handleInvalidFormatException(final Exception e) {
         log.error(e.getMessage(), e);
-        errorService.sendSlackNotification(InvalidFormatException.class.getSimpleName(), e.getMessage());
 
         ErrorCode errorCode = ErrorCode.E400_INVALID_EXCEPTION;
 
@@ -76,7 +73,6 @@ public class RestControllerAdvice {
     @ExceptionHandler(InvalidException.class)
     protected ApiResponse<Object> handleValidationException(final InvalidException e) {
         log.error(e.getMessage(), e);
-        errorService.sendSlackNotification(InvalidException.class.getSimpleName(), e.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .action(ErrorAction.NONE)
@@ -163,7 +159,6 @@ public class RestControllerAdvice {
     @ExceptionHandler(ConflictException.class)
     protected ApiResponse<Object> handleConflictException(final ConflictException e) {
         log.error(e.getMessage(), e);
-        errorService.sendSlackNotification(ConflictException.class.getSimpleName(), e.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .action(ErrorAction.NONE)
@@ -215,7 +210,6 @@ public class RestControllerAdvice {
     @ExceptionHandler(BadGatewayException.class)
     protected ApiResponse<Object> handleBadGatewayException(final BadGatewayException exception) {
         log.error(exception.getMessage(), exception);
-        errorService.sendSlackNotification(ConflictException.class.getSimpleName(), exception.getMessage());
 
         ErrorCode errorCode = ErrorCode.E502_BAD_GATEWAY;
 
@@ -233,9 +227,10 @@ public class RestControllerAdvice {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<Object> handleException(final Exception exception) {
-        log.error(exception.getMessage(), exception);
-        errorService.sendSlackNotification(Exception.class.getSimpleName(), exception.getMessage());
+    protected ApiResponse<Object> handleException(final Exception exception, Throwable throwable) {
+        log.error(exception.getMessage(), exception, throwable);
+
+        errorService.sendSlackErrorNotification(Exception.class.getSimpleName(), exception.getMessage());
 
         ErrorCode errorCode = ErrorCode.E500_INTERNAL_SERVER;
 
@@ -255,7 +250,6 @@ public class RestControllerAdvice {
         } catch (Exception ex) {
             e.printStackTrace();
         }
-        errorService.sendSlackNotification(InternalRuleException.class.getSimpleName(), e.getMessage());
 
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .action(e.getAction())

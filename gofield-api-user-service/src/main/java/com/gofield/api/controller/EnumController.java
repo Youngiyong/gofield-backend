@@ -1,6 +1,6 @@
 package com.gofield.api.controller;
 
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
 import com.gofield.common.model.EnumValue;
 import com.gofield.common.utils.EnumMapper;
 import io.swagger.annotations.ApiOperation;

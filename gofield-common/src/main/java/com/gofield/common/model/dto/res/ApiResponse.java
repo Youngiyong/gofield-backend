@@ -1,4 +1,4 @@
-package com.gofield.common.api.core.common.dto.response;
+package com.gofield.common.model.dto.res;
 
 import lombok.*;
 

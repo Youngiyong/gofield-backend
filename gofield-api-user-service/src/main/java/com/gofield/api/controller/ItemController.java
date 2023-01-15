@@ -3,7 +3,7 @@ package com.gofield.api.controller;
 import com.gofield.api.dto.req.ItemRequest;
 import com.gofield.api.dto.res.*;
 import com.gofield.api.service.ItemService;
-import com.gofield.common.api.core.common.dto.response.ApiResponse;
+import com.gofield.common.model.dto.res.ApiResponse;
 import com.gofield.domain.rds.domain.item.EItemBundleSort;
 import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
 import com.gofield.domain.rds.domain.item.EItemSort;

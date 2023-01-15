@@ -107,7 +107,7 @@ public class SlackUtil {
         return result;
     }
 
-    public static JSONObject makeOrder(String username, String userTel, String orderNumber, String orderDate, String orderName,  int totalAmount) {
+    public static JSONObject makeOrder(String username, String userTel, String orderNumber, String orderDate, String orderName, int totalAmount) {
         List<JSONObject> blocks = new ArrayList<>();
         JSONObject header = makeHeader(String.format("주문번호: %s", orderNumber));
         JSONObject usernameSection = makeSection("이름", username);
