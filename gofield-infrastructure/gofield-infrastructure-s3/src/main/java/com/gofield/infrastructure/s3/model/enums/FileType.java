@@ -3,6 +3,7 @@ package com.gofield.infrastructure.s3.model.enums;
 import com.gofield.common.exception.InvalidException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
+import com.gofield.common.utils.DateTimeUtils;
 import com.gofield.common.utils.FileUtils;
 import com.gofield.common.utils.RandomUtils;
 import lombok.Getter;
@@ -34,6 +35,10 @@ public enum FileType {
         this.contentType.validateAvailableContentType(contentType);
     }
 
+    public String makeDirectory(String folder){
+        return folder + "/" +DateTimeUtils.getTodayString() + "/";
+    }
+
     /**
      * 파일의 기존의 확장자를 유지하면서 유니크한 파일의 이름을 반환합니다.
      */
@@ -46,7 +51,7 @@ public enum FileType {
     }
 
     public String getFileNameWithDirectory(String fileName) {
-        return this.directory + fileName;
+        return this.directory + DateTimeUtils.getTodayString() + "/" +  fileName;
     }
 
     public String getKey() {
