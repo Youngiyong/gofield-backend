@@ -200,6 +200,9 @@ public class ItemService {
     public ItemQnaDetailResponse getQna(Long itemId, Long qnaId){
         User user = userService.getUser();
         ItemQna result = itemQnaRepository.findByQnaIdAndItemId(qnaId, itemId);
+        if(result==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, "존재하지 않는 상품 문의입니다.");
+        }
         Seller seller = sellerRepository.findBySellerId(result.getItem().getSellerId());
         return ItemQnaDetailResponse.of(result, user.getId(), seller);
     }
@@ -218,7 +221,7 @@ public class ItemService {
         User user = userService.getUser();
         ItemQna itemQna = itemQnaRepository.findByQnaIdAndUserId(qnaId, user.getId());
         if(itemQna==null){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "삭제처리 되었거나 삭제가 불가능한 qna입니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "삭제처리 되었거나 삭제가 불가능한 문의입니다.");
         }
         itemQnaRepository.delete(itemQna);
     }
