@@ -50,10 +50,10 @@ public class ItemQnaResponse {
             String title = qna.getTitle();
             Boolean isMe = false;
             if(!qna.getIsVisible()){
-                if(!qna.getUser().getId().equals(userId)){
-                    title = "비공개 문의입니다.";
-                } else {
+                if(qna.getUser().getId().equals(userId)){
                     isMe = true;
+                } else {
+                    title = "비공개 문의입니다.";
                 }
             }
             ItemQnaResponse response = ItemQnaResponse.of(qna.getId(), title, qna.getStatus(), qna.getIsVisible(), qna.getName(), isMe, qna.getCreateDate());
