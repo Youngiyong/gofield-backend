@@ -20,6 +20,7 @@ public class SearchLogRepositoryCustomImpl implements SearchLogRepositoryCustom 
                 .selectFrom(searchLog)
                 .where(searchLog.userId.eq(userId))
                 .orderBy(searchLog.id.desc())
+                .groupBy(searchLog.keyword)
                 .limit(limit)
                 .fetch();
     }
