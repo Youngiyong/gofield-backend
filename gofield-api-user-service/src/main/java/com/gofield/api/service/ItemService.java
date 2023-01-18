@@ -200,7 +200,8 @@ public class ItemService {
     public ItemQnaDetailResponse getQna(Long itemId, Long qnaId){
         User user = userService.getUser();
         ItemQna result = itemQnaRepository.findByQnaIdAndItemId(qnaId, itemId);
-        return ItemQnaDetailResponse.of(result, user.getId());
+        Seller seller = sellerRepository.findBySellerId(result.getItem().getSellerId());
+        return ItemQnaDetailResponse.of(result, user.getId(), seller);
     }
 
     @Transactional
