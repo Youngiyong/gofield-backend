@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -67,16 +68,14 @@ public class ItemResponse {
     }
 
     public static ItemResponse of(ItemProjectionResponse projection){
-        List<String> tags = projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
+        List<String> tags = projection.getTags()==null || projection.getTags().equals("") ? new ArrayList<>() : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
+
         if(tags!=null){
-            if(projection.getClassification().equals(EItemClassificationFlag.USED)){
-                tags.add(projection.getSpec().getDescription());
-            }
-            if(projection.getDelivery().equals(EItemDeliveryFlag.FREE)){
-                tags.add(projection.getDelivery().getDescription());
-            }
             tags.add(projection.getGender().getDescription());
         }
+
+        tags.add(0, projection.getClassification().getDescription());
+        tags.add(1, projection.getSpec().getDescription());
 
         return ItemResponse.builder()
                 .id(projection.getId())

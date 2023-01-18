@@ -13,6 +13,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -54,15 +55,16 @@ public class ItemClassificationResponse {
     }
 
     public static ItemClassificationResponse of(ItemClassificationProjectionResponse projection){
-        List<String> tags = projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
+        List<String> tags = projection.getTags()==null || projection.getTags().equals("") ? new ArrayList<>() : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
+
         if(tags!=null){
-            if(projection.getClassification().equals(EItemClassificationFlag.USED)){
-                tags.add(projection.getSpec().getDescription());
-            }
-            while (tags.size()>3){
-                tags.remove(3);
+            while (tags.size()>2){
+                tags.remove(2);
             }
         }
+        tags.add(0, projection.getClassification().getDescription());
+        tags.add(1, projection.getSpec().getDescription());
+
         return ItemClassificationResponse.builder()
                 .id(projection.getId())
                 .itemNumber(projection.getItemNumber())
