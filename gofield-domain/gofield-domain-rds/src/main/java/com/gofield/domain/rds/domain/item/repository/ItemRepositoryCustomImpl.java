@@ -51,11 +51,11 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return itemStock.status.eq(status);
     }
 
-    private BooleanExpression inCategoryParentId(List<Long> categoryId){
-        if(categoryId == null){
+    private BooleanExpression inCategoryId(List<Long> categoryIdList){
+        if(categoryIdList == null){
             return null;
         }
-        return category.parent.id.in(categoryId);
+        return category.id.in(categoryIdList);
     }
 
     private BooleanExpression inSpec(List<EItemSpecFlag> spec){
@@ -93,7 +93,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, EItemClassificationFlag classification, List<Long> categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable) {
+    public List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, EItemClassificationFlag classification, List<Long> categoryIdList, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable) {
         if(userId==null){
             List<ItemNonMemberClassificationProjection> projection =  jpaQueryFactory
                     .select(new QItemNonMemberClassificationProjection(
@@ -108,7 +108,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
-                            item.tags))
+                            item.tags,
+                            item.createDate))
                     .from(itemStock)
                     .innerJoin(item)
                     .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -120,7 +121,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .where(itemStock.status.eq(EItemStatusFlag.SALE),
                             eqClassification(classification),
-                            inCategoryParentId(categoryId),
+                            inCategoryId(categoryIdList),
                             inSpec(spec),
                             item.deleteDate.isNull())
                     .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
@@ -145,7 +146,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -159,7 +161,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(itemStock.status.eq(EItemStatusFlag.SALE),
                         eqClassification(classification),
-                        inCategoryParentId(categoryId),
+                        inCategoryId(categoryIdList),
                         inSpec(spec),
                         item.deleteDate.isNull())
                 .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
@@ -186,7 +188,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
-                            item.tags))
+                            item.tags,
+                            item.createDate))
                     .from(itemStock)
                     .innerJoin(item)
                     .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -222,7 +225,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -264,7 +268,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -302,7 +307,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -338,7 +344,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -371,7 +378,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -404,7 +412,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -437,7 +446,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -472,7 +482,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))
@@ -505,7 +516,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemDetail.spec,
                         item.delivery,
                         itemDetail.gender,
-                        item.tags))
+                        item.tags,
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber))

@@ -218,7 +218,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
-                            item.tags))
+                            item.tags,
+                            item.createDate))
                     .from(item)
                     .innerJoin(itemStock)
                     .on(item.id.eq(itemStock.item.id))
@@ -274,7 +275,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemDetail.spec,
                             item.delivery,
                             itemDetail.gender,
-                            item.tags))
+                            item.tags,
+                            item.createDate))
                     .from(item)
                     .innerJoin(itemStock)
                     .on(item.id.eq(itemStock.item.id))

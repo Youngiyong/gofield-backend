@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -25,14 +26,14 @@ public class ItemClassificationProjectionResponse {
     private int deliveryPrice;
     private Long likeId;
     private EItemClassificationFlag classification;
-
     private EItemSpecFlag spec;
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
     private String tags;
+    private LocalDateTime createDate;
 
     @Builder
-    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags) {
+    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, LocalDateTime createDate) {
         this.id = id;
         this.itemNumber = itemNumber;
         this.name = name;
@@ -46,9 +47,10 @@ public class ItemClassificationProjectionResponse {
         this.delivery = delivery;
         this.gender = gender;
         this.tags = tags;
+        this.createDate = createDate;
     }
 
-    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags){
+    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, LocalDateTime createDate){
         return ItemClassificationProjectionResponse.builder()
                 .id(id)
                 .itemNumber(itemNumber)
@@ -63,6 +65,7 @@ public class ItemClassificationProjectionResponse {
                 .delivery(delivery)
                 .gender(gender)
                 .tags(tags)
+                .createDate(createDate)
                 .build();
     }
 
@@ -70,7 +73,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getSpec(), p.getDelivery(), p.getGender(), p.getTags()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getSpec(), p.getDelivery(), p.getGender(), p.getTags(), p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 
@@ -78,7 +81,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), null, p.getClassification(), p.getSpec(), p.getDelivery(),  p.getGender(), p.getTags()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), null, p.getClassification(), p.getSpec(), p.getDelivery(),  p.getGender(), p.getTags(), p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 
@@ -97,6 +100,7 @@ public class ItemClassificationProjectionResponse {
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
                 .tags(projection.getTags())
+                .createDate(projection.getCreateDate())
                 .build();
     }
 }

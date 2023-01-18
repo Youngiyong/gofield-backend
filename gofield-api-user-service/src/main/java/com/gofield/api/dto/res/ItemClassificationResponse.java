@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,9 +33,10 @@ public class ItemClassificationResponse {
     private EItemSpecFlag spec;
     private EItemGenderFlag gender;
     private List<String> tags;
+    private LocalDateTime createDate;
 
     @Builder
-    private ItemClassificationResponse(Long id, String itemNumber, String name,  String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> tags){
+    private ItemClassificationResponse(Long id, String itemNumber, String name,  String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> tags, LocalDateTime createDate){
         this.id = id;
         this.name = name;
         this.itemNumber = itemNumber;
@@ -48,11 +50,15 @@ public class ItemClassificationResponse {
         this.spec = spec;
         this.gender = gender;
         this.tags = tags;
+        this.createDate = createDate;
     }
 
     public static ItemClassificationResponse of(ItemClassificationProjectionResponse projection){
         List<String> tags = projection.getTags()==null ? null : ApiUtil.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
         if(tags!=null){
+            if(projection.getClassification().equals(EItemClassificationFlag.USED)){
+                tags.add(projection.getSpec().getDescription());
+            }
             while (tags.size()>3){
                 tags.remove(3);
             }
@@ -71,6 +77,7 @@ public class ItemClassificationResponse {
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
                 .tags(tags)
+                .createDate(projection.getCreateDate())
                 .build();
     }
 
