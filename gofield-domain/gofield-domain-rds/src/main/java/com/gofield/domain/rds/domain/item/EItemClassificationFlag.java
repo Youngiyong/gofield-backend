@@ -9,7 +9,7 @@ import lombok.Getter;
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 public enum EItemClassificationFlag implements EnumCodeModel {
     NEW("새상품", "N"),
-    USED( "중고상품", "U");
+    USED( "중고", "U");
 
     private String description;
     private String code;
