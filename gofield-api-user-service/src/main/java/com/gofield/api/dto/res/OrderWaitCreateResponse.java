@@ -12,18 +12,22 @@ public class OrderWaitCreateResponse {
     private String nextUrl;
     private String accountNumber;
 
+    private Boolean isOrdered;
+
     @Builder
-    private OrderWaitCreateResponse(EPaymentType paymentType, String nextUrl, String accountNumber){
+    private OrderWaitCreateResponse(EPaymentType paymentType, String nextUrl, String accountNumber, Boolean isOrdered){
         this.paymentType = paymentType;
         this.nextUrl = nextUrl;
         this.accountNumber = accountNumber;
+        this.isOrdered = isOrdered;
     }
 
-    public static OrderWaitCreateResponse of(EPaymentType paymentType, String nextUrl, String accountNumber){
+    public static OrderWaitCreateResponse of(EPaymentType paymentType, String nextUrl, String accountNumber, Boolean isOrdered){
         return OrderWaitCreateResponse.builder()
                 .paymentType(paymentType)
                 .nextUrl(nextUrl)
                 .accountNumber(accountNumber)
+                .isOrdered(isOrdered)
                 .build();
     }
 }

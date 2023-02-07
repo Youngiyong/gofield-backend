@@ -58,7 +58,7 @@ public class OrderSheet extends BaseTimeEntity {
 
     public void isValidOrder(){
         if(this.isOrder){
-            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 완료처리된 주문 번호입니다.");
+            throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "이미 처리된 주문 시트 번호입니다.");
         }
     }
 

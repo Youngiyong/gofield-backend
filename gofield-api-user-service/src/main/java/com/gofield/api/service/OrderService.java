@@ -245,14 +245,16 @@ public class OrderService {
         if(orderSheet==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "주문시트가 존재하지 않습니다.");
         }
-        orderSheet.isValidOrder();
+        if(orderSheet.getIsOrder()){
+            return OrderWaitCreateResponse.of(null, null, null, true);
+        }
         OrderSheetContentResponse orderSheetContent = ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
         if(request.getPaymentType().equals(EPaymentType.CARD)){
             TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), orderSheetContent.getOrderName(), request.getCompanyCode(), null, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
             TossPaymentResponse response = thirdPartyService.getPaymentReadyInfo(externalRequest);
             OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(), new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()), request.getPaymentType(), request.getEnvironment());
             orderWaitRepository.save(orderWait);
-            return OrderWaitCreateResponse.of(request.getPaymentType(), response.getCheckout().getUrl(), null);
+            return OrderWaitCreateResponse.of(request.getPaymentType(), response.getCheckout().getUrl(), null, false);
         } else if(request.getPaymentType().equals(EPaymentType.VIRTUAL_ACCOUNT)){
             if(request.getCustomerName()==null){
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "고객 이름은 필수값입니다.");
@@ -261,8 +263,7 @@ public class OrderService {
             TossPaymentVirtualResponse response = thirdPartyService.getVirtualAccountReadyInfo(externalRequest);
             OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(), new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()), request.getPaymentType(), request.getEnvironment());
             orderWaitRepository.save(orderWait);
-            orderSheet.update();
-            return OrderWaitCreateResponse.of(request.getPaymentType(), null, response.getVirtualAccount().getAccountNumber());
+            return OrderWaitCreateResponse.of(request.getPaymentType(), null, response.getVirtualAccount().getAccountNumber(), false);
         } else {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 결제타입입니다.");
         }

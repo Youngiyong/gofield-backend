@@ -220,6 +220,7 @@ public class ThirdPartyService {
             purchaseRepository.save(purchase);
             OrderCreateResponse orderCreateResponse = OrderCreateResponse.of(request.getOrderId(), request.getTransactionKey(), orderWait, orderSheet, null, EPaymentType.VIRTUAL_ACCOUNT, null, null, 0);
             createOrder(orderCreateResponse);
+            orderSheet.update();
         } else {
 
         }
@@ -258,7 +259,7 @@ public class ThirdPartyService {
 
         OrderCreateResponse orderCreateResponse = OrderCreateResponse.of(orderId, paymentKey, orderWait, orderSheet, paymentCompany, paymentType, cardNumber, cardType, installmentPlanMonth);
         createOrder(orderCreateResponse);
-
+        orderSheet.update();
         if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
             return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
         } else {
