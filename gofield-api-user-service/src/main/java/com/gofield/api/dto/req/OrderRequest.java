@@ -28,7 +28,6 @@ public class OrderRequest {
 
     @Getter
     public static class OrderPay {
-        @NotNull(message = "companyCode는 필수값입니다.")
         private String companyCode;
         @NotNull(message = "paymentType은 필수값입니다.")
         private EPaymentType paymentType;
