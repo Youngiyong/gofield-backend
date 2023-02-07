@@ -6,6 +6,6 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 public enum PaymentType {
-    CARD, EASYPAY, BANK
+    CARD, EASYPAY, BANK, VIRTUAL_ACCOUNT
     ;
 }

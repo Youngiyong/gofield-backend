@@ -65,7 +65,7 @@ public class ItemController {
     @ApiOperation(value = "새상품/중고 상품 리스트")
     @GetMapping("/v1")
     public ApiResponse<List<ItemClassificationResponse>> getItemList(@RequestParam(required = false) EItemClassificationFlag classification,
-                                                                     @RequestParam(required = false) List<Long> categoryId,
+                                                                     @RequestParam(required = false) Long categoryId,
                                                                      @RequestParam(required = false) List<EItemSpecFlag> spec,
                                                                      @RequestParam(required = false) List<EItemSort> sort,
                                                                      @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){

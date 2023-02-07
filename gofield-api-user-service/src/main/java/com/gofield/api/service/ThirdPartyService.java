@@ -2,6 +2,7 @@ package com.gofield.api.service;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.dto.SocialAuthentication;
+import com.gofield.api.dto.res.OrderCreateResponse;
 import com.gofield.common.model.SlackChannel;
 import com.gofield.api.dto.req.UserRequest;
 import com.gofield.api.dto.res.ItemOrderSheetListResponse;
@@ -36,6 +37,7 @@ import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentApproveResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentCancelResponse;
 import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentResponse;
+import com.gofield.infrastructure.external.api.toss.dto.res.TossPaymentVirtualResponse;
 import com.gofield.infrastructure.external.api.tracker.TrackerApiClient;
 import com.gofield.infrastructure.external.api.tracker.res.CarrierTrackResponse;
 import lombok.RequiredArgsConstructor;
@@ -149,8 +151,8 @@ public class ThirdPartyService {
         return cancelNumber.toString();
     }
 
-    public void sendOrderSlackNotification(String username, String userTel, String orderNumber, String orderDate, String orderName, String comment, int totalAmount) {
-        JSONObject request = SlackUtil.makeOrder(username, userTel, orderNumber, orderDate, orderName, totalAmount);
+    public void sendOrderSlackNotification(String username, String userTel, EPaymentType paymentType, String orderNumber, String orderDate, String orderName, String comment, int totalAmount) {
+        JSONObject request = SlackUtil.makeOrder(username, userTel, paymentType, orderNumber, orderDate, orderName, totalAmount);
         snsService.sendSlack(SlackChannel.ORDER, request);
     }
 
@@ -189,6 +191,10 @@ public class ThirdPartyService {
         return tossPaymentApiClient.createPayment(TOSS_PAYMENT_CLIENT_SECRET, request);
     }
 
+    public TossPaymentVirtualResponse getVirtualAccountReadyInfo(TossPaymentRequest.PaymentVirtual request){
+        return tossPaymentApiClient.createVirtualAccountPayment(TOSS_PAYMENT_CLIENT_SECRET, request);
+    }
+
     public String getTossPaymentSuccessUrl(){
         return PAYMENT_CALLBACK_SUCCESS_URL;
     }
@@ -203,6 +209,22 @@ public class ThirdPartyService {
         StateLog stateLog = StateLog.newInstance(state, social, environment);
         stateLogRepository.save(stateLog);
         return makeUrl(state, social);
+    }
+
+    @Transactional
+    public String callbackVirtualAccount(TossPaymentRequest.PaymentVirtualCallback request){
+        if(request.getStatus().equals("DONE")){
+            OrderWait orderWait = orderWaitRepository.findByOid(request.getOrderId());
+            OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
+            Purchase purchase = Purchase.newInstance(request.getOrderId(), request.getTransactionKey(), orderSheet.getTotalPrice(), ApiUtil.toJsonStr(request));
+            purchaseRepository.save(purchase);
+            OrderCreateResponse orderCreateResponse = OrderCreateResponse.of(request.getOrderId(), request.getTransactionKey(), orderWait, orderSheet, null, EPaymentType.VIRTUAL_ACCOUNT, null, null, 0);
+            createOrder(orderCreateResponse);
+        } else {
+
+        }
+
+        return "OK";
     }
 
     @Transactional
@@ -233,18 +255,32 @@ public class ThirdPartyService {
          */
         Purchase purchase = Purchase.newInstance(orderId, paymentKey, amount, ApiUtil.toJsonStr(response));
         purchaseRepository.save(purchase);
+
+        OrderCreateResponse orderCreateResponse = OrderCreateResponse.of(orderId, paymentKey, orderWait, orderSheet, paymentCompany, paymentType, cardNumber, cardType, installmentPlanMonth);
+        createOrder(orderCreateResponse);
+
+        if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
+            return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
+        } else {
+            return AUTH_FRONT_PAYMENT_SERVICE_SUCCESS_REDIRECT_URL + orderId;
+        }
+    }
+
+    @Transactional
+    public void createOrder(OrderCreateResponse orderCreate){
+        OrderWait orderWait = orderCreate.getOrderWait();
+        OrderSheet orderSheet = orderCreate.getOrderSheet();
         OrderSheetContentResponse orderSheetContent =  ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
         ItemOrderSheetListResponse orderSheetList = orderSheetContent.getOrderSheetList();
-        UserRequest.ShippingAddress shippingAddress = ApiUtil.strToObject(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>() {
-        });
-        OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderId, shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
+        UserRequest.ShippingAddress shippingAddress = ApiUtil.strToObject(orderWait.getShippingAddress(), new TypeReference<UserRequest.ShippingAddress>() {});
+        OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderCreate.getOrderId(), shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
         orderShippingAddressRepository.save(orderShippingAddress);
 
-        Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderId, paymentKey,  orderSheetList.getTotalPrice(), orderSheetList.getTotalPrice()+orderSheetList.getTotalDelivery(), orderSheetList.getTotalDelivery(),0,  paymentCompany, paymentType.name(), cardNumber, cardType, installmentPlanMonth);
+        Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderCreate.getOrderId(), orderCreate.getPaymentKey(), orderSheetList.getTotalPrice(), orderSheetList.getTotalPrice()+orderSheetList.getTotalDelivery(), orderSheetList.getTotalDelivery(),0,  orderCreate.getPaymentCompany(), null, orderCreate.getPaymentType().name(), orderCreate.getCardNumber(), orderCreate.getCardType(), orderCreate.getInstallmentPlanMonth());
         orderRepository.save(order);
 
         for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
-            OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderId, RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
+            OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderCreate.getOrderId(), RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
             orderShippingRepository.save(orderShipping);
             OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
             orderShippingLogRepository.save(orderShippingLog);
@@ -260,7 +296,7 @@ public class ThirdPartyService {
                 orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ApiUtil.toJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
                 orderItemOptionRepository.save(orderItemOption);
             }
-            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderId, makeOrderItemNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderCreate.getOrderId(), makeOrderItemNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
             if(result.getBundleId()!=null){
                 //묶음 집계 업데이트
@@ -301,14 +337,9 @@ public class ThirdPartyService {
         if(cartIdList!=null && !cartIdList.isEmpty()){
             cartRepository.deleteByCartIdList(cartIdList);
         }
-        orderWaitRepository.delete(orderWait);
-        sendOrderSlackNotification(shippingAddress.getName(), shippingAddress.getTel(), order.getOrderNumber(), LocalDateTimeUtils.LocalDateTimeToString(order.getCreateDate()), response.getOrderName(), null, order.getTotalAmount());
 
-        if(orderWait.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
-            return AUTH_FRONT_PAYMENT_LOCAL_SUCCESS_REDIRECT_URL + orderId;
-        } else {
-            return AUTH_FRONT_PAYMENT_SERVICE_SUCCESS_REDIRECT_URL + orderId;
-        }
+        orderWaitRepository.delete(orderWait);
+        sendOrderSlackNotification(shippingAddress.getName(), shippingAddress.getTel(), orderCreate.getPaymentType(), order.getOrderNumber(), LocalDateTimeUtils.LocalDateTimeToString(order.getCreateDate()), orderSheetContent.getOrderName(), null, order.getTotalAmount());
     }
 
     @Transactional

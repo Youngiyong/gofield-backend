@@ -10,6 +10,32 @@ public class TossPaymentRequest {
 
     @Builder
     @Getter
+    public static class PaymentVirtual {
+        private int amount;
+        private String bank;
+        private String orderId;
+        private String orderName;
+        private String customerName;
+        private String customerEmail;
+        private String customerMobilePhone;
+        private String dueDate;
+
+        public static PaymentVirtual of(int amount, String bank, String orderId, String orderName, String customerName, String customerEmail, String customerMobilePhone, String dueDate){
+            return PaymentVirtual.builder()
+                    .amount(amount)
+                    .bank(bank)
+                    .orderId(orderId)
+                    .orderName(orderName)
+                    .customerName(customerName)
+                    .customerEmail(customerEmail)
+                    .customerMobilePhone(customerMobilePhone)
+                    .dueDate(dueDate)
+                    .build();
+        }
+    }
+
+    @Builder
+    @Getter
     public static class Payment{
         private int amount;
         private String method;
@@ -66,6 +92,16 @@ public class TossPaymentRequest {
                     .cancelAmount(cancelAmount)
                     .build();
         }
+    }
+
+    @Builder
+    @Getter
+    public static class PaymentVirtualCallback {
+        private String createdAt;
+        private String secret;
+        private String status;
+        private String transactionKey;
+        private String orderId;
     }
 
 }

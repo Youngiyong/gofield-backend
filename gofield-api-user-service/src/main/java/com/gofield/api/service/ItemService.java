@@ -33,7 +33,6 @@ import java.util.stream.Collectors;
 public class ItemService {
 
     private final UserService userService;
-
     private final CategoryRepository categoryRepository;
     private final ItemRepository itemRepository;
     private final ItemQnaRepository itemQnaRepository;
@@ -102,12 +101,14 @@ public class ItemService {
 
 
     @Transactional(readOnly = true)
-    public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, List<Long> categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable){
+    public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, Long categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable){
         User user = userService.getUser();
         List<Long> categoryIdList = null;
         if(categoryId!=null){
-            List<Category> categoryList = categoryRepository.findAllSubCategoryByCategoryId(categoryId.get(0));
-            categoryIdList = categoryList.stream().map(p -> p.getId()).collect(Collectors.toList());
+            List<Category> categoryList = categoryRepository.findAllSubCategoryByCategoryId(categoryId);
+            if(categoryList!=null){
+                categoryIdList = categoryList.stream().map(p -> p.getId()).collect(Collectors.toList());
+            }
         }
         List<ItemClassificationProjectionResponse> result = itemRepository.findAllClassificationItemByCategoryIdAndUserId(user.getId(), classification, categoryIdList, spec, sort, pageable);
         return ItemClassificationResponse.of(result);

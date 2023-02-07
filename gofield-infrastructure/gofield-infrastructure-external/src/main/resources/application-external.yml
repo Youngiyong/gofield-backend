@@ -42,6 +42,7 @@ external:
         create-url: /v1/payments
         approve-url: /v1/payments/confirm
         cancel-url: /v1/payments/{paymentKey}/cancel
+        virtual-account-url: /v1/virtual-accounts
     tracker:
       delivery:
         base-url: https://apis.tracker.delivery

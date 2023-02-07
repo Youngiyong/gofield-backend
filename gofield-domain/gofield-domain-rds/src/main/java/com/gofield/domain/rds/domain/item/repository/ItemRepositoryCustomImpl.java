@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static com.gofield.domain.rds.domain.cart.QCart.cart;
@@ -54,7 +55,16 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     private BooleanExpression inCategoryId(List<Long> categoryIdList){
         if(categoryIdList == null){
             return null;
+        } else {
+            Optional<Long> allCategoryId = categoryIdList.stream()
+                    .filter(h -> h.equals(10L))
+                    .findFirst();
+
+            if(!allCategoryId.isEmpty()){
+                return null;
+            }
         }
+
         return category.id.in(categoryIdList);
     }
 

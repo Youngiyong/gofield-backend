@@ -4,6 +4,7 @@ import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
 import com.gofield.domain.rds.domain.order.EOrderCancelReasonFlag;
 import com.gofield.domain.rds.domain.order.EOrderItemStatusFlag;
 import com.gofield.domain.rds.domain.order.EPaymentType;
+import com.gofield.domain.rds.domain.order.OrderWait;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -11,6 +12,19 @@ import javax.validation.constraints.NotNull;
 import java.util.List;
 
 public class OrderRequest {
+
+    @Getter
+    public static  class OrderCreate {
+        private String orderId;
+        private String paymentKey;
+        private OrderWait orderWait;
+        private OrderSheet orderSheet;
+        private String paymentCompany;
+        private EPaymentType paymentType;
+        private String cardNumber;
+        private String cardType;
+        private int installmentPlanMonth;
+    }
 
     @Getter
     public static class OrderPay {
@@ -22,6 +36,9 @@ public class OrderRequest {
         private String uuid;
         @NotNull(message = "배송주소는 필수값입니다.")
         private UserRequest.ShippingAddress shippingAddress;
+        private String bankCode;
+        private String customerName;
+        private String customerEmail;
         private EEnvironmentFlag environment;
     }
 

@@ -49,6 +49,9 @@ public class Order extends BaseTimeEntity {
     private String paymentCompany;
 
     @Column
+    private String accountNumber;
+
+    @Column
     private String paymentType;
 
     @Column
@@ -85,7 +88,7 @@ public class Order extends BaseTimeEntity {
     private LocalDateTime finishDate;
 
     @Builder
-    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber,  String paymentKey, int totalItem, int totalAmount, int totalDelivery, int totalPrice, int totalDiscount,  String paymentCompany, String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderStatusFlag status){
+    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber, String paymentKey, int totalItem, int totalAmount, int totalDelivery, int totalDiscount, String paymentCompany, String accountNumber, String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderStatusFlag status){
         this.shippingAddress = shippingAddress;
         this.userId = userId;
         this.orderNumber = orderNumber;
@@ -95,6 +98,7 @@ public class Order extends BaseTimeEntity {
         this.totalDelivery = totalDelivery;
         this.totalDiscount = totalDiscount;
         this.paymentCompany = paymentCompany;
+        this.accountNumber = accountNumber;
         this.paymentType = paymentType;
         this.cardNumber = cardNumber;
         this.cardType = cardType;
@@ -103,7 +107,8 @@ public class Order extends BaseTimeEntity {
     }
 
     public static Order newInstance(OrderShippingAddress shippingAddress, Long userId,  String orderNumber,  String paymentKey,
-                                    int totalItem, int totalAmount, int totalDelivery, int totalDiscount, String paymentCompany, String paymentType, String cardNumber, String cardType, int installmentPlanMonth){
+                                    int totalItem, int totalAmount, int totalDelivery, int totalDiscount, String paymentCompany,
+                                    String accountNumber, String paymentType, String cardNumber, String cardType, int installmentPlanMonth){
         return Order.builder()
                 .shippingAddress(shippingAddress)
                 .userId(userId)
@@ -114,6 +119,7 @@ public class Order extends BaseTimeEntity {
                 .totalAmount(totalAmount)
                 .totalDiscount(totalDiscount)
                 .paymentCompany(paymentCompany)
+                .accountNumber(accountNumber)
                 .paymentType(paymentType)
                 .cardNumber(cardNumber)
                 .cardType(cardType)

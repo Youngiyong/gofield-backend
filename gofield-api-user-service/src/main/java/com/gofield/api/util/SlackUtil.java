@@ -1,5 +1,6 @@
 package com.gofield.api.util;
 
+import com.gofield.domain.rds.domain.order.EPaymentType;
 import org.json.simple.JSONObject;
 
 import java.util.ArrayList;
@@ -107,15 +108,17 @@ public class SlackUtil {
         return result;
     }
 
-    public static JSONObject makeOrder(String username, String userTel, String orderNumber, String orderDate, String orderName, int totalAmount) {
+    public static JSONObject makeOrder(String username, String userTel, EPaymentType paymentType, String orderNumber, String orderDate, String orderName, int totalAmount) {
         List<JSONObject> blocks = new ArrayList<>();
         JSONObject header = makeHeader(String.format("주문번호: %s", orderNumber));
+        JSONObject paymentTypeSection = makeSection("결제타입", paymentType.getDescription());
         JSONObject usernameSection = makeSection("이름", username);
         JSONObject userTelSection = makeSection("전화번호", userTel);
         JSONObject orderDateSection = makeSection("주문날짜", orderDate);
         JSONObject totalAmountSection = makeSection("금액", String.valueOf(totalAmount));
         JSONObject orderNameSection = makeSection("주문명", orderName);
         blocks.add(header);
+        blocks.add(paymentTypeSection);
         blocks.add(usernameSection);
         blocks.add(userTelSection);
         blocks.add(totalAmountSection);
