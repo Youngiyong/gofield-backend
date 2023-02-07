@@ -55,9 +55,11 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     private BooleanExpression inCategoryId(List<Long> categoryIdList){
         if(categoryIdList == null){
             return null;
+        } else if (categoryIdList.isEmpty()){
+            return null;
         } else {
             Optional<Long> allCategoryId = categoryIdList.stream()
-                    .filter(h -> h.equals(10L))
+                    .filter(h -> h.equals(11L) || h.equals(10L))
                     .findFirst();
 
             if(!allCategoryId.isEmpty()){

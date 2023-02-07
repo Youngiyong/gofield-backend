@@ -53,9 +53,6 @@ public class CategoryRepositoryCustomImpl implements CategoryRepositoryCustom {
 
     @Override
     public List<Category> findAllSubCategoryByCategoryId(Long categoryId) {
-        if(categoryId==10L){
-            return new ArrayList<>();
-        }
         List<Category> list =  jpaQueryFactory
                 .selectFrom(category)
                 .where(category.parent.id.eq(categoryId),
