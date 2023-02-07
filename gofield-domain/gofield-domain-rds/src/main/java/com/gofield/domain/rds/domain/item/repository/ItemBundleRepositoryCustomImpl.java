@@ -52,6 +52,13 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         return item.classification.eq(classification);
     }
 
+    private BooleanExpression eqCategoryId(Long categoryId){
+        if(categoryId == null){
+            return null;
+        }
+        return itemBundle.category.id.eq(categoryId);
+    }
+
     private OrderSpecifier orderByAllCategorySort(EItemBundleSort sort){
         if(sort==null){
             return itemBundleAggregation.reviewCount.desc();
@@ -96,6 +103,9 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     @Override
     public List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, EItemBundleSort sort, Pageable pageable) {
         if(subCategoryId!=null){
+            if(categoryId.equals(11L) || categoryId.equals(10L)){
+                categoryId = null;
+            }
             return jpaQueryFactory
                     .select(new QItemBundlePopularProjection(
                             itemBundle.id,
@@ -109,7 +119,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.id.eq(subCategoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
+                    .where(eqCategoryId(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(orderByAllCategorySort(sort))
