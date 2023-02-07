@@ -245,6 +245,7 @@ public class OrderService {
         if(orderSheet==null){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "주문시트가 존재하지 않습니다.");
         }
+        orderSheet.isValidOrder();
         OrderSheetContentResponse orderSheetContent = ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>(){});
         if(request.getPaymentType().equals(EPaymentType.CARD)){
             TossPaymentRequest.Payment externalRequest = TossPaymentRequest.Payment.of(orderSheet.getTotalPrice(), Constants.METHOD, makeOrderNumber(), orderSheetContent.getOrderName(), request.getCompanyCode(), null, thirdPartyService.getTossPaymentSuccessUrl(), thirdPartyService.getTossPaymentFailUrl());
@@ -260,6 +261,7 @@ public class OrderService {
             TossPaymentVirtualResponse response = thirdPartyService.getVirtualAccountReadyInfo(externalRequest);
             OrderWait orderWait = OrderWait.newInstance(user.getId(), externalRequest.getOrderId(), orderSheet.getUuid(), new Gson().toJson(response), new Gson().toJson(request.getShippingAddress()), request.getPaymentType(), request.getEnvironment());
             orderWaitRepository.save(orderWait);
+            orderSheet.update();
             return OrderWaitCreateResponse.of(request.getPaymentType(), null, response.getVirtualAccount().getAccountNumber());
         } else {
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, "지원하지 않는 결제타입입니다.");
