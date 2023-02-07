@@ -103,7 +103,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     @Override
     public List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, EItemBundleSort sort, Pageable pageable) {
         if(subCategoryId!=null){
-            if(categoryId.equals(11L) || categoryId.equals(10L)){
+            if(subCategoryId.equals(11L)){
                 categoryId = null;
             }
             return jpaQueryFactory
