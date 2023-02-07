@@ -135,7 +135,7 @@ public class OrderService {
         }
         OrderSheetContentResponse result = ApiUtil.strToObject(orderSheet.getSheet(), new TypeReference<OrderSheetContentResponse>() {});
         UserAddressResponse userAddressResponse = UserAddressResponse.of(userService.getUserMainAddress(user.getId()));
-        return OrderSheetResponse.of(result.getOrderSheetList(), userAddressResponse);
+        return OrderSheetResponse.of(result.getOrderSheetList(), userAddressResponse, orderSheet.getIsOrder());
     }
 
     @Transactional(readOnly = true)
