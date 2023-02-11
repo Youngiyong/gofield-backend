@@ -104,7 +104,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     public List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, EItemBundleSort sort, Pageable pageable) {
         if(subCategoryId!=null){
             if(subCategoryId.equals(11L)){
-                categoryId = null;
+                subCategoryId = null;
             }
             return jpaQueryFactory
                     .select(new QItemBundlePopularProjection(
@@ -119,7 +119,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(eqCategoryId(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
+                    .where(eqCategoryId(subCategoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(orderByAllCategorySort(sort))
