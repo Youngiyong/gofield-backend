@@ -224,7 +224,6 @@ public class ThirdPartyService {
         } else {
 
         }
-
         return "OK";
     }
 

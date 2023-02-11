@@ -1,11 +1,20 @@
 package com.gofield.api.controller;
 
+import com.gofield.api.dto.res.OrderCreateResponse;
 import com.gofield.api.service.ThirdPartyService;
+import com.gofield.api.util.ApiUtil;
+import com.gofield.common.model.dto.res.ApiResponse;
 import com.gofield.domain.rds.domain.common.EEnvironmentFlag;
+import com.gofield.domain.rds.domain.order.EPaymentType;
+import com.gofield.domain.rds.domain.order.OrderSheet;
+import com.gofield.domain.rds.domain.order.OrderWait;
+import com.gofield.domain.rds.domain.order.Purchase;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
+import com.gofield.infrastructure.external.api.toss.dto.req.TossPaymentRequest;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
@@ -51,4 +60,11 @@ public class ThirdPartyController {
                                     HttpServletResponse response) throws IOException {
         response.sendRedirect(thirdPartyService.callbackFailPayment(orderId, code, message));
     }
+
+    @ApiOperation(value = "결제 - 가상계좌 성공 콜백")
+    @GetMapping("/v1/payment/virtual/callback/success")
+    public ApiResponse callbackVirtualAccountPaymentSuccess(@RequestBody TossPaymentRequest.PaymentVirtualCallback request){
+        return ApiResponse.success(thirdPartyService.callbackVirtualAccount(request));
+    }
+
 }
