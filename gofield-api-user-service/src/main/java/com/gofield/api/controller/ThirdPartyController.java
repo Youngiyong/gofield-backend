@@ -62,7 +62,7 @@ public class ThirdPartyController {
     }
 
     @ApiOperation(value = "결제 - 가상계좌 성공 콜백")
-    @GetMapping("/v1/payment/virtual/callback/success")
+    @PostMapping("/v1/payment/virtual/callback/success")
     public ApiResponse callbackVirtualAccountPaymentSuccess(@RequestBody TossPaymentRequest.PaymentVirtualCallback request){
         return ApiResponse.success(thirdPartyService.callbackVirtualAccount(request));
     }
