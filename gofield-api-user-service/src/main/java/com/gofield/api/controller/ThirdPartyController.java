@@ -43,7 +43,6 @@ public class ThirdPartyController {
 //         response.sendRedirect(thirdPartyService.callbackAuth(code, state));
 //    }
 
-
     @ApiOperation(value = "결제 - 성공 콜백")
     @GetMapping("/v1/payment/callback/success")
     public void callbackSuccessPayment(@RequestParam String orderId,
