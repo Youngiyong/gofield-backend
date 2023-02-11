@@ -78,7 +78,7 @@ public class ItemResponse {
         tags.add(1, projection.getSpec().getDescription());
 
 
-        List<Map<String, Object>> option = projection.getOption()==null || projection.getOption().equals("") ? new ArrayList<>() :  ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){};
+        List<Map<String, Object>> option = projection.getOption()==null || projection.getOption().equals("") ? new ArrayList<>() :  ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){});
         return ItemResponse.builder()
                 .id(projection.getId())
                 .name(projection.getName())
