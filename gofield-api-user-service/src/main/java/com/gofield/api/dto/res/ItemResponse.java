@@ -77,6 +77,8 @@ public class ItemResponse {
         tags.add(0, projection.getClassification().getDescription());
         tags.add(1, projection.getSpec().getDescription());
 
+
+        List<Map<String, Object>> option = projection.getOption()==null || projection.getOption().equals("") ? new ArrayList<>() :  ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){};
         return ItemResponse.builder()
                 .id(projection.getId())
                 .name(projection.getName())
@@ -94,7 +96,7 @@ public class ItemResponse {
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
                 .images(projection.getImages().stream().map(k -> CommonUtils.makeCloudFrontUrl(k)).collect(Collectors.toList()))
-                .option(projection.getOption()==null ? null : ApiUtil.strToObject(projection.getOption(), new TypeReference<List<Map<String, Object>>>(){}))
+                .option(option)
                 .tags(tags)
                 .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))
                 .description(projection.getDescription())
