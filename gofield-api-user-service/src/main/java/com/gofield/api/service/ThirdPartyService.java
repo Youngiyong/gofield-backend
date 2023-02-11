@@ -227,6 +227,23 @@ public class ThirdPartyService {
         return "OK";
     }
 
+
+    @Transactional
+    public String callbackVirtualAccount(String orderId, String transactionKey, String status, String secret, String createdAt){
+        if(status.equals("DONE")){
+            OrderWait orderWait = orderWaitRepository.findByOid(orderId);
+            OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
+            Purchase purchase = Purchase.newInstance(orderId, transactionKey, orderSheet.getTotalPrice(), secret);
+            purchaseRepository.save(purchase);
+            OrderCreateResponse orderCreateResponse = OrderCreateResponse.of(orderId, transactionKey, orderWait, orderSheet, null, EPaymentType.VIRTUAL_ACCOUNT, null, null, 0);
+            createOrder(orderCreateResponse);
+            orderSheet.update();
+        } else {
+
+        }
+        return "OK";
+    }
+
     @Transactional
     public String callbackSuccessPayment(String orderId, String paymentKey, int amount){
         OrderWait orderWait = orderWaitRepository.findByOid(orderId);

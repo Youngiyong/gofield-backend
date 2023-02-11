@@ -66,4 +66,14 @@ public class ThirdPartyController {
         return ApiResponse.success(thirdPartyService.callbackVirtualAccount(request));
     }
 
+    @ApiOperation(value = "결제 - 가상계좌 성공 콜백")
+    @GetMapping("/v1/payment/virtual/callback/success")
+    public ApiResponse callbackVirtualAccountPaymentSuccess(@RequestParam String orderId,
+                                                            @RequestParam String transactionKey,
+                                                            @RequestParam String status,
+                                                            @RequestParam String secret,
+                                                            @RequestParam String createdAt){
+        return ApiResponse.success(thirdPartyService.callbackVirtualAccount(orderId, transactionKey, status, secret, createdAt));
+    }
+
 }
