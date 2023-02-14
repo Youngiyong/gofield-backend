@@ -186,6 +186,12 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
     @Override
     public List<ItemClassificationProjectionResponse> findAllClassificationItemByBundleIdAndClassificationAndNotNqItemId(Long userId, Long bundleId, Long itemId, EItemClassificationFlag classification, Pageable pageable) {
+        Long categoryId = jpaQueryFactory
+                .select(item.category.id)
+                .from(item)
+                .where(item.id.eq(itemId))
+                .fetchFirst();
+
         if(userId==null){
             List<ItemNonMemberClassificationProjection> projection =  jpaQueryFactory
                     .select(new QItemNonMemberClassificationProjection(
@@ -211,7 +217,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(item.bundle.id.eq(bundleId), item.id.ne(itemId),
+                    .where(item.id.ne(itemId),
+                            item.category.id.eq(categoryId),
                             itemStock.status.eq(EItemStatusFlag.SALE),
                             eqClassification(classification),
                             item.deleteDate.isNull())
@@ -250,7 +257,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.brand.id.eq(brand.id))
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                .where(item.bundle.id.eq(bundleId), item.id.ne(itemId),
+                .where(item.id.ne(itemId),
+                        item.category.id.eq(categoryId),
                         itemStock.status.eq(EItemStatusFlag.SALE),
                         eqClassification(classification),
                         item.deleteDate.isNull())
