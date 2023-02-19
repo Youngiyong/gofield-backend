@@ -124,6 +124,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .where(eqCategoryId(subCategoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
+                    .groupBy(itemBundle.id)
                     .orderBy(orderByAllCategorySort(sort))
                     .fetch();
 
@@ -146,6 +147,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .where(item.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
+                    .groupBy(itemBundle.id)
                     .orderBy(orderByAllCategorySort(sort))
                     .fetch();
         }
