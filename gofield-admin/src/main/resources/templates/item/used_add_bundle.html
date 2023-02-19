@@ -4,14 +4,14 @@
       xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title>새상품 추가</title>
+    <title>중고 상품 추가</title>
+
     <script src="https://t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
     <script src="/js/ckeditor/ckeditor.js"></script>
     <script src="/js/tailwind/tailwind.3.2.4.js"></script>
     <script src="/js/d3/d3-v7.js"></script>
-    <script src="/js/option/option-manager.js"></script>
     <script>
         $(document).ready(function() {
             CKEDITOR.replace("description", {
@@ -50,29 +50,17 @@
             });
         }
     </script>
-    <script>
-        window.optionManager = new OptionManager();
-        window.addEventListener('load', function() {
-            window.optionManager.tryInit();
-        });
-    </script>
-    <style>
-        label {
-            margin: 0;
-            padding: 0;
-        }
-    </style>
+
 </head>
 <body>
 
 <div layout:fragment="content">
     <!-- Content Header (Page header) -->
-    <input type="hidden" name="option-manager-init-data" id="option-manager-init-data" value="" />
     <section class="content-header">
         <div class="container-fluid">
             <div class="row mb-2">
                 <div class="col-sm-6">
-                    <h1>새상품 추가</h1>
+                    <h1>중고 상품 추가(묶음 상품 같이 등록)</h1>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
@@ -92,24 +80,48 @@
                     <!-- general form elements -->
                     <div class="card card-primary">
                         <div class="card-header">
-                            <h3 class="card-title">새상품 정보</h3>
+                            <h3 class="card-title">중고 상품 정보</h3>
                         </div>
                         <!-- /.card-header -->
                                          <!-- form start -->
-                        <form role="form" method="post" th:action="@{/item/add/new}" th:object="${item}" enctype="multipart/form-data" onsubmit="return optionManager.checkSubmit(this)">
+                        <form role="form" method="post" th:action="@{/item/add/used/bundle}" th:object="${item}" enctype="multipart/form-data" onsubmit="return checkSubmit(this)">
                             <input th:field="*{id}" type="hidden"/>
                             <div class="card-body">
+<!--                                <div class="form-group">-->
+<!--                                    <label>카테고리</label>-->
+<!--                                    <select th:field="*{categoryId}" class="form-control select2bs4 select2-hidden-accessible" style="width: 100%;" data-select2-id="17" tabindex="-1" aria-hidden="true">-->
+<!--                                        <div th:each="data : ${item.categoryList}">-->
+<!--                                            <option th:value="${data.id}" th:text="${data.name}"></option>-->
+<!--                                        </div>-->
+<!--                                    </select>-->
+<!--                                </div>-->
+<!--                                <div class="form-group">-->
+<!--                                    <label>브랜드</label>-->
+<!--                                    <select th:field="*{brandId}"  class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">-->
+<!--                                        <div th:each="data : ${item.brandList}" >-->
+<!--                                            <option th:value="${data.id}" th:text="${data.name}"></option>-->
+<!--                                        </div>-->
+<!--                                    </select>-->
+<!--                                </div>-->
                                 <div class="form-group">
-                                    <label>종목</label>
-                                    <select th:field="*{bundleId}"  class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
-                                        <div th:each="data : ${item.bundleList}" >
+                                    <label>카테고리</label>
+                                    <select th:field="*{categoryId}"  class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <div th:each="data : ${item.categoryList}" >
                                             <option th:value="${data.id}" th:text="${data.name}"></option>
                                         </div>
                                     </select>
                                 </div>
                                 <div class="form-group">
-                                    <label for="name">새상품명</label>
-                                    <input class="form-control" id="name" placeholder="새상품명" required
+                                    <label>브랜드</label>
+                                    <select th:field="*{brandId}"  class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <div th:each="data : ${item.brandList}" >
+                                            <option th:value="${data.id}" th:text="${data.name}"></option>
+                                        </div>
+                                    </select>
+                                </div>
+                                <div class="form-group">
+                                    <label for="name">중고상품명</label>
+                                    <input class="form-control" id="name" placeholder="중고상품명" required
                                            type="text" th:field="*{name}">
                                 </div>
                                 <div class="form-group">
@@ -157,13 +169,6 @@
                                     <label for="weight">중량</label>
                                     <input class="form-control" id="weight" placeholder="중량"
                                            type="text" th:field="*{weight}">
-                                </div>
-                                <div class="form-group">
-                                    <label>옵션</label>
-                                    <div class="w-full block" id="option-content-box">
-                                        <!-- 이 부분은 js 가 알아서 채워줄 것임.. -->
-                                    </div>
-                                    <input type="hidden" name="optionInfo" value="" />
                                 </div>
                                 <div class="form-group">
                                     <label>AS 가능여부</label>
@@ -301,7 +306,7 @@
                                     <input type="file" name="image" />
                                 </div>
                                 <div class="form-group">
-                                    <label>이미지</label>
+                                    <label>상품 이미지 업로드(다중 선택 가능)</label>
                                     <br>
                                     <input type="file" name="images" multiple/>
                                 </div>
@@ -321,5 +326,6 @@
     </section>
 
 </div>
+
 </body>
 </html>

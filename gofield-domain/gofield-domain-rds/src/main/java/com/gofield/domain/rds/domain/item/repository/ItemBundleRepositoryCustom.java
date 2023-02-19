@@ -24,4 +24,5 @@ public interface ItemBundleRepositoryCustom {
     List<ItemBundle> findAllActive();
     Page<ItemBundle> findAllByKeyword(String keyword, Pageable pageable);
     List<ItemBundle> findAllByKeyword(String keyword);
+    List<ItemBundle> findAllByName(String name);
 }

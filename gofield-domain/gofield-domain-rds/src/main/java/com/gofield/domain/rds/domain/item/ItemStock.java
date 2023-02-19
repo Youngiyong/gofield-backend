@@ -66,6 +66,10 @@ public class ItemStock extends BaseTimeEntity {
         this.qty  =qty;
     }
 
+    public void update(EItemStatusFlag status){
+        this.status = status;
+    }
+
     public void updateOrderCancel(){
         this.qty += 1;
     }

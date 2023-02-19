@@ -56,7 +56,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         if(categoryId == null){
             return null;
         }
-        return itemBundle.category.id.eq(categoryId);
+        return item.category.id.eq(categoryId);
     }
 
     private OrderSpecifier orderByAllCategorySort(EItemBundleSort sort){
@@ -119,6 +119,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
+                    .innerJoin(item)
+                    .on(itemBundle.id.eq(item.bundle.id))
                     .where(eqCategoryId(subCategoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -139,7 +141,9 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .where(itemBundle.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
+                    .innerJoin(item)
+                    .on(itemBundle.id.eq(item.bundle.id))
+                    .where(item.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundleAggregation.itemCount.ne(0), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .orderBy(orderByAllCategorySort(sort))
@@ -398,6 +402,14 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .innerJoin(itemBundle.brand, brand).fetchJoin()
                 .where(containName(keyword), itemBundle.isActive.isTrue())
                 .orderBy(itemBundle.id.desc())
+                .fetch();
+    }
+
+    @Override
+    public List<ItemBundle> findAllByName(String name) {
+        return jpaQueryFactory
+                .selectFrom(itemBundle)
+                .where(itemBundle.name.eq(name))
                 .fetch();
     }
 }

@@ -59,6 +59,9 @@
                                 <a class="btn btn-app float-right"  href="/item/add/used">
                                     <i class="fas fa-edit"></i> 중고 상품 추가
                                 </a>
+                                <a class="btn btn-app float-right"  href="/item/add/used/bundle">
+                                    <i class="fas fa-edit"></i> 중고 상품 추가(묶음등록)
+                                </a>
                                 <div th:switch="true">
                                     <a class="btn btn-app float-right"  th:case="${keyword == null && status == null}" th:href="${'/excel/item'}"><i class="fas fa-save"></i>엑셀 다운</a>
                                     <a class="btn btn-app float-right"  th:case="${keyword != null && status != null}" th:href="${'/excel/item?keyword='+keyword+'&status='+status}"><i class="fas fa-save"></i>엑셀 다운</a>

@@ -222,7 +222,8 @@ public class Item extends BaseTimeEntity {
         this.isOption = isOption;
     }
 
-    public void update(String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags, Boolean isOption, String thumbnail){
+    public void update(ItemBundle bundle, String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags, Boolean isOption, String thumbnail){
+        this.bundle = bundle;
         this.name = name;
         this.price = price;
         this.deliveryPrice = deliveryPrice;
@@ -234,6 +235,16 @@ public class Item extends BaseTimeEntity {
     }
 
     public void update(String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags){
+        this.name = name;
+        this.price = price;
+        this.deliveryPrice = deliveryPrice;
+        this.delivery = delivery;
+        this.pickup = pickup;
+        this.tags = tags;
+    }
+
+    public void update(ItemBundle bundle, String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags){
+        this.bundle = bundle;
         this.name = name;
         this.price = price;
         this.deliveryPrice = deliveryPrice;

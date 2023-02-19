@@ -5,7 +5,10 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.admin.dto.*;
 import com.gofield.admin.dto.response.projection.ItemInfoProjectionResponse;
 import com.gofield.admin.util.AdminUtil;
+import com.gofield.common.exception.ConflictException;
 import com.gofield.common.model.Constants;
+import com.gofield.common.model.ErrorAction;
+import com.gofield.common.model.ErrorCode;
 import com.gofield.domain.rds.domain.cart.CartRepository;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.ItemInfoAdminProjectionResponse;
@@ -19,6 +22,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.transaction.TransactionScoped;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -92,6 +96,7 @@ public class ItemService {
     @Transactional
     public void updateUsedItem(MultipartFile image, List<MultipartFile> images, ItemDto itemDto){
         Item item = itemRepository.findByItemId(itemDto.getId());
+        ItemStock itemStock = itemStockRepository.findByItemNumber(item.getItemNumber());
         ItemDetail itemDetail = item.getDetail();
         ShippingTemplate shippingTemplate = item.getShippingTemplate();
         String optionList = AdminUtil.makeOption(itemDto);
@@ -131,8 +136,22 @@ public class ItemService {
                 }
             }
         }
-        item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, false, thumbnail);
+        if(!itemDto.getStatus().equals(itemStock.getStatus())){
+            aggregationUpdate = true;
+            itemStock.update(itemDto.getStatus());
+        }
+        // 묶음 상품이 변경되는경우
+        if(!item.getBundle().getId().equals(itemDto.getBundleId())){
+            Long existBundleId = item.getBundle().getId();
+            ItemBundle itemBundle = itemBundleRepository.findByBundleIdNotFetch(itemDto.getBundleId());
+            item.update(itemBundle, itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, false, thumbnail);
 
+           // 기존 묶음 상품의 집계 테이블 수정
+            updateItemBundleAggregation(existBundleId, false);
+            updateItemBundleAggregation(itemBundle.getId(), false);
+            return;
+        }
+        item.update(item.getBundle(), itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags, false, thumbnail);
         if(aggregationUpdate){
             updateItemBundleAggregation(item.getBundle().getId(), false);
             cartRepository.deleteByItemNumber(item.getItemNumber());
@@ -169,7 +188,16 @@ public class ItemService {
         Boolean aggregationUpdate = itemDto.getPrice()==item.getPrice() ? false : true;
         ItemTemp itemTemp = itemTempRepository.findById(1L).get();
         ItemOptionManagerDto optionManager = AdminUtil.strToObject(itemDto.getOptionInfo(), new TypeReference<ItemOptionManagerDto>(){});
+        if(!item.getBundle().getId().equals(itemDto.getBundleId())){
+            Long existBundleId = item.getBundle().getId();
+            ItemBundle bundle = itemBundleRepository.findByBundleIdNotFetch(itemDto.getBundleId());
+            item.update(bundle, itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags);
 
+            // 기존 묶음 상품의 집계 테이블 수정
+            updateItemBundleAggregation(existBundleId, false);
+            updateItemBundleAggregation(bundle.getId(), false);
+            return;
+        }
         item.update(itemDto.getName(), itemDto.getPrice(), itemDto.getDeliveryPrice(), itemDto.getDelivery(), itemDto.getPickup(), tags);
 
         //옵션 상품 업데이트
@@ -203,7 +231,6 @@ public class ItemService {
                     return;
                 }
             }
-
             List<ItemOptionItemDto> optionItemList = ItemOptionItemDto.ofEdit(optionManager.getOptionItemList());
             List<ItemNameValueDto> optionNameValueList = optionManager.getOptionGroupList();
             List<ItemOptionGroupDto> optionGroupDtoList = ItemOptionGroupDto.of(optionManager.getOptionGroupList());
@@ -314,6 +341,16 @@ public class ItemService {
         List<ItemBundleDto> bundleDtoList = ItemBundleDto.of(itemBundleRepository.findAllActive());
         if(id==null){
             return ItemDto.of(bundleDtoList);
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    public ItemUsedBundleDto getItemUsedBundle(Long id){
+        List<CategoryDto> categoryDtoList = CategoryDto.of(categoryRepository.findAllChildrenIsActiveOrderBySort());
+        List<BrandDto> brandDtoList = BrandDto.of(brandRepository.findAllByActiveOrderBySort());
+        if(id==null){
+            return ItemUsedBundleDto.of(categoryDtoList, brandDtoList);
         }
         return null;
     }
@@ -438,6 +475,7 @@ public class ItemService {
     }
 
     public void updateItemBundleAggregation(Long bundleId, Boolean isRegister){
+        if(bundleId.equals(100000L)) return;
         //묶음 집계 업데이트
         ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(bundleId);
 
@@ -481,6 +519,102 @@ public class ItemService {
         item.delete();
         updateItemBundleAggregation(bundleId, false);
         cartRepository.deleteByItemNumber(item.getItemNumber());
+    }
+
+    @Transactional
+    public void saveUsedItemBundle(MultipartFile image, List<MultipartFile> images, ItemUsedBundleDto itemDto) {
+        List<ItemBundle> bundleList = itemBundleRepository.findAllByName(itemDto.getName());
+        if(!bundleList.isEmpty()){
+            throw new ConflictException(ErrorCode.E409_CONFLICT_EXCEPTION, ErrorAction.NONE, "중복된 묶음 상품이 있습니다.");
+        }
+        Brand brand = brandRepository.findByBrandId(itemDto.getBrandId());
+        Category category = categoryRepository.findByCategoryId(itemDto.getCategoryId());
+        String thumbnail = null ;
+        if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
+            thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
+        }
+        ItemBundle itemBundle = ItemBundle.newInstance(itemDto.getName(), category, brand, true, false, thumbnail);
+        List<String> imageList = new ArrayList<>();
+        if(images!=null && !images.isEmpty()){
+            int sort = 10;
+            for(MultipartFile file: images){
+                if(!file.getOriginalFilename().equals("")) {
+                    String imagePath = s3FileStorageClient.uploadFile(file, FileType.ITEM_IMAGE);
+                    itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, imagePath, sort));
+                    imageList.add(imagePath);
+                    sort++;
+                }
+            }
+        }
+        String optionList = AdminUtil.makeOption(itemDto);
+
+        ItemDetail itemDetail = ItemDetail.newInstance(
+                itemDto.getGender(),
+                itemDto.getSpec(),
+                optionList,
+                itemDto.getDescription());
+
+        Boolean isCondition = itemDto.getDelivery().equals(EItemDeliveryFlag.CONDITION) ? true : false;
+        /*
+        ToDo: 셀러 관리 나오면 셀러 선택 처리
+         */
+        ShippingTemplate shippingTemplate = ShippingTemplate.newInstance(
+                1L,
+                isCondition,
+                itemDto.getShippingTemplate().getCondition(),
+                itemDto.getShippingTemplate().getChargeType(),
+                itemDto.getShippingTemplate().getCharge(),
+                itemDto.getShippingTemplate().getIsPaid(),
+                itemDto.getShippingTemplate().getExchangeCharge(),
+                itemDto.getShippingTemplate().getTakebackCharge(),
+                itemDto.getShippingTemplate().getIsFee(),
+                itemDto.getShippingTemplate().getFeeJeju(),
+                itemDto.getShippingTemplate().getFeeJejuBesides(),
+                itemDto.getShippingTemplate().getZipCode(),
+                itemDto.getShippingTemplate().getAddress(),
+                itemDto.getShippingTemplate().getAddressExtra(),
+                itemDto.getShippingTemplate().getReturnZipCode(),
+                itemDto.getShippingTemplate().getReturnAddress(),
+                itemDto.getShippingTemplate().getReturnAddressExtra());
+
+        ItemTemp itemTemp = itemTempRepository.findById(1L).get();
+
+        String tags = itemDto.getTags()==null ? null : AdminUtil.toJsonStr(itemDto.getTags());
+        Item item = Item.newUsedItemInstance(
+                itemBundle,
+                brand,
+                category,
+                itemDetail,
+                shippingTemplate,
+                1L,
+                thumbnail,
+                makeItemNumber(itemTemp.getItemNumber()),
+                itemDto.getName(),
+                itemDto.getPrice(),
+                itemDto.getDeliveryPrice(),
+                itemDto.getPickup(),
+                itemDto.getDelivery(),
+                tags);
+
+        int sort = 10;
+        for(String imagePath: imageList){
+            item.addImage(ItemImage.newInstance(item, imagePath, sort));
+            sort++;
+        }
+        ItemStock itemStock = ItemStock.newInstance(item, itemDto.getStatus(), EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
+        ItemAggregation itemAggregation = ItemAggregation.newInstance(item);
+        itemDetailRepository.save(itemDetail);
+        shippingTemplateRepository.save(shippingTemplate);
+        itemBundleRepository.save(itemBundle);
+        itemBundleAggregationRepository.save(ItemBundleAggregation.newInstance(itemBundle));
+        itemRepository.save(item);
+        itemAggregationRepository.save(itemAggregation);
+        itemStockRepository.save(itemStock);
+        itemTemp.update();
+
+        //묶음 집계 업데이트
+        updateItemBundleAggregation(item.getBundle().getId(), true);
+
     }
 
     @Transactional
@@ -551,7 +685,7 @@ public class ItemService {
                 }
             }
         }
-        ItemStock itemStock = ItemStock.newInstance(item, EItemStatusFlag.SALE, EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
+        ItemStock itemStock = ItemStock.newInstance(item, itemDto.getStatus(), EItemStockFlag.COMMON, item.getItemNumber(), 1L, itemDto.getQty());
         ItemAggregation itemAggregation = ItemAggregation.newInstance(item);
         itemDetailRepository.save(itemDetail);
         shippingTemplateRepository.save(shippingTemplate);

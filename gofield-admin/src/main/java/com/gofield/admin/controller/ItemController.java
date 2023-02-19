@@ -3,6 +3,7 @@ package com.gofield.admin.controller;
 import com.gofield.admin.dto.ItemDto;
 import com.gofield.admin.dto.ItemEditDto;
 import com.gofield.admin.dto.ItemListDto;
+import com.gofield.admin.dto.ItemUsedBundleDto;
 import com.gofield.admin.service.ItemService;
 import com.gofield.domain.rds.domain.item.EItemStatusFlag;
 import lombok.RequiredArgsConstructor;
@@ -94,6 +95,12 @@ public class ItemController {
         return "item/used_add";
     }
 
+    @GetMapping("/item/add/used/bundle")
+    public String getBundleItemUsedAddPage(Model model){
+        model.addAttribute("item", itemService.getItemUsedBundle(null));
+        return "item/used_add_bundle";
+    }
+
     @PostMapping("/item/add/new")
     public String addItemNew(ItemDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
         itemService.saveNewItem(image, images, itemDto);
@@ -106,9 +113,15 @@ public class ItemController {
         return "redirect:/item";
     }
 
+    @PostMapping("/item/add/used/bundle")
+    public String addItemBundleUsed(ItemUsedBundleDto itemDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+        itemService.saveUsedItemBundle(image, images, itemDto);
+        return "redirect:/item";
+    }
+
     @GetMapping("/item/{id}/used/image/delete/{imageId}")
     public String deleteItemUsedImage(@PathVariable Long id,
-                                   @PathVariable Long imageId){
+                                      @PathVariable Long imageId){
         itemService.deleteImage(id, imageId);
         return "redirect:/item/used/edit/"+id;
     }

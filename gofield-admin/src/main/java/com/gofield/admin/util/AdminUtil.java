@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gofield.admin.dto.ItemDto;
 import com.gofield.admin.dto.ItemKeyValueDto;
+import com.gofield.admin.dto.ItemUsedBundleDto;
 import com.gofield.common.exception.InternalServerException;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
@@ -92,6 +93,26 @@ public class AdminUtil {
     }
 
     public static String makeOption(ItemDto itemDto){
+        List<ItemKeyValueDto> result = new ArrayList<>();
+        if(itemDto.getManufacturer()!=null){
+            result.add(ItemKeyValueDto.of("제조사", itemDto.getManufacturer()));
+        }
+        if(itemDto.getOrigin()!=null){
+            result.add(ItemKeyValueDto.of("원산지", itemDto.getOrigin()));
+        }
+        if(itemDto.getLength()!=null){
+            result.add(ItemKeyValueDto.of("길이", itemDto.getLength()));
+        }
+        if(itemDto.getWeight()!=null){
+            result.add(ItemKeyValueDto.of("중량", itemDto.getWeight()));
+        }
+        if(itemDto.getIsAs()!=null){
+            result.add(ItemKeyValueDto.of("AS 가능여부", itemDto.getIsAs()));
+        }
+        return AdminUtil.toJsonStr(result);
+    }
+
+    public static String makeOption(ItemUsedBundleDto itemDto){
         List<ItemKeyValueDto> result = new ArrayList<>();
         if(itemDto.getManufacturer()!=null){
             result.add(ItemKeyValueDto.of("제조사", itemDto.getManufacturer()));
