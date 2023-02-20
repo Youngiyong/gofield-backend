@@ -4,10 +4,7 @@ import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.common.model.ErrorAction;
 import com.gofield.common.model.ErrorCode;
-import com.gofield.domain.rds.domain.item.EItemBundleSort;
-import com.gofield.domain.rds.domain.item.EItemClassificationFlag;
-import com.gofield.domain.rds.domain.item.EItemStatusFlag;
-import com.gofield.domain.rds.domain.item.ItemBundle;
+import com.gofield.domain.rds.domain.item.*;
 import com.gofield.domain.rds.domain.item.projection.*;
 import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -19,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 
@@ -57,6 +55,31 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
             return null;
         }
         return item.category.id.eq(categoryId);
+    }
+
+    private BooleanExpression inCategoryId(List<Long> categoryIdList){
+        if(categoryIdList == null){
+            return null;
+        } else if (categoryIdList.isEmpty()){
+            return null;
+        } else {
+            Optional<Long> allCategoryId = categoryIdList.stream()
+                    .filter(h -> h.equals(11L) || h.equals(10L))
+                    .findFirst();
+
+            if(!allCategoryId.isEmpty()){
+                return null;
+            }
+        }
+
+        return itemBundle.category.id.in(categoryIdList);
+    }
+
+    private BooleanExpression eqChildId(Long childId){
+        if(childId==null){
+            return null;
+        }
+        return itemBundle.category.id.eq(childId);
     }
 
     private OrderSpecifier orderByAllCategorySort(EItemBundleSort sort){
@@ -183,6 +206,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundle.name,
                         itemBundle.brand.name.as("brandName"),
                         itemBundle.thumbnail,
+                        itemBundle.description,
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
@@ -372,12 +396,57 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
     }
 
     @Override
-    public Page<ItemBundle> findAllByKeyword(String keyword, Pageable pageable) {
+    public Page<ItemBundle> findAllByKeywordAndCategoryId(String keyword, Long parentId, Long childId, Pageable pageable) {
+        if(parentId!=null){
+            List<Category> list =  jpaQueryFactory
+                    .selectFrom(category)
+                    .where(category.parent.id.eq(parentId),
+                            category.isActive.isTrue())
+                    .orderBy(category.sort.asc())
+                    .fetch();
+
+            List<Category> result = new ArrayList<>();
+            for(Category cat : list){
+                List<Category> childrenList = cat.getChildren();
+                if(!childrenList.isEmpty()){
+                    for(Category subCat: childrenList){
+                        result.add(subCat);
+                    }
+                } else {
+                    result.add(cat);
+                }
+            }
+
+            List<Long> categoryIdList = result.stream().map(p -> p.getId()).collect(Collectors.toList());
+
+            List<ItemBundle> content =  jpaQueryFactory
+                    .selectFrom(itemBundle)
+                    .innerJoin(itemBundle.category, category).fetchJoin()
+                    .innerJoin(itemBundle.brand, brand).fetchJoin()
+                    .where(inCategoryId(categoryIdList), containName(keyword), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull())
+                    .orderBy(itemBundle.id.desc())
+                    .offset(pageable.getOffset())
+                    .limit(pageable.getPageSize())
+                    .fetch();
+
+            if(content.isEmpty()){
+                return new PageImpl<>(content, pageable, 0);
+            }
+
+            List<Long> totalCount = jpaQueryFactory
+                    .select(itemBundle.id)
+                    .from(itemBundle)
+                    .where(inCategoryId(categoryIdList), containName(keyword), itemBundle.isActive.isTrue())
+                    .fetch();
+
+            return new PageImpl<>(content, pageable, totalCount.size());
+        }
+
         List<ItemBundle> content =  jpaQueryFactory
                 .selectFrom(itemBundle)
                 .innerJoin(itemBundle.category, category).fetchJoin()
                 .innerJoin(itemBundle.brand, brand).fetchJoin()
-                .where(containName(keyword), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull())
+                .where(eqChildId(childId), containName(keyword), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull())
                 .orderBy(itemBundle.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -390,7 +459,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         List<Long> totalCount = jpaQueryFactory
                 .select(itemBundle.id)
                 .from(itemBundle)
-                .where(containName(keyword), itemBundle.isActive.isTrue())
+                .where(eqChildId(childId), containName(keyword), itemBundle.isActive.isTrue())
                 .fetch();
 
         return new PageImpl<>(content, pageable, totalCount.size());

@@ -17,6 +17,8 @@ public class ItemBundleResponse {
     private String name;
     private String brandName;
     private String thumbnail;
+
+    private String description;
     private int reviewCount;
     private Double reviewScore;
     private int newLowestPrice;
@@ -27,11 +29,12 @@ public class ItemBundleResponse {
     private List<String> images;
 
     @Builder
-    private ItemBundleResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int allItemCount,  Long newItemCount, Long usedItemCount, List<String> images){
+    private ItemBundleResponse(Long id, String name, String brandName, String thumbnail, String description, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int allItemCount,  Long newItemCount, Long usedItemCount, List<String> images){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
         this.thumbnail = thumbnail;
+        this.description = description;
         this.reviewCount = reviewCount;
         this.reviewScore = reviewScore;
         this.newLowestPrice = newLowestPrice;
@@ -48,6 +51,7 @@ public class ItemBundleResponse {
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
                 .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
+                .description(projection.getDescription())
                 .reviewCount(projection.getReviewCount())
                 .reviewScore(Double.parseDouble(String.format("%.1f", projection.getReviewScore())))
                 .newLowestPrice(projection.getNewLowestPrice())

@@ -1,6 +1,5 @@
 package com.gofield.admin.dto;
 
-import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.ItemBundle;
 import lombok.Builder;
@@ -25,10 +24,11 @@ public class ItemBundleDto {
     private String brandName;
     private String thumbnail;
     private Boolean isRecommend;
+    private String description;
     private String createDate;
 
     @Builder
-    private ItemBundleDto(Long id, String name, List<CategoryDto> categoryList, List<BrandDto> brandList, Long categoryId, String categoryName, Long brandId, String brandName, String thumbnail,  Boolean isRecommend, String createDate) {
+    private ItemBundleDto(Long id, String name, List<CategoryDto> categoryList, List<BrandDto> brandList, Long categoryId, String categoryName, Long brandId, String brandName, String thumbnail,  Boolean isRecommend, String description, String createDate) {
         this.id = id;
         this.name = name;
         this.categoryList = categoryList;
@@ -39,6 +39,7 @@ public class ItemBundleDto {
         this.brandName = brandName;
         this.thumbnail = thumbnail;
         this.isRecommend = isRecommend;
+        this.description = description;
         this.createDate = createDate;
     }
 
@@ -60,11 +61,12 @@ public class ItemBundleDto {
                 .brandId(itemBundle.getBrand().getId())
                 .brandName(itemBundle.getBrand().getName())
                 .isRecommend(itemBundle.getIsRecommend())
+                .description(itemBundle.getDescription())
                 .thumbnail(itemBundle.getThumbnail()==null ? null : CommonUtils.makeCloudFrontAdminUrl(itemBundle.getThumbnail()))
                 .build();
     }
 
-    public static ItemBundleDto of(Long id, String name, Long categoryId, Long brandId, String thumbnail, Boolean isRecommend, String createDate){
+    public static ItemBundleDto of(Long id, String name, Long categoryId, Long brandId, String thumbnail, String description, Boolean isRecommend, String createDate){
         return ItemBundleDto.builder()
                 .id(id)
                 .name(name)
@@ -72,12 +74,13 @@ public class ItemBundleDto {
                 .brandId(brandId)
                 .thumbnail(CommonUtils.makeCloudFrontAdminUrl(thumbnail))
                 .isRecommend(isRecommend)
+                .description(description)
                 .createDate(createDate)
                 .build();
     }
 
     public static List<ItemBundleDto> of(List<ItemBundle> list){
-        return list.stream().map(p -> ItemBundleDto.of(p.getId(), p.getName(), p.getCategory().getId(), p.getBrand().getId(), p.getThumbnail(), p.getIsRecommend(), p.getCreateDate().toLocalDate().toString()))
+        return list.stream().map(p -> ItemBundleDto.of(p.getId(), p.getName(), p.getCategory().getId(), p.getBrand().getId(), p.getThumbnail(), p.getDescription(), p.getIsRecommend(), p.getCreateDate().toLocalDate().toString()))
                 .collect(Collectors.toList());
     }
 }

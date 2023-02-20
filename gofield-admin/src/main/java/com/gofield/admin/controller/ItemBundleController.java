@@ -28,11 +28,15 @@ public class ItemBundleController {
 
     @GetMapping("/bundle")
     public String getBundleListPage(@RequestParam(required = false) String keyword,
+                                    @RequestParam(required = false) Long parentId,
+                                    @RequestParam(required = false) Long childId,
                                     @PageableDefault(direction = Sort.Direction.DESC) Pageable pageable, Model model, HttpSession session, Principal principal) {
-        ItemBundleListDto result = itemBundleService.getBundleList(keyword, pageable);
+        ItemBundleListDto result = itemBundleService.getBundleList(keyword, parentId, childId, pageable);
         session.setAttribute("username", principal.getName());
         model.addAttribute("list", result.getList());
         model.addAttribute("keyword", keyword);
+        model.addAttribute("parentId", parentId);
+        model.addAttribute("childId", childId);
         model.addAttribute("currentPage", result.getPage().getNumber() + 1);
         model.addAttribute("totalItems", result.getPage().getTotalElements());
         model.addAttribute("totalPages", result.getPage().getTotalPages());

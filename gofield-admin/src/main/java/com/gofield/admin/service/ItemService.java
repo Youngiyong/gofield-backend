@@ -533,7 +533,7 @@ public class ItemService {
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_IMAGE);
         }
-        ItemBundle itemBundle = ItemBundle.newInstance(itemDto.getName(), category, brand, true, false, thumbnail);
+        ItemBundle itemBundle = ItemBundle.newInstance(itemDto.getName(), category, brand, true, false, thumbnail, null);
         List<String> imageList = new ArrayList<>();
         if(images!=null && !images.isEmpty()){
             int sort = 10;

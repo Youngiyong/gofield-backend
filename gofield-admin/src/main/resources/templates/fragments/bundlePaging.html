@@ -1,5 +1,8 @@
 <a th:fragment="paging(pageNum, label, tooltip)" class="page-link"
-  th:href="@{'/bundle?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''} + 'page=' + ${pageNum} + '&size=' + ${pageSize}}"
+  th:href="@{'/bundle?' + ${keyword!=null && keyword!=''? 'keyword=' + keyword + '&' : ''}
+     + ${parentId!=null && parentId!=''? 'parentId=' + parentId + '&' : ''}
+     + ${childId!=null && childId!=''? 'childId=' + childId + '&' : ''}
+  + 'page=' + ${pageNum} + '&size=' + ${pageSize}}"
   th:title="${tooltip}" rel="tooltip">
   [[${label}]]
 </a>

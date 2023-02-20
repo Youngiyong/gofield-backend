@@ -30,8 +30,8 @@ public class ItemBundleService {
     private final S3FileStorageClient s3FileStorageClient;
 
     @Transactional(readOnly = true)
-    public ItemBundleListDto getBundleList(String keyword, Pageable pageable){
-        Page<ItemBundle> page = itemBundleRepository.findAllByKeyword(keyword, pageable);
+    public ItemBundleListDto getBundleList(String keyword, Long parentId, Long childId, Pageable pageable){
+        Page<ItemBundle> page = itemBundleRepository.findAllByKeywordAndCategoryId(keyword, parentId, childId, pageable);
         List<ItemBundleInfoProjectionResponse> result = ItemBundleInfoProjectionResponse.of(page.getContent());
         return ItemBundleListDto.of(result, page);
     }
@@ -50,7 +50,7 @@ public class ItemBundleService {
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
         }
-        itemBundle.update(brand, category, itemBundleDto.getName(), itemBundleDto.getIsRecommend(), thumbnail);
+        itemBundle.update(brand, category, itemBundleDto.getName(), itemBundleDto.getIsRecommend(), thumbnail, itemBundleDto.getDescription());
         if(images!=null && !images.isEmpty()){
             for(MultipartFile file: images){
                 if(!file.getOriginalFilename().equals("")){
@@ -84,7 +84,7 @@ public class ItemBundleService {
         Brand brand = brandRepository.findByBrandId(itemBundleDto.getBrandId());
         Category category = categoryRepository.findByCategoryId(itemBundleDto.getCategoryId());
         String thumbnailUrl = image==null && images.isEmpty() ? null : s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
-        ItemBundle itemBundle = ItemBundle.newInstance(itemBundleDto.getName(), category, brand, true, itemBundleDto.getIsRecommend(), thumbnailUrl);
+        ItemBundle itemBundle = ItemBundle.newInstance(itemBundleDto.getName(), category, brand, true, itemBundleDto.getIsRecommend(), thumbnailUrl, itemBundleDto.getDescription());
         if(images!=null && !images.isEmpty()){
             int sort = 10;
             for(MultipartFile file: images){

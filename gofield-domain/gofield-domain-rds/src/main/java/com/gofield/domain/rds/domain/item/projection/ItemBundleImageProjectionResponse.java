@@ -18,6 +18,7 @@ public class ItemBundleImageProjectionResponse {
     private String name;
     private String brandName;
     private String thumbnail;
+    private String description;
     private int reviewCount;
     private Double reviewScore;
     private int newLowestPrice;
@@ -29,11 +30,12 @@ public class ItemBundleImageProjectionResponse {
 
 
     @Builder
-    public ItemBundleImageProjectionResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int allItemCount, Long newItemCount, Long usedItemCount,  List<String> images) {
+    public ItemBundleImageProjectionResponse(Long id, String name, String brandName, String thumbnail, String description, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int allItemCount, Long newItemCount, Long usedItemCount,  List<String> images) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
         this.thumbnail = thumbnail;
+        this.description = description;
         this.reviewCount = reviewCount;
         this.reviewScore = reviewScore;
         this.newLowestPrice = newLowestPrice;
@@ -50,6 +52,7 @@ public class ItemBundleImageProjectionResponse {
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
                 .thumbnail(projection.getThumbnail())
+                .description(projection.getDescription())
                 .reviewCount(projection.getReviewCount())
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())

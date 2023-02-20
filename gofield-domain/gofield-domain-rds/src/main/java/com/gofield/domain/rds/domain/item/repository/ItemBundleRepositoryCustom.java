@@ -22,7 +22,7 @@ public interface ItemBundleRepositoryCustom {
     ItemBundle findByBundleIdFetchJoin(Long bundleId);
 
     List<ItemBundle> findAllActive();
-    Page<ItemBundle> findAllByKeyword(String keyword, Pageable pageable);
+    Page<ItemBundle> findAllByKeywordAndCategoryId(String keyword, Long parentId, Long childId, Pageable pageable);
     List<ItemBundle> findAllByKeyword(String keyword);
     List<ItemBundle> findAllByName(String name);
 }

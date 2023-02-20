@@ -32,6 +32,36 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
+                <a style="color: red" href="/bundle" class="nav-link" th:text="전체"></a>
+                <a style="color: black" href="/bundle?parentId=1" class="nav-link" th:text="골프"></a>
+                <a style="color: black" href="/bundle?childId=13" class="nav-link" th:text="드라이버"></a>
+                <a style="color: black" href="/bundle?childId=14" class="nav-link" th:text="아이언"></a>
+                <a style="color: black" href="/bundle?childId=15" class="nav-link" th:text="웨지"></a>
+                <a style="color: black" href="/bundle?childId=22" class="nav-link" th:text="페어웨이우드"></a>
+                <a style="color: black" href="/bundle?childId=23" class="nav-link" th:text="퍼터"></a>
+                <a style="color: black" href="/bundle?childId=32" class="nav-link" th:text="골프공"></a>
+                <a style="color: black" href="/bundle?childId=33" class="nav-link" th:text="골프장갑"></a>
+                <a style="color: black" href="/bundle?childId=35" class="nav-link" th:text="골프화"></a>
+
+
+                <a style="color: orange" href="/bundle?parentId=4" class="nav-link" th:text="테니스"></a>
+                <a style="color: orange" href="/bundle?childId=40" class="nav-link" th:text="배테랑"></a>
+                <a style="color: orange" href="/bundle?childId=41" class="nav-link" th:text="경량"></a>
+                <a style="color: orange" href="/bundle?childId=42" class="nav-link" th:text="시니어"></a>
+                <a style="color: orange" href="/bundle?childId=43" class="nav-link" th:text="입문자"></a>
+                <a style="color: orange" href="/bundle?childId=44" class="nav-link" th:text="숙련자"></a>
+                <a style="color: orange" href="/bundle?childId=45" class="nav-link" th:text="가방"></a>
+
+
+                <a style="color: blue" href="/bundle?parentId=21" class="nav-link" th:text="배드민턴"></a>
+                <a style="color: blue" href="/bundle?childId=46" class="nav-link" th:text="공격형"></a>
+                <a style="color: blue" href="/bundle?childId=47" class="nav-link" th:text="올라운드"></a>
+                <a style="color: blue" href="/bundle?childId=48" class="nav-link" th:text="여성추천"></a>
+                <a style="color: blue" href="/bundle?childId=49" class="nav-link" th:text="초보추천"></a>
+                <a style="color: blue" href="/bundle?childId=50" class="nav-link" th:text="레저용"></a>
+                <a style="color: blue" href="/bundle?childId=51" class="nav-link" th:text="가방"></a>
+
+
                 <div class="col-md-12">
                     <div class="card">
                         <div class="card-header">
@@ -136,6 +166,10 @@
             </div>
         </div>
     </section>
+    <input type="hidden" th:if="${parentId == null || parentId == ''}" th:value="null">
+    <input type="hidden" th:if="${parentId != null || parentId != ''}" th:value="${parentId}">
+    <input type="hidden" th:if="${childId == null || childId == ''}" th:value="null">
+    <input type="hidden" th:if="${childId != null || childId != ''}" th:value="${childId}">
     <!-- Main content -->
 </div>
 

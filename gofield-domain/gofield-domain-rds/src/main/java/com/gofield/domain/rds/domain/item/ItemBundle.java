@@ -46,6 +46,9 @@ public class ItemBundle extends BaseTimeEntity {
     private String thumbnail;
 
     @Column
+    private String description;
+
+    @Column
     private LocalDateTime deleteDate;
 
     @OneToMany(mappedBy = "bundle", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -66,16 +69,17 @@ public class ItemBundle extends BaseTimeEntity {
     }
 
     @Builder
-    private ItemBundle(String name, Category category, Brand brand, Boolean isActive, Boolean isRecommend, String thumbnail){
+    private ItemBundle(String name, Category category, Brand brand, Boolean isActive, Boolean isRecommend, String thumbnail, String description){
         this.name = name;
         this.category = category;
         this.brand = brand;
         this.isActive = isActive;
         this.isRecommend = isRecommend;
         this.thumbnail = thumbnail;
+        this.description = description;
     }
 
-    public static ItemBundle newInstance(String name, Category category, Brand brand, Boolean isActive, Boolean isRecommend, String thumbnail){
+    public static ItemBundle newInstance(String name, Category category, Brand brand, Boolean isActive, Boolean isRecommend, String thumbnail, String description){
         return ItemBundle.builder()
                 .name(name)
                 .category(category)
@@ -83,15 +87,17 @@ public class ItemBundle extends BaseTimeEntity {
                 .isActive(isActive)
                 .isRecommend(isRecommend)
                 .thumbnail(thumbnail)
+                .description(description)
                 .build();
     }
 
-    public void update(Brand brand, Category category, String name, Boolean isRecommend, String thumbnail){
+    public void update(Brand brand, Category category, String name, Boolean isRecommend, String thumbnail, String description){
         this.brand = brand != null ? brand : this.brand;
         this.category = category != null ? category : this.category;
         this.name = name != null ? name : this.name;
         this.isRecommend = isRecommend;
         this.thumbnail = thumbnail;
+        this.description = description;
     }
     public void delete(){
         this.isActive = false;
