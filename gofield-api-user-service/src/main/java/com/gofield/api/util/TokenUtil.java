@@ -23,6 +23,8 @@ import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.security.Key;
+import java.sql.Timestamp;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Slf4j
@@ -63,6 +65,7 @@ public class TokenUtil {
                 .claim("isSign", isSign)
                 .claim("social", social)
                 .setExpiration(accessTokenExpiresIn)
+                .claim("r_exp", Timestamp.valueOf(LocalDateTime.now().plusSeconds(refreshValidity/1000)).getTime()/1000)
                 .signWith(key, SignatureAlgorithm.HS512)
                 .compact();
         String refreshToken = UUID.randomUUID().toString();
