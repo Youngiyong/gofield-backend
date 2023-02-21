@@ -20,9 +20,10 @@ public class ItemBundleCategoryResponse {
     private Double reviewScore;
     private int newLowestPrice;
     private int usedLowestPrice;
+    private int lowestPrice;
 
     @Builder
-    private ItemBundleCategoryResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice){
+    private ItemBundleCategoryResponse(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int lowestPrice){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -31,6 +32,7 @@ public class ItemBundleCategoryResponse {
         this.reviewScore = reviewScore;
         this.newLowestPrice = newLowestPrice;
         this.usedLowestPrice = usedLowestPrice;
+        this.lowestPrice = lowestPrice;
     }
 
     public static ItemBundleCategoryResponse of(ItemBundlePopularProjection projection){
@@ -43,6 +45,7 @@ public class ItemBundleCategoryResponse {
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())
                 .usedLowestPrice(projection.getUsedLowestPrice())
+                .lowestPrice(projection.getNewLowestPrice()>projection.getUsedLowestPrice() ? projection.getUsedLowestPrice() : projection.getNewLowestPrice())
                 .build();
     }
 

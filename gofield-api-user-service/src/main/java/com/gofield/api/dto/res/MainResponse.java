@@ -13,7 +13,6 @@ public class MainResponse {
     private List<ItemBundlePopularResponse> popularBundleList;
     private List<ItemBundleRecommendResponse> recommendBundleList;
     private List<ItemBundleRecommendResponse> categoryBundleList;
-
     private List<ItemClassificationResponse> classificationItemList;
 
     @Builder
