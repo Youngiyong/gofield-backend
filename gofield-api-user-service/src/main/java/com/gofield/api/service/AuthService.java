@@ -32,6 +32,7 @@ import com.gofield.domain.rds.domain.user.UserToken;
 import com.gofield.domain.rds.domain.user.UserTokenRepository;
 import com.gofield.domain.rds.domain.user.ESocialFlag;
 import com.gofield.domain.rds.domain.common.EStatusFlag;
+import io.swagger.annotations.Authorization;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -69,7 +70,12 @@ public class AuthService {
         String userAgent = servletRequest.getHeader("User-Agent");
 
         ClientResponse clientDetail = ApiUtil.base64EncodingStrToDecodeClientDetail(secret);
-        UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(clientDetail.getClientId());
+        UserClientDetail resultClientDetail = null;
+        if(request.getEnvironment().equals(EEnvironmentFlag.LOCAL)){
+            resultClientDetail = userClientDetailRepository.findByClientId("Vo0bjkwHa3gAyphVCiagXOW3");
+        } else {
+            resultClientDetail = userClientDetailRepository.findByClientId(clientDetail.getClientId());
+        }
         if(resultClientDetail==null){
             throw new NotFoundException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.NONE, String.format("<%s> 유효하지 않는 클라이언트 아이디입니다.", clientDetail.getClientId()));
         }
@@ -150,7 +156,7 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public TokenResponse getToken(Long id){
+    public TokenResponse getToken(Long id, String secret){
         Authentication authentication = null;
         if(id.equals(30L)){
             authentication = Authentication.of("nonMember", null, Constants.TOKEN_ISSUER);
@@ -158,7 +164,8 @@ public class AuthService {
             User resultUser = userRepository.findByIdAndStatusActive(id);
             authentication = Authentication.of(resultUser.getUuid(), resultUser.getId() ,Constants.TOKEN_ISSUER);
         }
-        return tokenUtil.generateToken(authentication,9947483647000L , 9947483647000L, false, ESocialFlag.APPLE.getKey());
+        UserClientDetail userClientDetail = userClientDetailRepository.findByClientId(secret);
+        return tokenUtil.generateToken(authentication,userClientDetail.getAccessTokenValidity() , userClientDetail.getRefreshTokenValidity(), false, ESocialFlag.APPLE.getKey());
     }
     @Transactional
     public void logout(String Authorization){

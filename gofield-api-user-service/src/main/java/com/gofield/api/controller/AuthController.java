@@ -50,7 +50,7 @@ public class AuthController {
 
     @ApiOperation(value = "샘플 토큰 얻어오기")
     @GetMapping("/v1/sample/{id}")
-    public ApiResponse<TokenResponse> getToken(@PathVariable Long id){
-        return ApiResponse.success(authService.getToken(id));
+    public ApiResponse<TokenResponse> getToken(@RequestHeader(defaultValue = "YxZWbCN5dpf0E1ROeASCdyeJ7ylN8hQC", required = false)String secret, @PathVariable Long id){
+        return ApiResponse.success(authService.getToken(id, secret));
     }
 }
