@@ -105,7 +105,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 //    }
     private OrderSpecifier orderByItemSort(EItemSort sort){
         if(sort==null){
-            return null;
+            return item.createDate.desc();
         }
         if(sort.equals(EItemSort.OLDEST)){
             return itemStock.createDate.asc();
@@ -113,9 +113,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
             return item.price.asc();
         } else if(sort.equals(EItemSort.HIGHER_PRICE)){
             return item.price.desc();
-        } else {
-            return item.createDate.desc();
         }
+        return item.createDate.desc();
     }
 
     @Override
