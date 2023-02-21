@@ -72,6 +72,29 @@ public class TokenUtil {
         return TokenResponse.of(AUTH_PREFIX, accessToken, refreshToken, accessTokenExpiresIn.getTime(), refreshTokenExpireIn.getTime());
     }
 
+    public TokenResponse generateRefreshToken(com.gofield.api.dto.Authentication authentication,
+                                       Long accessValidity,
+                                       Long refreshTokenExpireIn,
+                                       Boolean isSign,
+                                       String social) {
+
+        long now = (new Date()).getTime();
+        Date accessTokenExpiresIn = new Date(now + accessValidity);
+
+        String accessToken = Jwts.builder()
+                .setIssuer(authentication.getIssue())
+                .setId(EncryptUtils.aes256Encrypt(tokenEncryptKey ,authentication.getUuid()))
+                .claim("isSign", isSign)
+                .claim("social", social)
+                .setExpiration(accessTokenExpiresIn)
+                .claim("r_exp", refreshTokenExpireIn)
+                .signWith(key, SignatureAlgorithm.HS512)
+                .compact();
+        String refreshToken = UUID.randomUUID().toString();
+        return TokenResponse.of(AUTH_PREFIX, accessToken, refreshToken, accessTokenExpiresIn.getTime(), null);
+    }
+
+
     public String getSocial(String accessToken){
         accessToken = resolveToken(accessToken);
         DecodedJWT jwt = JWT.decode(accessToken);

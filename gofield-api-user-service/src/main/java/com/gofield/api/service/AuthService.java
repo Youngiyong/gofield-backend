@@ -1,5 +1,7 @@
 package com.gofield.api.service;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.gofield.api.dto.Authentication;
 import com.gofield.api.dto.SocialAuthentication;
 import com.gofield.api.dto.enums.TermSelectionType;
@@ -186,15 +188,18 @@ public class AuthService {
         if(userToken ==null || userToken.getExpireDate().isBefore(LocalDateTime.now())){
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 로그아웃됩니다.");
         }
+        DecodedJWT decodedJWT = JWT.decode(userToken.getAccessToken());
+        Long refreshExpireIn = decodedJWT.getClaims().get("r_exp").asLong();
+        boolean isSign = decodedJWT.getClaims().get("isSign").asBoolean();
+        String social = decodedJWT.getClaims().get("social").asString();
         User resultUser = userRepository.findByIdAndStatusActive(userToken.getUser().getId());
         if(resultUser==null){
             throw new InternalRuleException(ErrorCode.E499_INTERNAL_RULE, ErrorAction.TOAST, "세션이 만료되어 강제 로그아웃됩니다.");
         }
         UserClientDetail resultClientDetail = userClientDetailRepository.findByClientId(userToken.getClient().getId());
         Authentication authentication = Authentication.of(resultUser.getUuid(), resultUser.getId() , Constants.TOKEN_ISSUER);
-        TokenResponse token = tokenUtil.generateToken(authentication, resultClientDetail.getAccessTokenValidity(), resultClientDetail.getRefreshTokenValidity(), true,  tokenUtil.getSocial(Authorization));
-        LocalDateTime refreshExpireDate = LocalDateTimeUtils.epochMillToLocalDateTime(token.getRefreshTokenExpiresIn());
-        userToken.updateToken(token.getAccessToken(), token.getRefreshToken(), refreshExpireDate);
+        TokenResponse token = tokenUtil.generateRefreshToken(authentication, resultClientDetail.getAccessTokenValidity(), refreshExpireIn, isSign,  social);
+        userToken.updateToken(token.getAccessToken(), token.getRefreshToken());
         return token;
     }
 }

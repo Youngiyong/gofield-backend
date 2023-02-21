@@ -51,4 +51,8 @@ public class UserToken extends BaseTimeEntity {
         this.expireDate = expireDate;
     }
 
+    public void updateToken(String accessToken, String refreshToken) {
+        this.accessToken = accessToken != null ? accessToken : this.accessToken;
+        this.refreshToken = refreshToken != null ? refreshToken : this.refreshToken;
+    }
 }
