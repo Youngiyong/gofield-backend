@@ -67,7 +67,7 @@ public class ItemController {
     public ApiResponse<List<ItemClassificationResponse>> getItemList(@RequestParam(required = false) EItemClassificationFlag classification,
                                                                      @RequestParam(required = false) Long categoryId,
                                                                      @RequestParam(required = false) List<EItemSpecFlag> spec,
-                                                                     @RequestParam(required = false) List<EItemSort> sort,
+                                                                     @RequestParam(required = false) EItemSort sort,
                                                                      @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.getClassificationItemList(classification, categoryId, spec,  sort, pageable));
     }

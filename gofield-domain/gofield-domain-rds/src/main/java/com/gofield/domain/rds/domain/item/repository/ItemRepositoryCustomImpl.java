@@ -84,28 +84,44 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
         return item.name.contains(keyword).or(item.category.name.contains(keyword).or(item.itemNumber.contains(keyword)));
     }
 
-    private List<OrderSpecifier> orderByItemClassificationSort(List<EItemSort> sorts){
-        List<OrderSpecifier> result = new ArrayList<>();
-        if(sorts==null || sorts.isEmpty()){
-            result.add(itemStock.createDate.desc());
-        } else {
-            sorts.forEach(sort -> {
-                if(sort.equals(EItemSort.NEWEST)){
-                    result.add(itemStock.createDate.desc());
-                } else if(sort.equals(EItemSort.OLDEST)){
-                    result.add(itemStock.createDate.asc());
-                } else if(sort.equals(EItemSort.LOWER_PRICE)){
-                    result.add(item.price.asc());
-                } else if(sort.equals(EItemSort.HIGHER_PRICE)){
-                    result.add(item.price.desc());
-                }
-            });
+//    private List<OrderSpecifier> orderByItemClassificationSort(List<EItemSort> sorts){
+//        List<OrderSpecifier> result = new ArrayList<>();
+//        if(sorts==null || sorts.isEmpty()){
+//            result.add(itemStock.createDate.desc());
+//        } else {
+//            sorts.forEach(sort -> {
+//                if(sort.equals(EItemSort.NEWEST)){
+//                    result.add(itemStock.createDate.desc());
+//                } else if(sort.equals(EItemSort.OLDEST)){
+//                    result.add(itemStock.createDate.asc());
+//                } else if(sort.equals(EItemSort.LOWER_PRICE)){
+//                    result.add(item.price.asc());
+//                } else if(sort.equals(EItemSort.HIGHER_PRICE)){
+//                    result.add(item.price.desc());
+//                }
+//            });
+//        }
+//        return result;
+//    }
+    private OrderSpecifier orderByItemSort(EItemSort sort){
+        if(sort==null){
+            return null;
         }
-        return result;
+        if(sort.equals(EItemSort.OLDEST)){
+            return itemStock.createDate.asc();
+        } else if(sort.equals(EItemSort.LOWER_PRICE)){
+            return item.price.asc();
+        } else if(sort.equals(EItemSort.HIGHER_PRICE)){
+            return item.price.desc();
+        } else {
+            return item.createDate.desc();
+        }
     }
 
     @Override
-    public List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, EItemClassificationFlag classification, List<Long> categoryIdList, List<EItemSpecFlag> spec, List<EItemSort> sort,  Pageable pageable) {
+    public List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, EItemClassificationFlag classification, List<Long> categoryIdList, List<EItemSpecFlag> spec, EItemSort sort,  Pageable pageable) {
+        System.out.println(pageable.getOffset());
+        System.out.println(pageable.getPageSize());
         if(userId==null){
             List<ItemNonMemberClassificationProjection> projection =  jpaQueryFactory
                     .select(new QItemNonMemberClassificationProjection(
@@ -136,7 +152,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             inCategoryId(categoryIdList),
                             inSpec(spec),
                             item.deleteDate.isNull())
-                    .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
+                    .orderBy(orderByItemSort(sort))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .fetch();
@@ -176,7 +192,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         inCategoryId(categoryIdList),
                         inSpec(spec),
                         item.deleteDate.isNull())
-                .orderBy(orderByItemClassificationSort(sort).stream().toArray(OrderSpecifier[]::new))
+                .orderBy(orderByItemSort(sort))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();

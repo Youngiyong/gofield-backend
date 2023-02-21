@@ -13,7 +13,7 @@ public interface ItemRepositoryCustom {
     Item findByItemId(Long itemId);
     Item findByItemNumber(String itemNumber);
 
-    List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, EItemClassificationFlag classification, List<Long> categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort, Pageable pageable);
+    List<ItemClassificationProjectionResponse> findAllClassificationItemByCategoryIdAndUserId(Long userId, EItemClassificationFlag classification, List<Long> categoryId, List<EItemSpecFlag> spec, EItemSort sort, Pageable pageable);
 
     List<ItemClassificationProjectionResponse> findAllClassificationItemByBundleIdAndClassificationAndNotNqItemId(Long userId, Long bundleId, Long itemId, EItemClassificationFlag classification, Pageable pageable);
 

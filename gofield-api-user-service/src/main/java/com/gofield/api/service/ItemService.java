@@ -101,7 +101,7 @@ public class ItemService {
 
 
     @Transactional(readOnly = true)
-    public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, Long categoryId, List<EItemSpecFlag> spec, List<EItemSort> sort, Pageable pageable){
+    public List<ItemClassificationResponse> getClassificationItemList(EItemClassificationFlag classification, Long categoryId, List<EItemSpecFlag> spec, EItemSort sort, Pageable pageable){
         User user = userService.getUser();
         List<Long> categoryIdList = null;
         if(categoryId!=null){
