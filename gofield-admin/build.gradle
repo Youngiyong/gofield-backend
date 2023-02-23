@@ -15,11 +15,11 @@ jar {
 }
 
 dependencies {
-    implementation project(':gofield-common')
-    implementation project(":gofield-domain:gofield-domain-rds")
-    implementation project(':gofield-infrastructure:gofield-infrastructure-external')
-    implementation project(':gofield-infrastructure:gofield-infrastructure-internal')
-    implementation project(':gofield-infrastructure:gofield-infrastructure-s3')
+    implementation project(":gofield-core:gofield-common")
+    implementation project(":gofield-core:gofield-domain-rds")
+    implementation project(':gofield-core:gofield-client-external')
+    implementation project(':gofield-core:gofield-client-internal')
+    implementation project(':gofield-core:gofield-infra-s3')
 
     implementation 'org.webjars:AdminLTE:3.2.0'
 
@@ -28,9 +28,6 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
     implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:3.1.0'
-
-    // https://github.com/lannstark/excel-download
-
 }
 
 test {

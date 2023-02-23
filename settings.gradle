@@ -1,18 +1,14 @@
 rootProject.name = 'gofield'
 
-include 'gofield-common'
-
-include 'gofield-admin'
 
 include 'gofield-api-user-service'
-
-include 'gofield-infrastructure:gofield-infrastructure-s3'
-include 'gofield-infrastructure:gofield-infrastructure-sqs'
-//include 'gofield-infrastructure:gofield-infrastructure-firebase'
-include 'gofield-infrastructure:gofield-infrastructure-external'
-include 'gofield-infrastructure:gofield-infrastructure-internal'
-
-include 'gofield-domain:gofield-domain-rds'
-
+include 'gofield-admin'
 include 'gofield-sns'
+
+include 'gofield-core:gofield-common'
+include 'gofield-core:gofield-client-external'
+include 'gofield-core:gofield-client-internal'
+include 'gofield-core:gofield-infra-s3'
+include 'gofield-core:gofield-infra-sqs'
+include 'gofield-core:gofield-domain-rds'
 

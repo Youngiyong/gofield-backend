@@ -15,17 +15,15 @@ jar {
 }
 
 dependencies {
-    implementation project(':gofield-common')
-
-    implementation project(":gofield-domain:gofield-domain-rds")
-    implementation project(':gofield-infrastructure:gofield-infrastructure-external')
-    implementation project(':gofield-infrastructure:gofield-infrastructure-internal')
-    implementation project(':gofield-infrastructure:gofield-infrastructure-s3')
-    implementation project(':gofield-infrastructure:gofield-infrastructure-sqs')
+    implementation project(":gofield-core:gofield-common")
+    implementation project(':gofield-core:gofield-infra-s3')
+    implementation project(':gofield-core:gofield-infra-sqs')
+    implementation project(":gofield-core:gofield-domain-rds")
+    implementation project(':gofield-core:gofield-client-external')
+    implementation project(':gofield-core:gofield-client-internal')
 
     // spring mvc
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
 
     // swagger
     implementation group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'

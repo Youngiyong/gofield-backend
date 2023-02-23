@@ -1,0 +1,11 @@
+bootJar { enabled = false }
+jar { enabled = true }
+
+dependencies {
+    api project(":gofield-core:gofield-common")
+    api("org.springframework.cloud:spring-cloud-aws-messaging:${springCloudAwsVersion}")
+    implementation("org.springframework.cloud:spring-cloud-aws-autoconfigure:${springCloudAwsVersion}")
+}
+
+
+

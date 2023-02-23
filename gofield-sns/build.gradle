@@ -15,9 +15,9 @@ jar {
 }
 
 dependencies {
-    implementation project(':gofield-common')
-    implementation project(':gofield-infrastructure:gofield-infrastructure-external')
-    implementation project(':gofield-infrastructure:gofield-infrastructure-sqs')
+    implementation project(":gofield-core:gofield-common")
+    implementation project(':gofield-core:gofield-client-external')
+    implementation project(':gofield-core:gofield-infra-sqs')
 
     //json
     implementation group: 'com.googlecode.json-simple', name: 'json-simple', version: '1.1.1'
