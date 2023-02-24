@@ -3,6 +3,7 @@ package com.gofield.api.service.search;
 import com.gofield.api.service.item.dto.response.ItemClassificationListResponse;
 import com.gofield.api.service.item.dto.response.ItemClassificationResponse;
 import com.gofield.api.service.search.dto.response.PopularKeywordResponse;
+import com.gofield.api.service.search.dto.response.RecentKeywordResponse;
 import com.gofield.domain.rds.domain.item.ItemRepository;
 import com.gofield.domain.rds.domain.item.projection.ItemListProjectionResponse;
 import com.gofield.domain.rds.domain.search.PopularKeywordRepository;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
@@ -30,10 +32,13 @@ public class SearchService {
         return PopularKeywordResponse.of(popularKeywordRepository.findAllPopularKeywordList(size));
     }
 
-//    @Transactional(readOnly = true)
-//    public List<RecentKeywordResponse> getRecentKeywordList(int size){
-//        return RecentKeywordResponse.of(searchLogRepository.findByUserIdLimit(user.getId(), size));
-//    }
+    @Transactional(readOnly = true)
+    public List<RecentKeywordResponse> getRecentKeywordList(int size, Long userId){
+        if(userId==null){
+            return new ArrayList<>();
+        }
+        return RecentKeywordResponse.of(searchLogRepository.findByUserIdLimit(userId, size));
+    }
 
     @Transactional
     public ItemClassificationListResponse searchKeyword(String keyword, Pageable pageable, Long userId){

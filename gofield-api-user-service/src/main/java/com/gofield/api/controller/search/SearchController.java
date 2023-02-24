@@ -5,6 +5,7 @@ import com.gofield.api.config.resolver.UserIdResolver;
 import com.gofield.api.service.item.dto.response.ItemClassificationListResponse;
 import com.gofield.api.service.search.dto.response.PopularKeywordResponse;
 import com.gofield.api.service.search.SearchService;
+import com.gofield.api.service.search.dto.response.RecentKeywordResponse;
 import com.gofield.common.model.dto.res.ApiResponse;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -28,11 +29,12 @@ public class SearchController {
         return ApiResponse.success(searchService.getPopularKeywordList(size));
     }
 
-//    @ApiOperation(value = "최근 검색어 조회")
-//    @GetMapping("/v1/recent")
-//    public ApiResponse<List<RecentKeywordResponse>> getRecentKeywordList(@RequestParam(required = false, defaultValue = "5") Integer size){
-//        return ApiResponse.success(searchService.getRecentKeywordList(size));
-//    }
+    @ApiOperation(value = "최근 검색어 조회")
+    @Auth(allowNonLogin = true)
+    @GetMapping("/v1/recent")
+    public ApiResponse<List<RecentKeywordResponse>> getRecentKeywordList(@RequestParam(required = false, defaultValue = "5") Integer size){
+        return ApiResponse.success(searchService.getRecentKeywordList(size, UserIdResolver.getUserId()));
+    }
 
     @ApiOperation(value = "검색")
     @Auth(allowNonLogin = true)
