@@ -49,6 +49,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.ZonedDateTime;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
@@ -226,7 +227,7 @@ public class ThirdPartyService {
             Purchase purchase = Purchase.newInstance(request.getOrderId(), request.getTransactionKey(), orderSheet.getTotalPrice(), ObjectMapperUtils.objectToJsonStr(request));
             purchaseRepository.save(purchase);
             Order order = orderRepository.findByOrderNumber(request.getOrderId());
-            order.updateVirtualCallback(LocalDateTimeUtils.stringToLocalDateTime(request.getCreatedAt()));
+            order.updateVirtualCallback(ZonedDateTime.parse(request.getCreatedAt()).toLocalDateTime().plusHours(9));
             order.getOrderShippings();
             order.updateVirtualAccountDeposit();
             orderWaitRepository.delete(orderWait);
