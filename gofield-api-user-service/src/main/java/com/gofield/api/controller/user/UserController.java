@@ -126,12 +126,14 @@ public class UserController {
     }
 
     @ApiOperation(value = "[인증] - 사용자 알림 여부들을 조회합니다")
+    @Auth
     @GetMapping("/v1/alert")
     public ApiResponse<UserAlertResponse> getAlerts(){
         return ApiResponse.success(userService.getUserAlert(UserIdResolver.getUserId()));
     }
 
     @ApiOperation(value = "[인증] - 사용자 알림 여부를 수정합니다")
+    @Auth
     @PutMapping("/v1/alert")
     public ApiResponse updateAlert(@RequestBody UserRequest.UserAlert request){
         userService.updateUserAlert(request, UserIdResolver.getUserId());
