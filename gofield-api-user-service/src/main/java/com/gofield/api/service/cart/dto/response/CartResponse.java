@@ -70,6 +70,10 @@ public class CartResponse {
 
     public static CartResponse of(CartProjection cartProjection){
         List<String> optionName = cartProjection.getOptionName()==null ? null : ObjectMapperUtils.strToObject(cartProjection.getOptionName(), new TypeReference<List<String>>(){});
+        int deliveryPrice = 0;
+        if(cartProjection.getDelivery().equals(EItemDeliveryFlag.PAY) && !cartProjection.getIsPaid()){
+            deliveryPrice = cartProjection.getDeliveryPrice();
+        }
         return CartResponse.builder()
                 .id(cartProjection.getId())
                 .itemName(cartProjection.getItemName())
@@ -79,7 +83,7 @@ public class CartResponse {
                 .optionName(optionName)
                 .thumbnail(CommonUtils.makeCloudFrontUrl(cartProjection.getThumbnail()))
                 .price(cartProjection.getPrice())
-                .deliveryPrice(cartProjection.getDeliveryPrice())
+                .deliveryPrice(deliveryPrice)
                 .qty(cartProjection.getQty())
                 .isOrder(cartProjection.getIsOrder())
                 .classification(cartProjection.getClassification())

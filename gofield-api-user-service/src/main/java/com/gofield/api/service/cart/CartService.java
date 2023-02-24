@@ -79,7 +79,7 @@ public class CartService {
     }
 
     @Transactional
-    public List<CartResponse> getCartList(Long userId){
+    public List<CartResponse> retrieveCarts(Long userId){
         List<CartProjection> result = cartRepository.findAllByUserId(userId);
         return CartResponse.of(result);
     }

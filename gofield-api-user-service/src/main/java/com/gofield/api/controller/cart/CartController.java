@@ -48,7 +48,7 @@ public class CartController {
     @Auth
     @GetMapping("/v1")
     public ApiResponse<List<CartResponse>> retrieveCarts(){
-        return ApiResponse.success(cartService.getCartList(UserIdResolver.getUserId()));
+        return ApiResponse.success(cartService.retrieveCarts(UserIdResolver.getUserId()));
     }
 
     @ApiOperation(value = "장바구니 삭제")
