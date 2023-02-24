@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -28,6 +29,10 @@ public class OrderDetailResponse {
     private LocalDateTime cancelDate;
     private LocalDateTime confirmDate;
     private LocalDateTime finishDate;
+
+    private LocalDateTime depositExpireDate;
+
+    private LocalDateTime depositDate;
     private String tel;
     private String name;
     private String zipCode;
@@ -39,7 +44,7 @@ public class OrderDetailResponse {
     @Builder
     private OrderDetailResponse(Long id, String orderNumber, int totalItem, int totalAmount, int totalDiscount , int totalDelivery,
                                 String paymentCompany, String bankName, String virtualAccountNumber, EOrderStatusFlag status, LocalDateTime createDate, LocalDateTime cancelDate,
-                                LocalDateTime confirmDate, LocalDateTime finishDate, String tel, String name,
+                                LocalDateTime confirmDate, LocalDateTime finishDate, LocalDateTime depositExpireDate, LocalDateTime depositDate, String tel, String name,
                                 String zipCode, String address, String addressExtra, String shippingComment, List<OrderShippingResponse> orderShippingList){
         this.id = id;
         this.orderNumber = orderNumber;
@@ -62,6 +67,8 @@ public class OrderDetailResponse {
         this.addressExtra = addressExtra;
         this.shippingComment = shippingComment;
         this.orderShippingList = orderShippingList;
+        this.depositDate = depositDate;
+        this.depositExpireDate = depositExpireDate;
     }
 
     public static OrderDetailResponse of(Order order, List<OrderShippingResponse> orderShippingList){
@@ -86,6 +93,8 @@ public class OrderDetailResponse {
                 .address(order.getShippingAddress().getAddress())
                 .addressExtra(order.getShippingAddress().getAddressExtra())
                 .shippingComment(order.getShippingAddress().getComment())
+                .depositDate(order.getDepositDate())
+                .depositExpireDate(order.getDepositExpireDate())
                 .orderShippingList(orderShippingList)
                 .build();
     }
