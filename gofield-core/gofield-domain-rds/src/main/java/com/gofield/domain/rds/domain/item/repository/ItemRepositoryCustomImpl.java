@@ -1026,6 +1026,15 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
 
 
     @Override
+    public void updateShippingTemplateId(Long shippingTemplateId, Long itemId) {
+        jpaQueryFactory
+                .update(item)
+                .set(item.shippingTemplate.id, shippingTemplateId)
+                .where(item.id.eq(itemId))
+                .execute();
+    }
+
+    @Override
     public void deleteItemById(Long itemId) {
         jpaQueryFactory
                 .delete(item)

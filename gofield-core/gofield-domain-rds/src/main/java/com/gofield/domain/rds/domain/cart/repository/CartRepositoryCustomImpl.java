@@ -70,6 +70,7 @@ public class CartRepositoryCustomImpl implements CartRepositoryCustom {
                         item.deliveryPrice,
                         cart.qty,
                         cart.isOrder,
+                        shippingTemplate.isPaid,
                         item.classification,
                         item.delivery,
                         itemDetail.spec,

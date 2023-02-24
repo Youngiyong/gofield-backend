@@ -212,6 +212,10 @@ public class Item extends BaseTimeEntity {
         this.isOption = isOption;
     }
 
+    public void update(ShippingTemplate shippingTemplate){
+        this.shippingTemplate = shippingTemplate;
+    }
+
     public void update(String name, int price, int deliveryPrice, EItemDeliveryFlag delivery, EItemPickupFlag pickup, String tags, Boolean isOption){
         this.name = name;
         this.price = price;

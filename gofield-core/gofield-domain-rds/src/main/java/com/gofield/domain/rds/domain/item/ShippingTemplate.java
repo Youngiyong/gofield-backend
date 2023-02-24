@@ -140,6 +140,11 @@ public class ShippingTemplate extends BaseTimeEntity {
                 .build();
     }
 
+    public static ShippingTemplate newInstance(Long sellerId){
+        return ShippingTemplate.builder()
+                .sellerId(sellerId)
+                .build();
+    }
     public static ShippingTemplate newInstance(Long sellerId, String title, Boolean isCondition, EItemChargeFlag chargeType, int charge, Boolean isPaid,
                                                String exchangeCourierName, int exchangeCharge, int takebackCharge, Boolean isFee, int feeJeju, int feeJejuBesides,
                                                String shippingComment, String zipCode, String address, String addressExtra, String receiver, String receiverTel,

@@ -26,6 +26,8 @@ public class CartResponse {
     private int deliveryPrice;
     private int qty;
     private Boolean isOrder;
+
+    private Boolean isPaid;
     private EItemClassificationFlag classification;
     private EItemDeliveryFlag delivery;
     private EItemSpecFlag spec;
@@ -39,7 +41,7 @@ public class CartResponse {
 
     @Builder
     private CartResponse(Long id, String itemName, String itemNumber, Long sellerId, String sellerName,
-                         List<String> optionName, String thumbnail, int price, int deliveryPrice,  int qty, Boolean isOrder, EItemClassificationFlag classification, EItemDeliveryFlag delivery,
+                         List<String> optionName, String thumbnail, int price, int deliveryPrice,  int qty, Boolean isOrder, Boolean isPaid,  EItemClassificationFlag classification, EItemDeliveryFlag delivery,
                          EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition,
                          EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
         this.id = id;
@@ -53,6 +55,7 @@ public class CartResponse {
         this.deliveryPrice = deliveryPrice;
         this.qty = qty;
         this.isOrder = isOrder;
+        this.isPaid = isPaid;
         this.delivery = delivery;
         this.classification = classification;
         this.spec = spec;
@@ -85,6 +88,7 @@ public class CartResponse {
                 .gender(cartProjection.getGender())
                 .isCondition(cartProjection.getIsCondition())
                 .condition(cartProjection.getCondition())
+                .isPaid(cartProjection.getIsPaid())
                 .chargeType(cartProjection.getChargeType())
                 .charge(cartProjection.getCharge())
                 .feeJeju(cartProjection.getFeeJeju())

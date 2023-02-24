@@ -20,6 +20,7 @@ public class CartProjection {
     private final int deliveryPrice;
     private final int qty;
     private final Boolean isOrder;
+    private final Boolean isPaid;
     private final EItemClassificationFlag classification;
     private final EItemDeliveryFlag delivery;
     private final EItemSpecFlag spec;
@@ -32,7 +33,7 @@ public class CartProjection {
     private final int feeJejuBesides;
 
     @QueryProjection
-    public CartProjection(Long id, String itemName, String itemNumber, Long sellerId, String sellerName, String optionName, String thumbnail, int price, int deliveryPrice, int qty, Boolean isOrder, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
+    public CartProjection(Long id, String itemName, String itemNumber, Long sellerId, String sellerName, String optionName, String thumbnail, int price, int deliveryPrice, int qty, Boolean isOrder, Boolean isPaid, EItemClassificationFlag classification, EItemDeliveryFlag delivery, EItemSpecFlag spec, EItemGenderFlag gender, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides){
         this.id = id;
         this.itemName = itemName;
         this.itemNumber = itemNumber;
@@ -44,6 +45,7 @@ public class CartProjection {
         this.deliveryPrice = deliveryPrice;
         this.qty = qty;
         this.isOrder = isOrder;
+        this.isPaid = isPaid;
         this.classification = classification;
         this.delivery = delivery;
         this.spec = spec;

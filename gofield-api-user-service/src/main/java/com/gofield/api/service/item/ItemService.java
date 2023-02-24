@@ -25,6 +25,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -44,6 +45,8 @@ public class ItemService {
     private final ItemStockRepository itemStockRepository;
     private final ItemRecentRepository itemRecentRepository;
     private final ItemOptionGroupRepository itemOptionGroupRepository;
+
+    private final ShippingTemplateRepository shippingTemplateRepository;
     private final ThirdPartyService thirdPartyService;
 
     @Transactional
@@ -139,6 +142,17 @@ public class ItemService {
         List<ItemBundleReviewResponse> list = ItemBundleReviewResponse.of(result.getContent());
         return ItemBundleReviewListResponse.of(list, PaginationResponse.of(result));
     }
+
+//    @PostConstruct
+//    public void test(){
+//        List<Item> items = itemRepository.findAll();
+//
+//        for(Item item: items){
+//            ShippingTemplate shippingTemplate = ShippingTemplate.newInstance(1L);
+//            shippingTemplateRepository.save(shippingTemplate);
+//            itemRepository.updateShippingTemplateId(shippingTemplate.getId(), item.getId());
+//        }
+//    }
 
     @Transactional
     public ItemResponse retrieveItem(String itemNumber, Long userId){

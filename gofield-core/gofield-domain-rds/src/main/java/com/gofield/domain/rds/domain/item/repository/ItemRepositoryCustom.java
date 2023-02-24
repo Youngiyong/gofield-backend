@@ -9,6 +9,7 @@ import java.util.List;
 
 public interface ItemRepositoryCustom {
 
+    void updateShippingTemplateId(Long shippingTemplateId, Long itemId);
     void deleteItemById(Long itemId);
     Item findByItemId(Long itemId);
     Item findByItemNumber(String itemNumber);
