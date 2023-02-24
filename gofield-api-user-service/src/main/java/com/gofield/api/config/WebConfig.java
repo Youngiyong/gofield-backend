@@ -3,6 +3,7 @@ package com.gofield.api.config;
 import com.gofield.api.config.interceptor.AuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -17,4 +18,11 @@ public class WebConfig implements WebMvcConfigurer {
         registry.addInterceptor(authInterceptor);
     }
 
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**")
+                .allowedOrigins("https://service.gofield.shop", "http://local.gofield.shop:6060")
+                .allowedHeaders("*")
+                .allowedMethods("*");
+    }
 }
