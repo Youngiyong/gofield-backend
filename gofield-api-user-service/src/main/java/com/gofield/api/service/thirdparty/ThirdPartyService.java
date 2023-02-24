@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.gofield.api.service.auth.dto.SocialAuthentication;
 import com.gofield.api.service.order.dto.response.OrderCreateResponse;
 import com.gofield.api.service.sns.SnsService;
+import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.SlackChannel;
 import com.gofield.api.service.user.dto.request.UserRequest;
 import com.gofield.api.service.item.dto.response.ItemOrderSheetListResponse;
@@ -215,11 +216,18 @@ public class ThirdPartyService {
     public String callbackVirtualAccount(TossPaymentRequest.PaymentVirtualCallback request){
         if(request.getStatus().equals("DONE")){
             OrderWait orderWait = orderWaitRepository.findByOid(request.getOrderId());
+            if(orderWait==null){
+                throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.NONE, "존재하지 않는 주문번호입니다.");
+            }
             OrderSheet orderSheet = orderSheetRepository.findByUserIdAndUuid(orderWait.getUserId(), orderWait.getUuid());
+            if(orderSheet==null){
+                throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.NONE, "존재하지 않는 시트번호입니다.");
+            }
             Purchase purchase = Purchase.newInstance(request.getOrderId(), request.getTransactionKey(), orderSheet.getTotalPrice(), ObjectMapperUtils.objectToJsonStr(request));
             purchaseRepository.save(purchase);
             Order order = orderRepository.findByOrderNumber(request.getOrderId());
             order.updateVirtualCallback(LocalDateTimeUtils.stringToLocalDateTime(request.getCreatedAt()));
+            orderWaitRepository.delete(orderWait);
         } else {
 
         }

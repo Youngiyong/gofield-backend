@@ -321,8 +321,6 @@ public class OrderService {
         if(cartIdList!=null && !cartIdList.isEmpty()){
             cartRepository.deleteByCartIdList(cartIdList);
         }
-
-        orderWaitRepository.delete(orderWait);
         sendOrderSlackNotification(shippingAddress.getName(), shippingAddress.getTel(), EPaymentType.VIRTUAL_ACCOUNT, order.getOrderNumber(), LocalDateTimeUtils.LocalDateTimeToString(order.getCreateDate()), orderSheetContent.getOrderName(), null, order.getTotalAmount());
     }
 

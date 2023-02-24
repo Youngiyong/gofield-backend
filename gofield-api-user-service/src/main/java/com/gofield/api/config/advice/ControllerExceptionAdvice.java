@@ -1,6 +1,8 @@
 package com.gofield.api.config.advice;
 
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
+import com.gofield.api.listner.ErrorService;
+import com.gofield.api.util.HttpServletUtil;
 import com.gofield.common.model.dto.res.ApiResponse;
 import com.gofield.common.model.dto.res.ErrorResponse;
 import com.gofield.common.exception.*;
@@ -30,6 +32,7 @@ import java.util.Objects;
 @RequiredArgsConstructor
 public class ControllerExceptionAdvice {
 
+    private final ErrorService errorService;
     private final ApplicationEventPublisher eventPublisher;
 
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -97,8 +100,10 @@ public class ControllerExceptionAdvice {
      */
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler(Exception.class)
-    protected ApiResponse<Object> handleException(final Exception exception, Throwable throwable) {
+    protected ApiResponse<Object> handleException(final Exception exception, Throwable throwable, HttpServletRequest request) {
         log.error(exception.getMessage(), exception, throwable);
+        String fullUrl = HttpServletUtil.getFullUrlWithMethod(request);
+        errorService.sendSlackErrorNotification(fullUrl, throwable.getMessage() + throwable.getCause());
         return ApiResponse.error(ErrorResponse.of(ErrorCode.E500_INTERNAL_SERVER.getCode(), ErrorAction.NONE, ErrorCode.E500_INTERNAL_SERVER.getMessage()));
     }
 
