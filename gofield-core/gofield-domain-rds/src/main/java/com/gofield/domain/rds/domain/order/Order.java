@@ -191,8 +191,8 @@ public class Order extends BaseTimeEntity {
         this.deleteDate = LocalDateTime.now();
     }
 
-    public void updateVirtualCallback(LocalDateTime depositDate){
-        this.depositDate = depositDate;
+    public void updateVirtualCallback(){
+        this.depositDate = LocalDateTime.now();
         this.status = EOrderStatusFlag.ORDER_CREATE;
     }
 }

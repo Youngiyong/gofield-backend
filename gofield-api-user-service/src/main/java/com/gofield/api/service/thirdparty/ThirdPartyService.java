@@ -229,10 +229,7 @@ public class ThirdPartyService {
             Purchase purchase = Purchase.newInstance(request.getOrderId(), request.getTransactionKey(), orderSheet.getTotalPrice(), ObjectMapperUtils.objectToJsonStr(request));
             purchaseRepository.save(purchase);
             Order order = orderRepository.findByOrderNumber(request.getOrderId());
-            DateTimeFormatter formatter = DateTimeFormatter.ISO_INSTANT;
-            System.out.println("test-->" +  request.getCreatedAt());
-            ZonedDateTime parsed = ZonedDateTime.parse(request.getCreatedAt(), formatter.withZone(ZoneId.of("Asia/Seoul")));
-            order.updateVirtualCallback(parsed.toLocalDateTime());
+            order.updateVirtualCallback();
             order.getOrderShippings();
             order.updateVirtualAccountDeposit();
             orderWaitRepository.delete(orderWait);
