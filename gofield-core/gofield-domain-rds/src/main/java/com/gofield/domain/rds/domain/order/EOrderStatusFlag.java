@@ -9,7 +9,7 @@ import lombok.Getter;
 @Getter
 public enum EOrderStatusFlag implements EnumCodeModel {
     ORDER_CREATE("주문생성", "200"),
-    ORDER_WAIT("입금대기", "202"),
+    ORDER_DEPOSIT_WAIT("입금대기", "202"),
     ORDER_CANCEL("주문취소", "203"),
     ORDER_APPROVAL("주문승인", "204"),
     ORDER_COMPLETE("주문완료","210"),
