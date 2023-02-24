@@ -30,6 +30,7 @@ public class ItemOrderSheetResponse {
     private Boolean isOption;
     private EItemOptionTypeFlag optionType;
     private EItemChargeFlag chargeType;
+    private Boolean isPaid;
     private int charge;
     private int condition;
     private int feeJeju;
@@ -38,7 +39,7 @@ public class ItemOrderSheetResponse {
 
     @Builder
     private ItemOrderSheetResponse(Long id, Long sellerId, Long bundleId, String brandName, String name, List<String> optionName, String thumbnail,
-                                   String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType, EItemChargeFlag chargeType, int charge, int condition, int feeJeju, int feeJejuBesides){
+                                   String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType, EItemChargeFlag chargeType, Boolean isPaid, int charge, int condition, int feeJeju, int feeJejuBesides){
         this.id = id;
         this.sellerId = sellerId;
         this.bundleId = bundleId;
@@ -54,6 +55,7 @@ public class ItemOrderSheetResponse {
         this.isOption = isOption;
         this.optionType = optionType;
         this.chargeType = chargeType;
+        this.isPaid = isPaid;
         this.charge = charge;
         this.condition = condition;
         this.feeJeju = feeJeju;
@@ -62,7 +64,7 @@ public class ItemOrderSheetResponse {
 
 
     public static ItemOrderSheetResponse of(Long id, Long sellerId, Long bundleId, String brandName, String name, String optionName, String thumbnail,
-                                            String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType,  EItemChargeFlag chargeType,  int charge, int condition, int feeJeju, int feeJejuBesides){
+                                            String itemNumber, int price, int qty, int deliveryPrice, Long optionId, Boolean isOption, EItemOptionTypeFlag optionType,  EItemChargeFlag chargeType, Boolean isPaid,  int charge, int condition, int feeJeju, int feeJejuBesides){
         return ItemOrderSheetResponse.builder()
                 .id(id)
                 .sellerId(sellerId)
@@ -77,6 +79,7 @@ public class ItemOrderSheetResponse {
                 .deliveryPrice(deliveryPrice)
                 .optionId(optionId)
                 .isOption(isOption)
+                .isPaid(isPaid)
                 .optionType(optionType)
                 .chargeType(chargeType)
                 .charge(charge)

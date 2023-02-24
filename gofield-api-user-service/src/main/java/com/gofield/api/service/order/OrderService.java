@@ -195,7 +195,6 @@ public class OrderService {
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 판매 상품 갯수가 초과된 상품입니다.", sheetItem.getItemNumber()));
             }
             int price = 0;
-
             if(request.getIsCart()){
                 price = itemStock.getItemPrice();
             } else {
@@ -208,9 +207,11 @@ public class OrderService {
 
             int deliveryPrice = 0;
 
-            if(itemStock.getDelivery().equals(EItemDeliveryFlag.PAY)){
+            if(itemStock.getDelivery().equals(EItemDeliveryFlag.PAY) && !itemStock.getIsPaid()){
                 deliveryPrice = itemStock.getDeliveryPrice();
             }
+
+
 //            else if(itemStock.getDelivery().equals(EItemDeliveryFlag.CONDITION)){
 //                if(itemStock.getCondition()>=price*sheetItem.getQty()) {
 //                    deliveryPrice = itemStock.getCharge();
@@ -218,7 +219,7 @@ public class OrderService {
 //            }
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
-            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), price, sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(), itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
+            ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), price, sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(), itemStock.getIsOption(), itemStock.getOptionType(), itemStock.getChargeType(),  itemStock.getIsPaid(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
         }
         if(request.getTotalPrice()!=totalPrice){
@@ -296,7 +297,7 @@ public class OrderService {
         orderRepository.save(order);
 
         for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
-            OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, response.getOrderId(), RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
+            OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, response.getOrderId(), RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(), result.getIsPaid(),  result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
             orderShippingRepository.save(orderShipping);
             OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
             orderShippingLogRepository.save(orderShippingLog);

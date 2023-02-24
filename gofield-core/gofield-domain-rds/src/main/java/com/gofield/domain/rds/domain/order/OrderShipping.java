@@ -51,6 +51,9 @@ public class OrderShipping extends BaseTimeEntity {
     @Column(name = "charge")
     private int charge;
 
+    @Column
+    private Boolean isPaid;
+
     @Column(name = "total_delivery")
     private int deliveryPrice;
 
@@ -89,7 +92,7 @@ public class OrderShipping extends BaseTimeEntity {
 
     @Builder
     private OrderShipping(Long sellerId, Order order, String orderNumber, String shippingNumber, String comment,
-                          EItemChargeFlag chargeType, int charge, int deliveryPrice, int condition,
+                          EItemChargeFlag chargeType, Boolean isPaid, int charge, int deliveryPrice, int condition,
                           int feeJeju, int feeJejuBesides){
         this.sellerId = sellerId;
         this.order = order;
@@ -98,6 +101,7 @@ public class OrderShipping extends BaseTimeEntity {
         this.comment = comment;
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK;
         this.chargeType = chargeType;
+        this.isPaid = isPaid;
         this.charge = charge;
         this.deliveryPrice = deliveryPrice;
         this.condition = condition;
@@ -106,7 +110,7 @@ public class OrderShipping extends BaseTimeEntity {
     }
 
     public static OrderShipping newInstance(Long sellerId, Order order, String orderNumber, String shippingNumber, String comment,
-                                            EItemChargeFlag chargeType, int charge, int deliveryPrice, int condition,
+                                            EItemChargeFlag chargeType, Boolean isPaid, int charge, int deliveryPrice, int condition,
                                             int feeJeju, int feeJejuBesides){
         return OrderShipping.builder()
                 .sellerId(sellerId)
@@ -115,6 +119,7 @@ public class OrderShipping extends BaseTimeEntity {
                 .shippingNumber(shippingNumber)
                 .comment(comment)
                 .chargeType(chargeType)
+                .isPaid(isPaid)
                 .charge(charge)
                 .deliveryPrice(deliveryPrice)
                 .condition(condition)

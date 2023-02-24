@@ -31,9 +31,10 @@ public class ItemOrderSheetProjection {
     private final int charge;
     private final int feeJeju;
     private final int feeJejuBesides;
+    private final Boolean isPaid;
 
     @QueryProjection
-    public ItemOrderSheetProjection(Long id, String brandName, String name, String optionName, Long sellerId, Long bundleId, Long optionId, String thumbnail, String itemNumber, int itemPrice, int optionPrice, EItemDeliveryFlag delivery, int deliveryPrice, EItemOptionTypeFlag optionType, int qty, Boolean isOption, EItemStatusFlag status, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides) {
+    public ItemOrderSheetProjection(Long id, String brandName, String name, String optionName, Long sellerId, Long bundleId, Long optionId, String thumbnail, String itemNumber, int itemPrice, int optionPrice, EItemDeliveryFlag delivery, int deliveryPrice, EItemOptionTypeFlag optionType, int qty, Boolean isOption, EItemStatusFlag status, Boolean isCondition, int condition, EItemChargeFlag chargeType, int charge, int feeJeju, int feeJejuBesides, Boolean isPaid) {
         this.id = id;
         this.brandName = brandName;
         this.name = name;
@@ -57,5 +58,6 @@ public class ItemOrderSheetProjection {
         this.charge = charge;
         this.feeJeju = feeJeju;
         this.feeJejuBesides = feeJejuBesides;
+        this.isPaid = isPaid;
     }
 }
