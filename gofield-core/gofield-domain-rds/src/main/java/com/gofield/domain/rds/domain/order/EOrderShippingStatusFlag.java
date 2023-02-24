@@ -9,6 +9,7 @@ import lombok.Getter;
 @Getter
 public enum EOrderShippingStatusFlag implements EnumCodeModel {
 
+    ORDER_SHIPPING_WAIT("입금대기중", "199"),
     ORDER_SHIPPING_CHECK("상품확인중", "300"),
     ORDER_SHIPPING_CANCEL("주문취소접수", "301"),
     ORDER_SHIPPING_CANCEL_COMPLETE("주문취소완료", "302"),

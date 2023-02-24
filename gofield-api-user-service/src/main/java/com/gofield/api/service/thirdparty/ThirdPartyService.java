@@ -227,6 +227,8 @@ public class ThirdPartyService {
             purchaseRepository.save(purchase);
             Order order = orderRepository.findByOrderNumber(request.getOrderId());
             order.updateVirtualCallback(LocalDateTimeUtils.stringToLocalDateTime(request.getCreatedAt()));
+            order.getOrderShippings();
+            order.updateVirtualAccountDeposit();
             orderWaitRepository.delete(orderWait);
         } else {
 
@@ -304,7 +306,7 @@ public class ThirdPartyService {
         orderRepository.save(order);
 
         for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
-            OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderCreate.getOrderId(), RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getIsPaid(), result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides());
+            OrderShipping orderShipping = OrderShipping.newInstance(result.getSellerId(), order, orderCreate.getOrderId(), RandomUtils.makeRandomCode(32), shippingAddress.getShippingComment(), result.getChargeType(),  result.getIsPaid(), result.getCharge(), result.getDeliveryPrice(), result.getCondition(), result.getFeeJeju(), result.getFeeJejuBesides(), EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
             orderShippingRepository.save(orderShipping);
             OrderShippingLog orderShippingLog = OrderShippingLog.newInstance(orderShipping.getId(), orderWait.getUserId(), EGofieldService.GOFIELD_API,  EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK);
             orderShippingLogRepository.save(orderShippingLog);

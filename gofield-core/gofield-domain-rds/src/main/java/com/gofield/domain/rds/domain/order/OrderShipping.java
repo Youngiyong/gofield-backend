@@ -93,7 +93,7 @@ public class OrderShipping extends BaseTimeEntity {
     @Builder
     private OrderShipping(Long sellerId, Order order, String orderNumber, String shippingNumber, String comment,
                           EItemChargeFlag chargeType, Boolean isPaid, int charge, int deliveryPrice, int condition,
-                          int feeJeju, int feeJejuBesides){
+                          int feeJeju, int feeJejuBesides, EOrderShippingStatusFlag status){
         this.sellerId = sellerId;
         this.order = order;
         this.orderNumber = orderNumber;
@@ -107,11 +107,12 @@ public class OrderShipping extends BaseTimeEntity {
         this.condition = condition;
         this.feeJeju = feeJeju;
         this.feeJejuBesides = feeJejuBesides;
+        this.status = status;
     }
 
     public static OrderShipping newInstance(Long sellerId, Order order, String orderNumber, String shippingNumber, String comment,
                                             EItemChargeFlag chargeType, Boolean isPaid, int charge, int deliveryPrice, int condition,
-                                            int feeJeju, int feeJejuBesides){
+                                            int feeJeju, int feeJejuBesides, EOrderShippingStatusFlag status){
         return OrderShipping.builder()
                 .sellerId(sellerId)
                 .order(order)
@@ -125,6 +126,7 @@ public class OrderShipping extends BaseTimeEntity {
                 .condition(condition)
                 .feeJeju(feeJeju)
                 .feeJejuBesides(feeJejuBesides)
+                .status(status)
                 .build();
     }
 
@@ -201,4 +203,7 @@ public class OrderShipping extends BaseTimeEntity {
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY;
     }
 
+    public void updateShippingDeposit() {
+        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK;
+    }
 }

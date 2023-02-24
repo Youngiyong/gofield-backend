@@ -174,6 +174,11 @@ public class Order extends BaseTimeEntity {
                 .build();
     }
 
+    public void updateVirtualAccountDeposit(){
+        this.orderShippings.stream()
+                .forEach(p -> p.updateShippingDeposit());
+    }
+
 
 
     public void addOrderShipping(OrderShipping orderShipping){
