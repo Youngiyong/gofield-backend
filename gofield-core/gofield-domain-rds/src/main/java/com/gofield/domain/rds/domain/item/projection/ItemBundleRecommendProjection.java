@@ -16,9 +16,10 @@ public class ItemBundleRecommendProjection {
     private final Double reviewScore;
     private final int newLowestPrice;
     private final int usedLowestPrice;
+    private final int lowestPrice;
 
     @QueryProjection
-    public ItemBundleRecommendProjection(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice) {
+    public ItemBundleRecommendProjection(Long id, String name, String brandName, String thumbnail, int reviewCount, Double reviewScore, int newLowestPrice, int usedLowestPrice, int lowestPrice) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -27,5 +28,6 @@ public class ItemBundleRecommendProjection {
         this.reviewScore = reviewScore;
         this.newLowestPrice = newLowestPrice;
         this.usedLowestPrice = usedLowestPrice;
+        this.lowestPrice = lowestPrice;
     }
 }

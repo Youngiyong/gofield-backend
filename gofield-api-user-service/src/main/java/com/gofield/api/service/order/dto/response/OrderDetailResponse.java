@@ -20,18 +20,14 @@ public class OrderDetailResponse {
     private int totalDiscount;
     private int totalDelivery;
     private String paymentCompany;
-
     private String bankName;
-
     private String virtualAccountNumber;
     private EOrderStatusFlag status;
     private LocalDateTime createDate;
     private LocalDateTime cancelDate;
     private LocalDateTime confirmDate;
     private LocalDateTime finishDate;
-
     private LocalDateTime depositExpireDate;
-
     private LocalDateTime depositDate;
     private String tel;
     private String name;

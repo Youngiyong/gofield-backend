@@ -167,7 +167,7 @@ public class Order extends BaseTimeEntity {
                 .totalDiscount(totalDiscount)
                 .virtualAccountNumber(virtualAccountNumber)
                 .paymentType(paymentType)
-                .status(EOrderStatusFlag.ORDER_WAIT)
+                .status(EOrderStatusFlag.ORDER_DEPOSIT_WAIT)
                 .bankName(bankName)
                 .depositorName(depositorName)
                 .depositExpireDate(depositExpireDate)

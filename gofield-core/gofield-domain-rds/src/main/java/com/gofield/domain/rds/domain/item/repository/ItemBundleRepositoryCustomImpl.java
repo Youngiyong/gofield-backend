@@ -112,7 +112,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
-                        itemBundleAggregation.usedLowestPrice))
+                        itemBundleAggregation.usedLowestPrice,
+                        itemBundleAggregation.lowestPrice))
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
@@ -138,7 +139,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemBundleAggregation.reviewCount,
                             itemBundleAggregation.reviewScore,
                             itemBundleAggregation.newLowestPrice,
-                            itemBundleAggregation.usedLowestPrice))
+                            itemBundleAggregation.usedLowestPrice,
+                            itemBundleAggregation.lowestPrice))
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
@@ -161,7 +163,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             itemBundleAggregation.reviewCount,
                             itemBundleAggregation.reviewScore,
                             itemBundleAggregation.newLowestPrice,
-                            itemBundleAggregation.usedLowestPrice))
+                            itemBundleAggregation.usedLowestPrice,
+                            itemBundleAggregation.lowestPrice))
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
@@ -187,7 +190,8 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                         itemBundleAggregation.reviewCount,
                         itemBundleAggregation.reviewScore,
                         itemBundleAggregation.newLowestPrice,
-                        itemBundleAggregation.usedLowestPrice))
+                        itemBundleAggregation.usedLowestPrice,
+                        itemBundleAggregation.lowestPrice))
                 .from(itemBundle)
                 .innerJoin(itemBundleAggregation)
                 .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))

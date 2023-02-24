@@ -45,7 +45,7 @@ public class ItemBundlePopularResponse {
                 .reviewScore(projection.getReviewScore())
                 .newLowestPrice(projection.getNewLowestPrice())
                 .usedLowestPrice(projection.getUsedLowestPrice())
-                .lowestPrice(projection.getNewLowestPrice()>projection.getUsedLowestPrice() ? projection.getUsedLowestPrice() : projection.getNewLowestPrice())
+                .lowestPrice(projection.getLowestPrice())
                 .build();
     }
 
