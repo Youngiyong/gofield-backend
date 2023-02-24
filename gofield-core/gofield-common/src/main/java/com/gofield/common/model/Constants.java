@@ -13,5 +13,5 @@ public class Constants {
     public static final String AUTHORIZATION = "Authorization";
     public static final String AUTH_PREFIX = "Gofield";
     public static final String USER_ID = "userId";
-    public static final double SAFE_PAYMENT_CHARGE = 3.3;
+    public static final double SAFE_PAYMENT_CHARGE = 3;
 }

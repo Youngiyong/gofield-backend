@@ -143,17 +143,6 @@ public class ItemService {
         return ItemBundleReviewListResponse.of(list, PaginationResponse.of(result));
     }
 
-//    @PostConstruct
-//    public void test(){
-//        List<Item> items = itemRepository.findAll();
-//
-//        for(Item item: items){
-//            ShippingTemplate shippingTemplate = ShippingTemplate.newInstance(1L);
-//            shippingTemplateRepository.save(shippingTemplate);
-//            itemRepository.updateShippingTemplateId(shippingTemplate.getId(), item.getId());
-//        }
-//    }
-
     @Transactional
     public ItemResponse retrieveItem(String itemNumber, Long userId){
         ItemProjectionResponse item = itemRepository.findByItemNumberAndUserId(itemNumber, userId);
