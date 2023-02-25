@@ -27,6 +27,8 @@ public class ItemResponse {
     private String thumbnail;
     private String itemNumber;
     private Long bundleId;
+    private Long categoryId;
+    private Long brandId;
     private int price;
     private int deliveryPrice;
     private int qty;
@@ -43,7 +45,7 @@ public class ItemResponse {
     private String description;
 
     @Builder
-    private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, Long bundleId,
+    private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, Long bundleId, Long categoryId, Long brandId,
                          int price, int deliveryPrice, int qty, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate, String description){
         this.id = id;
         this.name = name;
@@ -51,6 +53,8 @@ public class ItemResponse {
         this.thumbnail = thumbnail;
         this.itemNumber = itemNumber;
         this.bundleId = bundleId;
+        this.categoryId = categoryId;
+        this.brandId = brandId;
         this.price = price;
         this.deliveryPrice = deliveryPrice;
         this.qty = qty;
@@ -82,6 +86,8 @@ public class ItemResponse {
         return ItemResponse.builder()
                 .id(projection.getId())
                 .name(projection.getName())
+                .brandId(projection.getBrandId())
+                .categoryId(projection.getCategoryId())
                 .brandName(projection.getBrandName())
                 .thumbnail(CommonUtils.makeCloudFrontUrl(projection.getThumbnail()))
                 .itemNumber(projection.getItemNumber())

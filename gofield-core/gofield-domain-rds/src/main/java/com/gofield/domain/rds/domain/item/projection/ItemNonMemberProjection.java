@@ -14,6 +14,10 @@ public class ItemNonMemberProjection {
     private final String brandName;
     private final Long sellerId;
     private final Long bundleId;
+
+    private final Long brandId;
+
+    private final Long categoryId;
     private final Long shippingTemplateId;
     private final String thumbnail;
     private final String description;
@@ -31,12 +35,14 @@ public class ItemNonMemberProjection {
     private final String option;
 
     @QueryProjection
-    public ItemNonMemberProjection(Long id, String name, String brandName, Long sellerId, Long bundleId, Long shippingTemplateId, String thumbnail, String description, String itemNumber, int price, int deliveryPrice, int qty, Boolean isOption, EItemStatusFlag status, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option) {
+    public ItemNonMemberProjection(Long id, String name, String brandName, Long sellerId, Long bundleId, Long brandId, Long categoryId, Long shippingTemplateId, String thumbnail, String description, String itemNumber, int price, int deliveryPrice, int qty, Boolean isOption, EItemStatusFlag status, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
         this.sellerId = sellerId;
         this.bundleId = bundleId;
+        this.brandId = brandId;
+        this.categoryId = categoryId;
         this.shippingTemplateId = shippingTemplateId;
         this.thumbnail = thumbnail;
         this.description = description;

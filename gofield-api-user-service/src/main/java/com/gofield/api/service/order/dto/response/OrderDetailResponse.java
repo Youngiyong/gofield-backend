@@ -19,6 +19,8 @@ public class OrderDetailResponse {
     private int totalAmount;
     private int totalDiscount;
     private int totalDelivery;
+
+    private int totalSafeCharge;
     private String paymentCompany;
     private String bankName;
     private String virtualAccountNumber;
@@ -38,7 +40,7 @@ public class OrderDetailResponse {
     private List<OrderShippingResponse> orderShippingList;
 
     @Builder
-    private OrderDetailResponse(Long id, String orderNumber, int totalItem, int totalAmount, int totalDiscount , int totalDelivery,
+    private OrderDetailResponse(Long id, String orderNumber, int totalItem, int totalAmount, int totalDiscount , int totalDelivery, int totalSafeCharge,
                                 String paymentCompany, String bankName, String virtualAccountNumber, EOrderStatusFlag status, LocalDateTime createDate, LocalDateTime cancelDate,
                                 LocalDateTime confirmDate, LocalDateTime finishDate, LocalDateTime depositExpireDate, LocalDateTime depositDate, String tel, String name,
                                 String zipCode, String address, String addressExtra, String shippingComment, List<OrderShippingResponse> orderShippingList){
@@ -48,6 +50,7 @@ public class OrderDetailResponse {
         this.totalAmount = totalAmount;
         this.totalDiscount = totalDiscount;
         this.totalDelivery = totalDelivery;
+        this.totalSafeCharge = totalSafeCharge;
         this.paymentCompany = paymentCompany;
         this.bankName = bankName;
         this.virtualAccountNumber = virtualAccountNumber;
@@ -78,6 +81,7 @@ public class OrderDetailResponse {
                 .paymentCompany(order.getPaymentCompany())
                 .bankName(order.getBankName())
                 .virtualAccountNumber(order.getVirtualAccountNumber())
+                .totalSafeCharge(order.getTotalSafeCharge())
                 .status(order.getStatus())
                 .createDate(order.getCreateDate())
                 .cancelDate(order.getCancelDate())

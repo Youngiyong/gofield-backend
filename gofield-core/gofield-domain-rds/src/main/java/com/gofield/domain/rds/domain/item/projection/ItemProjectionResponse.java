@@ -19,6 +19,8 @@ public class ItemProjectionResponse {
     private String description;
     private String itemNumber;
     private Long bundleId;
+    private Long categoryId;
+    private Long brandId;
     private int price;
     private int deliveryPrice;
     private int qty;
@@ -35,7 +37,7 @@ public class ItemProjectionResponse {
     private ShippingTemplate shippingTemplate;
 
     @Builder
-    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, int price, int deliveryPrice, int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
+    public ItemProjectionResponse(Long id, String name, String brandName, String thumbnail, String description,  String itemNumber, Long bundleId, Long categoryId, Long brandId, int price, int deliveryPrice, int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -43,6 +45,8 @@ public class ItemProjectionResponse {
         this.description = description;
         this.itemNumber = itemNumber;
         this.bundleId = bundleId;
+        this.categoryId = categoryId;
+        this.brandId = brandId;
         this.price = price;
         this.deliveryPrice = deliveryPrice;
         this.qty = qty;
@@ -64,6 +68,8 @@ public class ItemProjectionResponse {
                 .id(projection.getId())
                 .name(projection.getName())
                 .brandName(projection.getBrandName())
+                .brandId(projection.getBrandId())
+                .categoryId(projection.getCategoryId())
                 .thumbnail(projection.getThumbnail())
                 .description(projection.getDescription())
                 .itemNumber(projection.getItemNumber())
@@ -93,6 +99,8 @@ public class ItemProjectionResponse {
                 .description(projection.getDescription())
                 .itemNumber(projection.getItemNumber())
                 .bundleId(projection.getBundleId())
+                .brandId(projection.getBrandId())
+                .categoryId(projection.getCategoryId())
                 .price(projection.getPrice())
                 .deliveryPrice(projection.getDeliveryPrice())
                 .qty(projection.getQty())
@@ -111,7 +119,7 @@ public class ItemProjectionResponse {
     }
 
 
-    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, int price, int deliveryPrice,  int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
+    public static ItemProjectionResponse of(Long id, String name, String brandName, String thumbnail, String description, String itemNumber, Long bundleId, Long brandId, Long categoryId, int price, int deliveryPrice,  int qty, EItemStatusFlag status, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, List<String> images, ShippingTemplate shippingTemplate){
         return ItemProjectionResponse.builder()
                 .id(id)
                 .name(name)
@@ -120,6 +128,8 @@ public class ItemProjectionResponse {
                 .description(description)
                 .itemNumber(itemNumber)
                 .bundleId(bundleId)
+                .brandId(brandId)
+                .categoryId(categoryId)
                 .price(price)
                 .deliveryPrice(deliveryPrice)
                 .status(status)

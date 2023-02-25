@@ -47,6 +47,8 @@ public class ItemService {
     private final ItemOptionGroupRepository itemOptionGroupRepository;
 
     private final ShippingTemplateRepository shippingTemplateRepository;
+
+    private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final ThirdPartyService thirdPartyService;
 
     @Transactional
@@ -135,6 +137,15 @@ public class ItemService {
         return ItemClassificationResponse.of(result);
     }
 
+    @Transactional(readOnly = true)
+    public List<ItemClassificationResponse> retrieveBundleRecommendItems(Long bundleId, Long itemId, Long categoryId, EItemClassificationFlag classification, Pageable pageable, Long userId){
+        return ItemClassificationResponse.of(itemRepository.findAllByUserIdAndCategoryIdAndClassificationAndNeItemId(userId, categoryId, itemId, classification, pageable));
+    }
+    @Transactional(readOnly = true)
+    public List<ItemClassificationResponse> retrieveBundleOtherItemsV2(Long bundleId, Long itemId, EItemClassificationFlag classification, Pageable pageable, Long userId){
+        return ItemClassificationResponse.of(itemRepository.findAllByUserIdAndBundleIdAndClassificationAndNeItemId(userId, bundleId, itemId, classification, pageable));
+    }
+
 
     @Transactional(readOnly = true)
     public ItemBundleReviewListResponse retrieveBundleItemReviews(Long bundleId, Pageable pageable){
@@ -171,6 +182,7 @@ public class ItemService {
         List<ItemOptionProjection> itemOptionProjectionList = itemOptionRepository.findAllItemOptionByItemId(itemId);
         return ItemOptionDetailResponse.of(ItemOptionGroupResponse.of(itemOptionGroupList), ItemOptionResponse.of(itemOptionProjectionList));
     }
+
 
     @Transactional(readOnly = true)
     public SellerShippingResponse retrieveItemShippingTemplate(String itemNumber){

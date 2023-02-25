@@ -110,6 +110,27 @@ public class ItemController {
         return ApiResponse.success(itemService.retrieveBundleOtherItems(bundleId, itemId, classification, pageable, UserIdResolver.getUserId()));
     }
 
+    @ApiOperation(value = "다른 추천상품(새상품/중고) 상품들을 조회합니다 ")
+    @Auth(allowNonLogin = true)
+    @GetMapping("/v1/bundle/{bundleId}/recommend/{itemId}")
+    public ApiResponse<List<ItemClassificationResponse>> retrieveBundleRecommendItems(@PathVariable Long bundleId,
+                                                                                      @PathVariable Long itemId,
+                                                                                      @RequestParam Long categoryId,
+                                                                                      @RequestParam(required = false) EItemClassificationFlag classification,
+                                                                                      @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.retrieveBundleRecommendItems(bundleId, itemId, categoryId, classification, pageable, UserIdResolver.getUserId()));
+    }
+
+    @ApiOperation(value = "다른 묶음상품에 해당하는 (새상품/중고) 상품들을 조회합니다 ")
+    @Auth(allowNonLogin = true)
+    @GetMapping("/v2/bundle/{bundleId}/other/{itemId}")
+    public ApiResponse<List<ItemClassificationResponse>> retrieveBundleOtherItemsV2(@PathVariable Long bundleId,
+                                                                                    @PathVariable Long itemId,
+                                                                                    @RequestParam(required = false) EItemClassificationFlag classification,
+                                                                                    @PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
+        return ApiResponse.success(itemService.retrieveBundleOtherItemsV2(bundleId, itemId, classification, pageable, UserIdResolver.getUserId()));
+    }
+
     @ApiOperation(value = "묶음 상품에 리뷰를 조회합니다")
     @GetMapping("/v1/bundle/{bundleId}/review")
     public ApiResponse<ItemBundleReviewListResponse> retrieveBundleItemReviews(@PathVariable Long bundleId,
