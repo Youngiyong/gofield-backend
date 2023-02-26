@@ -67,7 +67,6 @@ public class ItemBundleController {
         return "redirect:/bundle/edit/"+id;
     }
 
-
     @PostMapping("/bundle/edit")
     public String updateEditItemBundle(ItemBundleDto itemBundleDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
         itemBundleService.updateItemBundle(image, images, itemBundleDto);

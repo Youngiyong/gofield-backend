@@ -68,6 +68,7 @@
                                     <th class="text-center">id</th>
                                     <th class="text-center">주문번호/시각</th>
                                     <th class="text-center">주문상품명</th>
+                                    <th class="text-center">주문상품번호</th>
                                     <th class="text-center">수량</th>
                                     <th class="text-center">상품금액</th>
                                     <th class="text-center">택배사/운송장번호</th>
@@ -91,6 +92,7 @@
                                         <div class="text-center" th:text="${data.optionName}">
                                         </div>
                                     </td>
+                                    <td class="text-center" th:text="${data.orderItemNumber}"></td>
                                     <td class="text-center" th:text="${data.qty}"></td>
                                     <td class="text-center" th:text="${data.price}"></td>
                                     <td>

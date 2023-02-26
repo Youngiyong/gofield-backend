@@ -90,6 +90,15 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
     }
 
     @Override
+    public OrderCancel findByCancelIdAndUserIdFetchComment(Long cancelId, Long userId) {
+        return jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .where(orderCancel.id.eq(cancelId) ,orderCancelComment.user.id.eq(userId))
+                .fetchFirst();
+    }
+
+    @Override
     public OrderCancel findByCancelIdFetchJoin(Long cancelId) {
         return jpaQueryFactory
                 .selectFrom(orderCancel)

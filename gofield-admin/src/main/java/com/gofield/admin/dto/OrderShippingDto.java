@@ -26,6 +26,9 @@ public class OrderShippingDto {
     @ExcelColumn(headerName = "배송번호", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String shippingNumber;
 
+    @ExcelColumn(headerName = "상품주문번호", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
+    private String orderItemNumber;
+
     @ExcelColumn(headerName = "배송상태", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String status;
 
@@ -72,12 +75,13 @@ public class OrderShippingDto {
 
 
     @Builder
-    private OrderShippingDto(Long id, String orderNumber, String shippingNumber, String status, String createDate, String name,
+    private OrderShippingDto(Long id, String orderNumber, String shippingNumber, String orderItemNumber, String status, String createDate, String name,
                              String optionName, int price, int qty, String carrier, String trackingNumber, String customerTel, String customerName,
                              String address, String addressExtra, String zipCode, List<CodeDto> codeList, EOrderCancelReasonFlag reason, OrderCancelItemTempDto cancel){
         this.id = id;
         this.orderNumber = orderNumber;
         this.shippingNumber = shippingNumber;
+        this.orderItemNumber = orderItemNumber;
         this.status = status;
         this.createDate = createDate;
         this.name = name;
@@ -106,6 +110,7 @@ public class OrderShippingDto {
                 .id(orderShipping.getId())
                 .orderNumber(orderShipping.getOrderNumber())
                 .shippingNumber(orderShipping.getShippingNumber())
+                .orderItemNumber(orderItem.getOrderItemNumber())
                 .status(orderShipping.getStatus().getDescription())
                 .createDate(orderShipping.getCreateDate().toString())
                 .name(orderItem.getName())

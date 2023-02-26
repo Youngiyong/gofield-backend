@@ -139,7 +139,7 @@ public class OrderCancel extends BaseTimeEntity {
     }
 
     public static OrderCancel newReturnInstance(Order order, OrderShipping orderShipping, OrderCancelComment orderCancelComment, ShippingTemplate shippingTemplate, String cancelNumber, EOrderCancelCodeFlag code, EOrderCancelReasonFlag reason, int totalAmount, int totalItem,
-                                                int totalDelivery, int totalDiscount, int totalRefund, int totalPg,  String refundName, String refundAccount, String refundBank) {
+                                                int totalDelivery, int totalDiscount, int totalRefund, int totalPg, int totalSafeCharge, String refundName, String refundAccount, String refundBank) {
         return OrderCancel.builder()
                 .order(order)
                 .orderShipping(orderShipping)
@@ -156,6 +156,7 @@ public class OrderCancel extends BaseTimeEntity {
                 .totalDiscount(totalDiscount)
                 .totalRefund(totalRefund)
                 .totalPg(totalPg)
+                .totalSafeCharge(totalSafeCharge)
                 .refundName(refundName)
                 .refundAccount(refundAccount)
                 .refundBank(refundBank)
@@ -250,4 +251,9 @@ public class OrderCancel extends BaseTimeEntity {
             this.status = EOrderCancelStatusFlag.ORDER_CHANGE_COMPLETE;
         }
     }
+
+    public void updateWithdraw(){
+        this.status = EOrderCancelStatusFlag.ORDER_RETURN_WITHDRAW;
+    }
+
 }

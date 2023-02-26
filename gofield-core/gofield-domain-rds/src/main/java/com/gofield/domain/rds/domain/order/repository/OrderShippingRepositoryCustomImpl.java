@@ -30,7 +30,7 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
         if (keyword == null || keyword.equals("")) {
             return null;
         }
-        return orderShipping.shippingNumber.contains(keyword).or(orderShipping.orderNumber.contains(keyword));
+        return orderShipping.shippingNumber.contains(keyword).or(orderShipping.orderNumber.contains(keyword).or(orderItem.orderItemNumber.contains(keyword)));
     }
 
     private BooleanExpression eqStatus(EOrderShippingStatusFlag status){
@@ -39,6 +39,14 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
         }
         return orderShipping.status.eq(status);
     }
+
+    private BooleanExpression eqOrderItemNumber(String keyword){
+        if(keyword==null){
+            return null;
+        }
+        return orderItem.orderItemNumber.eq(keyword);
+    }
+
 
 
     @Override
@@ -99,7 +107,7 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
                                         EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE,
                                         EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN,
                                         EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE),
-                        containKeyword(keyword), eqStatus(status))
+                        containKeyword(keyword), eqStatus(status), eqOrderItemNumber(keyword))
                 .fetch();
 
         List<EOrderShippingStatusFlag> allCount = jpaQueryFactory

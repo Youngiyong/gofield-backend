@@ -28,6 +28,7 @@ public enum EOrderCancelStatusFlag implements EnumCodeModel {
     ORDER_RETURN_COLLECT_PROCESS("수거중", "701"),
     ORDER_RETURN_COLLECT_PROCESS_COMPLETE("수거완료", "702"),
     ORDER_RETURN_DENIED("반품처리실패", "705"),
+    ORDER_RETURN_WITHDRAW("반품철회", "706"),
     ORDER_RETURN_COMPLETE("반품완료", "710"),
 
     ;

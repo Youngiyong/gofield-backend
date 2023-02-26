@@ -314,7 +314,7 @@ public class OrderService {
                 orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ObjectMapperUtils.objectToJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
                 orderItemOptionRepository.save(orderItemOption);
             }
-            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, response.getOrderId(), makeOrderNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
+            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, response.getOrderId(), thirdPartyService.makeOrderItemNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
             updateItemBundleAggregation(result.getBundleId());
         }
@@ -468,6 +468,28 @@ public class OrderService {
         thirdPartyService.sendCancelSlackNotification(SlackChannel.CHANGE, orderCancelComment.getName(), orderCancelComment.getTel(), orderCancel.getOrder().getOrderNumber(), LocalDateTimeUtils.LocalDateTimeToString(orderCancel.getCreateDate()), orderCancelComment.getContent(), orderCancelItem.getName(), orderCancelItem.getOptionName(), CommonUtils.makeCloudFrontAdminUrl(thumbnail), orderCancel.getTotalAmount());
     }
 
+    @Transactional
+    public void returnOrderWithdraw(Long cancelId, Long userId){
+        OrderCancel orderCancel = orderCancelRepository.findByCancelIdAndUserIdFetchComment(cancelId, userId);
+        if(orderCancel==null){
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 취소 번호입니다.", cancelId));
+        }
+        OrderShippingLog orderShippingLog = orderShippingLogRepository.findLastShippingStatus(orderCancel.getOrderShipping().getId(), userId);
+        OrderShipping orderShipping = orderCancel.getOrderShipping();
+        switch (orderShippingLog.getStatus()){
+            case ORDER_SHIPPING_DELIVERY:
+                orderShipping.updateShippingDelivery();
+                break;
+            case ORDER_SHIPPING_DELIVERY_COMPLETE:
+                orderShipping.updateShippingDeliveryComplete();
+                break;
+            default:
+                throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("%s log status 오류", orderShippingLog.getStatus()));
+        }
+        orderShipping.updateShippingDeliveryComplete();
+        OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), userId, EGofieldService.GOFIELD_API, orderShipping.getStatus());
+        orderShippingLogRepository.save(save);
+    }
 
     @Transactional
     public void returnOrder(Long orderItemId, OrderRequest.OrderReturn request, Long userId) {
@@ -488,7 +510,7 @@ public class OrderService {
         OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, refundName, refundAccount, refundBank);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, "정보없음", "정보없음", "정보없음", "정보없음", "정보없음", request.getContent());
         orderCancelCommentRepository.save(orderCancelComment);
-        OrderCancel orderCancel = OrderCancel.newReturnInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), makeOrderCancelNumber(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), orderItemInfo.getRefundPrice(), orderItemInfo.getTotalAmount(),  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
+        OrderCancel orderCancel = OrderCancel.newReturnInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), makeOrderCancelNumber(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), orderItemInfo.getRefundPrice(), orderItemInfo.getTotalAmount(), orderItemInfo.getSafeChargePrice(),  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;
         EOrderCancelItemFlag itemType = orderItemInfo.getIsOption() ? EOrderCancelItemFlag.ORDER_ITEM_OPTION : EOrderCancelItemFlag.ORDER_ITEM;

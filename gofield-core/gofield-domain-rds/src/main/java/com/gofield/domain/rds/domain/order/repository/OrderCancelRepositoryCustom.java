@@ -14,6 +14,8 @@ public interface OrderCancelRepositoryCustom {
     Page<OrderCancel> findAllFetchJoin(Long userId, Pageable pageable);
     OrderCancel findByCancelIdAndUserIdFetchJoin(Long cancelId, Long userId);
 
+    OrderCancel findByCancelIdAndUserIdFetchComment(Long cancelId, Long userId);
+
     OrderCancel findByCancelIdFetchJoin(Long cancelId);
 
     OrderCancel findByShippingIdAndStatusReturn(Long orderShippingId);
