@@ -30,7 +30,7 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
         if (keyword == null || keyword.equals("")) {
             return null;
         }
-        return orderShipping.shippingNumber.contains(keyword).or(orderShipping.orderNumber.contains(keyword).or(orderItem.orderItemNumber.contains(keyword)));
+        return orderShipping.shippingNumber.contains(keyword).or(orderShipping.orderNumber.contains(keyword));
     }
 
     private BooleanExpression eqStatus(EOrderShippingStatusFlag status){
