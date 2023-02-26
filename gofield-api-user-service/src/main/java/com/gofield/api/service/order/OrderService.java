@@ -489,6 +489,7 @@ public class OrderService {
         orderShipping.updateShippingDeliveryComplete();
         OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), userId, EGofieldService.GOFIELD_API, orderShipping.getStatus());
         orderShippingLogRepository.save(save);
+        orderCancel.updateWithdraw();
     }
 
     @Transactional
