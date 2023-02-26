@@ -167,7 +167,7 @@ public class OrderController {
         return ApiResponse.SUCCESS;
     }
 
-    @ApiOperation(value = "[인증] 상품을 반품합니다")
+    @ApiOperation(value = "[인증] 반품을 철회합니다.")
     @Auth
     @PutMapping("/v1/return/withdraw/{cancelId}")
     public ApiResponse returnOrderWithdraw(@PathVariable Long cancelId){
