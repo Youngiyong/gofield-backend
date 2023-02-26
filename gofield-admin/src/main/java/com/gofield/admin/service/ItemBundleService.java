@@ -25,7 +25,6 @@ import java.util.List;
 public class ItemBundleService {
 
     private final ItemService itemService;
-
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
     private final ItemBundleRepository itemBundleRepository;

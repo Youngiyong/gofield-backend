@@ -93,7 +93,7 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
     public OrderCancel findByCancelIdAndUserIdFetchComment(Long cancelId, Long userId) {
         return jpaQueryFactory
                 .selectFrom(orderCancel)
-                .innerJoin(orderCancelComment.user, user).fetchJoin()
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
                 .where(orderCancel.id.eq(cancelId) ,orderCancelComment.user.id.eq(userId))
                 .fetchFirst();
     }
