@@ -107,7 +107,7 @@ public class OrderShippingRepositoryCustomImpl implements OrderShippingRepositor
                                         EOrderShippingStatusFlag.ORDER_SHIPPING_CHANGE_COMPLETE,
                                         EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN,
                                         EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE),
-                        containKeyword(keyword), eqStatus(status), eqOrderItemNumber(keyword))
+                        containKeyword(keyword), eqStatus(status))
                 .fetch();
 
         List<EOrderShippingStatusFlag> allCount = jpaQueryFactory
