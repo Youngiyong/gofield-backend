@@ -1,10 +1,7 @@
 package com.gofield.domain.rds.domain.order;
 
 import com.gofield.domain.rds.domain.common.BaseTimeEntity;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
 
@@ -42,6 +39,7 @@ public class Order extends BaseTimeEntity {
 
     @Column
     private int totalDelivery;
+
     @Column
     private int totalDiscount;
 
@@ -78,6 +76,9 @@ public class Order extends BaseTimeEntity {
     @Column(nullable = false, name = "status_flag")
     private EOrderStatusFlag status;
 
+    @Column
+    private Double safeCommission;
+
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private final List<OrderShipping> orderShippings = new ArrayList<>();
 
@@ -106,7 +107,7 @@ public class Order extends BaseTimeEntity {
     private LocalDateTime depositDate;
 
     @Builder
-    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber, String paymentKey, int totalItem, int totalAmount, int totalDelivery, int totalDiscount, int totalSafeCharge, String virtualAccountNumber, String bankName, String depositorName,  String paymentCompany, String accountNumber, String paymentType, String cardNumber, String cardType, int installmentPlanMonth, EOrderStatusFlag status, LocalDateTime depositExpireDate){
+    private Order(OrderShippingAddress shippingAddress, Long userId, String orderNumber, String paymentKey, int totalItem, int totalAmount, int totalDelivery, int totalDiscount, int totalSafeCharge, String virtualAccountNumber, String bankName, String depositorName,  String paymentCompany, String accountNumber, String paymentType, String cardNumber, String cardType, int installmentPlanMonth, Double safeCommission, EOrderStatusFlag status, LocalDateTime depositExpireDate){
         this.shippingAddress = shippingAddress;
         this.userId = userId;
         this.orderNumber = orderNumber;
@@ -125,13 +126,14 @@ public class Order extends BaseTimeEntity {
         this.cardNumber = cardNumber;
         this.cardType = cardType;
         this.installmentPlanMonth = installmentPlanMonth;
+        this.safeCommission = safeCommission;
         this.status = status;
         this.depositExpireDate = depositExpireDate;
     }
 
     public static Order newInstance(OrderShippingAddress shippingAddress, Long userId,  String orderNumber,  String paymentKey,
                                     int totalItem, int totalAmount, int totalDelivery, int totalDiscount, int totalSafeCharge, String paymentCompany,
-                                    String accountNumber, String paymentType, String cardNumber, String cardType, int installmentPlanMonth){
+                                    String accountNumber, String paymentType, String cardNumber, String cardType, int installmentPlanMonth, Double safeCommission){
         return Order.builder()
                 .shippingAddress(shippingAddress)
                 .userId(userId)
@@ -148,13 +150,14 @@ public class Order extends BaseTimeEntity {
                 .cardNumber(cardNumber)
                 .cardType(cardType)
                 .installmentPlanMonth(installmentPlanMonth)
+                .safeCommission(safeCommission)
                 .status(EOrderStatusFlag.ORDER_CREATE)
                 .build();
     }
 
     public static Order newVirtualOrderInstance(OrderShippingAddress shippingAddress, Long userId,  String orderNumber,  String paymentKey,
                                     int totalItem, int totalAmount, int totalDelivery, int totalDiscount, int totalSafeCharge,
-                                    String virtualAccountNumber, String bankName, String depositorName, String paymentType, LocalDateTime depositExpireDate){
+                                    String virtualAccountNumber, String bankName, String depositorName, String paymentType, Double safeCommission, LocalDateTime depositExpireDate){
         return Order.builder()
                 .shippingAddress(shippingAddress)
                 .userId(userId)
@@ -167,6 +170,7 @@ public class Order extends BaseTimeEntity {
                 .totalDiscount(totalDiscount)
                 .virtualAccountNumber(virtualAccountNumber)
                 .paymentType(paymentType)
+                .safeCommission(safeCommission)
                 .status(EOrderStatusFlag.ORDER_DEPOSIT_WAIT)
                 .bankName(bankName)
                 .depositorName(depositorName)

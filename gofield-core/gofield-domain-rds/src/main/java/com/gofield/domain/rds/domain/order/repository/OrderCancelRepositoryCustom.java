@@ -16,6 +16,8 @@ public interface OrderCancelRepositoryCustom {
 
     OrderCancel findByCancelIdFetchJoin(Long cancelId);
 
+    OrderCancel findByShippingIdAndStatusReturn(Long orderShippingId);
+
     List<OrderCancel> findAllOrderCancelByKeyword(String keyword, EOrderCancelStatusFlag status);
     List<OrderCancel> findAllOrderChangeByKeyword(String keyword, EOrderCancelStatusFlag status);
     List<OrderCancel> findAllOrderReturnByKeyword(String keyword, EOrderCancelStatusFlag status);

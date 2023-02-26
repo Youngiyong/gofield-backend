@@ -5,6 +5,7 @@ import com.gofield.api.service.auth.dto.SocialAuthentication;
 import com.gofield.api.service.order.dto.response.OrderCreateResponse;
 import com.gofield.api.service.sns.SnsService;
 import com.gofield.common.exception.NotFoundException;
+import com.gofield.common.model.Constants;
 import com.gofield.common.model.SlackChannel;
 import com.gofield.api.service.user.dto.request.UserRequest;
 import com.gofield.api.service.item.dto.response.ItemOrderSheetListResponse;
@@ -305,7 +306,7 @@ public class ThirdPartyService {
         OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(orderCreate.getOrderId(), shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
         orderShippingAddressRepository.save(orderShippingAddress);
 
-        Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderCreate.getOrderId(), orderCreate.getPaymentKey(), orderSheetList.getTotalPrice(), orderSheet.getTotalPrice(), orderSheetList.getTotalDelivery(),0, orderSheetList.getTotalSafeCharge(), orderCreate.getPaymentCompany(), null, orderCreate.getPaymentType().name(), orderCreate.getCardNumber(), orderCreate.getCardType(), orderCreate.getInstallmentPlanMonth());
+        Order order = Order.newInstance(orderShippingAddress, orderWait.getUserId(), orderCreate.getOrderId(), orderCreate.getPaymentKey(), orderSheetList.getTotalPrice(), orderSheet.getTotalPrice(), orderSheetList.getTotalDelivery(),0, orderSheetList.getTotalSafeCharge(), orderCreate.getPaymentCompany(), null, orderCreate.getPaymentType().name(), orderCreate.getCardNumber(), orderCreate.getCardType(), orderCreate.getInstallmentPlanMonth(), Constants.SAFE_PAYMENT_CHARGE);
         orderRepository.save(order);
 
         for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){

@@ -48,6 +48,8 @@ public class OrderResponse {
                 .build();
     }
 
+
+
     public static List<OrderResponse> of(List<Order> list){
         return list.stream()
                 .map(p -> OrderResponse.of(p, OrderShippingResponse.of(p.getOrderShippings())))

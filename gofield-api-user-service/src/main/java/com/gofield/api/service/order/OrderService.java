@@ -158,7 +158,8 @@ public class OrderService {
         if(order==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> 존재하지 않는 주문번호입니다.", orderNumber));
         }
-        return OrderDetailResponse.of(order, OrderShippingResponse.of(order.getOrderShippings()));
+        OrderCancel orderCancel = null;
+        return OrderDetailResponse.of(order, OrderShippingResponse.of(order.getOrderShippings(), orderCancelRepository));
     }
 
     @Transactional(readOnly = true)
@@ -293,7 +294,7 @@ public class OrderService {
         OrderShippingAddress orderShippingAddress = OrderShippingAddress.newInstance(response.getOrderId(), shippingAddress.getName(), shippingAddress.getTel(), shippingAddress.getZipCode(), shippingAddress.getAddress(), shippingAddress.getAddressExtra(), shippingAddress.getShippingComment());
         orderShippingAddressRepository.save(orderShippingAddress);
 
-        Order order = Order.newVirtualOrderInstance(orderShippingAddress, orderWait.getUserId(), response.getOrderId(), response.getPaymentKey(), orderSheetList.getTotalPrice(), orderSheet.getTotalPrice(), orderSheetList.getTotalDelivery(),0,  orderSheetList.getTotalSafeCharge(), response.getVirtualAccount().getAccountNumber(), request.getBank(), request.getCustomerEmail(), EPaymentType.VIRTUAL_ACCOUNT.name(), LocalDateTimeUtils.stringToLocalDateTime(response.getVirtualAccount().getDueDate()));
+        Order order = Order.newVirtualOrderInstance(orderShippingAddress, orderWait.getUserId(), response.getOrderId(), response.getPaymentKey(), orderSheetList.getTotalPrice(), orderSheet.getTotalPrice(), orderSheetList.getTotalDelivery(),0,  orderSheetList.getTotalSafeCharge(), response.getVirtualAccount().getAccountNumber(), request.getBank(), request.getCustomerEmail(), EPaymentType.VIRTUAL_ACCOUNT.name(), Constants.SAFE_PAYMENT_CHARGE, LocalDateTimeUtils.stringToLocalDateTime(response.getVirtualAccount().getDueDate()));
         orderRepository.save(order);
 
         for(ItemOrderSheetResponse result: orderSheetList.getOrderSheetList()){
@@ -313,7 +314,7 @@ public class OrderService {
                 orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ObjectMapperUtils.objectToJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
                 orderItemOptionRepository.save(orderItemOption);
             }
-            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, response.getOrderId(), makeOrderNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice(), Constants.SAFE_PAYMENT_CHARGE);
+            OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, response.getOrderId(), makeOrderNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
             updateItemBundleAggregation(result.getBundleId());
         }
@@ -486,6 +487,7 @@ public class OrderService {
         User user = userService.getUser(userId);
         OrderCancelItemTempResponse orderItemInfo = OrderCancelItemTempResponse.of(orderItem, refundName, refundAccount, refundBank);
         OrderCancelComment orderCancelComment = OrderCancelComment.newInstance(user, "정보없음", "정보없음", "정보없음", "정보없음", "정보없음", request.getContent());
+        orderCancelCommentRepository.save(orderCancelComment);
         OrderCancel orderCancel = OrderCancel.newReturnInstance(orderItem.getOrder(), orderItem.getOrderShipping(), orderCancelComment, orderItem.getItem().getShippingTemplate(), makeOrderCancelNumber(), EOrderCancelCodeFlag.USER, request.getReason(), orderItemInfo.getTotalAmount(), orderItemInfo.getItemPrice(), orderItemInfo.getDeliveryPrice(), orderItemInfo.getDiscountPrice(), orderItemInfo.getRefundPrice(), orderItemInfo.getTotalAmount(),  orderItemInfo.getRefundName(), orderItemInfo.getRefundAccount(), orderItemInfo.getRefundBank());
         Item item = orderItemInfo.getIsOption() ? null : itemRepository.findByItemId(orderItemInfo.getItemId());
         ItemOption itemOption = orderItemInfo.getIsOption() ? itemOptionRepository.findByOptionId(orderItemInfo.getItemOptionId()) : null;

@@ -65,14 +65,11 @@ public class OrderItem extends BaseTimeEntity {
     private EOrderItemStatusFlag status;
 
     @Column
-    private Double safeCommission;
-
-    @Column
     private LocalDateTime reviewDate;
 
     @Builder
     private OrderItem(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber, String orderItemNumber,
-                      String itemNumber, String name, int qty, int price, Double safeCommission){
+                      String itemNumber, String name, int qty, int price){
         this.order = order;
         this.sellerId = sellerId;
         this.item = item;
@@ -84,12 +81,11 @@ public class OrderItem extends BaseTimeEntity {
         this.name = name;
         this.qty = qty;
         this.price = price;
-        this.safeCommission = safeCommission;
         this.status = EOrderItemStatusFlag.ORDER_ITEM_RECEIPT;
     }
 
     public static OrderItem newInstance(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber, String orderItemNumber,
-                                        String itemNumber, String name, int qty, int price, Double safeCommission){
+                                        String itemNumber, String name, int qty, int price){
         return OrderItem.builder()
                 .order(order)
                 .sellerId(sellerId)
@@ -102,7 +98,6 @@ public class OrderItem extends BaseTimeEntity {
                 .name(name)
                 .qty(qty)
                 .price(price)
-                .safeCommission(safeCommission)
                 .build();
     }
 

@@ -19,7 +19,6 @@ public class OrderDetailResponse {
     private int totalAmount;
     private int totalDiscount;
     private int totalDelivery;
-
     private int totalSafeCharge;
     private String paymentCompany;
     private String bankName;
@@ -38,6 +37,7 @@ public class OrderDetailResponse {
     private String addressExtra;
     private String shippingComment;
     private List<OrderShippingResponse> orderShippingList;
+
 
     @Builder
     private OrderDetailResponse(Long id, String orderNumber, int totalItem, int totalAmount, int totalDiscount , int totalDelivery, int totalSafeCharge,

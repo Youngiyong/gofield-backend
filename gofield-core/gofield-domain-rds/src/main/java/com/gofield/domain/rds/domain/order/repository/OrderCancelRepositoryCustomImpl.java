@@ -103,6 +103,17 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
     }
 
     @Override
+    public OrderCancel findByShippingIdAndStatusReturn(Long orderShippingId) {
+        return jpaQueryFactory
+                .selectFrom(orderCancel)
+                .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
+                .innerJoin(orderCancel.orderShipping, orderShipping).fetchJoin()
+                .where(orderCancel.orderShipping.id.eq(orderShippingId), orderCancel.orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN).or(orderCancel.orderShipping.status.eq(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)))
+                .orderBy(orderCancel.createDate.desc())
+                .fetchFirst();
+    }
+
+    @Override
     public List<OrderCancel> findAllOrderCancelByKeyword(String keyword, EOrderCancelStatusFlag status) {
         return jpaQueryFactory
                 .selectFrom(orderCancel)

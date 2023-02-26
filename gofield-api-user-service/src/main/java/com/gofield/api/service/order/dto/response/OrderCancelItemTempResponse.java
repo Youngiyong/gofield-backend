@@ -1,7 +1,9 @@
 package com.gofield.api.service.order.dto.response;
 
+import com.gofield.common.model.Constants;
 import com.gofield.common.utils.CommonUtils;
 import com.gofield.domain.rds.domain.item.EItemDeliveryFlag;
+import com.gofield.domain.rds.domain.item.Item;
 import com.gofield.domain.rds.domain.order.*;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,6 +23,8 @@ public class OrderCancelItemTempResponse {
     private String thumbnail;
     private EOrderItemStatusFlag status;
     private Boolean isOption;
+
+    private Boolean isPaid;
     private int qty;
     private int totalAmount;
     private int itemPrice;
@@ -46,7 +50,7 @@ public class OrderCancelItemTempResponse {
 
     @Builder
     private OrderCancelItemTempResponse(Long id, Long orderId, Long itemId, Long itemOptionId, Long shippingTemplateId, String itemNumber,
-                                        String name, String optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
+                                        String name, String optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption, Boolean isPaid,
                                         int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int safeChargePrice, int refundPrice, String paymentCompany,
                                         String paymentType, String cardNumber, String cardType, int installmentPlanMonth,
                                         String refundName, String refundAccount, String refundBank, String userTel, String username, String zipCode, String address, String addressExtra){
@@ -61,6 +65,7 @@ public class OrderCancelItemTempResponse {
         this.thumbnail = thumbnail;
         this.status = status;
         this.isOption = isOption;
+        this.isPaid = isPaid;
         this.qty = qty;
         this.totalAmount = totalAmount;
         this.itemPrice = itemPrice;
@@ -145,10 +150,15 @@ public class OrderCancelItemTempResponse {
         int itemPrice = orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
         int discountPrice = 0;
         int deliveryPrice = 0;
+        Double safeChargePrice = 0.0;
+        Item item = orderItem.getItem();
         if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.PAY)){
-            deliveryPrice = orderItem.getItem().getDeliveryPrice();
+            if(!item.getShippingTemplate().getIsPaid()){
+                deliveryPrice = orderItem.getItem().getDeliveryPrice();
+            }
         }
-        int totalAmount = itemPrice * qty + deliveryPrice - discountPrice;
+        safeChargePrice = itemPrice * qty  * Constants.SAFE_PAYMENT_CHARGE / 100.0;
+        int totalAmount = itemPrice * qty + deliveryPrice +  safeChargePrice.intValue() - discountPrice;
         OrderShippingAddress orderShippingAddress = orderItem.getOrder().getShippingAddress();
         return OrderCancelItemTempResponse.builder()
                 .id(orderItem.getId())
@@ -164,7 +174,9 @@ public class OrderCancelItemTempResponse {
                 .isOption(orderItem.getOrderItemOption()==null ? false : true)
                 .qty(qty)
                 .totalAmount(totalAmount)
+                .safeChargePrice(safeChargePrice.intValue())
                 .itemPrice(itemPrice)
+                .isPaid(item.getShippingTemplate().getIsPaid())
                 .discountPrice(discountPrice)
                 .deliveryPrice(deliveryPrice)
                 .discountPrice(discountPrice)

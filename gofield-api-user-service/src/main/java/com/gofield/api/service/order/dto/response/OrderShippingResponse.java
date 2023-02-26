@@ -1,8 +1,7 @@
 package com.gofield.api.service.order.dto.response;
 
 import com.gofield.domain.rds.domain.item.EItemChargeFlag;
-import com.gofield.domain.rds.domain.order.EOrderShippingStatusFlag;
-import com.gofield.domain.rds.domain.order.OrderShipping;
+import com.gofield.domain.rds.domain.order.*;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -26,11 +25,13 @@ public class OrderShippingResponse {
     private LocalDateTime deliveryDate;
     private LocalDateTime deliveredDate;
     private List<OrderItemResponse> orderItems;
+    private String reason;
+    private String comment;
 
     @Builder
     private OrderShippingResponse(Long id, String shippingNumber, EOrderShippingStatusFlag status,
                                   String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
-                                  LocalDateTime createDate, LocalDateTime cancelDate,  LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItemResponse> orderItems){
+                                  LocalDateTime createDate, LocalDateTime cancelDate,  LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItemResponse> orderItems, String reason, String comment){
         this.id = id;
         this.shippingNumber = shippingNumber;
         this.status = status;
@@ -43,7 +44,36 @@ public class OrderShippingResponse {
         this.deliveryDate = deliveryDate;
         this.deliveredDate = deliveredDate;
         this.orderItems = orderItems;
+        this.reason = reason;
+        this.comment = comment;
     }
+
+    public static OrderShippingResponse of(OrderShipping orderShipping, OrderCancelRepository orderCancelRepository){
+        String comment = null;
+        String reason = null;
+        if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
+            OrderCancel orderCancel = orderCancelRepository.findByShippingIdAndStatusReturn(orderShipping.getId());
+            comment = orderCancel.getOrderCancelComment().getContent();
+            reason = orderCancel.getReason().getDescription();
+        }
+        return OrderShippingResponse.builder()
+                .id(orderShipping.getId())
+                .shippingNumber(orderShipping.getShippingNumber())
+                .status(orderShipping.getStatus())
+                .trackingNumber(orderShipping.getTrackingNumber())
+                .chargeType(orderShipping.getChargeType())
+                .deliveryPrice(orderShipping.getDeliveryPrice())
+                .carrier(orderShipping.getCarrier())
+                .createDate(orderShipping.getCreateDate())
+                .cancelDate(orderShipping.getCancelDate())
+                .deliveryDate(orderShipping.getDeliveryDate())
+                .deliveredDate(orderShipping.getDeliveredDate())
+                .orderItems(OrderItemResponse.of(orderShipping.getOrderItems()))
+                .reason(reason)
+                .comment(comment)
+                .build();
+    }
+
 
     public static OrderShippingResponse of(OrderShipping orderShipping){
         return OrderShippingResponse.builder()
@@ -60,6 +90,13 @@ public class OrderShippingResponse {
                 .deliveredDate(orderShipping.getDeliveredDate())
                 .orderItems(OrderItemResponse.of(orderShipping.getOrderItems()))
                 .build();
+    }
+
+    public static List<OrderShippingResponse> of(List<OrderShipping> list, OrderCancelRepository orderCancelRepository){
+        return list
+                .stream()
+                .map(p->OrderShippingResponse.of(p, orderCancelRepository))
+                .collect(Collectors.toList());
     }
 
     public static List<OrderShippingResponse> of(List<OrderShipping> list){
