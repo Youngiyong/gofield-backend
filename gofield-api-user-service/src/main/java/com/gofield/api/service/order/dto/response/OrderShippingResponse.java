@@ -25,13 +25,15 @@ public class OrderShippingResponse {
     private LocalDateTime deliveryDate;
     private LocalDateTime deliveredDate;
     private List<OrderItemResponse> orderItems;
+
+    private Long cancelId;
     private String reason;
     private String comment;
 
     @Builder
     private OrderShippingResponse(Long id, String shippingNumber, EOrderShippingStatusFlag status,
                                   String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
-                                  LocalDateTime createDate, LocalDateTime cancelDate,  LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItemResponse> orderItems, String reason, String comment){
+                                  LocalDateTime createDate, LocalDateTime cancelDate,  LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItemResponse> orderItems, Long cancelId, String reason, String comment){
         this.id = id;
         this.shippingNumber = shippingNumber;
         this.status = status;
@@ -44,6 +46,7 @@ public class OrderShippingResponse {
         this.deliveryDate = deliveryDate;
         this.deliveredDate = deliveredDate;
         this.orderItems = orderItems;
+        this.cancelId = cancelId;
         this.reason = reason;
         this.comment = comment;
     }
@@ -51,13 +54,16 @@ public class OrderShippingResponse {
     public static OrderShippingResponse of(OrderShipping orderShipping, OrderCancelRepository orderCancelRepository){
         String comment = null;
         String reason = null;
+        Long cancelId = null;
         if(orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN) || orderShipping.getStatus().equals(EOrderShippingStatusFlag.ORDER_SHIPPING_RETURN_COMPLETE)){
             OrderCancel orderCancel = orderCancelRepository.findByShippingIdAndStatusReturn(orderShipping.getId());
             comment = orderCancel.getOrderCancelComment().getContent();
             reason = orderCancel.getReason().getDescription();
+            cancelId = orderCancel.getId();
         }
         return OrderShippingResponse.builder()
                 .id(orderShipping.getId())
+                .cancelId(cancelId)
                 .shippingNumber(orderShipping.getShippingNumber())
                 .status(orderShipping.getStatus())
                 .trackingNumber(orderShipping.getTrackingNumber())

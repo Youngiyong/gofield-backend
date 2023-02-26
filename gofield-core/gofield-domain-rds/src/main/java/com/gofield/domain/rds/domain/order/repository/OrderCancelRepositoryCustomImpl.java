@@ -90,11 +90,12 @@ public class OrderCancelRepositoryCustomImpl implements OrderCancelRepositoryCus
     }
 
     @Override
-    public OrderCancel findByCancelIdAndUserIdFetchComment(Long cancelId, Long userId) {
+    public OrderCancel findReceiptReturnByOrderIdAndShippingIdAndUserIdFetchComment(Long orderId, Long shippingId, Long userId) {
         return jpaQueryFactory
                 .selectFrom(orderCancel)
                 .innerJoin(orderCancel.orderCancelComment, orderCancelComment).fetchJoin()
-                .where(orderCancel.id.eq(cancelId) ,orderCancelComment.user.id.eq(userId))
+                .where(orderCancel.order.id.eq(orderId), orderCancel.orderShipping.id.eq(shippingId),
+                        orderCancel.status.eq(EOrderCancelStatusFlag.ORDER_RETURN_REQUEST) ,orderCancelComment.user.id.eq(userId))
                 .fetchFirst();
     }
 

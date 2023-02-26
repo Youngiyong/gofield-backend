@@ -469,10 +469,11 @@ public class OrderService {
     }
 
     @Transactional
-    public void returnOrderWithdraw(Long cancelId, Long userId){
-        OrderCancel orderCancel = orderCancelRepository.findByCancelIdAndUserIdFetchComment(cancelId, userId);
+    public void returnOrderWithdraw(Long orderItemId, Long userId){
+        OrderItem orderItem = orderItemRepository.findByOrderItemId(orderItemId);
+        OrderCancel orderCancel = orderCancelRepository.findReceiptReturnByOrderIdAndShippingIdAndUserIdFetchComment(orderItem.getOrder().getId(), orderItem.getOrderShipping().getId(), userId);
         if(orderCancel==null){
-            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id는 존재하지 취소 번호입니다.", cancelId));
+            throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s> Id  <%s> id는 존재하지 않는 id 입니다.", orderItem.getOrder().getId(), orderItem.getOrderShipping().getId()));
         }
         OrderShippingLog orderShippingLog = orderShippingLogRepository.findLastShippingStatus(orderCancel.getOrderShipping().getId(), userId);
         OrderShipping orderShipping = orderCancel.getOrderShipping();
