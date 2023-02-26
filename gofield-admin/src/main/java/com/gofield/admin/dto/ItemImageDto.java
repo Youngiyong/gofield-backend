@@ -15,13 +15,16 @@ import java.util.stream.Collectors;
 public class ItemImageDto {
     private Long id;
     private String image;
+
+    private Integer sort;
     private String createDate;
 
 
     @Builder
-    private ItemImageDto(Long id, String image, String createDate){
+    private ItemImageDto(Long id, String image, Integer sort, String createDate){
         this.id = id;
         this.image = image;
+        this.sort = sort;
         this.createDate = createDate;
     }
 
@@ -29,6 +32,7 @@ public class ItemImageDto {
         return ItemImageDto.builder()
                 .id(itemImage.getId())
                 .image(CommonUtils.makeCloudFrontAdminUrl(itemImage.getImage()))
+                .sort(itemImage.getSort())
                 .createDate(itemImage.getCreateDate().toLocalDate().toString())
                 .build();
     }

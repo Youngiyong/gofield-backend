@@ -53,6 +53,14 @@ public class ItemBundleImage extends BaseTimeEntity {
                 .build();
     }
 
+    public void updateSortInCrease(){
+        this.sort += 2;
+    }
+
+    public void updateSortDecrease(){
+        this.sort -= 2;
+    }
+
     public void updateDeleteDate(){
         this.deleteDate = LocalDateTime.now();
     }

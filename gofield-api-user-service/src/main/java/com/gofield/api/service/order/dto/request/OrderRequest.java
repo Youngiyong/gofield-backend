@@ -78,20 +78,8 @@ public class OrderRequest {
         @NotNull(message = "reason은 필수값입니다.")
         private EOrderCancelReasonFlag reason;
 
-        @NotNull(message = "반품 사용자 이름은 필수값입니다.")
-        private String username;
-
-        @NotNull(message = "반품 사용자 전화번호는 필수값입니다.")
-        private String userTel;
-
-        @NotNull(message = "반품 우편번호는 필수값입니다.")
-        private String zipCode;
-
-        @NotNull(message = "반품 주소는 필수값입니다.")
-        private String address;
-
-        @NotNull(message = "반품 상세 주소는 필수값입니다.")
-        private String addressExtra;
+        @NotNull(message = "반품 내용은 필수값입니다.")
+        private String content;
     }
 
     @Getter

@@ -26,6 +26,7 @@ public class OrderCancelItemTempResponse {
     private int itemPrice;
     private int discountPrice;
     private int deliveryPrice;
+    private int safeChargePrice;
     private int refundPrice;
     private String paymentCompany;
     private String paymentType;
@@ -46,7 +47,7 @@ public class OrderCancelItemTempResponse {
     @Builder
     private OrderCancelItemTempResponse(Long id, Long orderId, Long itemId, Long itemOptionId, Long shippingTemplateId, String itemNumber,
                                         String name, String optionName, String thumbnail, EOrderItemStatusFlag status, Boolean isOption,
-                                        int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int refundPrice, String paymentCompany,
+                                        int qty, int totalAmount, int itemPrice, int discountPrice, int deliveryPrice, int safeChargePrice, int refundPrice, String paymentCompany,
                                         String paymentType, String cardNumber, String cardType, int installmentPlanMonth,
                                         String refundName, String refundAccount, String refundBank, String userTel, String username, String zipCode, String address, String addressExtra){
         this.id = id;
@@ -65,6 +66,7 @@ public class OrderCancelItemTempResponse {
         this.itemPrice = itemPrice;
         this.discountPrice = discountPrice;
         this.deliveryPrice = deliveryPrice;
+        this.safeChargePrice = safeChargePrice;
         this.refundPrice = refundPrice;
         this.paymentCompany = paymentCompany;
         this.paymentType = paymentType;
@@ -89,8 +91,8 @@ public class OrderCancelItemTempResponse {
         int discountPrice = 0;
         int deliveryPrice = 0;
         if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.PAY)){
-            deliveryPrice = orderItem.getItem().getDeliveryPrice();
-        } else if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.CONDITION)){
+            deliveryPrice = orderItem.getOrderShipping().getDeliveryPrice();
+        } else if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.FREE)){
             /*
             ToDO: 조건부 배송 추후 정해지면 처리
              */
@@ -141,18 +143,10 @@ public class OrderCancelItemTempResponse {
     public static OrderCancelItemTempResponse of(OrderItem orderItem, String refundName, String refundAccount, String refundBank){
         int qty = orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty();
         int itemPrice = orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice();
-        /*
-           ToDo : DiscountPrice
-        */
         int discountPrice = 0;
         int deliveryPrice = 0;
         if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.PAY)){
             deliveryPrice = orderItem.getItem().getDeliveryPrice();
-        } else if(orderItem.getItem().getDelivery().equals(EItemDeliveryFlag.CONDITION)){
-            /*
-            ToDO: 조건부 배송 추후 정해지면 처리
-             */
-            deliveryPrice = orderItem.getItem().getShippingTemplate().getCharge();
         }
         int totalAmount = itemPrice * qty + deliveryPrice - discountPrice;
         OrderShippingAddress orderShippingAddress = orderItem.getOrder().getShippingAddress();

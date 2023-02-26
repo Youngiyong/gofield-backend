@@ -24,6 +24,8 @@ public class ItemBundleInfoProjectionResponse {
     private String brandName;
     @ExcelColumn(headerName = "묶음상품명", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String name;
+    @ExcelColumn(headerName = "묶음상품명", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
+    private String isActive;
     @ExcelColumn(headerName = "대표이미지", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
     private String thumbnail;
     @ExcelColumn(headerName = "생성일자", headerStyle = @ExcelColumnStyle(excelCellStyleClass = DefaultExcelCellStyle.class, enumName = "BLUE_HEADER"))
@@ -31,11 +33,12 @@ public class ItemBundleInfoProjectionResponse {
 
 
     @Builder
-    private ItemBundleInfoProjectionResponse(Long id, String categoryName, String brandName, String name, String thumbnail, String createDate){
+    private ItemBundleInfoProjectionResponse(Long id, String categoryName, String brandName, String name, String isActive, String thumbnail, String createDate){
         this.id = id;
         this.categoryName = categoryName;
         this.brandName = brandName;
         this.name = name;
+        this.isActive = isActive;
         this.thumbnail = thumbnail;
         this.createDate = createDate;
     }
@@ -46,6 +49,7 @@ public class ItemBundleInfoProjectionResponse {
                 .categoryName(itemBundle.getCategory().getName())
                 .brandName(itemBundle.getBrand().getName())
                 .name(itemBundle.getName())
+                .isActive(itemBundle.getIsActive() ? "활성" : "비활성")
                 .thumbnail(itemBundle.getThumbnail()==null ? null : CommonUtils.makeCloudFrontAdminUrl(itemBundle.getThumbnail()))
                 .createDate(itemBundle.getCreateDate().toLocalDate().toString())
                 .build();

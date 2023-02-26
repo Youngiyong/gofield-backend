@@ -74,6 +74,18 @@ public class ItemBundleController {
         return "redirect:/bundle";
     }
 
+    @GetMapping("/bundle/{id}/image/sort/{imageId}")
+    public String updateItemBundleImageSort(@PathVariable Long id, @PathVariable Long imageId, @RequestParam String type){
+        itemBundleService.updateItemBundleImageSort(id, imageId, type);
+        return "redirect:/bundle/edit/"+id;
+    }
+
+    @PostMapping("/bundle/{id}/image/sort/{imageId}/decrease")
+    public String updateImageSort(ItemBundleDto itemBundleDto, @RequestParam(value = "image", required = false) MultipartFile image, @RequestParam(value = "images", required = false) List<MultipartFile> images){
+        itemBundleService.updateItemBundle(image, images, itemBundleDto);
+        return "redirect:/bundle";
+    }
+
     @GetMapping("/bundle/add")
     public String getItemBundleAddPage(Model model){
         model.addAttribute("bundle", itemBundleService.getItemBundle(null));

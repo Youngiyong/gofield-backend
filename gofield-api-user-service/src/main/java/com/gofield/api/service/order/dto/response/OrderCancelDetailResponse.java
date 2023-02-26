@@ -36,6 +36,7 @@ public class OrderCancelDetailResponse {
     private int totalDiscount;
     private int totalRefund;
     private int totalPg;
+    private int totalSafeCharge;
     private String carrier;
     private String trackingNumber;
     private String refundName;
@@ -53,7 +54,7 @@ public class OrderCancelDetailResponse {
 
     @Builder
     private OrderCancelDetailResponse(Long id, Long orderId, String orderNumber, String cancelNumber, EOrderCancelTypeFlag type, EOrderCancelStatusFlag status, EOrderCancelReasonFlag reason, String content, String comment, String paymentCompany, String paymentType,
-                                      String cardNumber, String cardType, int installmentPlanMonth, int totalAmount, int totalItem, int totalDelivery, int totalDiscount, int totalRefund, int totalPg, String carrier, String trackingNumber,
+                                      String cardNumber, String cardType, int installmentPlanMonth, int totalAmount, int totalItem, int totalDelivery, int totalDiscount, int totalRefund, int totalPg, int totalSafeCharge, String carrier, String trackingNumber,
                                       String refundName, String refundAccount, String refundBank, LocalDateTime createDate, LocalDateTime recalledDate, LocalDateTime refundDate,
                                       String receiver, String receiverTel, String receiverZipCode, String receiverAddress, String receiverAddressExtra, List<OrderCancelItemDetailResponse> cancelItems){
         this.id = id;
@@ -75,6 +76,7 @@ public class OrderCancelDetailResponse {
         this.totalDelivery = totalDelivery;
         this.totalDiscount = totalDiscount;
         this.totalRefund = totalRefund;
+        this.totalSafeCharge = totalSafeCharge;
         this.totalPg = totalPg;
         this.carrier = carrier;
         this.trackingNumber = trackingNumber;
@@ -113,6 +115,7 @@ public class OrderCancelDetailResponse {
                 .totalDelivery(orderCancel.getTotalDelivery())
                 .totalDiscount(orderCancel.getTotalDiscount())
                 .totalPg(orderCancel.getTotalPg())
+                .totalSafeCharge(orderCancel.getTotalSafeCharge())
                 .carrier(orderCancel.getCarrier())
                 .trackingNumber(orderCancel.getTrackingNumber())
                 .refundName(orderCancel.getRefundName())

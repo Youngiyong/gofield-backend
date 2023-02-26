@@ -3,6 +3,8 @@ package com.gofield.admin.service;
 
 import com.gofield.admin.dto.*;
 import com.gofield.admin.dto.response.projection.ItemBundleInfoProjectionResponse;
+import com.gofield.common.exception.ConvertException;
+import com.gofield.common.exception.NotFoundException;
 import com.gofield.common.model.Constants;
 import com.gofield.domain.rds.domain.item.*;
 import com.gofield.infrastructure.s3.infra.S3FileStorageClient;
@@ -21,6 +23,8 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class ItemBundleService {
+
+    private final ItemService itemService;
 
     private final BrandRepository brandRepository;
     private final CategoryRepository categoryRepository;
@@ -50,11 +54,19 @@ public class ItemBundleService {
         if(!image.isEmpty() && !image.getOriginalFilename().equals("")){
             thumbnail =  s3FileStorageClient.uploadFile(image, FileType.ITEM_BUNDLE_IMAGE);
         }
-        itemBundle.update(brand, category, itemBundleDto.getName(), itemBundleDto.getIsRecommend(), thumbnail, itemBundleDto.getDescription());
+        ItemBundleImage itemBundleImage = itemBundleImageRepository.findByBundleIdOrderBySortDesc(itemBundle.getId());
+        int sort = itemBundleImage==null ? 10 : itemBundleImage.getSort() + 1;
+        if(itemBundle.getIsActive()!=itemBundleDto.getIsActive()){
+            if(itemBundleDto.getIsActive()){
+                itemService.updateItemBundleAggregation(itemBundle.getId(), false);
+            }
+        }
+        itemBundle.update(brand, category, itemBundleDto.getName(), itemBundleDto.getIsRecommend(), itemBundleDto.getIsActive(), thumbnail, itemBundleDto.getDescription());
         if(images!=null && !images.isEmpty()){
             for(MultipartFile file: images){
                 if(!file.getOriginalFilename().equals("")){
-                    itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE), null));
+                    itemBundle.addBundleImage(ItemBundleImage.newInstance(itemBundle, s3FileStorageClient.uploadFile(file, FileType.ITEM_BUNDLE_IMAGE), sort));
+                    sort++;
                 }
             }
         }
@@ -68,6 +80,17 @@ public class ItemBundleService {
             return ItemBundleDto.of(categoryDtoList, brandDtoList);
         }
         return null;
+    }
+
+    @Transactional
+    public void updateItemBundleImageSort(Long id, Long imageId, String type){
+        ItemBundleImage itemBundleImage = itemBundleImageRepository.findById(imageId)
+                .orElseThrow(() -> new NotFoundException(String.format("존재하지 않는 <%s> id입니다.", imageId)));
+        if(type.equals("increase")){
+            itemBundleImage.updateSortDecrease();
+        } else {
+            itemBundleImage.updateSortInCrease();
+        }
     }
 
     @Transactional(readOnly = true)

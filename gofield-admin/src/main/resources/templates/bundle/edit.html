@@ -67,7 +67,13 @@
                                         <option th:value="'true'" th:text="활성"></option>
                                     </select>
                                 </div>
-
+                                <div class="form-group">
+                                    <label>활성여부</label>
+                                    <select th:field="*{isActive}" class="form-control select2 select2-hidden-accessible" style="width: 100%;" data-select2-id="1" tabindex="-1" aria-hidden="true">
+                                        <option th:value="'false'" th:text="비활성"></option>
+                                        <option th:value="'true'" th:text="활성"></option>
+                                    </select>
+                                </div>
                                 <div class="form-group">
                                     <label>상품설명</label>
                                     <textarea class="form-control" id="answer" placeholder="상품설명"
@@ -85,6 +91,16 @@
                                     <br>
                                     <div th:each="data : ${images}">
                                         <img th:src="${data.image}" alt="묶음상품 이미지" th:if="${data.image != null}" />
+                                        <a class="btn btn-dark" th:href="${'/bundle/'+ bundle.id +'/image/sort/'+data.id+'?type=increase'}">
+                                            <i class="fas fa-level-up">
+                                            </i>
+                                            올리기
+                                        </a>
+                                        <a class="btn btn-dark" th:href="${'/bundle/'+ bundle.id +'/image/sort/'+data.id+'?type=decrease'}">
+                                            <i class="fas fa-level-down">
+                                            </i>
+                                            내리기
+                                        </a>
                                         <a class="btn btn-danger btn-sm" th:href="${'/bundle/'+ bundle.id +'/image/delete/'+data.id}">
                                             <i class="fas fa-trash">
                                             </i>

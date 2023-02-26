@@ -427,7 +427,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .selectFrom(itemBundle)
                     .innerJoin(itemBundle.category, category).fetchJoin()
                     .innerJoin(itemBundle.brand, brand).fetchJoin()
-                    .where(inCategoryId(categoryIdList), containName(keyword), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull())
+                    .where(inCategoryId(categoryIdList), containName(keyword),  itemBundle.deleteDate.isNull())
                     .orderBy(itemBundle.id.desc())
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -440,7 +440,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
             List<Long> totalCount = jpaQueryFactory
                     .select(itemBundle.id)
                     .from(itemBundle)
-                    .where(inCategoryId(categoryIdList), containName(keyword), itemBundle.isActive.isTrue())
+                    .where(inCategoryId(categoryIdList), containName(keyword), itemBundle.deleteDate.isNull())
                     .fetch();
 
             return new PageImpl<>(content, pageable, totalCount.size());
@@ -450,7 +450,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .selectFrom(itemBundle)
                 .innerJoin(itemBundle.category, category).fetchJoin()
                 .innerJoin(itemBundle.brand, brand).fetchJoin()
-                .where(eqChildId(childId), containName(keyword), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull())
+                .where(eqChildId(childId), containName(keyword), itemBundle.deleteDate.isNull())
                 .orderBy(itemBundle.id.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -463,7 +463,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         List<Long> totalCount = jpaQueryFactory
                 .select(itemBundle.id)
                 .from(itemBundle)
-                .where(eqChildId(childId), containName(keyword), itemBundle.isActive.isTrue())
+                .where(eqChildId(childId), containName(keyword), itemBundle.deleteDate.isNull())
                 .fetch();
 
         return new PageImpl<>(content, pageable, totalCount.size());

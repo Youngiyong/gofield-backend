@@ -95,6 +95,7 @@
                                     <th class="text-center">브랜드명</th>
                                     <th class="text-center">카테고리명</th>
                                     <th class="text-center">대표이미지</th>
+                                    <th class="text-center">활성여부</th>
                                     <th class="text-center">생성날짜</th>
                                     <th class="text-center">작업</th>
                                 </tr>
@@ -110,6 +111,7 @@
                                         <img th:src="${data.thumbnail}" alt="묶음상품 이미지" th:if="${data.thumbnail != null}" />
                                         </div>
                                     </td>
+                                    <td class="text-center" th:text="${data.isActive}"></td>
                                     <td class="text-center" th:text="${data.createDate}"></td>
                                     <td>
                                         <div style="text-align: center">

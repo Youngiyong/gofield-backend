@@ -20,4 +20,13 @@ public class ItemBundleImageRepositoryCustomImpl implements ItemBundleImageRepos
                 .where(itemBundleImage.id.eq(id))
                 .fetchFirst();
     }
+
+    @Override
+    public ItemBundleImage findByBundleIdOrderBySortDesc(Long bundleId) {
+        return jpaQueryFactory
+                .selectFrom(itemBundleImage)
+                .where(itemBundleImage.bundle.id.eq(bundleId))
+                .orderBy(itemBundleImage.sort.desc())
+                .fetchFirst();
+    }
 }
