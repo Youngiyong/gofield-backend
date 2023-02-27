@@ -85,6 +85,9 @@ public class OrderShipping extends BaseTimeEntity {
     private LocalDateTime finishedDate;
 
     @Column
+    private LocalDateTime returnWithdrawDate;
+
+    @Column
     private LocalDateTime deleteDate;
 
     @OneToMany(mappedBy = "orderShipping", cascade = CascadeType.ALL, orphanRemoval = true)
@@ -99,7 +102,6 @@ public class OrderShipping extends BaseTimeEntity {
         this.orderNumber = orderNumber;
         this.shippingNumber = shippingNumber;
         this.comment = comment;
-        this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK;
         this.chargeType = chargeType;
         this.isPaid = isPaid;
         this.charge = charge;
@@ -205,5 +207,9 @@ public class OrderShipping extends BaseTimeEntity {
 
     public void updateShippingDeposit() {
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK;
+    }
+
+    public void updateReturnWithDrawDate(){
+        this.returnWithdrawDate = LocalDateTime.now();
     }
 }

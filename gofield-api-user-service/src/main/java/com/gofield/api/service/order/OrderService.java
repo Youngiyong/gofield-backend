@@ -77,7 +77,7 @@ public class OrderService {
     private final SnsService snsService;
 
     private void validateOrderShippingReturnAndChangeStatus(EOrderShippingStatusFlag status){
-        if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE)){
+        if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY_COMPLETE) || status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_DELIVERY)){
         } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_COMPLETE)){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "구매 확정된 상품은 교환/반품 진행이 불가합니다.");
         } else if(status.equals(EOrderShippingStatusFlag.ORDER_SHIPPING_CANCEL)){
@@ -207,11 +207,10 @@ public class OrderService {
             }
 
             int deliveryPrice = 0;
-
+            Double safeChargePrice = 0.0;
             if(itemStock.getDelivery().equals(EItemDeliveryFlag.PAY) && !itemStock.getIsPaid()){
                 deliveryPrice = itemStock.getDeliveryPrice();
             }
-
 
 //            else if(itemStock.getDelivery().equals(EItemDeliveryFlag.CONDITION)){
 //                if(itemStock.getCondition()>=price*sheetItem.getQty()) {
@@ -220,6 +219,7 @@ public class OrderService {
 //            }
             totalPrice += price*sheetItem.getQty();
             totalDelivery += deliveryPrice;
+            totalSafeCharge += totalPrice * Constants.SAFE_PAYMENT_CHARGE / 100.0;
             ItemOrderSheetResponse orderSheet = ItemOrderSheetResponse.of(itemStock.getId(), itemStock.getSellerId(), itemStock.getBundleId(), itemStock.getCategoryId(), itemStock.getBrandId(), itemStock.getBrandName(), itemStock.getName(), itemStock.getOptionName(), itemStock.getThumbnail(), itemStock.getItemNumber(), price, sheetItem.getQty(), deliveryPrice, itemStock.getOptionId(), itemStock.getIsOption(), itemStock.getDelivery(), itemStock.getOptionType(), itemStock.getChargeType(),  itemStock.getIsPaid(), itemStock.getCharge(), itemStock.getCondition(), itemStock.getFeeJeju(), itemStock.getFeeJejuBesides());
             result.add(orderSheet);
         }
@@ -228,7 +228,6 @@ public class OrderService {
         }else if(request.getTotalDelivery()!=totalDelivery){
             throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, "총 배송 금액이 맞지 않습니다.");
         }
-        totalSafeCharge = totalPrice * Constants.SAFE_PAYMENT_CHARGE / 100.0;
         int totalEndPrice = totalPrice+totalDelivery+totalSafeCharge.intValue();
         ItemOrderSheetListResponse list = ItemOrderSheetListResponse.of(totalPrice, totalDelivery, totalSafeCharge, result);
         List<Long> cartIdList = request.getIsCart() ? request.getItems().stream().map(p -> p.getCartId()).collect(Collectors.toList()) : null;
@@ -487,7 +486,7 @@ public class OrderService {
             default:
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("%s log status 오류", orderShippingLog.getStatus()));
         }
-        orderShipping.updateShippingDeliveryComplete();
+        orderShipping.updateReturnWithDrawDate();
         OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), userId, EGofieldService.GOFIELD_API, orderShipping.getStatus());
         orderShippingLogRepository.save(save);
         orderCancel.updateWithdraw();

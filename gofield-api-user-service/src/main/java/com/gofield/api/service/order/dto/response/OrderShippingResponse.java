@@ -24,8 +24,8 @@ public class OrderShippingResponse {
     private LocalDateTime cancelDate;
     private LocalDateTime deliveryDate;
     private LocalDateTime deliveredDate;
+    private LocalDateTime refundWithDrawDate;
     private List<OrderItemResponse> orderItems;
-
     private Long cancelId;
     private String reason;
     private String comment;
@@ -33,7 +33,7 @@ public class OrderShippingResponse {
     @Builder
     private OrderShippingResponse(Long id, String shippingNumber, EOrderShippingStatusFlag status,
                                   String trackingNumber, EItemChargeFlag chargeType, int deliveryPrice, String carrier,
-                                  LocalDateTime createDate, LocalDateTime cancelDate,  LocalDateTime deliveryDate, LocalDateTime deliveredDate, List<OrderItemResponse> orderItems, Long cancelId, String reason, String comment){
+                                  LocalDateTime createDate, LocalDateTime cancelDate,  LocalDateTime deliveryDate, LocalDateTime deliveredDate, LocalDateTime refundWithDrawDate, List<OrderItemResponse> orderItems, Long cancelId, String reason, String comment){
         this.id = id;
         this.shippingNumber = shippingNumber;
         this.status = status;
@@ -45,6 +45,7 @@ public class OrderShippingResponse {
         this.cancelDate = cancelDate;
         this.deliveryDate = deliveryDate;
         this.deliveredDate = deliveredDate;
+        this.refundWithDrawDate = refundWithDrawDate;
         this.orderItems = orderItems;
         this.cancelId = cancelId;
         this.reason = reason;
@@ -74,6 +75,7 @@ public class OrderShippingResponse {
                 .cancelDate(orderShipping.getCancelDate())
                 .deliveryDate(orderShipping.getDeliveryDate())
                 .deliveredDate(orderShipping.getDeliveredDate())
+                .refundWithDrawDate(orderShipping.getReturnWithdrawDate())
                 .orderItems(OrderItemResponse.of(orderShipping.getOrderItems()))
                 .reason(reason)
                 .comment(comment)
@@ -94,6 +96,7 @@ public class OrderShippingResponse {
                 .cancelDate(orderShipping.getCancelDate())
                 .deliveryDate(orderShipping.getDeliveryDate())
                 .deliveredDate(orderShipping.getDeliveredDate())
+                .refundWithDrawDate(orderShipping.getReturnWithdrawDate())
                 .orderItems(OrderItemResponse.of(orderShipping.getOrderItems()))
                 .build();
     }
