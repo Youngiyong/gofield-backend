@@ -67,6 +67,9 @@ public class OrderItem extends BaseTimeEntity {
     @Column
     private LocalDateTime reviewDate;
 
+    @Column
+    private LocalDateTime returnWithdrawDate;
+
     @Builder
     private OrderItem(Order order, Long sellerId, Item item, OrderItemOption orderItemOption, OrderShipping orderShipping, String orderNumber, String orderItemNumber,
                       String itemNumber, String name, int qty, int price){
@@ -115,4 +118,7 @@ public class OrderItem extends BaseTimeEntity {
         this.status = EOrderItemStatusFlag.ORDER_ITEM_APPROVE_CANCEL;
     }
 
+    public void updateReturnWithDrawDate(){
+        this.returnWithdrawDate = LocalDateTime.now();
+    }
 }

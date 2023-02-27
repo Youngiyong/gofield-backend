@@ -486,9 +486,9 @@ public class OrderService {
             default:
                 throw new InvalidException(ErrorCode.E400_INVALID_EXCEPTION, ErrorAction.TOAST, String.format("%s log status 오류", orderShippingLog.getStatus()));
         }
-        orderShipping.updateReturnWithDrawDate();
         OrderShippingLog save = OrderShippingLog.newInstance(orderShipping.getId(), userId, EGofieldService.GOFIELD_API, orderShipping.getStatus());
         orderShippingLogRepository.save(save);
+        orderItem.updateReturnWithDrawDate();
         orderCancel.updateWithdraw();
     }
 

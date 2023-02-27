@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,11 +31,12 @@ public class OrderItemResponse {
     private Boolean isReview;
     private int price;
     private int qty;
+    private LocalDateTime returnWithdrawDate;
 
     @Builder
     private OrderItemResponse(Long id, Long itemId, Long itemOptionId, String orderItemNumber,  String itemNumber,
                               String name, List<String> optionName, EItemClassificationFlag classification, String thumbnail, EOrderItemStatusFlag status, Boolean isReview,
-                              int price, int qty){
+                              int price, int qty, LocalDateTime returnWithdrawDate){
         this.id = id;
         this.itemId = itemId;
         this.itemOptionId = itemOptionId;
@@ -47,6 +50,7 @@ public class OrderItemResponse {
         this.isReview = isReview;
         this.price = price;
         this.qty = qty;
+        this.returnWithdrawDate = returnWithdrawDate;
     }
 
     public static OrderItemResponse of(OrderItem orderItem){
@@ -64,6 +68,7 @@ public class OrderItemResponse {
                 .price(orderItem.getOrderItemOption()==null ? orderItem.getPrice() : orderItem.getOrderItemOption().getPrice())
                 .qty(orderItem.getOrderItemOption()==null ? orderItem.getQty() : orderItem.getOrderItemOption().getQty())
                 .thumbnail(CommonUtils.makeCloudFrontUrl(orderItem.getItem().getThumbnail()))
+                .returnWithdrawDate(orderItem.getReturnWithdrawDate())
                 .build();
     }
 

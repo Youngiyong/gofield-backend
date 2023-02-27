@@ -84,8 +84,6 @@ public class OrderShipping extends BaseTimeEntity {
     @Column
     private LocalDateTime finishedDate;
 
-    @Column
-    private LocalDateTime returnWithdrawDate;
 
     @Column
     private LocalDateTime deleteDate;
@@ -209,7 +207,5 @@ public class OrderShipping extends BaseTimeEntity {
         this.status = EOrderShippingStatusFlag.ORDER_SHIPPING_CHECK;
     }
 
-    public void updateReturnWithDrawDate(){
-        this.returnWithdrawDate = LocalDateTime.now();
-    }
+
 }
