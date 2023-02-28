@@ -17,7 +17,6 @@ public class ItemBundleResponse {
     private String name;
     private String brandName;
     private String thumbnail;
-
     private String description;
     private int reviewCount;
     private Double reviewScore;

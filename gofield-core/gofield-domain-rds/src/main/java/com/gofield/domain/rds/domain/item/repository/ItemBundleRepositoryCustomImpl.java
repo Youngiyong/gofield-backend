@@ -235,7 +235,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .from(item)
                 .innerJoin(itemStock)
                 .on(item.id.eq(itemStock.item.id))
-                .where(item.bundle.id.eq(bundleId), itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
+                .where(item.bundle.id.eq(bundleId), itemStock.status.ne(EItemStatusFlag.HIDE), item.deleteDate.isNull())
                 .groupBy(item.id)
                 .fetch();
 
