@@ -61,7 +61,7 @@ public class ItemController {
         return ApiResponse.success(itemService.retrieveRecommendBundleItems(pageable));
     }
 
-    @ApiOperation(value ="추천 종목 묶음 상품을 조회합니다")
+    @ApiOperation(value = "추천 종목 묶음 상품을 조회합니다")
     @GetMapping("/v1/recommend/category")
     public ApiResponse<List<ItemBundleRecommendResponse>> retrieveRecommendCategoryBundleItems(@PageableDefault(sort="createDate", direction = Sort.Direction.ASC) Pageable pageable){
         return ApiResponse.success(itemService.retrieveRecommendBundleItems(pageable));
