@@ -319,7 +319,7 @@ public class OrderService {
 
 
             if(result.getIsOption()){
-                List<ItemStock> itemStocks = itemStockRepository.findAll
+//                List<ItemStock> itemStocks = itemStockRepository.findAll
             } else {
                 if(itemStock.getStatus().equals(EItemStatusFlag.HIDE) && itemStock.getQty()==0){
                     Item item = itemStock.getItem();
