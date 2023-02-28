@@ -30,10 +30,11 @@ public class ItemClassificationProjectionResponse {
     private EItemDeliveryFlag delivery;
     private EItemGenderFlag gender;
     private String tags;
+    private Boolean isSoldOut;
     private LocalDateTime createDate;
 
     @Builder
-    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, LocalDateTime createDate) {
+    public ItemClassificationProjectionResponse(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice,  Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, Boolean isSoldOut, LocalDateTime createDate) {
         this.id = id;
         this.itemNumber = itemNumber;
         this.name = name;
@@ -47,10 +48,11 @@ public class ItemClassificationProjectionResponse {
         this.delivery = delivery;
         this.gender = gender;
         this.tags = tags;
+        this.isSoldOut = isSoldOut;
         this.createDate = createDate;
     }
 
-    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, LocalDateTime createDate){
+    public static ItemClassificationProjectionResponse of(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, Boolean isSoldOut, LocalDateTime createDate){
         return ItemClassificationProjectionResponse.builder()
                 .id(id)
                 .itemNumber(itemNumber)
@@ -65,6 +67,7 @@ public class ItemClassificationProjectionResponse {
                 .delivery(delivery)
                 .gender(gender)
                 .tags(tags)
+                .isSoldOut(isSoldOut)
                 .createDate(createDate)
                 .build();
     }
@@ -73,7 +76,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getSpec(), p.getDelivery(), p.getGender(), p.getTags(), p.getCreateDate()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), p.getLikeId(), p.getClassification(), p.getSpec(), p.getDelivery(), p.getGender(), p.getTags(), p.getIsSoldOut(), p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 
@@ -81,7 +84,7 @@ public class ItemClassificationProjectionResponse {
         return list
                 .stream()
                 .map(p -> ItemClassificationProjectionResponse.of(p.getId(), p.getItemNumber(), p.getName(),
-                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), null, p.getClassification(), p.getSpec(), p.getDelivery(),  p.getGender(), p.getTags(), p.getCreateDate()))
+                        p.getBrandName(), p.getThumbnail(), p.getPrice(), p.getDeliveryPrice(), null, p.getClassification(), p.getSpec(), p.getDelivery(),  p.getGender(), p.getTags(), p.getIsSoldOut(),  p.getCreateDate()))
                 .collect(Collectors.toList());
     }
 

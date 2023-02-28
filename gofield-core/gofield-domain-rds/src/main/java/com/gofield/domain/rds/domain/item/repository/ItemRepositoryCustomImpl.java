@@ -134,6 +134,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.delivery,
                             itemDetail.gender,
                             item.tags,
+                            item.isSoldOut,
                             item.createDate))
                     .from(itemStock)
                     .innerJoin(item)
@@ -144,7 +145,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.detail.id.eq(itemDetail.id))
                     .innerJoin(brand)
                     .on(item.brand.id.eq(brand.id))
-                    .where(itemStock.status.eq(EItemStatusFlag.SALE),
+                    .where(itemStock.status.ne(EItemStatusFlag.HIDE),
                             eqClassification(classification),
                             inCategoryId(categoryIdList),
                             inSpec(spec),
@@ -172,6 +173,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -184,7 +186,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(item.brand.id.eq(brand.id))
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
-                .where(itemStock.status.eq(EItemStatusFlag.SALE),
+                .where(itemStock.status.ne(EItemStatusFlag.HIDE),
                         eqClassification(classification),
                         inCategoryId(categoryIdList),
                         inSpec(spec),
@@ -220,6 +222,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.delivery,
                             itemDetail.gender,
                             item.tags,
+                            item.isSoldOut,
                             item.createDate))
                     .from(itemStock)
                     .innerJoin(item)
@@ -232,7 +235,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .where(item.id.ne(itemId),
                             item.category.id.eq(categoryId),
-                            itemStock.status.eq(EItemStatusFlag.SALE),
+                            itemStock.status.ne(EItemStatusFlag.HIDE),
                             eqClassification(classification),
                             item.deleteDate.isNull())
                     .orderBy(itemStock.createDate.desc())
@@ -258,6 +261,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -272,7 +276,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.id.ne(itemId),
                         item.category.id.eq(categoryId),
-                        itemStock.status.eq(EItemStatusFlag.SALE),
+                        itemStock.status.ne(EItemStatusFlag.HIDE),
                         eqClassification(classification),
                         item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
@@ -300,6 +304,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.delivery,
                             itemDetail.gender,
                             item.tags,
+                            item.isSoldOut,
                             item.createDate))
                     .from(itemStock)
                     .innerJoin(item)
@@ -312,7 +317,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .where(item.id.ne(itemId),
                             item.category.id.eq(categoryId),
-                            itemStock.status.eq(EItemStatusFlag.SALE),
+                            itemStock.status.ne(EItemStatusFlag.HIDE),
                             eqClassification(classification),
                             item.deleteDate.isNull())
                     .orderBy(itemStock.createDate.desc())
@@ -338,6 +343,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -352,7 +358,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.id.ne(itemId),
                         item.category.id.eq(categoryId),
-                        itemStock.status.eq(EItemStatusFlag.SALE),
+                        itemStock.status.ne(EItemStatusFlag.HIDE),
                         eqClassification(classification),
                         item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
@@ -380,6 +386,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.delivery,
                             itemDetail.gender,
                             item.tags,
+                            item.isSoldOut,
                             item.createDate))
                     .from(itemStock)
                     .innerJoin(item)
@@ -418,6 +425,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -432,7 +440,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.id.ne(itemId),
                         item.bundle.id.eq(bundleId),
-                        itemStock.status.eq(EItemStatusFlag.SALE),
+                        itemStock.status.ne(EItemStatusFlag.HIDE),
                         eqClassification(classification),
                         item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
@@ -462,6 +470,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -501,6 +510,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -538,6 +548,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -551,7 +562,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.brand.id.eq(brandId),
-                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
+                        itemStock.status.ne(EItemStatusFlag.HIDE),
+                        item.deleteDate.isNull())
                 .orderBy(userLikeItem.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -572,6 +584,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -583,7 +596,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .where(item.brand.id.eq(brandId),
-                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
+                        itemStock.status.ne(EItemStatusFlag.HIDE), item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -606,6 +619,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -619,7 +633,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .leftJoin(userLikeItem)
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.name.contains(keyword),
-                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
+                        itemStock.status.ne(EItemStatusFlag.HIDE),
+                        item.deleteDate.isNull())
                 .orderBy(userLikeItem.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -640,6 +655,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -651,7 +667,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .innerJoin(brand)
                 .on(item.brand.id.eq(brand.id))
                 .where(item.name.contains(keyword),
-                        itemStock.status.eq(EItemStatusFlag.SALE), item.deleteDate.isNull())
+                        itemStock.status.ne(EItemStatusFlag.HIDE),
+                        item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -676,6 +693,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -710,6 +728,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
+                        item.isSoldOut,
                         item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
@@ -847,6 +866,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.deliveryPrice,
                             itemStock.qty,
                             item.isOption,
+                            item.isSoldOut,
                             itemStock.status,
                             item.classification,
                             itemDetail.spec,
@@ -903,6 +923,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         itemStock.status,
                         userLikeItem.id.as("likeId"),
                         item.isOption,
+                        item.isSoldOut,
                         item.classification,
                         itemDetail.spec,
                         item.delivery,

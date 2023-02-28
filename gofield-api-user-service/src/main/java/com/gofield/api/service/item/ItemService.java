@@ -45,10 +45,6 @@ public class ItemService {
     private final ItemStockRepository itemStockRepository;
     private final ItemRecentRepository itemRecentRepository;
     private final ItemOptionGroupRepository itemOptionGroupRepository;
-
-    private final ShippingTemplateRepository shippingTemplateRepository;
-
-    private final ItemBundleAggregationRepository itemBundleAggregationRepository;
     private final ThirdPartyService thirdPartyService;
 
     @Transactional

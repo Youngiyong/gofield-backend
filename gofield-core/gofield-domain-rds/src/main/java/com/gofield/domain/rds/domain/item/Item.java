@@ -78,6 +78,9 @@ public class Item extends BaseTimeEntity {
     @Column
     private Boolean isOption;
 
+    @Column
+    private Boolean isSoldOut;
+
     @OrderBy("sort ASC")
     @OneToMany(mappedBy = "item", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ItemImage> images = new ArrayList<>();
@@ -259,5 +262,13 @@ public class Item extends BaseTimeEntity {
 
     public void updateThumbnail(String thumbnail){
         this.thumbnail = thumbnail;
+    }
+
+    public void updateIsSoldOut(){
+        this.isSoldOut = true;
+    }
+
+    public void updateNotSoldOut(){
+        this.isSoldOut = false;
     }
 }

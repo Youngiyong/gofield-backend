@@ -263,6 +263,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.delivery,
                             itemDetail.gender,
                             item.tags,
+                            item.isSoldOut,
                             item.createDate))
                     .from(item)
                     .innerJoin(itemStock)
@@ -320,6 +321,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                             item.delivery,
                             itemDetail.gender,
                             item.tags,
+                            item.isSoldOut,
                             item.createDate))
                     .from(item)
                     .innerJoin(itemStock)

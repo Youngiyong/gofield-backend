@@ -34,10 +34,11 @@ public class ItemClassificationResponse {
     private EItemSpecFlag spec;
     private EItemGenderFlag gender;
     private List<String> tags;
+    private Boolean isSoldOut;
     private LocalDateTime createDate;
 
     @Builder
-    private ItemClassificationResponse(Long id, String itemNumber, String name,  String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> tags, LocalDateTime createDate){
+    private ItemClassificationResponse(Long id, String itemNumber, String name,  String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> tags, Boolean isSoldOut,  LocalDateTime createDate){
         this.id = id;
         this.name = name;
         this.itemNumber = itemNumber;
@@ -51,6 +52,7 @@ public class ItemClassificationResponse {
         this.spec = spec;
         this.gender = gender;
         this.tags = tags;
+        this.isSoldOut = isSoldOut;
         this.createDate = createDate;
     }
 
@@ -76,6 +78,7 @@ public class ItemClassificationResponse {
                 .likeId(projection.getLikeId())
                 .classification(projection.getClassification())
                 .spec(projection.getSpec())
+                .isSoldOut(projection.getIsSoldOut())
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())
                 .tags(tags)

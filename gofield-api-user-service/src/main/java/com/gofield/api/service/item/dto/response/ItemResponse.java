@@ -34,6 +34,7 @@ public class ItemResponse {
     private int qty;
     private Long likeId;
     private Boolean isOption;
+    private Boolean isSoldOut;
     private EItemClassificationFlag classification;
     private EItemSpecFlag spec;
     private EItemDeliveryFlag delivery;
@@ -46,7 +47,7 @@ public class ItemResponse {
 
     @Builder
     private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, Long bundleId, Long categoryId, Long brandId,
-                         int price, int deliveryPrice, int qty, Long likeId, Boolean isOption, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate, String description){
+                         int price, int deliveryPrice, int qty, Long likeId, Boolean isOption, Boolean isSoldOut, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate, String description){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -60,6 +61,7 @@ public class ItemResponse {
         this.qty = qty;
         this.likeId = likeId;
         this.isOption = isOption;
+        this.isSoldOut = isSoldOut;
         this.classification = classification;
         this.spec = spec;
         this.delivery = delivery;
@@ -98,6 +100,7 @@ public class ItemResponse {
                 .likeId(projection.getLikeId())
                 .isOption(projection.getIsOption())
                 .classification(projection.getClassification())
+                .isSoldOut(projection.getIsSoldOut())
                 .spec(projection.getSpec())
                 .delivery(projection.getDelivery())
                 .gender(projection.getGender())

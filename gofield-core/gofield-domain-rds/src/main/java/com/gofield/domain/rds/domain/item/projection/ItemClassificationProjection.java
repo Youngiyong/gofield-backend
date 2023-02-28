@@ -28,10 +28,11 @@ public class ItemClassificationProjection {
     private final EItemGenderFlag gender;
     private final String tags;
 
+    private final Boolean isSoldOut;
     private final LocalDateTime createDate;
 
     @QueryProjection
-    public ItemClassificationProjection(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, LocalDateTime createDate) {
+    public ItemClassificationProjection(Long id, String itemNumber, String name, String brandName, String thumbnail, int price, int deliveryPrice, Long likeId, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, Boolean isSoldOut, LocalDateTime createDate) {
         this.id = id;
         this.itemNumber = itemNumber;
         this.name = name;
@@ -45,6 +46,7 @@ public class ItemClassificationProjection {
         this.delivery = delivery;
         this.gender = gender;
         this.tags = tags;
+        this.isSoldOut = isSoldOut;
         this.createDate = createDate;
     }
 }

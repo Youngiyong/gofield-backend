@@ -14,13 +14,11 @@ public interface ItemBundleRepositoryCustom {
     List<ItemBundlePopularProjection> findAllPopularBundleItemList(Pageable pageable);
     List<ItemBundlePopularProjection> findAllByCategoryId(Long categoryId, Long subCategoryId, EItemBundleSort sort, Pageable pageable);
     List<ItemBundleRecommendProjection> findAllRecommendBundleItemList(Pageable pageable);
-
     Page<ItemClassificationProjectionResponse> findAllItemByBundleIdAndClassification(Long userId, Long bundleId, EItemClassificationFlag classification, Pageable pageable);
     ItemBundleImageProjectionResponse findAggregationByBundleId(Long bundleId);
     ItemBundle findItemBundleImagesByBundleIdFetch(Long bundleId);
     ItemBundle findByBundleIdNotFetch(Long bundleId);
     ItemBundle findByBundleIdFetchJoin(Long bundleId);
-
     List<ItemBundle> findAllActive();
     Page<ItemBundle> findAllByKeywordAndCategoryId(String keyword, Long parentId, Long childId, Pageable pageable);
     List<ItemBundle> findAllByKeyword(String keyword);
