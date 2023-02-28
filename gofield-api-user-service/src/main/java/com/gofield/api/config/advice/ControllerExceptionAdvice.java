@@ -70,6 +70,37 @@ public class ControllerExceptionAdvice {
 
 
     /**
+     * 400 Bad Request
+     */
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(InvalidException.class)
+    protected ApiResponse<Object> handleInvalidException(final InvalidException e) {
+        log.error(e.getMessage(), e);
+        return ApiResponse.error(ErrorResponse.of(e.getErrorCode().getCode(), e.getAction(), e.getMessage()));
+    }
+
+    /**
+     * 404 NotFound
+     */
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(NotFoundException.class)
+    protected ApiResponse<Object> handleNotFoundException(final NotFoundException e) {
+        log.error(e.getMessage(), e);
+        return ApiResponse.error(ErrorResponse.of(e.getErrorCode().getCode(), e.getAction(), e.getMessage()));
+    }
+
+
+    /**
+     * 409 Conflict
+     */
+    @ResponseStatus(HttpStatus.CONFLICT)
+    @ExceptionHandler(ConflictException.class)
+    protected ApiResponse<Object> handleConflictException(final ConflictException e) {
+        log.error(e.getMessage(), e);
+        return ApiResponse.error(ErrorResponse.of(e.getErrorCode().getCode(), e.getAction(), e.getMessage()));
+    }
+
+    /**
      * 405 Method Not Supported
      */
     @ResponseStatus(HttpStatus.METHOD_NOT_ALLOWED)

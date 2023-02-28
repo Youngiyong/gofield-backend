@@ -57,6 +57,14 @@ public class ItemStockRepositoryCustomImpl implements ItemStockRepositoryCustom 
     }
 
     @Override
+    public List<ItemStock> findAllByItemIdAndStatusSaleAndGt0(Long itemId) {
+        return jpaQueryFactory
+                .selectFrom(itemStock)
+                .where(itemStock.item.id.eq(itemId), itemStock.status.eq(EItemStatusFlag.SALE), itemStock.qty.gt(0))
+                .fetch();
+    }
+
+    @Override
     public void deleteIdList(List<Long> idList, Long itemId) {
         jpaQueryFactory
                 .delete(itemStock)
