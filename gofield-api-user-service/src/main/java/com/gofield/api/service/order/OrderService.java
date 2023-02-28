@@ -308,7 +308,8 @@ public class OrderService {
                 itemBundleAggregation.updateItemMinusOne();
             }
             OrderItemOption orderItemOption = null;
-            if(result.getIsOption()){
+            Item item = itemStock.getItem();
+            if(item.getIsOption()){
                 ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
                 orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ObjectMapperUtils.objectToJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
                 orderItemOptionRepository.save(orderItemOption);
@@ -316,11 +317,14 @@ public class OrderService {
             OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, response.getOrderId(), thirdPartyService.makeOrderItemNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
             updateItemBundleAggregation(result.getBundleId());
+
             if(result.getIsOption()){
-//                List<ItemStock> itemStocks = itemStockRepository.findAll
+                List<ItemStock> itemStocks = itemStockRepository.findAllByItemIdAndStatusSaleAndGt0(itemStock.getItem().getId());
+                if(itemStocks.isEmpty()){
+                    item.updateIsSoldOut();
+                }
             } else {
                 if(itemStock.getStatus().equals(EItemStatusFlag.HIDE) && itemStock.getQty()==0){
-                    Item item = itemStock.getItem();
                     item.updateIsSoldOut();
                 }
             }

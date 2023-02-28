@@ -321,13 +321,26 @@ public class ThirdPartyService {
                 itemBundleAggregation.updateItemMinusOne();
             }
             OrderItemOption orderItemOption = null;
-            if(result.getIsOption()){
+            Item item = itemStock.getItem();
+            if(item.getIsOption()){
                 ItemOption itemOption = itemOptionRepository.findByOptionId(result.getOptionId());
                 orderItemOption = OrderItemOption.newInstance(itemOption.getId(), result.getOptionType(), ObjectMapperUtils.objectToJsonStr(result.getOptionName()), result.getQty(), result.getPrice());
                 orderItemOptionRepository.save(orderItemOption);
             }
             OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, orderCreate.getOrderId(), makeOrderItemNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
+
+            if(result.getIsOption()){
+                List<ItemStock> itemStocks = itemStockRepository.findAllByItemIdAndStatusSaleAndGt0(itemStock.getItem().getId());
+                if(itemStocks.isEmpty()){
+                    item.updateIsSoldOut();
+                }
+            } else {
+                if(itemStock.getStatus().equals(EItemStatusFlag.HIDE) && itemStock.getQty()==0){
+                    item.updateIsSoldOut();
+                }
+            }
+
             if(result.getBundleId()!=null){
                 //묶음 집계 업데이트
                 ItemBundleAggregation itemBundleAggregation = itemBundleAggregationRepository.findByBundleId(result.getBundleId());
