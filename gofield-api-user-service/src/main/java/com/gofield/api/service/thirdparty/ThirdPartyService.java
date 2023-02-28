@@ -336,7 +336,7 @@ public class ThirdPartyService {
                     item.updateIsSoldOut();
                 }
             } else {
-                if(itemStock.getStatus().equals(EItemStatusFlag.HIDE) && itemStock.getQty()==0){
+                if(itemStock.getStatus().equals(EItemStatusFlag.SOLD_OUT) ||  itemStock.getQty()==0){
                     item.updateIsSoldOut();
                 }
             }
