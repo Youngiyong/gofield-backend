@@ -54,7 +54,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
         if(categoryId == null){
             return null;
         }
-        return item.category.id.eq(categoryId);
+        return itemBundle.category.id.eq(categoryId);
     }
 
     private BooleanExpression inCategoryId(List<Long> categoryIdList){
@@ -144,8 +144,6 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .innerJoin(item)
-                    .on(itemBundle.id.eq(item.bundle.id))
                     .where(eqCategoryId(subCategoryId), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
@@ -168,9 +166,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                     .from(itemBundle)
                     .innerJoin(itemBundleAggregation)
                     .on(itemBundle.id.eq(itemBundleAggregation.bundle.id))
-                    .innerJoin(item)
-                    .on(itemBundle.id.eq(item.bundle.id))
-                    .where(item.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
+                    .where(itemBundle.category.parent.id.eq(categoryId), itemBundle.isActive.isTrue(), itemBundle.deleteDate.isNull(), itemBundle.id.ne(100000L))
                     .offset(pageable.getOffset())
                     .limit(pageable.getPageSize())
                     .groupBy(itemBundle.id)
