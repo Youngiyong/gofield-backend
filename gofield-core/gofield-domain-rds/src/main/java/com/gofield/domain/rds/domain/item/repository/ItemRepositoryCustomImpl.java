@@ -317,7 +317,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .on(item.brand.id.eq(brand.id))
                     .where(item.id.ne(itemId),
                             item.category.id.eq(categoryId),
-                            itemStock.status.ne(EItemStatusFlag.HIDE),
+                            item.isSoldOut.isFalse(),
+                            itemStock.status.eq(EItemStatusFlag.SALE),
                             eqClassification(classification),
                             item.deleteDate.isNull())
                     .orderBy(itemStock.createDate.desc())
@@ -358,7 +359,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.id.ne(itemId),
                         item.category.id.eq(categoryId),
-                        itemStock.status.ne(EItemStatusFlag.HIDE),
+                        item.isSoldOut.isFalse(),
+                        itemStock.status.eq(EItemStatusFlag.SALE),
                         eqClassification(classification),
                         item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())
@@ -400,6 +402,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                     .where(item.id.ne(itemId),
                             item.bundle.id.eq(bundleId),
                             itemStock.status.eq(EItemStatusFlag.SALE),
+                            item.isSoldOut.isFalse(),
                             eqClassification(classification),
                             item.deleteDate.isNull())
                     .orderBy(itemStock.createDate.desc())
@@ -440,7 +443,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .on(userLikeItem.item.id.eq(item.id), userLikeItem.user.id.eq(userId))
                 .where(item.id.ne(itemId),
                         item.bundle.id.eq(bundleId),
-                        itemStock.status.ne(EItemStatusFlag.HIDE),
+                        itemStock.status.eq(EItemStatusFlag.SALE),
+                        item.isSoldOut.isFalse(),
                         eqClassification(classification),
                         item.deleteDate.isNull())
                 .orderBy(itemStock.createDate.desc())

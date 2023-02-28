@@ -315,9 +315,7 @@ public class OrderService {
             }
             OrderItem orderItem = OrderItem.newInstance(order, result.getSellerId(), itemStock.getItem(), orderItemOption, orderShipping, response.getOrderId(), thirdPartyService.makeOrderItemNumber(), result.getItemNumber(), result.getName(),  result.getQty(), result.getPrice());
             orderItemRepository.save(orderItem);
-            updateItemBundleAggregation(result.getBundleId();
-
-
+            updateItemBundleAggregation(result.getBundleId());
             if(result.getIsOption()){
 //                List<ItemStock> itemStocks = itemStockRepository.findAll
             } else {
