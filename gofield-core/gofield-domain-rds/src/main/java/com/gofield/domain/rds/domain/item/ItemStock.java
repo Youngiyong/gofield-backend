@@ -72,6 +72,9 @@ public class ItemStock extends BaseTimeEntity {
 
     public void updateOrderCancel(){
         this.qty += 1;
+        if(this.qty==1){
+            this.status = EItemStatusFlag.SALE;
+        }
     }
 
     public void updateOrderApprove(int qty){
