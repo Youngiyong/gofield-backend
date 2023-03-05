@@ -66,13 +66,27 @@ public class ItemStock extends BaseTimeEntity {
         this.qty  =qty;
     }
 
-    public void update(EItemStatusFlag status){
+    public void updateSoldOut(EItemStatusFlag status){
+        this.status = status;
+        this.qty = 0;
+    }
+
+    public void updateStatus(EItemStatusFlag status){
         this.status = status;
     }
 
-    public void updateOrderCancel(){
-        this.qty += 1;
-        if(this.qty==1){
+    public void update(int qty, EItemStatusFlag status){
+        this.qty = qty;
+        this.status = status;
+    }
+
+    public void update(int qty){
+        this.qty = qty;
+    }
+
+    public void updateOrderCancel(int qty){
+        this.qty += qty;
+        if(this.qty>0){
             this.status = EItemStatusFlag.SALE;
         }
     }
@@ -85,9 +99,9 @@ public class ItemStock extends BaseTimeEntity {
         }
     }
 
-    public void updateOrderCancel(int qty){
-        this.qty += qty;
-    }
+//    public void updateOrderCancel(int qty){
+//        this.qty += qty;
+//    }
 
     public boolean isSale(){
         return this.status.equals(EItemStatusFlag.SALE) ? true : false;

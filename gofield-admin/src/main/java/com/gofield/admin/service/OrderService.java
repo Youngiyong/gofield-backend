@@ -207,7 +207,7 @@ public class OrderService {
                 }
                 ItemStock itemStock = itemStockRepository.findByItemNumber(itemNumber);
                 if(itemStock!=null){
-                    itemStock.updateOrderCancel();
+                    itemStock.updateOrderCancel(orderCancelItem.getQty());
                 }
             }
             orderShipping.updateCancelComplete();
@@ -268,7 +268,7 @@ public class OrderService {
                 }
                 ItemStock itemStock = itemStockRepository.findByItemNumber(itemNumber);
                 if(itemStock!=null){
-                    itemStock.updateOrderCancel();
+                    itemStock.updateOrderCancel(orderCancelItem.getQty());
                 }
             }
             orderShipping.updateReturnComplete();
@@ -336,7 +336,7 @@ public class OrderService {
         }
         ItemStock itemStock = itemStockRepository.findByItemNumber(itemNumber);
         if(itemStock!=null){
-            itemStock.updateOrderCancel();
+            itemStock.updateOrderCancel(orderCancelItem.getQty());
         }
         TossPaymentRequest.PaymentCancel paymentCancel = TossPaymentRequest.PaymentCancel.builder()
                 .cancelAmount(orderCancel.getTotalAmount())

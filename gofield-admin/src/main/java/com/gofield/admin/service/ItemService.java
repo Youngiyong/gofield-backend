@@ -136,10 +136,23 @@ public class ItemService {
                 }
             }
         }
-        if(!itemDto.getStatus().equals(itemStock.getStatus())){
-            aggregationUpdate = true;
-            itemStock.update(itemDto.getStatus());
+
+        itemStock.update(itemDto.getQty());
+
+        if(itemDto.getStatus().equals(EItemStatusFlag.SOLD_OUT)){
+            item.updateIsSoldOut();
+            itemStock.updateSoldOut(EItemStatusFlag.SOLD_OUT);
+            updateItemBundleAggregation(item.getBundle().getId(), false);
+        } else if(itemDto.getStatus().equals(EItemStatusFlag.SALE)){
+            itemStock.update(itemDto.getQty(), EItemStatusFlag.SALE);
+            item.updateNotSoldOut();
+            updateItemBundleAggregation(item.getBundle().getId(), false);
+        } else if(itemDto.getStatus().equals(EItemStatusFlag.HIDE)){
+            itemStock.updateStatus(EItemStatusFlag.HIDE);
+            updateItemBundleAggregation(item.getBundle().getId(), false);
         }
+
+
         // 묶음 상품이 변경되는경우
         if(!item.getBundle().getId().equals(itemDto.getBundleId())){
             Long existBundleId = item.getBundle().getId();
