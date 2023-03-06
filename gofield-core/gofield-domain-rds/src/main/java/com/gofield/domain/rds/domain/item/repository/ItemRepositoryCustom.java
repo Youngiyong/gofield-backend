@@ -20,7 +20,7 @@ public interface ItemRepositoryCustom {
     List<ItemClassificationProjectionResponse> findAllByUserIdAndCategoryIdAndClassificationAndNeItemId(Long userId, Long categoryId, Long itemId,  EItemClassificationFlag classification, Pageable pageable);
     List<ItemClassificationProjectionResponse> findAllByUserIdAndBundleIdAndClassificationAndNeItemId(Long userId, Long bundleId, Long itemId, EItemClassificationFlag classification, Pageable pageable);
     List<ItemClassificationProjectionResponse> findAllUserLikeItemList(Long userId, Pageable pageable);
-    List<ItemClassificationProjectionResponse> findAllRecentItemByUserId(Long userId);
+    List<ItemClassificationProjectionResponse> findAllRecentItemByUserId(Long userId, Pageable pageable);
     ItemListProjectionResponse findAllClassificationItemByKeyword(String keyword, Long userId, Pageable pageable);
     ItemProjectionResponse findByItemNumberAndUserId(String itemNumber, Long userId);
     ItemOrderSheetProjection findItemOrderSheetByItemNumber(Long userId, Boolean isCart, String itemNumber);

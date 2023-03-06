@@ -93,7 +93,7 @@ public class ItemService {
     @Transactional(readOnly = true)
     public List<ItemClassificationResponse> retrieveUserRecentItems(Pageable pageable, Long userId){
         User user = userService.getUser(userId);
-        List<ItemClassificationProjectionResponse> result = itemRepository.findAllRecentItemByUserId(user.getId());
+        List<ItemClassificationProjectionResponse> result = itemRepository.findAllRecentItemByUserId(user.getId(), pageable);
         return ItemClassificationResponse.of(result);
     }
 

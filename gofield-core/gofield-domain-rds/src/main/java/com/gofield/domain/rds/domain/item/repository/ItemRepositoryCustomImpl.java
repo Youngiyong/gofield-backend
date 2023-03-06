@@ -498,7 +498,7 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
     }
 
     @Override
-    public List<ItemClassificationProjectionResponse> findAllRecentItemByUserId(Long userId) {
+    public List<ItemClassificationProjectionResponse> findAllRecentItemByUserId(Long userId, Pageable pageable) {
         List<ItemClassificationProjection> projection = jpaQueryFactory
                 .select(new QItemClassificationProjection(
                         item.id,
@@ -530,6 +530,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                 .leftJoin(userLikeItem)
                 .on(item.id.eq(userLikeItem.item.id), userLikeItem.user.id.eq(userId))
                 .where(item.deleteDate.isNull())
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
                 .orderBy(itemRecent.updateDate.desc())
                 .fetch();
 
