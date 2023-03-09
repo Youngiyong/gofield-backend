@@ -38,7 +38,6 @@ public class AuthController {
     }
 
     @ApiOperation(value = "[인증] 엑세스 토큰을 갱신합니다")
-    @Auth
     @PostMapping("/v1/refresh")
     public ApiResponse<TokenResponse> refresh(@RequestHeader String Authorization,
                                               @Valid @RequestBody TokenRefreshRequest request) {
