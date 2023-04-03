@@ -19,6 +19,6 @@ public class ItemRecentRepositoryCustomImpl implements ItemRecentRepositoryCusto
         return jpaQueryFactory
                 .selectFrom(itemRecent)
                 .where(itemRecent.itemNumber.eq(itemNumber), itemRecent.userId.eq(userId))
-                .fetchOne();
+                .fetchFirst();
     }
 }
