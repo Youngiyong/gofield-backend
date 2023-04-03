@@ -95,7 +95,7 @@ public class TokenUtil {
     public String getUserUuid(HttpServletRequest request) {
         String accessToken = request.getHeader(Constants.AUTHORIZATION);
         if (!StringUtils.isBlank(accessToken) && accessToken.startsWith(Constants.AUTH_PREFIX)) {
-            String resolveToken = accessToken.substring(8);
+            String resolveToken = accessToken.substring(7);
             Claims claims = parseClaims(resolveToken);
             return EncryptUtils.aes256Decrypt(TOKEN_ENCRYPT_KEY, claims.getId());
         }
@@ -104,7 +104,7 @@ public class TokenUtil {
 
     public String resolveToken(String accessToken) {
         if (!StringUtils.isBlank(accessToken) && accessToken.startsWith(Constants.AUTH_PREFIX)) {
-            return accessToken.substring(8);
+            return accessToken.substring(7);
         }
         return null;
     }
