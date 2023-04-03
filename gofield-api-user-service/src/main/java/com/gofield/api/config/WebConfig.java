@@ -21,7 +21,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://service.gofield.shop", "http://local.gofield.shop:6060", "http://localhost:6060", "http://192.168.0.4:6060")
+                .allowedOrigins("https://www.readys.co.kr", "http://local.readys.co.kr:6060", "http://localhost:6060", "http://192.168.0.4:6060")
                 .allowedHeaders("*")
                 .allowedMethods("*");
     }

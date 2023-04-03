@@ -33,11 +33,11 @@ public class SwaggerConfig {
     }
 
     private ApiInfo apiInfo() {
-        return new ApiInfo("Gofield API",
-                "Gofield API.",
+        return new ApiInfo("Readys API",
+                "Readys API.",
                 "1.0",
                 "Terms of service",
-                new Contact("Cheese", "https://github.com/Youngiyong", "youn9354@naver.com"),
+                new Contact("Readys", "https://github.com/Youngiyong", "youn9354@naver.com"),
                 "License of API",
                 "API license URL",
                 Collections.emptyList());
