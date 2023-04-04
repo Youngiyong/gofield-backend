@@ -5,6 +5,8 @@ import com.querydsl.core.annotations.QueryProjection;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.time.LocalDateTime;
+
 @ToString
 @Getter
 public class ItemNonMemberProjection {
@@ -32,9 +34,10 @@ public class ItemNonMemberProjection {
     private final EItemGenderFlag gender;
     private final String tags;
     private final String option;
+    private final LocalDateTime createDate;
 
     @QueryProjection
-    public ItemNonMemberProjection(Long id, String name, String brandName, Long sellerId, Long bundleId, Long brandId, Long categoryId, Long shippingTemplateId, String thumbnail, String description, String itemNumber, int price, int deliveryPrice, int qty, Boolean isOption, Boolean isSoldOut, EItemStatusFlag status, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option) {
+    public ItemNonMemberProjection(Long id, String name, String brandName, Long sellerId, Long bundleId, Long brandId, Long categoryId, Long shippingTemplateId, String thumbnail, String description, String itemNumber, int price, int deliveryPrice, int qty, Boolean isOption, Boolean isSoldOut, EItemStatusFlag status, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery, EItemGenderFlag gender, String tags, String option, LocalDateTime createDate) {
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -58,5 +61,6 @@ public class ItemNonMemberProjection {
         this.gender = gender;
         this.tags = tags;
         this.option = option;
+        this.createDate = createDate;
     }
 }

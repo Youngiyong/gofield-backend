@@ -879,7 +879,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                             item.delivery,
                             itemDetail.gender,
                             item.tags,
-                            itemDetail.itemOption))
+                            itemDetail.itemOption,
+                            item.createDate))
                     .from(itemStock)
                     .innerJoin(item)
                     .on(itemStock.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))
@@ -935,7 +936,8 @@ public class ItemRepositoryCustomImpl implements ItemRepositoryCustom {
                         item.delivery,
                         itemDetail.gender,
                         item.tags,
-                        itemDetail.itemOption.as("option")))
+                        itemDetail.itemOption.as("option"),
+                        item.createDate))
                 .from(itemStock)
                 .innerJoin(item)
                 .on(itemStock.itemNumber.eq(item.itemNumber), itemStock.itemNumber.eq(itemNumber))

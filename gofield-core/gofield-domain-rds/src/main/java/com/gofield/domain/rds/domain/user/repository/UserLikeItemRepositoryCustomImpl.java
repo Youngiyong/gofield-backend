@@ -20,4 +20,13 @@ public class UserLikeItemRepositoryCustomImpl implements UserLikeItemRepositoryC
                         userLikeItem.item.id.eq(itemId))
                 .fetchOne();
     }
+
+    @Override
+    public Long findTotalCountByItemId(Long itemId) {
+        return jpaQueryFactory
+                .select(userLikeItem.count())
+                .from(userLikeItem)
+                .where(userLikeItem.item.id.eq(itemId))
+                .fetchCount();
+    }
 }

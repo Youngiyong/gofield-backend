@@ -35,6 +35,7 @@ import java.util.stream.Collectors;
 public class ItemService {
     private final UserService userService;
     private final CategoryRepository categoryRepository;
+
     private final ItemRepository itemRepository;
     private final ItemQnaRepository itemQnaRepository;
     private final ItemBundleRepository itemBundleRepository;
@@ -156,6 +157,8 @@ public class ItemService {
         if(item==null){
             throw new NotFoundException(ErrorCode.E404_NOT_FOUND_EXCEPTION, ErrorAction.TOAST, String.format("<%s>는 존재하지 않는 상품번호입니다.", itemNumber));
         }
+        Long likeCount = userLikeItemRepository.findTotalCountByItemId(item.getId());
+
         //비회원 분기처리
         if(userId!=null){
             ItemRecent itemRecent = itemRecentRepository.findByItemNumberAndUserId(item.getItemNumber(), userId);
@@ -166,7 +169,7 @@ public class ItemService {
                 itemRecent.update();
             }
         }
-        return ItemResponse.of(item);
+        return ItemResponse.of(item, likeCount);
     }
 
     @Transactional(readOnly = true)

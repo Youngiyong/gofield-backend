@@ -12,6 +12,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,8 @@ public class ItemResponse {
     private int deliveryPrice;
     private int qty;
     private Long likeId;
+
+    private Long likeCount;
     private Boolean isOption;
     private Boolean isSoldOut;
     private EItemClassificationFlag classification;
@@ -45,9 +48,11 @@ public class ItemResponse {
     private ShippingTemplateResponse shippingTemplate;
     private String description;
 
+    private LocalDateTime createDate;
+
     @Builder
     private ItemResponse(Long id, String name, String brandName, String thumbnail, String itemNumber, Long bundleId, Long categoryId, Long brandId,
-                         int price, int deliveryPrice, int qty, Long likeId, Boolean isOption, Boolean isSoldOut, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate, String description){
+                         int price, int deliveryPrice, int qty, Long likeId, Long likeCount, Boolean isOption, Boolean isSoldOut, EItemClassificationFlag classification, EItemSpecFlag spec, EItemDeliveryFlag delivery,  EItemGenderFlag gender, List<String> images, List<Map<String, Object>> option, List<String> tags, ShippingTemplateResponse shippingTemplate, String description, LocalDateTime createDate){
         this.id = id;
         this.name = name;
         this.brandName = brandName;
@@ -60,6 +65,7 @@ public class ItemResponse {
         this.deliveryPrice = deliveryPrice;
         this.qty = qty;
         this.likeId = likeId;
+        this.likeCount = likeCount;
         this.isOption = isOption;
         this.isSoldOut = isSoldOut;
         this.classification = classification;
@@ -71,9 +77,10 @@ public class ItemResponse {
         this.tags = tags;
         this.shippingTemplate = shippingTemplate;
         this.description = description;
+        this.createDate = createDate;
     }
 
-    public static ItemResponse of(ItemProjectionResponse projection){
+    public static ItemResponse of(ItemProjectionResponse projection, Long likeCount){
         List<String> tags = projection.getTags()==null || projection.getTags().equals("") ? new ArrayList<>() : ObjectMapperUtils.strToObject(projection.getTags(), new TypeReference<List<String>>(){});
 
         if(tags!=null){
@@ -98,6 +105,7 @@ public class ItemResponse {
                 .deliveryPrice(projection.getDeliveryPrice())
                 .qty(projection.getQty())
                 .likeId(projection.getLikeId())
+                .likeCount(likeCount)
                 .isOption(projection.getIsOption())
                 .classification(projection.getClassification())
                 .isSoldOut(projection.getIsSoldOut())
@@ -109,6 +117,7 @@ public class ItemResponse {
                 .tags(tags)
                 .shippingTemplate(ShippingTemplateResponse.of(projection.getShippingTemplate()))
                 .description(projection.getDescription())
+                .createDate(projection.getCreateDate())
                 .build();
     }
 

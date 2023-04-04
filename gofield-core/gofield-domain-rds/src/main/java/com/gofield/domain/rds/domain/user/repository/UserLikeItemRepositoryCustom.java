@@ -5,4 +5,5 @@ import com.gofield.domain.rds.domain.user.UserLikeItem;
 
 public interface UserLikeItemRepositoryCustom {
     UserLikeItem findByUserIdAndItemId(Long userId, Long itemId);
+    Long findTotalCountByItemId(Long itemId);
 }
