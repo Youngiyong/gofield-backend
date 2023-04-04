@@ -198,6 +198,7 @@ public class ItemBundleRepositoryCustomImpl implements ItemBundleRepositoryCusto
                 .fetch();
     }
 
+
     @Override
     public ItemBundleImageProjectionResponse findAggregationByBundleId(Long bundleId){
         ItemBundleImageProjection bundle = jpaQueryFactory
