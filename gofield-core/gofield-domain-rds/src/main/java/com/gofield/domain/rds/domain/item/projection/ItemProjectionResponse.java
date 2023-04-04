@@ -65,6 +65,7 @@ public class ItemProjectionResponse {
         this.tags = tags;
         this.option = option;
         this.shippingTemplate = shippingTemplate;
+        this.createDate = createDate;
     }
 
     public static ItemProjectionResponse of(ItemNonMemberProjection projection, ShippingTemplate shippingTemplate, List<String> images){
