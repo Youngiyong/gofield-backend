@@ -172,6 +172,7 @@ public class ItemService {
         return ItemResponse.of(item, likeCount);
     }
 
+
     @Transactional(readOnly = true)
     public ItemOptionDetailResponse retrieveItemOption(Long itemId){
         List<ItemOptionGroup> itemOptionGroupList = itemOptionGroupRepository.findAllItemOptionGroupByItemId(itemId);
